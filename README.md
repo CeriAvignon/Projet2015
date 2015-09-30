@@ -13,3 +13,4 @@ Vous ne travaillerez *que* sur cette branche, vous ne devrez *en aucun cas* modi
 Une fois la branche créée, définissez un nouveau package dans `fr.univavignon.courbes``afin d'y placer votre code source.
 L'intégralité de votre code source doit être contenue dans ce package. Effectuez des commits le plus régulièrement possible,
 afin que la version de votre code source située sur GitHub soit à jour la plupart du temps.
+test
