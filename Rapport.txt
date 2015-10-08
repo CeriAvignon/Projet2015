@@ -9,3 +9,21 @@ jeu la position du joueur sous la forme de coordonées.
  La composante graphique recoit à chaque boucle les coordonées des joueurs. Si un joueurs n'envoit pas 
  ses coordonnées il est considéré comme mort et n'est donc plus affiché.
  
+ 
+  Pour pouvoir conserver les coordonnées du joueurs on Crée une Classe Joueur
+  
+  
+  	Classe joueur
+  	{
+  	
+  		String name;		
+  		tab coordonnées [];
+  		
+  		
+  		public : getpos();
+  
+  	}
+  	
+  	
+ La méthode getpos permet de récuperer les coordonnées d'un joueur et de les mettre dans le tableau
+  	
