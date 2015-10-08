@@ -3,6 +3,9 @@ Omar Sy -- Aurélien Cottin
 
 Notre composante est la composante graphique.
 
-Le but de cette composante est d'afficher la position de chaque joueur en temps réel et toutes
+Le but de cette composante est d'afficher la position des joueurs en temps réel et toutes
 ses positions précédentes(sous forme d'un trait). Pour cela la composante recoit à chaque boucle du 
-jeu la position du joueur sous la forme de coordonées
+jeu la position du joueur sous la forme de coordonées.
+ La composante graphique recoit à chaque boucle les coordonées des joueurs. Si un joueurs n'envoit pas 
+ ses coordonnées il est considéré comme mort et n'est donc plus affiché.
+ 
