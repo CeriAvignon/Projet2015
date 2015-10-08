@@ -16,10 +16,9 @@ jeu la position du joueur sous la forme de coordonées.
   	Classe joueur
   	{
   	
-  		String name;		
+  		String name;
+  		String color;		
   		tab coordonnées [];
-  		
-  		
   		public : getpos();
   
   	}
@@ -27,3 +26,6 @@ jeu la position du joueur sous la forme de coordonées.
   	
  La méthode getpos permet de récuperer les coordonnées d'un joueur et de les mettre dans le tableau
   	
+  	
+ Il faudra aussi creer une fonction pour récuperer toutes les valeurs du tableau et afficher les
+ sprites les sprites au bon endroit.
