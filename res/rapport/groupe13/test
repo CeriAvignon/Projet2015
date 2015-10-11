@@ -1,0 +1,52 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Rapport 01 Projet IL}
+\author{Roux Quentin \& Fageot Pierre}
+
+\begin{document}
+\maketitle
+
+
+\section{Présentation de la composante Interface utilisateur}
+
+Cette composante permet à l'utilisateur de modifier les paramètres d'une partie et de voir les résultats via des options. Une de ces options permet de gérer les statistiques des joueurs. L'interface utilisateur sert également de lien avec le moteur physique pour transmettre les commandes utilisées par les utilisateurs. Ce lien est représenté logiquement par un code source.
+
+\section{Description des interactions}
+
+
+Il existe une faible interaction entre les différentes composantes, faible, mais pas négligeable:
+\begin{itemize}
+\item Sans interface le moteur physique ne peut pas avoir accès aux commandes des utilisateurs.
+\item Le moteur physique met à jour les données pour l'interface.
+\item Le moteur graphique envoie les informations nécessaires à l'interface pour dessiner les objets.
+\item Notre composante transmet au moteur réseau les mises à jour effectuées sur le moteur physique et le moteur réseau à son tour met à jour le serveur de l'utilisateur.
+\item Les commandes des joueurs sont transmises à l'interface par le moteur réseau.
+\end{itemize}
+
+\section{Formalisation}
+
+Définition des classe générales utilisés par les différentes composantes:
+
+La classe Object sera défini par des coordonnées, dans un tableau, de l’objet (zone de jeu).
+La classe Player sera défini par les joueurs ainsi que leurs statistiques.
+
+Voici les méthodes que l’on devra implémenter :
+
+\begin{itemize}
+\item Send\_Commande(). Permet d’envoyer les commandes utilisés par un joueur.
+\item Get\_Commande(). Permet de récupérer les commande utilisés par les utilisateurs.
+\item Get\_Data(). Récupère les mise à jours.
+\item Send\_Data(). Envoie les mise à jour.
+\item Draw\_Object(). Dessine les objets.
+\item Display\_Menu(). Permet l’affichage des fenêtres fixes.
+\item Display\_Result(). Affiche les résultats des parties.
+\item Display\_Stats(). Affiche les statistiques des joueurs.
+\end{itemize}
+
+\end{document}
