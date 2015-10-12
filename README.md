@@ -4,6 +4,8 @@ Projet2015
 
 Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve!)
 
+
+Binome Antoine Letourneur- Axel Clerici
 -----------------------------------------------------------------------
 
 Avant de démarrer l'implémentation, créez une nouvelle branche à partir de cette branche principale. 
@@ -13,4 +15,5 @@ Vous ne travaillerez *que* sur cette branche, vous ne devrez *en aucun cas* modi
 Une fois la branche créée, définissez un nouveau package dans `fr.univavignon.courbes``afin d'y placer votre code source.
 L'intégralité de votre code source doit être contenue dans ce package. Effectuez des commits le plus régulièrement possible,
 afin que la version de votre code source située sur GitHub soit à jour la plupart du temps.
-test84
+
+Binome Antoine Letourneur- Axel Clerici
