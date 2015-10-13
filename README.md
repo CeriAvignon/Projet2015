@@ -4,7 +4,7 @@ Projet2015
 
 Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve!)
 
-----------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
-Maxime	Dapp
-Tony	Di Malta
+Maxime Dapp
+Tony Di Malta
