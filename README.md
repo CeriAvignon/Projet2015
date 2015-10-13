@@ -1,1 +1,1 @@
-Fageot Pierre et Roux Quentin.
+Fageot Pierre et Roux Quentin
