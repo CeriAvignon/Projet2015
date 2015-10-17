@@ -15,6 +15,6 @@ L'intégralité de votre code source doit être contenue dans ce package. Effect
 afin que la version de votre code source située sur GitHub soit à jour la plupart du temps.
 
 Une fois ces tâches réalisées, éditez ce fichier texte de la façon suivante :
-1. Supprimez les instructions ci-dessus (mais gardez le début jusqu'au trait horizontal).
-2. Indiquez la composition du binôme avec, pour chaque étudiant : son prénom, son nom et son adresse email.
+ 1. Supprimez les instructions ci-dessus (mais gardez le début jusqu'au trait horizontal).
+ 2. Indiquez la composition du binôme avec, pour chaque étudiant : son prénom, son nom et son adresse email.
 
