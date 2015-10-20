@@ -3,3 +3,4 @@
 2) effacez ce fichier.
 3) placez vos rapports, qui doivent être nommés rapport01.pdf,rapport02.pdf, etc. Donc encore une fois,
    avec un 'r' minuscule et un numéro de groupe exprimé sur deux chiffres.
+ll
