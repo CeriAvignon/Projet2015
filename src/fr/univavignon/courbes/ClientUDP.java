@@ -15,8 +15,8 @@ public class ClientUDP {
     
       
       Thread cli1 = new Thread(new UDPClient("Cysboy", 1000));
-      Thread cli2 = new Thread(new UDPClient("John-John", 1000));
-      Thread cli3 = new Thread(new UDPClient("Loic", 1000));
+      Thread cli2 = new Thread(new UDPClient("John-John", 10000));
+      Thread cli3 = new Thread(new UDPClient("Loic", 10000));
       
       cli1.start();
       cli2.start();
@@ -52,7 +52,7 @@ public class ClientUDP {
                DatagramSocket client = new DatagramSocket();
                
                //On cr�e notre datagramme
-               InetAddress adresse = InetAddress.getByName("192.168.0.14");
+               InetAddress adresse = InetAddress.getByName("10.104.29.115");
                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, adresse, port);
                
                //On lui affecte les donn�es � envoyer
