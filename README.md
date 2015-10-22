@@ -6,4 +6,4 @@ Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve
 
 -----------------------------------------------------------------------
 
-Zakaria LAHRACH     et    Abderrazzak TOUGHZAOUI
+Zakaria LAHRACH zakaria.lahrach@gmail.com    et    Abderrazzak TOUGHZAOUI abderrazzak.toughzaoui@gmail.com
