@@ -6,4 +6,4 @@ Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve
 
 -----------------------------------------------------------------------
 
-el khorji majda / kabbouch nasreddine
+kabbouch nasreddine nasreddine.kabbouch@alumni.univ-avignon.fr / el khorji majda majda.elkhorji@alumni.univ-avignon.fr  
