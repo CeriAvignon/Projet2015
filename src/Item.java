@@ -1,0 +1,43 @@
+
+abstract class Item 
+{
+	protected Position apparition;
+}
+
+abstract class IndividualEffectItem extends Item
+{
+	// ????
+}
+
+public class Bonus extends IndividualEffectItem
+{
+	private boolean earth=false;
+	private boolean sonic-=false;
+	private boolean sonic+=false;
+	
+	
+}
+
+public class Malus extends IndividualEffectItem
+{
+	private boolean feed=false;
+	private boolean invert=false;
+	private boolean hole=false;
+	private boolean passkey=false;
+	private boolean sonic-=false;
+	private boolean sonic+=false;
+}
+
+
+
+
+public class GeneralEffectItem extends Item
+{
+	private boolean clean=false;
+	private boolean earth=false;
+	private boolean moreloops=false;
+}
+
+
+
+
