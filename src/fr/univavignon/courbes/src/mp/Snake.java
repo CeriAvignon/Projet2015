@@ -3,16 +3,16 @@ package fr.univavignon.courbes.src.mp;
 import java.util.ArrayList;
 
 public class Snake {
-	int idPlayer;
-	Position head;
-	float direction;
-	double ray; // radius head
-	double speed;
-	boolean state; // isAlive
-	boolean crashmode; // Nocollide
-	boolean invertmode;
-	boolean planemode;
-	double holerate;
+	private int idPlayer;
+	private Position head;
+	private float direction;
+	private double ray; // radius head
+	private double speed;
+	private boolean state; // isAlive
+	private boolean crashmode; // Nocollide
+	private boolean invertmode;
+	private boolean planemode;
+	private double holerate;
 	ArrayList changes; 
 
 	public Snake(int id)
