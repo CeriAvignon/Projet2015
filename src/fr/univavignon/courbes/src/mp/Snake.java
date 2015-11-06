@@ -26,8 +26,27 @@ public class Snake {
 		crashmode 	= false;
 		invertmode  = false;
 		planemode  = false;
-		holerate 	= 1;			
+		holerate 	= 1.0;			
 		changes = new ArrayList();
+	}
+	
+	/**
+	 * @param strength Force sur un un coté ou l'autre du snake
+	 */
+	public void changeDirection(float strength)
+	{
+		
+	}
+	
+	/**
+	 * @param posSnake Position du Snake a tester
+	 * @param posItem  Position de l'item a tester
+	 * @return true si le snake est sur l'objet, sinon false
+	 */
+	public boolean snakeOnItem(Position posSnake, Position posItem)
+	{
+		return false;
+
 	}
 }
 

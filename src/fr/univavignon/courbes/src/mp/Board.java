@@ -11,4 +11,16 @@ public class Board {
 	
 	public ArrayList<Snake> listSnake = new ArrayList<Snake>();
 	
+	
+	void buildSnakeList()
+	{
+		
+	}
+	
+	void spawnSnakeOnBoard(Board board ,ArrayList<Snake> listSnake)
+	{
+		
+	}
+	
+	
 }
