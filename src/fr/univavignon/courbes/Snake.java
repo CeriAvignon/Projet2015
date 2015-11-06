@@ -1,5 +1,8 @@
+package fr.univavignon.courbes;
+import java.util.ArrayList;
+import java.util.List;
 
-
+// Shift + ctrl + o     to import automaticly 
 public class Snake 
 {
 	private int idPlayer;
@@ -12,7 +15,7 @@ public class Snake
 	private boolean invertmode; 	// 0 = normal keys ----- 1 = invert keys
 	private double holerate;		// % hole apparition
 	private boolean planemode; 		// 0 = not plane   ----- 1 = plane mode
-	private Item[] changes;     // List of Items
+	private List changes;     		// List of Items
 
 	
 	public Snake(int id)
@@ -27,7 +30,7 @@ public class Snake
 		invertmode  = false;
 		holerate 	= 5.0;			// 5% ?
 		planemode  = false;
-		changes = new Item[];
+		changes = new ArrayList();
 	}
 	
 	/***************************************************************************************************************************************************************\
@@ -67,7 +70,7 @@ public class Snake
 	
 	public double rateHoles()
 	{
-		return holerate();
+		return holerate;
 	}
 	
 	public double getSize()
@@ -91,6 +94,11 @@ public class Snake
 	public void turnRight()
 	{
 		direction++;
+	}
+	
+	public void newChange(Changes object)
+	{
+		changes.add(object);
 	}
 }
 
