@@ -25,7 +25,7 @@ public class Snake {
 		state 		= true;
 		crashmode 	= false;
 		invertmode  = false;
-		planemode  = false;
+		planemode   = false;
 		holerate 	= 1.0;			
 		changes = new ArrayList();
 	}

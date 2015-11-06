@@ -30,7 +30,35 @@ class ItemEffect extends Item
 	 */
 	public void giveEffect(float duration, TypeEffect typeEffect) // Donne effet de l'objet au Snake
 	{
-		
+		switch (typeEffect)
+		{
+			case Feed:
+			break;
+			
+			case SonicPlayer:
+			break;
+			
+			case SonicOthers:
+			break;
+			
+			case SlowPlayer:
+			break;
+			
+			case SlowOthers:
+			break;
+			
+			case PassKey:
+			break;
+			
+			case Invert:
+			break;
+			
+			case Hole:
+			break;
+			
+			default:
+			break;
+		}
 	}
 	
 }
@@ -52,6 +80,19 @@ class ItemEvent extends Item
 	 */
 	public void giveEvent (float duration, TypeEvent typeEvent) // Donne effet de l'event
 	{
-		
+		switch (typeEvent)
+		{
+			case Clean:
+			break;
+			
+			case Earth:
+			break;
+			
+			case MoreItems:
+			break;
+			
+			default:
+			break;
+		}
 	}
 }

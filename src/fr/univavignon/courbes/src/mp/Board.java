@@ -17,10 +17,19 @@ public class Board {
 		
 	}
 	
-	void spawnSnakeOnBoard(Board board ,ArrayList<Snake> listSnake)
+	void spawnSnakeOnBoard(ArrayList<Snake> listSnake)
 	{
 		
 	}
 	
 	
+	/**
+	 * @param snake
+	 * @param currentPos
+	 */
+	void updateSnakePosition(Snake snake, Position currentPos)
+	{
+		//Utiliser la speed,direction, et pos  pour faire evoluer la Pos
+		//Mettre la old Pos du Snake dans la hash map tracé
+	}
 }
