@@ -1,6 +1,6 @@
 Projet2015
 =======
-*Projet d"algorithmique de L3 pour l'année 2015/16*
+*Projet d'algorithmique de L3 pour l'année 2015/16*
 
 Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve!)
 
@@ -13,3 +13,10 @@ Vous ne travaillerez *que* sur cette branche, vous ne devrez *en aucun cas* modi
 Une fois la branche créée, définissez un nouveau package dans `fr.univavignon.courbes``afin d'y placer votre code source.
 L'intégralité de votre code source doit être contenue dans ce package. Effectuez des commits le plus régulièrement possible,
 afin que la version de votre code source située sur GitHub soit à jour la plupart du temps.
+
+Allez ensuite dans le dossier `res/rapports/groupeXX` et éditez le nom du dossier `groupeXX` afin de lui donner le numéro de votre propre binôme. Là encore, ce numéro doit être exprimé sur deux chiffres (`Groupe01`, `Groupe02`,...,`Groupe10`).
+
+Une fois ces tâches réalisées, éditez ce fichier texte de la façon suivante :
+ 1. Supprimez les instructions ci-dessus (mais gardez le début jusqu'au trait horizontal).
+ 2. Indiquez la composition du binôme avec, pour chaque étudiant : son prénom, son nom et son adresse email.
+
