@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class Board {
 	
-	HashMap<Position, String> mapTrace = new HashMap<Position, String>(); 
-	HashMap<Position, String> mapItem = new HashMap<Position, String>();
+	HashMap<Position, Integer > mapTrace = new HashMap<Position, Integer >(); 
+	HashMap<Position, Item > mapItem = new HashMap<Position, Item >();
 	
 	public ArrayList<Snake> listSnake = new ArrayList<Snake>();
 	
