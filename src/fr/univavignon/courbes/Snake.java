@@ -1,4 +1,5 @@
 package fr.univavignon.courbes;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,10 @@ public class Snake
 		return ray;
 	}
 	
+	public Position getPosition()
+	{
+		return head;
+	}
 	
 	/***************************************************************************************************************************************************************\
 	/																																							   *\
@@ -99,6 +104,21 @@ public class Snake
 	public void newChange(Changes object)
 	{
 		changes.add(object);
+	}
+	
+	public void getChanges()
+	{
+		if(changes.size() <= 0)
+		{
+			System.out.println("No changes for now");
+		}
+		else
+		{
+			for(int i = 0; i < changes.size(); i++) {   
+				System.out.println("something");
+			} 			
+		}
+
 	}
 }
 

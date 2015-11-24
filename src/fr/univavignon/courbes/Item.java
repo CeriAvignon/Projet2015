@@ -17,6 +17,7 @@ public class Bonus extends IndividualEffectItem
 	private boolean sonic+=false;
 	
 	
+	
 }
 
 public class Malus extends IndividualEffectItem

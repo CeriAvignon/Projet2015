@@ -10,4 +10,9 @@ public class Position
 		x=Math.random()*(800-0);
 		y=Math.random()*(600-0);
 	}
+	
+	void displayPosition()
+	{
+		System.out.println("x = "+x+"\ny = "+y);
+	}
 }
