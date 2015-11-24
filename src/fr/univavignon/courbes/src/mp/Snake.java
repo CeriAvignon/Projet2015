@@ -3,6 +3,7 @@ package fr.univavignon.courbes.src.mp;
 import java.util.ArrayList;
 
 public class Snake {
+	
 	private int idPlayer;
 	private Position head;
 	private float direction;
@@ -15,10 +16,10 @@ public class Snake {
 	private double holerate;
 	ArrayList changes; 
 
-	public Snake(int id)
+	public Snake(int id, Position spawnPosition)
 	{
 		idPlayer 	= id;
-		head 		= new Position(0,0);
+		head 		= spawnPosition;
 		direction   = 0; 		
 		ray 		= 1;  	
 		speed 		= 1;		
@@ -30,6 +31,9 @@ public class Snake {
 		changes = new ArrayList();
 	}
 	
+	public Position getHead() { return head; }
+	
+	
 	/**
 	 * @param strength Force sur un un coté ou l'autre du snake
 	 */
@@ -38,15 +42,6 @@ public class Snake {
 		
 	}
 	
-	/**
-	 * @param posSnake Position du Snake a tester
-	 * @param posItem  Position de l'item a tester
-	 * @return true si le snake est sur l'objet, sinon false
-	 */
-	public boolean snakeOnItem(Position posSnake, Position posItem)
-	{
-		return false;
 
-	}
 }
 
