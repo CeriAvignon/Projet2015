@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.network;
 
 import java.util.List;
+import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -71,10 +72,12 @@ public interface ClientCommunication
  	/**
      * Permet à un client de clore sa connexion avec le serveur.
      */
-	public void shutdownClient();
+	public void closeClient();
 	
 	/**
-	 * Récupère la liste des joueurs de la manche envoyée par le serveur.
+	 * Récupère la liste des profils des joueurs participant à la manche,
+	 * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
+	 * des joueurs pour cette partie.
 	 * <br/>
 	 * Cette méthode est invoquée par l'Interface Utilisateur de manière
 	 * à ce que le client obtienne l'identité des joueurs participant à une partie.
@@ -84,11 +87,11 @@ public interface ClientCommunication
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
      * parallèle de l'exécution du jeu. 
 	 * 
-	 * @return players
-	 * 		Liste des joueurs participant à la partie, ou {@code null} si aucune
+	 * @return
+	 * 		Liste des profils participant à la partie, ou {@code null} si aucune
 	 * 		liste n'a été envoyée.
 	 */
-	public List<Profile> retrievePlayers();
+	public List<Profile> retrieveProfiles();
 	
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,
@@ -129,6 +132,23 @@ public interface ClientCommunication
 	public Board retrieveBoard();
 
 	/**
+     * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
+     * Ces commandes sont passées sous forme de map: l'entier correspond à l'ID du joueur
+     * <i>sur le serveur</i>, pour la manche en cours, et la direction correspond à la
+     * commande générée par le joueur. Si un joueur n'a pas généré de commande, alors la 
+     * valeur associée doit être {@link Direction#NONE}.
+     * <br/>
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+     * parallèle de l'exécution du jeu. 
+     *
+     * @param commands 
+     * 		Une liste contenant les directions choisies par chaque joueur local au client.
+     */
+	public void sendCommands(Map<Integer,Direction> commands);
+
+	/**
      * Permet au client de récupérer un message textuel envoyé par le serveur
      * auquel il est connecté.
      * <br/>
@@ -142,22 +162,6 @@ public interface ClientCommunication
      * 		n'a été envoyé.
      */
 	public String retrieveText();
-
-	/**
-     * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
-     * Le 1er élément de la liste passée en paramètre correspond à la commande du 1er 
-     * joueur local, le 2ème au deuxième joueur local, etc. Si un joueur n'a pas généré 
-     * de commande, alors la valeur associée doit être {@link Direction#NONE}.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @param commands 
-     * 		Une liste contenant les directions choisies par chaque joueur local au client.
-     */
-	public void sendCommands(List<Direction> commands);
 
 	/**
      * Permet au client d'envoyer un message textuel au serveur auquel il est 

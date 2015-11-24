@@ -23,14 +23,6 @@ import fr.univavignon.courbes.common.Profile;
  * Inversement, quand l'Interface Utilisateur invoque une méthode de type {@code sendXxxxx},
  * l'expédition vers les clients doit se faire dans un thread dédié, afin de ne
  * pas bloquer l'exécution du jeu.
- * <br/>
- * Il faut noter que cette classe doit gérer plusieurs clients, et que chacun d'entre
- * eux est capable d'héberger plusieurs joueurs. L'Interface Utilisateur n'a pas accès
- * à ces informations : pour elle, les joueurs sont simplement numérotés, qu'ils soient
- * locaux ou distants. L'implémentation de cette interface doit donc être capable de déterminer
- * par quel client un joueur donné est hébergé, et quel est son numéro sur ce client-là.
- * Autrement dit, il faut pouvoir faire la conversion entre un numéro global attribué sur
- * le serveur, et un numéro local attribué sur un client.
  */
 public interface ServerCommunication
 {	
@@ -48,11 +40,11 @@ public interface ServerCommunication
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide d'arrêter une partie réseau en cours.
      */
-	public void shutdownServer();
+	public void closeServer();
 
 	/**
-	 * Envoie la liste des joueurs de la manche à tous les clients connectés
-	 * à ce serveur.
+	 * Envoie la liste des profils des joueurs de la manche à tous les 
+	 * clients connectés à ce serveur.
 	 * <br/>
 	 * Cette méthode est invoquée par l'Interface Utilisateur de manière
 	 * à ce que le serveur transmette au client l'identité des joueurs 
@@ -63,10 +55,10 @@ public interface ServerCommunication
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
      * parallèle de l'exécution du jeu. 
 	 * 
-	 * @param players
-	 * 		Liste des joueurs participant à une partie.
+	 * @param profiles
+	 * 		Liste des profils des joueurs participant à une partie.
 	 */
-	public void sendPlayers(List<Profile> players);
+	public void sendPlayers(List<Profile> profiles);
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
@@ -105,24 +97,10 @@ public interface ServerCommunication
 	public void sendBoard(Board board);
 
 	/**
-     * Permet au serveur d'envoyer un message textuel à tous les clients connectés
-     * au serveur.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @param message
-     * 		Contient le message destiné aux clients.
-     */
-	public void sendText(String message);
-
-	/**
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
      * renvoie une map, associant à l'ID d'un joueur la dernière commande qu'il a
      * envoyée. Bien sûr, les joueurs locaux au serveur ne sont pas gérés par des clients,
-     * et leur ID n'apparait donc pas dans cette map.
+     * et leur ID n'apparaît donc pas dans cette map.
      * <br/>
      * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
      * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
@@ -135,6 +113,20 @@ public interface ServerCommunication
      * 		être remplacées par des valeurs {@link Direction#NONE}.
      */
 	public Map<Integer,Direction> retrieveCommands();
+
+	/**
+     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
+     * connectés.
+     * <br/>
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+     * parallèle de l'exécution du jeu. 
+     *
+     * @param message
+     * 		Contient le message destiné aux clients.
+     */
+	public void sendText(String message);
 	
 	/**
      * Permet au serveur de recevoir des messages textuels provenant de ses clients.

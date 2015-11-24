@@ -1,6 +1,9 @@
 package fr.univavignon.courbes.physics;
 
+import java.util.Map;
+
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Direction;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
@@ -42,11 +45,16 @@ public interface PhysicsEngine
 	 * doit pour cela modifier l'objet de type {@link Board} représentant
 	 * l'aire de jeu, qui avait été initialisé par {@link #init}
 	 * (ou par {@link #forceUpdate(Board)}.
+	 * <br/>
+	 * Le paramètre {@code commands} représente les dernières commandes générées
+	 * par les joueurs. La map associe un ID de joueur à sa commande.
 	 * 
 	 * @param elapsedTime
 	 * 		Temps écoulé depuis la dernière mise à jour, exprimé en ms.
+	 * @param commands
+	 * 		Map associant un joueur ID à la dernière commande générée par le joueur correspondant.
 	 */
-	public void update(long elapsedTime);
+	public void update(long elapsedTime, Map<Integer,Direction> commands);
 	
 	/**
 	 * Cette méthode est appelée par l'Interface Utilisateur côté client, lors 
@@ -59,6 +67,9 @@ public interface PhysicsEngine
 	 * Autrement dit, dans le cas du jeu en réseau côté client, le Moteur
 	 * Physique ne fait pas de calcul : il se contente de mettre à jour
 	 * l'aire de jeu avec les informations qu'il reçoit. 
+	 * <br/>
+	 * Le remplacement doit se faire de manière à ne pas induire de modification 
+	 * dans le traitement effectué par les autres composantes.
 	 * 
 	 * @param board
 	 * 		Nouvelle aire de jeu, devant remplacer l'aire de jeu courante.

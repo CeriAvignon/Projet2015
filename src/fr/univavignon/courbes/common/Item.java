@@ -7,6 +7,10 @@ import java.io.Serializable;
  * d'items présents dans le jeu. Chacun possède un
  * champ représentant la durée de sont effet exprimée 
  * en ms.
+ * <br/>
+ * <b>Remarque :</b> les durées sont arbitrairement fixées à 
+ * 3 secondes, il faudra les estimer plus précisément
+ * en observant le jeu. TODO
  */
 public enum Item implements Serializable
 {	/** Le joueur qui ramasse l'item accélère (bonus) */

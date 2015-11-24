@@ -28,24 +28,24 @@ public class Snake implements Serializable
 	/** Angle représentant la direction de déplacement courante du snake */
 	public double currentAngle;
 	/** Rayon de la tête du snake */
-	public double headRay;
-	/** Vitesse du snake */
+	public double headRadius;
+	/** Vitesse du snake, exprimée en pixel par ms */
 	public double currentSpeed;
 	
 	/** Etat du snake : {@code false} il est mort, {@code true} il est vivant */
 	public boolean state;
 	/** Mode de collision : {@code false} il est insensible aux collisions, {@code true} il l’est */
-	public boolean crashMode;
-	/**Inverse des commandes : {@code false} le snake est dirigé normalement, {@code true} ses commandes sont inversées */
-	public boolean invertMode;
+	public boolean collision;
+	/**Inversion des commandes : {@code false} le snake est dirigé normalement, {@code true} ses commandes sont inversées */
+	public boolean inversion;
 	
-	/** Taux de création de trous dans le tracé : 0=aucun trou, plus il est grand, plus le tracé est troué */
+	/** Taux de création de trous dans le tracé : pour 0 on n'a aucun trou, pour 1 on n'a aucune traînée (i.e. que des trous) */
 	public double holeRate;
 	
 	/** Mode avion ({@code true}) ou pas ({@code false}) */
-	public boolean planeMode;
+	public boolean fly;
 	
-	/** Items affectant ce snake, associés à leur temps d'effet restant */
+	/** Items affectant ce snake, associés à leur temps d'effet restant (en ms) */
 	public Map<Item, Long> currentItems;
 	
 	/** Score courant du joueur associé au snake dans la partie courante */
