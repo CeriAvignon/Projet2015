@@ -23,6 +23,7 @@ public class Main {
 		System.out.println("\n\nWe added the position, in now ?\n" + B.containsPosition(A.getPosition()));
 		
 		System.out.println("\nsize :" + B.size());
+	
 	}
 
 }

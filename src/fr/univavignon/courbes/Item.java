@@ -1,4 +1,4 @@
-package fr.univavignon.courbes;
+ package fr.univavignon.courbes;
 
 abstract class Item 
 {
