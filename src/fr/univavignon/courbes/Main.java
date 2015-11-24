@@ -4,7 +4,7 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
-		//test snake
+		//test snakes
 		Snake A=new Snake(5);
 		int id=A.getID();
 		System.out.println(id);
