@@ -1,4 +1,4 @@
-package fr.univavignon.courbes;
+package fr.univavignon.courbes.echangeUDP;
 
 public class LaunchServerUDP {
 

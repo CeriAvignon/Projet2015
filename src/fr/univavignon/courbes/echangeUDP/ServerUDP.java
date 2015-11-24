@@ -1,4 +1,4 @@
-package fr.univavignon.courbes;
+package fr.univavignon.courbes.echangeUDP;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
