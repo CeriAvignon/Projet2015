@@ -10,7 +10,7 @@ abstract class IndividualEffectItem extends Item
 	// ????
 }
 
-public class Bonus extends IndividualEffectItem
+public class BonusItem extends IndividualEffectItem
 {
 	private boolean earth=false;
 	private boolean sonicSlow=false;
@@ -20,7 +20,7 @@ public class Bonus extends IndividualEffectItem
 	
 }
 
-public class Malus extends IndividualEffectItem
+public class MalusItem extends IndividualEffectItem
 {
 	private boolean feed=false;
 	private boolean invert=false;

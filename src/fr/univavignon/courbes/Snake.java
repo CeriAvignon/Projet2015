@@ -12,11 +12,11 @@ public class Snake
 	private double ray;				//Size
 	private double speed;
 	private boolean state;			// 0 = dead 	   ----- 1 = alive
-	private boolean crashmode;		// 0 = nocollision ----- 1 = collision   
-	private boolean invertmode; 	// 0 = normal keys ----- 1 = invert keys
-	private double holerate;		// % hole apparition
-	private boolean planemode; 		// 0 = not plane   ----- 1 = plane mode
-	private List changes;     		// List of Items
+	private boolean crashMode;		// 0 = nocollision ----- 1 = collision   
+	private boolean invertMode; 	// 0 = normal keys ----- 1 = invert keys
+	private double holeRate;		// % hole apparition
+	private boolean planeMode; 		// 0 = not plane   ----- 1 = plane mode
+	private HashMap<Item,double> changes;     		// List of Items
 
 	
 	public Snake(int id)
@@ -27,11 +27,11 @@ public class Snake
 		ray 		= 3.0;  		// pixel ?
 		speed 		= 1.0;			// pixel/frame ?
 		state 		= true;
-		crashmode 	= true;
-		invertmode  = false;
-		holerate 	= 5.0;			// 5% ?
-		planemode  = false;
-		changes = new ArrayList();
+		crashMode 	= true;
+		invertMode  = false;
+		holeRate 	= 5.0;			// 5% ?
+		planeMode  = false;
+		changes = new HashMap<Item,double>(50);
 	}
 	
 	/***************************************************************************************************************************************************************\
@@ -49,19 +49,19 @@ public class Snake
 		return state;
 	}
 	
-	public boolean isCrashMode()
+	public boolean iscrashMode()
 	{
-		return crashmode;
+		return crashMode;
 	}
 	
 	public boolean isInversed()
 	{
-		return invertmode;
+		return invertMode;
 	}
 	
 	public boolean isFlying()
 	{
-		return planemode;
+		return planeMode;
 	}
 	
 	public double getSpeed()
@@ -71,7 +71,7 @@ public class Snake
 	
 	public double rateHoles()
 	{
-		return holerate;
+		return holeRate;
 	}
 	
 	public double getSize()
@@ -103,22 +103,12 @@ public class Snake
 	
 	public void newChange(Changes object)
 	{
-		changes.add(object);
+		// a voir plus tard
 	}
 	
 	public void getChanges()
 	{
-		if(changes.size() <= 0)
-		{
-			System.out.println("No changes for now");
-		}
-		else
-		{
-			for(int i = 0; i < changes.size(); i++) {   
-				System.out.println("something");
-			} 			
-		}
-
+		// a voir plus tard
 	}
 }
 

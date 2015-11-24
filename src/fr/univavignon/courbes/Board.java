@@ -4,35 +4,39 @@ import java.util.HashMap;
 // need a capacity to initialize hashmap
 public class Board 
 {
-	private HashMap<Position, Snake> core;  // liste ! chaque mouvement ajoute un objet dedans
-	private HashMap<Position, Item> item;
-	int capacity = 50; // test
-	
+	private HashMap<Position, Snake> coreMap;  // liste ! chaque mouvement ajoute un objet dedans
+	private HashMap<Position, itemMap> itemMap;
+	double sizeX;
+	double sizeY; 
+			
 	Board()
 	{
-		core = new HashMap<Position, Snake>(50);
-		item = new HashMap<Position, Item>(50);
+		coreMap = new HashMap<Position, Snake>(50);
+		itemMap = new HashMap<Position, itemMap>(50);
+		sizeX=boardSizeX();
+		sizeY=boardSizeY();
+		
 	}
 	
 	double size()
 	{
-		return core.size();
+		return coreMap.size();
 	}
 	
 	void addNewElementSnake(Position pos, Snake sna)
 	{
-		core.put(pos, sna);  // now in the hashmap core, the position pos is taken by the snake sna, collision possible
+		coreMap.put(pos, sna);  // now in the hashmap coreMap, the position pos is taken by the snake sna, collision possible
 		
 	}
 	
-	void addNewElementItem(Position pos, Item ite)
+	void addNewElementitemMap(Position pos, itemMap ite)
 	{
-		item.put(pos, ite);
+		itemMap.put(pos, ite);
 	}
 	
 	boolean containsPosition(Position pos)
 	{
-		return core.containsKey(pos);
+		return coreMap.containsKey(pos);
 	}
 }
 	
