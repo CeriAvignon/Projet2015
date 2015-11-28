@@ -1,7 +1,7 @@
-package fr.univavignon.courbes.src.mp;
+package fr.univavignon.courbes.physics;
 
 public class Round {
-	Board board;
+	//Board board;
 	
 	public void update()
 	{
