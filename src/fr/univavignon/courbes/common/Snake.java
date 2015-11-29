@@ -53,35 +53,5 @@ public class Snake implements Serializable
 	
 	/** Score courant du joueur associé au snake dans la partie courante */
 	public int currentScore;
-	
-	/** ATTRIBUTS RAJOUTES PAR RAPPORT A LA CLASSE DE BASE **/
-	public double deltaX = 0;  // Contient l'écart avec la position réelle du snake
-	public double deltaY = 0;
-	
-	
-	public Snake(int id, Position spawnPosition)
-	{
-		currentItems= new HashMap<Item, Long>() ;
-		playerId 	= id;
-		currentX    = spawnPosition.x;
-		currentY    = spawnPosition.y;
-		currentAngle= (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		headRadius 	= 1;		
-		currentSpeed= 0.1;		
-		state 		= true;
-		collision 	= true;
-		inversion   = false;
-		fly   		= false;
-		holeRate 	= 1.0;	
-		System.out.println("Angle en degré : " + Double.toString(currentAngle));
-	}
-	
 
-	/**
-	 * @param strength Force sur un un coté ou l'autre du snake
-	 */
-	public void changeDirection(float strength)
-	{
-		
-	}
 }
