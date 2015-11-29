@@ -20,36 +20,76 @@ import fr.univavignon.courbes.common.Snake;
 public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** Largeur de l'aire de jeu, en pixels */
 	public int width;
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
-	
+
 	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
 	public Map<Position, Integer> snakesMap;
 	/** Tableau contentant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
-	
+
 	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
 	public Map<Position, Item> itemsMap;
-	
-	void buildSnakeList(int nbSnake)
-	{
-		for (int i = 1; i <= nbSnake; i++)
+
+
+	/**
+	 * @param width Largeur du plateau
+	 * @param height Hauteur du plateau
+	 * @param nbSnakes Nombre de snakes généré dans le plateau
+	 */
+	public Board(int width, int height, int nbSnakes) {
+		
+		snakes = new Snake[nbSnakes];
+		Position posSpawn;
+
+		for (int i = 0; i < nbSnakes ; i++) 
 		{
-			//Position posSpawn = new Position(200+(25*i),200);
-			//listSnake.add(new Snake(i, posSpawn));
-			//updateSnakePosition()
+			posSpawn = generateSpawnPos(width, height);
+			snakes[i] = new Snake(i, posSpawn);
+			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
 		}
 	}
-	
-	void spawnSnakeOnBoard(Snake listSnake[])
-	{
-		
+
+
+
+
+	/**
+	 * Génére une position aléatoire sur la plateau, la fonction générera une position qui n'est pas
+	 * trop rapproché des bords du plateau ou trop proche et verifiera qu'elle n'est pas trop proche
+	 * d'un autre snake.
+	 *
+	 * @param widthBoard Largeur du plateau
+	 * @param heightBoard Hauteur du plateau
+	 * @return La position généré aléatoirement
+	 */
+	private Position generateSpawnPos(int widthBoard, int heightBoard) {
+
+		Boolean flagPos;
+		Position posSpawn = new Position();
+
+		do {
+			posSpawn.x = 20 + (int)(Math.random() * heightBoard - 20); 
+			posSpawn.y = 20 + (int)(Math.random() * widthBoard - 20); 
+			flagPos = true;
+
+			for(int i = 0; i < snakes.length ; i++)// Teste de la proximité avec un autre snake
+			{
+				if(snakes[i] != null)
+				{
+					if(Math.abs(posSpawn.x - snakes[i].currentX) +  Math.abs(posSpawn.y - snakes[i].currentY) < 40)
+					{
+						flagPos = false; // Proximité détécté, on cherche alors une nouvelle position
+					}
+				}
+			}
+		}while(!flagPos);
+
+		return posSpawn;
 	}
-	
-	
+
 	/**
 	 * @param snake
 	 * @param currentPos
@@ -58,9 +98,9 @@ public class Board implements Serializable
 	{
 		//Utiliser la speed,direction, et pos  pour faire evoluer la Pos
 		//Mettre la old Pos du Snake dans la hash map trac�
-		
+
 	}
-	
+
 	/**
 	 * @param posSnake Position du Snake a tester
 	 * @return l'item si le snake est sur un item, sinon null
@@ -69,5 +109,5 @@ public class Board implements Serializable
 	{
 		return itemsMap.get(posSnake);
 	}
-	
+
 }
