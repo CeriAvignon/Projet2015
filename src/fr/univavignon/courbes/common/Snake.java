@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Position;
@@ -60,6 +61,7 @@ public class Snake implements Serializable
 	
 	public Snake(int id, Position spawnPosition)
 	{
+		currentItems= new HashMap<Item, Long>() ;
 		playerId 	= id;
 		currentX    = spawnPosition.x;
 		currentY    = spawnPosition.y;

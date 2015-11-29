@@ -45,6 +45,7 @@ public class Board implements Serializable
 	public Board(int width, int height, int nbSnakes) {
 
 		snakesMap = new HashMap<Position, Integer>();
+		itemsMap = new HashMap<Position, Item>();
 		snakes = new Snake[nbSnakes];
 		Position posSpawn;
 
@@ -186,9 +187,21 @@ public class Board implements Serializable
 						System.out.println("Position snake "+ Integer.toString(i)+ " x:" + Integer.toString(snakes[i].currentX) + " y:" + Integer.toString(snakes[i].currentY));
 					}
 				}
-				// Gérer si le snake se prend un autre snake
+				// Le snake meurt si il se cogne contre un autre
+				Integer idSnake = snakesMap.get(new Position(snakes[i].currentX, snakes[i].currentY));
+				if(idSnake != null )
+				{
+					snakes[i].state = false;	
+				}
 				// Gérer si le snake se prend un item
-
+				Item itemRecup = itemsMap.get(new Position(snakes[i].currentX, snakes[i].currentY));
+				if( itemRecup != null )
+				{
+					if(snakes[i].state)
+					{
+						snakes[i].currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
+					}
+				}
 			}
 		}
 	}
