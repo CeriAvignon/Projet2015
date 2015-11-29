@@ -84,7 +84,7 @@ public class Round implements PhysicsEngine {
 
 	/**
 	 * Génére une position aléatoire sur la plateau, la fonction générera une position qui n'est pas
-	 * trop rapproché des bords du plateau ou trop proche et verifiera qu'elle n'est pas trop proche
+	 * trop rapproché des bords du plateau et verifiera qu'elle n'est pas trop proche de la position
 	 * d'un autre snake.
 	 *
 	 * @param widthBoard Largeur de l'aire de jeu, exprimée en pixel.
@@ -118,7 +118,7 @@ public class Round implements PhysicsEngine {
 
 
 	/**
-	 * Cette fonction met à jour les positions des têtes de tout les snakes du jeu encore en vie graçe à leur
+	 * Cette méthode met à jour les positions des têtes de tout les snakes du jeu encore en vie graçe à leur
 	 * vitesse et leur direction en degré, elle remplit aussi dans le même temps la Map avec les tracés des snakes.
 	 * Elle verifie aussi si le snake n'est pas entré en contact avec un autre snake ou un item.
 	 * @param elapsedTime Temps ecoulé en ms depuis le dernier update du plateau
@@ -241,12 +241,28 @@ public class Round implements PhysicsEngine {
 		
 		
 	}
+	/**
+	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
+	 * demandée.
+	 * @param commands Collection des différentes commandes demandés pour chaque snake 
+	 */
 	public void majSnakesDirection( Map<Integer, Direction> commands)
 	{
 		for(Snake snake : board.snakes)
 		{
-			
+			switch (commands.get(snake.playerId))
+			{
+			case LEFT:
+				snake.currentAngle += 5;
+				break;
+			case RIGHT:
+				snake.currentAngle -= 5;
+				break;
+			case NONE:
+				break;
+			default:
+				break;
+			}
 		}
-		
 	}
 }
