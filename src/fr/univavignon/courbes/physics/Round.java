@@ -6,7 +6,7 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 
 public class Round implements PhysicsEngine {
-	Board board;
+	private Board board;
 	
 	
 
@@ -18,7 +18,11 @@ public class Round implements PhysicsEngine {
 
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
-		// TODO Auto-generated method stub
+
+		//Maj tête du snake pos
+		board.majSnakesPosition(elapsedTime);
+		//Maj la map tracé 
+		//Maj les directions des snakes
 		
 	}
 

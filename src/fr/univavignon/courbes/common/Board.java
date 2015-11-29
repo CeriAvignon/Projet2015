@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Item;
@@ -35,13 +36,15 @@ public class Board implements Serializable
 	public Map<Position, Item> itemsMap;
 
 
+
 	/**
-	 * @param width Largeur du plateau
-	 * @param height Hauteur du plateau
-	 * @param nbSnakes Nombre de snakes généré dans le plateau
+	 * @param width Largeur de l'aire de jeu, exprimée en pixel.
+	 * @param height Hauteur de l'aire de jeu, exprimée en pixel.
+	 * @param nbSnakes Nombre de snakes généré dans le plateau.
 	 */
 	public Board(int width, int height, int nbSnakes) {
-		
+
+		snakesMap = new HashMap<Position, Integer>();
 		snakes = new Snake[nbSnakes];
 		Position posSpawn;
 
@@ -61,8 +64,8 @@ public class Board implements Serializable
 	 * trop rapproché des bords du plateau ou trop proche et verifiera qu'elle n'est pas trop proche
 	 * d'un autre snake.
 	 *
-	 * @param widthBoard Largeur du plateau
-	 * @param heightBoard Hauteur du plateau
+	 * @param widthBoard Largeur de l'aire de jeu, exprimée en pixel.
+	 * @param heightBoard Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @return La position généré aléatoirement
 	 */
 	private Position generateSpawnPos(int widthBoard, int heightBoard) {
@@ -90,16 +93,6 @@ public class Board implements Serializable
 		return posSpawn;
 	}
 
-	/**
-	 * @param snake
-	 * @param currentPos
-	 */
-	void updateSnakePosition(Snake snake)
-	{
-		//Utiliser la speed,direction, et pos  pour faire evoluer la Pos
-		//Mettre la old Pos du Snake dans la hash map trac�
-
-	}
 
 	/**
 	 * @param posSnake Position du Snake a tester
@@ -110,4 +103,93 @@ public class Board implements Serializable
 		return itemsMap.get(posSnake);
 	}
 
+
+
+
+	/**
+	 * Cette fonction met à jour les positions des têtes de tout les snakes du jeu encore en vie graçe à leur
+	 * vitesse et leur direction en degré, elle remplit aussi dans le même temps la Map avec les tracés des snakes.
+	 * Elle verifie aussi si le snake n'est pas entré en contact avec un autre snake ou un item.
+	 * @param elapsedTime Temps ecoulé en ms depuis le dernier update du plateau
+	 */
+	public void majSnakesPosition(long elapsedTime) {
+		long elapsed;
+		double pixStep;
+		for(int i = 0; i < snakes.length ; i++)
+		{
+			if(snakes[i].state == true)
+			{
+				elapsed = elapsedTime;
+				pixStep = 0;
+				while (elapsed > 0)
+				{
+					while(pixStep < 1 && elapsed > 0)
+					{
+						elapsed--;
+						pixStep += snakes[i].currentSpeed;
+					}
+					if(pixStep >= 1)
+					{
+						snakes[i].deltaX += Math.cos(Math.toRadians(snakes[i].currentAngle));
+						snakes[i].deltaY += Math.sin(Math.toRadians(snakes[i].currentAngle));
+
+						if(snakes[i].deltaY >= 1 && snakes[i].deltaX >= 1) {
+							snakes[i].currentY--;
+							snakes[i].currentX++;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY--;
+							snakes[i].deltaX--;
+						}
+						else if(snakes[i].deltaY <= -1 && snakes[i].deltaX >= 1) {
+							snakes[i].currentY++;
+							snakes[i].currentX++;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY++;
+							snakes[i].deltaX--;
+						}
+						else if(snakes[i].deltaY <= -1 && snakes[i].deltaX <= -1) {
+							snakes[i].currentY++;
+							snakes[i].currentX--;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY++;
+							snakes[i].deltaX++;
+						}
+						else if(snakes[i].deltaY >= 1 && snakes[i].deltaX <= -1) {
+							snakes[i].currentY--;
+							snakes[i].currentX--;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY--;
+							snakes[i].deltaX++;
+						}
+						else if(snakes[i].deltaY >= 1) {
+							snakes[i].currentY--;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY--;
+						}
+						else if(snakes[i].deltaY <= -1) {
+							snakes[i].currentY++;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaY++;
+						}
+						else if(snakes[i].deltaX >= 1) {
+							snakes[i].currentX++;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaX--;
+						}
+						else if(snakes[i].deltaX <= -1) {
+							snakes[i].currentX--;
+							snakesMap.put(new Position(snakes[i].currentX, snakes[i].currentY), i);
+							snakes[i].deltaX++;
+						}
+
+						pixStep --;
+						System.out.println("Position snake "+ Integer.toString(i)+ " x:" + Integer.toString(snakes[i].currentX) + " y:" + Integer.toString(snakes[i].currentY));
+					}
+				}
+				// Gérer si le snake se prend un autre snake
+				// Gérer si le snake se prend un item
+
+			}
+		}
+	}
 }
