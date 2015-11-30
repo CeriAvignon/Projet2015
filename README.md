@@ -5,6 +5,5 @@ Projet2015
 Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve!)
 
 -----------------------------------------------------------------------
-Boussetha-Sabri/Brugvin-Charlie
-
-bsbabou@gmail.com / charlie.brugvin@gmail.com
+Boussetha-Sabri : bsbabou@gmail.com
+Brugvin-Charlie : charlie.brugvin@gmail.com
