@@ -1,2 +1,2 @@
-1) créez votre package ici
-2) effacez ce fichier
+1) crï¿½ez votre package ici
+2) effacez ce fichier d
