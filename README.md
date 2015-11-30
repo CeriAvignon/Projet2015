@@ -7,7 +7,7 @@ Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve
 -----------------------------------------------------------------------
 
 Avant de démarrer l'implémentation, créez une nouvelle branche à partir de cette branche principale. 
-Elle doit porter un nom de la forme `GroupeXX` où `XX` est le numéro de votre groupe, sur deux chiffres (`Groupe01`, `Groupe02`,...,`Groupe10`). 
+Elle doit porter un nom de la forme `GroupeXX` où `XX` est le numéro de votre binôme, sur deux chiffres (`Groupe01`, `Groupe02`,...,`Groupe10`). 
 Vous ne travaillerez *que* sur cette branche, vous ne devrez *en aucun cas* modifier les autres branches, y compris et surtout la branche principale (`master`).
 
 Votre code source devra être placé dans un package spécifique à votre binôme, dont le nom a été donné sur le forum du cours.
