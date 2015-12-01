@@ -7,4 +7,5 @@ Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve
 -----------------------------------------------------------------------
 
 CUMINAL Gael gael.cuminal@alumni.univ-avignon.fr
+
 GALA Christophe christophe.gala@alumni.univ-avignon.fr
