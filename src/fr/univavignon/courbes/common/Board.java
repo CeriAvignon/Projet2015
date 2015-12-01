@@ -3,15 +3,6 @@ package fr.univavignon.courbes.common;
 import java.io.Serializable;
 import java.util.Map;
 
-
-
-
-
-
-
-
-
-
 /**
  * Cette classe correspond à l'ensemble des informations propres à 
  * l'aire de jeu utilisée pendant une manche.

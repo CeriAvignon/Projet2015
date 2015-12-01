@@ -13,7 +13,15 @@ import fr.univavignon.courbes.common.Profile;
  * implémentant cette interface, qui sera instanciée par l'Interface Utilisateur. 
  */
 public interface GraphicDisplay
-{	
+{
+
+	/**
+	 * L’Interface Utilisateur invoque cette fonction à la fin de la manche,
+	 * pour demander l'affichage de son gagnant. Si la partie est terminée,
+	 * il faut plutot afficher le classement final et les scores définitifs.
+	 */
+	public void end();
+
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * au début de chaque manche.
@@ -35,18 +43,11 @@ public interface GraphicDisplay
 	 * 		Liste des joueurs impliqués dans la manche.
 	 */
 	public void init(Board board, int pointThreshold, List<Profile> players);
-	
+
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * à chaque itération d'une manche. Elle raffraichit la représentation
 	 * graphique du jeu.
 	 */
 	public void update();
-	
-	/**
-	 * L’Interface Utilisateur invoque cette fonction à la fin de la manche,
-	 * pour demander l'affichage de son gagnant. Si la partie est terminée,
-	 * il faut plutot afficher le classement final et les scores définitifs.
-	 */
-	public void end();
 };
