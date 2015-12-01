@@ -57,7 +57,7 @@ public class Round implements PhysicsEngine {
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 1;		
 		snake.movingSpeed   = 0.1;	
-		snake.turningSpeed  = 0.5;
+		snake.turningSpeed  = 0.00872665; // Est égal a 0.5 degrés/ms
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
