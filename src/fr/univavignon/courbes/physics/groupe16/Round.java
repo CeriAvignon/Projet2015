@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.physics;
+package fr.univavignon.courbes.physics.groupe16;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.physics.PhysicsEngine;
 
 public class Round implements PhysicsEngine {
 	private Board board;
@@ -21,11 +22,11 @@ public class Round implements PhysicsEngine {
 	public Board init(int width, int height, int playerNbr) {
 		deltaSnake = new double[playerNbr][2];
 		vitAngleSnake = new double[playerNbr];
-				
+
 		board = new Board();
 		board.width = width;
 		board.height = height;
-		
+
 		board.snakesMap = new HashMap<Position, Integer>();
 		board.itemsMap = new HashMap<Position, Item>();
 		board.snakes = new Snake[playerNbr];
@@ -38,10 +39,10 @@ public class Round implements PhysicsEngine {
 			initSnake(board.snakes[i], i, posSpawn);
 			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
 		}
-		
+
 		return board;
 	}
-	
+
 	/**
 	 * @param snake
 	 * @param id
@@ -64,7 +65,7 @@ public class Round implements PhysicsEngine {
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
 	}
 
-	
+
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
@@ -85,16 +86,16 @@ public class Round implements PhysicsEngine {
 	 * @param elapsedTime Temps passé depuis la derniére mise a jour du moteur physique
 	 */
 	private void majSnakesEffects(long elapsedTime) {
-		
-		
+
+
 	}
 
 	@Override
 	public void forceUpdate(Board board) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 
 
 
@@ -232,7 +233,7 @@ public class Round implements PhysicsEngine {
 					}
 				}
 				//TODO gérer si le snake se prend un mur
-				
+
 				// Gestion si le snake cogne un autre snake
 				pos.x = snake.currentX;
 				pos.y = snake.currentY;
@@ -253,8 +254,8 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-	
-		
+
+
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
 	 * demandée.
@@ -262,20 +263,25 @@ public class Round implements PhysicsEngine {
 	 */
 	public void majSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
 	{
+		Direction direction = null;
 		for(Snake snake : board.snakes)
 		{
-			switch (commands.get(snake.playerId))
+			direction = commands.get(snake.playerId);
+			if(direction != null)
 			{
-			case LEFT:
-				snake.currentAngle += elapsedTime*vitAngleSnake[snake.playerId];
-				break;
-			case RIGHT:
-				snake.currentAngle -= elapsedTime*vitAngleSnake[snake.playerId];
-				break;
-			case NONE:
-				break;
-			default:
-				break;
+				switch (direction)
+				{
+				case LEFT:
+					snake.currentAngle += elapsedTime*vitAngleSnake[snake.playerId];
+					break;
+				case RIGHT:
+					snake.currentAngle -= elapsedTime*vitAngleSnake[snake.playerId];
+					break;
+				case NONE:
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}

@@ -1,4 +1,5 @@
-package fr.univavignon.courbes.physics;
+package fr.univavignon.courbes.physics.groupe16;
+
 
 public class MainTest {
 
