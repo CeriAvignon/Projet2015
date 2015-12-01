@@ -2,9 +2,9 @@ package fr.univavignon.courbes.network.groupe22
 
 import fr.univavignon.courbes.network.ClientCommunication
 
-class ClientCom implements ClientCommunication
+public class ClientCom implements ClientCommunication
 {
-  
+
   /**
      * Renvoie l'adresse IP du serveur auquel le client se connecte.
      *
