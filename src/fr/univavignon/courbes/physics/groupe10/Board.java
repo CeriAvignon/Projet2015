@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 /**
  * Cette classe correspond à l'ensemble des informations propres à 
  * l'aire de jeu utilisée pendant une manche.
@@ -43,17 +45,18 @@ public class Board implements Serializable
 	} 
 	
 	
-	public Board init(int width, int height, int playerNbr)
+	public Board init(int width, int height, int[] profileIds)
 	{
 		/** J'instancie un Board en utilisant le constructeur */
 		Board b = new Board(width, height);
 		
 		/** Le tableau de Snake avec le nombre de nombre de joueur passé en paramétre*/
-		b.snakes = new Snake[playerNbr];
+		b.snakes = new Snake[profileIds.length];
 		
-		for (int i = 0; i < playerNbr; i++)
+		int player_id = 0;
+		for (int i = 0; i < profileIds.length; i++)
 		{
-			b.snakes[i].playerId = new Snake(int, int, int, int, double);
+			b.snakes[i] = new Snake(player_id, profileIds[i], width/(profileIds.length+1)*(i+1), height/2, 1);
 		}
 		
 		
