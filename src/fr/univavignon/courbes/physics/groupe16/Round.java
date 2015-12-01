@@ -22,14 +22,13 @@ public class Round implements PhysicsEngine {
 
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
-		
+
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
 
 		board = new Board();
 		board.width = width;
 		board.height = height;
-
 		board.snakesMap = new HashMap<Position, Integer>();
 		board.itemsMap = new HashMap<Position, Item>();
 		board.snakes = new Snake[playerNbr];
@@ -64,7 +63,7 @@ public class Round implements PhysicsEngine {
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
-		snake.holeRate 	    = 1.0;	
+		snake.holeRate 	    = 0.9;	
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
 	}
 
@@ -90,7 +89,7 @@ public class Round implements PhysicsEngine {
 		posItem.y = 10 +(int)(Math.random() * board.width - 10); 
 		board.itemsMap.put(posItem, randItem);
 		System.out.println(randItem.toString() + " ajouté a la pos: " + posItem.x + "  " + posItem.y);
-		
+
 	}
 	/**
 	 * Ajoute l'effet relatif à l'item ramassé aux snakes concernés.
@@ -242,13 +241,12 @@ public class Round implements PhysicsEngine {
 				pixStep = 0;
 				while (elapsed > 0)
 				{
-					while(pixStep < 1 && elapsed > 0)
-					{
+					/** Gestion de la future position du snake en fonction de son angle **/
+					while(pixStep < 1 && elapsed > 0) {
 						elapsed--;
 						pixStep += snake.movingSpeed;
 					}
-					if(pixStep >= 1)
-					{
+					if(pixStep >= 1) {
 						deltaSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
 						deltaSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
 
@@ -321,22 +319,40 @@ public class Round implements PhysicsEngine {
 						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
 					}
 				}
-				//TODO gérer si le snake se prend un mur
-
-				// Gestion si le snake cogne un autre snake
+				/** Gestion si le snake depasse les bordures  **/
+				if(snake.currentX < 0 
+						|| snake.currentX > board.width 
+						|| snake.currentY < 0
+						|| snake.currentY > board.height) {
+					if (snake.collision == true) {
+						snake.state = false; // Le snake meurt pitoyablement
+					}
+					else {
+						// Translater position de l'autre coté de la board
+						if(snake.currentX < 0)
+							snake.currentX = board.width;
+						else if(snake.currentX > board.width)
+							snake.currentX = 0;
+						if(snake.currentY < 0)
+							snake.currentY = board.height;
+						else if(snake.currentY > board.height)
+							snake.currentY = 0;
+					}	
+				}
+				/** Gestion si le snake cogne un autre snake **/
 				pos.x = snake.currentX;
 				pos.y = snake.currentY;
 				Integer idSnake = board.snakesMap.get(pos);
-				if(idSnake != null && idSnake != snake.playerId)
-				{
+				if(idSnake != null && idSnake != snake.playerId) {
 					snake.state = false;	
 				}
-				// Gérer si le snake rencontre un item
+				// TODO : gestion des trace de la taille de la head
+				// TODO : gestion du hole rate
+				// TODO : test de la bordure vs snake
+				/** Gestion si le snake rencontre un item **/
 				Item itemRecup = board.itemsMap.get(pos);
-				if( itemRecup != null )
-				{
-					if(snake.state)
-					{
+				if( itemRecup != null ) {
+					if(snake.state) {
 						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
 						addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
 						board.itemsMap.remove(pos); // Suppression de l'item sur la map
@@ -345,7 +361,6 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-
 
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
