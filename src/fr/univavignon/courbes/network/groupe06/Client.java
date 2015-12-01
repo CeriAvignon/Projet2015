@@ -11,27 +11,32 @@ import fr.univavignon.courbes.common.Profile;
 
 public class Client implements ClientCommunication {
 
+	protected String ip;
+	protected int port;
+	
 	@Override
 	public String getIp() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.ip;
 	}
 
 	@Override
 	public void setIp(String ip) {
-		// TODO Auto-generated method stub
+		
+		this.ip = ip;
 		
 	}
 
 	@Override
 	public int getPort() {
-		// TODO Auto-generated method stub
-		return 0;
+
+		return this.port;
 	}
 
 	@Override
 	public void setPort(int port) {
-		// TODO Auto-generated method stub
+		
+		this.port = port;
 		
 	}
 
