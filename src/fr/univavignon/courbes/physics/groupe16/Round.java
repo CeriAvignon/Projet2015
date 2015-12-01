@@ -57,7 +57,7 @@ public class Round implements PhysicsEngine {
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 1;		
 		snake.movingSpeed   = 0.1;	
-		snake.turningSpeed  = 0.00872665; // Est égal a 0.5 degrés/ms
+		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 degrés/ms
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
@@ -322,13 +322,13 @@ public class Round implements PhysicsEngine {
 				{
 					snake.state = false;	
 				}
-				// Gérer si le snake se prend un item
+				// Gérer si le snake rencontre un item
 				Item itemRecup = board.itemsMap.get(pos);
 				if( itemRecup != null )
 				{
 					if(snake.state)
 					{
-						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // TODO supprimer car c'est pas la que l'effet est ajouté  Ajout de l'item au Snake
+						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
 						addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
 						board.itemsMap.remove(pos); // Suppression de l'item sur la map
 					}
@@ -355,10 +355,10 @@ public class Round implements PhysicsEngine {
 				switch (direction)
 				{
 				case LEFT:
-					snake.currentAngle += elapsedTime*snake.turningSpeed;
+					snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
 					break;
 				case RIGHT:
-					snake.currentAngle -= elapsedTime*snake.turningSpeed;
+					snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
 					break;
 				case NONE:
 					break;
