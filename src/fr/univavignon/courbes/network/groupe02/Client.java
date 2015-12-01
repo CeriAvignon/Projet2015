@@ -15,7 +15,7 @@ import fr.univavignon.courbes.network.ClientCommunication;
  * On fait la classe Client
  *
  */
-public class Client implements ClientCommunication
+public class Client implements ClientCommunication, Runnable
 {
 
 	@Override
@@ -56,8 +56,7 @@ public class Client implements ClientCommunication
 	@Override
 	public void closeClient() 
 	{
-		// TODO Auto-generated method stub
-		
+			
 	}
 
 	@Override
