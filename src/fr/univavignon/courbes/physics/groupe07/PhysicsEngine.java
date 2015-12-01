@@ -1,5 +1,5 @@
 package fr.univavignon.courbes.physics.groupe07;
 
-public class Board {
+public class PhysicsEngine {
 
 }
