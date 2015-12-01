@@ -1,5 +1,7 @@
 package fr.univavignon.courbes.physics.groupe16;
 
+import java.awt.List;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,7 +37,7 @@ public class Round implements PhysicsEngine {
 
 		for (int i = 0; i < playerNbr ; i++) 
 		{
-			posSpawn = generateSpawnPos(width, height);
+			posSpawn = generateSnakeSpawnPos(width, height);
 			board.snakes[i] = new Snake();
 			initSnake(board.snakes[i], profileIds[i] , posSpawn);
 			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
@@ -78,7 +80,18 @@ public class Round implements PhysicsEngine {
 		majSnakesEffects(elapsedTime);
 	}
 
-
+	/**
+	 * Ajoute un item aléatoire sur la board à une position aléatoire.
+	 */
+	public void spawnRandomItem() {
+		Position posItem = new Position();
+		Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
+		posItem.x = 10 + (int)(Math.random() * board.height - 10); 
+		posItem.y = 10 +(int)(Math.random() * board.width - 10); 
+		board.itemsMap.put(posItem, randItem);
+		System.out.println(randItem.toString() + " ajouté a la pos: " + posItem.x + "  " + posItem.y);
+		
+	}
 	/**
 	 * Ajoute l'effet relatif à l'item ramassé aux snakes concernés.
 	 * 
@@ -162,12 +175,8 @@ public class Round implements PhysicsEngine {
 				if (refreshedTime > 0) {
 					snake.currentItems.put(entry.getKey(), refreshedTime);
 				}
-
-
-
 			}
 		}
-
 	}
 
 	@Override
@@ -189,7 +198,7 @@ public class Round implements PhysicsEngine {
 	 * @param heightBoard Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @return La position généré aléatoirement
 	 */
-	private Position generateSpawnPos(int widthBoard, int heightBoard) {
+	private Position generateSnakeSpawnPos(int widthBoard, int heightBoard) {
 
 		Boolean flagPos;
 		Position posSpawn = new Position();
