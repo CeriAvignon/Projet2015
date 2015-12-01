@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -50,4 +51,83 @@ public class Snake implements Serializable
 	
 	/** Score courant du joueur associé au snake dans la partie courante */
 	public int currentScore;
+	
+	/** constructeur avec tout les attributs */
+	public Snake(int playerId, int profileId, int currentX, int currentY, double currentAngle, double headRadius, double currentSpeed, boolean state, boolean collision, boolean inversion, double holeRate, boolean fly, int currentScore )
+	{
+		this.playerId = playerId;
+		this.profileId = profileId;
+		this.currentX = currentX;
+		this.currentY = currentY;
+		this.currentAngle = currentAngle;
+		this.headRadius = headRadius;
+		this.currentSpeed = currentSpeed;
+		this.state = state;
+		this.collision = collision;
+		this.inversion = inversion;
+		this.holeRate = holeRate;
+		this.fly = fly;
+		this.currentScore = currentScore;
+		currentItems = new HashMap<Item, Long>();
+	}
+	
+	/** Les getters pour les atributs privés */ 
+	
+	public int getPlayerId()
+	{
+		return playerId;
+	}
+
+	public int getProfileId()
+	{
+		return profileId;
+	}
+
+	public int getCurrentX()
+	{
+		return currentX;
+	}
+
+	public int getCurrentY()
+	{
+		return currentY;
+	}
+
+	public double getCurrentAngle()
+	{
+		return currentAngle;
+	}
+
+	public boolean getState()
+	{
+		return state;
+	}
+	
+	public boolean getCollision()
+	{
+		return collision;
+	}
+	
+	public double getHoleRate()
+	{
+		return holeRate;
+	}
+	
+	public boolean getInversion()
+	{
+		return inversion;
+	}
+	
+	public boolean getFly()
+	{
+		return fly;
+	}
+	
+	public int getCurrentScore()
+	{
+		return currentScore;
+	}
+	
+	
+	
 }
