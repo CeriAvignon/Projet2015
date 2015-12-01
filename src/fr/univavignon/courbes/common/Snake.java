@@ -14,6 +14,7 @@ import fr.univavignon.courbes.common.Position;
  * avec l'ID du profile, qui est valable pour le jeu globalement, et indépendant
  * de toute partie.
  */
+
 public class Snake implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
@@ -28,12 +29,14 @@ public class Snake implements Serializable
 	/** Position courante de la tête du Snake en ordonnée */
 	public int currentY;
 	
-	/** Angle représentant la direction de déplacement courante du snake */
+	/** Angle représentant la direction de déplacement courante du snake, par rapport à l'horizontale */
 	public double currentAngle;
 	/** Rayon de la tête du snake */
 	public double headRadius;
-	/** Vitesse du snake, exprimée en pixel par ms */
-	public double currentSpeed;
+	/** Vitesse de déplacement du snake, exprimée en pixel par ms */
+	public double movingSpeed;
+	/** Vitesse à laquelle le snake change de direction, exprimée en radians par ms */
+	public double turningSpeed;
 	
 	/** Etat du snake : {@code false} il est mort, {@code true} il est vivant */
 	public boolean state;
@@ -53,5 +56,4 @@ public class Snake implements Serializable
 	
 	/** Score courant du joueur associé au snake dans la partie courante */
 	public int currentScore;
-
 }

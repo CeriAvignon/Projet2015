@@ -16,14 +16,13 @@ public class Round implements PhysicsEngine {
 	private Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
-	/** Tableau contenant la vitesse angulaire de chaque snake en degrés par ms**/
-	private double vitAngleSnake[];
 
 
 	@Override
-	public Board init(int width, int height, int playerNbr) {
+	public Board init(int width, int height, int[] profileIds) {
+		
+		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
-		vitAngleSnake = new double[playerNbr];
 
 		board = new Board();
 		board.width = width;
@@ -38,7 +37,7 @@ public class Round implements PhysicsEngine {
 		{
 			posSpawn = generateSpawnPos(width, height);
 			board.snakes[i] = new Snake();
-			initSnake(board.snakes[i], i, posSpawn);
+			initSnake(board.snakes[i], profileIds[i] , posSpawn);
 			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
 		}
 
@@ -57,8 +56,8 @@ public class Round implements PhysicsEngine {
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 1;		
-		snake.currentSpeed  = 0.1;	
-		vitAngleSnake[id]    = 0.5;
+		snake.movingSpeed   = 0.1;	
+		snake.turningSpeed  = 0.5;
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
@@ -93,7 +92,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			for(Snake snake : board.snakes) {
-				board.snakes[id].collision = false;
+				snake.collision = false;
 			}
 			break;
 		case COLLECTIVE_THREE_CIRCLES: //TODO
@@ -101,28 +100,28 @@ public class Round implements PhysicsEngine {
 		case OTHERS_REVERSE:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
-					board.snakes[id].inversion = true;
+					snake.inversion = true;
 				}
 			}
 			break;
 		case OTHERS_SLOW:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
-					board.snakes[id].currentSpeed /= 2;
+					snake.movingSpeed /= 2;
 				}
 			}
 			break;
 		case OTHERS_THICK:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
-					board.snakes[id].headRadius *= 2;
+					snake.headRadius *= 2;
 				}
 			}
 			break;
 		case OTHERS_SPEED:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
-					board.snakes[id].currentSpeed *= 2;
+					snake.movingSpeed *= 2;
 				}
 			}
 			break;
@@ -130,10 +129,10 @@ public class Round implements PhysicsEngine {
 			board.snakes[id].holeRate /= 2;
 			break;
 		case USER_SLOW:
-			board.snakes[id].currentSpeed /= 2;
+			board.snakes[id].movingSpeed /= 2;
 			break;
 		case USER_SPEED:
-			board.snakes[id].currentSpeed *= 2;
+			board.snakes[id].movingSpeed *= 2;
 			break;
 		default:
 			break;
@@ -237,7 +236,7 @@ public class Round implements PhysicsEngine {
 					while(pixStep < 1 && elapsed > 0)
 					{
 						elapsed--;
-						pixStep += snake.currentSpeed;
+						pixStep += snake.movingSpeed;
 					}
 					if(pixStep >= 1)
 					{
@@ -356,10 +355,10 @@ public class Round implements PhysicsEngine {
 				switch (direction)
 				{
 				case LEFT:
-					snake.currentAngle += elapsedTime*vitAngleSnake[snake.playerId];
+					snake.currentAngle += elapsedTime*snake.turningSpeed;
 					break;
 				case RIGHT:
-					snake.currentAngle -= elapsedTime*vitAngleSnake[snake.playerId];
+					snake.currentAngle -= elapsedTime*snake.turningSpeed;
 					break;
 				case NONE:
 					break;
