@@ -13,13 +13,15 @@ public class Round implements PhysicsEngine {
 	private Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
-	
+	/** Tableau contenant la vitesse angulaire de chaque snake en degrés par ms**/
+	private double vitAngleSnake[];
 
 
 	@Override
 	public Board init(int width, int height, int playerNbr) {
 		deltaSnake = new double[playerNbr][2];
-		
+		vitAngleSnake = new double[playerNbr];
+				
 		board = new Board();
 		board.width = width;
 		board.height = height;
@@ -52,7 +54,8 @@ public class Round implements PhysicsEngine {
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 1;		
-		snake.currentSpeed  = 0.1;		
+		snake.currentSpeed  = 0.1;	
+		vitAngleSnake[id]    = 0.5;
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
@@ -65,10 +68,24 @@ public class Round implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
-		//Maj tête du snake pos
-		majSnakesPosition(elapsedTime);
-		//Maj la map tracé 
-		//Maj les directions des snakes
+		// Mise à jour des coordonnées des snakes
+		majSnakesPositions(elapsedTime);
+		// Mise à jour des directions des snakes
+		majSnakesDirections(elapsedTime, commands);
+		// Mise à jour des effets liés aux snakes
+		majSnakesEffects(elapsedTime);
+	}
+
+
+
+	/**
+	 * Impact les snakes de leur effets, met à jour le temps restant des effets des snakes
+	 * et met fin au effets si leur temps est terminé.
+	 * 
+	 * @param elapsedTime Temps passé depuis la derniére mise a jour du moteur physique
+	 */
+	private void majSnakesEffects(long elapsedTime) {
+		
 		
 	}
 
@@ -123,7 +140,7 @@ public class Round implements PhysicsEngine {
 	 * Elle verifie aussi si le snake n'est pas entré en contact avec un autre snake ou un item.
 	 * @param elapsedTime Temps ecoulé en ms depuis le dernier update du plateau
 	 */
-	public void majSnakesPosition(long elapsedTime) {
+	public void majSnakesPositions(long elapsedTime) {
 		long elapsed;
 		double pixStep;
 		Position pos = new Position();
@@ -237,26 +254,23 @@ public class Round implements PhysicsEngine {
 		}
 	}
 	
-	public void isSnakeOnIt() {
 		
-		
-	}
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
 	 * demandée.
 	 * @param commands Collection des différentes commandes demandés pour chaque snake 
 	 */
-	public void majSnakesDirection( Map<Integer, Direction> commands)
+	public void majSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
 	{
 		for(Snake snake : board.snakes)
 		{
 			switch (commands.get(snake.playerId))
 			{
 			case LEFT:
-				snake.currentAngle += 5;
+				snake.currentAngle += elapsedTime*vitAngleSnake[snake.playerId];
 				break;
 			case RIGHT:
-				snake.currentAngle -= 5;
+				snake.currentAngle -= elapsedTime*vitAngleSnake[snake.playerId];
 				break;
 			case NONE:
 				break;
