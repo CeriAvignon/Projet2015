@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.common;
+package fr.univavignon.courbes.physics.groupe10;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
-package fr.univavignon.courbes.common;
-
+package fr.univavignon.courbes.physics.groupe10;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,4 +29,38 @@ public class Board implements Serializable
 	
 	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
 	public Map<Position, Item> itemsMap;
+	
+	public Board(int width, int height)
+	{
+		this.width = width;
+		
+		this.height = height;
+		
+		snakesMap = new HashMap<Position, Integer>();
+		
+		itemsMap = new HashMap<Position, Item>();
+		
+	} 
+	
+	
+	public Board init(int width, int height, int playerNbr)
+	{
+		/** J'instancie un Board en utilisant le constructeur */
+		Board b = new Board(width, height);
+		
+		/** Le tableau de Snake avec le nombre de nombre de joueur passé en paramétre*/
+		b.snakes = new Snake[playerNbr];
+		
+		for (int i = 0; i < playerNbr; i++)
+		{
+			b.snakes[i].playerId = new Snake(int, int, int, int, double);
+		}
+		
+		
+		return b;
+	}
+	
+	
+	
+	
 }
