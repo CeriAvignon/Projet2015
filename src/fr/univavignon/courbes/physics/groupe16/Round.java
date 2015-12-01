@@ -2,6 +2,8 @@ package fr.univavignon.courbes.physics.groupe16;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -78,15 +80,94 @@ public class Round implements PhysicsEngine {
 	}
 
 
+	/**
+	 * Ajoute l'effet relatif à l'item ramassé aux snakes concernés.
+	 * 
+	 * @param id Id du Snake ayant ramassé l'objet
+	 * @param item Item ramassé
+	 */
+	public void addSnakeEffect(int id, Item item) {
+		switch(item)
+		{
+		case COLLECTIVE_ERASER: //TODO
+			break;
+		case COLLECTIVE_TRAVERSE_WALL:
+			for(Snake snake : board.snakes) {
+				board.snakes[id].collision = false;
+			}
+			break;
+		case COLLECTIVE_THREE_CIRCLES: //TODO
+			break;
+		case OTHERS_REVERSE:
+			for(Snake snake : board.snakes) {
+				if (snake.playerId != id) {
+					board.snakes[id].inversion = true;
+				}
+			}
+			break;
+		case OTHERS_SLOW:
+			for(Snake snake : board.snakes) {
+				if (snake.playerId != id) {
+					board.snakes[id].currentSpeed /= 2;
+				}
+			}
+			break;
+		case OTHERS_THICK:
+			for(Snake snake : board.snakes) {
+				if (snake.playerId != id) {
+					board.snakes[id].headRadius *= 2;
+				}
+			}
+			break;
+		case OTHERS_SPEED:
+			for(Snake snake : board.snakes) {
+				if (snake.playerId != id) {
+					board.snakes[id].currentSpeed *= 2;
+				}
+			}
+			break;
+		case USER_BIG_HOLE:
+			board.snakes[id].holeRate /= 2;
+			break;
+		case USER_SLOW:
+			board.snakes[id].currentSpeed /= 2;
+			break;
+		case USER_SPEED:
+			board.snakes[id].currentSpeed *= 2;
+			break;
+		default:
+			break;
+		}
+	}
 
 	/**
-	 * Impact les snakes de leur effets, met à jour le temps restant des effets des snakes
-	 * et met fin au effets si leur temps est terminé.
+	 * Met à jour le temps restant des effets des snakes et met fin aux effets
+	 * si leur temps est terminé.
 	 * 
-	 * @param elapsedTime Temps passé depuis la derniére mise a jour du moteur physique
+	 * @param elapsedTime Temps ecoulé depuis la derniére mise à jour de la board.
 	 */
 	private void majSnakesEffects(long elapsedTime) {
 
+		for(Snake snake : board.snakes)
+		{
+			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
+			{
+				long remainingTime = entry.getValue();
+				long refreshedTime = remainingTime - elapsedTime;
+
+				// Enlever l'effet et supprimer l'objet de la liste
+				if (refreshedTime <= 0 ) {
+					snake.currentItems.remove(entry.getKey());
+				}
+				// Mettre à jour le temps restant pour l'effet de l'Item
+				if (refreshedTime > 0) {
+					snake.currentItems.put(entry.getKey(), refreshedTime);
+				}
+
+
+
+			}
+		}
 
 	}
 
@@ -248,7 +329,9 @@ public class Round implements PhysicsEngine {
 				{
 					if(snake.state)
 					{
-						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
+						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // TODO supprimer car c'est pas la que l'effet est ajouté  Ajout de l'item au Snake
+						addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
+						board.itemsMap.remove(pos); // Suppression de l'item sur la map
 					}
 				}
 			}
@@ -259,11 +342,12 @@ public class Round implements PhysicsEngine {
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
 	 * demandée.
+	 * @param elapsedTime 
 	 * @param commands Collection des différentes commandes demandés pour chaque snake 
 	 */
 	public void majSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
 	{
-		Direction direction = null;
+		Direction direction;
 		for(Snake snake : board.snakes)
 		{
 			direction = commands.get(snake.playerId);
