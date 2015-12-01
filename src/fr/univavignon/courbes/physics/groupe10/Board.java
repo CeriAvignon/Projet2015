@@ -57,6 +57,7 @@ public class Board implements Serializable
 		for (int i = 0; i < profileIds.length; i++)
 		{
 			b.snakes[i] = new Snake(player_id, profileIds[i], width/(profileIds.length+1)*(i+1), height/2, 1);
+			player_id++;
 		}
 		
 		
