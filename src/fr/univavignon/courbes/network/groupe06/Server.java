@@ -2,6 +2,10 @@ package fr.univavignon.courbes.network.groupe06;
 
 import fr.univavignon.courbes.network.ServerCommunication;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +16,26 @@ import fr.univavignon.courbes.common.Profile;
 public class Server implements ServerCommunication {
 
 	@Override
+	public String getIp() {
+		
+		return this.ip;
+	}
+
+	@Override
+	public int getPort() {
+
+		return this.port;
+	}
+
+	@Override
+	public void setPort(int port) {
+		
+		this.port = port;
+		
+	}
+	
+	@Override
 	public void launchServer() {
-		// TODO Auto-generated method stub
 		
 	}
 
