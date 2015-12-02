@@ -181,11 +181,7 @@ public class Round implements PhysicsEngine {
 	@Override
 	public void forceUpdate(Board board) {
 		// TODO Auto-generated method stub
-
 	}
-
-
-
 
 
 	/**
@@ -391,5 +387,16 @@ public class Round implements PhysicsEngine {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Remplit la trainée du serpent sur ses coordonnées en fonction de la largeur de 
+ 	 * sa tête.
+	 * @param snake 
+	 */
+	public void drawHeadCircle(Snake snake) {
+		
+		
 	}
 }
