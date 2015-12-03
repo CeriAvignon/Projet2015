@@ -50,13 +50,13 @@ public class Round implements PhysicsEngine {
 	 * @param id
 	 * @param spawnPosition
 	 */
-	private void initSnake(Snake snake, int id, Position spawnPosition) {
+	public void initSnake(Snake snake, int id, Position spawnPosition) {
 		snake.currentItems  = new HashMap<Item, Long>() ;
 		snake.playerId 	    = id;
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 1;		
+		snake.headRadius 	= 3;		
 		snake.movingSpeed   = 0.1;	
 		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 degrés/ms
 		snake.state 		= true;
@@ -157,7 +157,7 @@ public class Round implements PhysicsEngine {
 	 * 
 	 * @param elapsedTime Temps ecoulé depuis la derniére mise à jour de la board.
 	 */
-	private void majSnakesEffects(long elapsedTime) {
+	public void majSnakesEffects(long elapsedTime) {
 
 		for(Snake snake : board.snakes)
 		{
@@ -193,7 +193,7 @@ public class Round implements PhysicsEngine {
 	 * @param heightBoard Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @return La position généré aléatoirement
 	 */
-	private Position generateSnakeSpawnPos(int widthBoard, int heightBoard) {
+	public Position generateSnakeSpawnPos(int widthBoard, int heightBoard) {
 
 		Boolean flagPos;
 		Position posSpawn = new Position();
@@ -310,54 +310,81 @@ public class Round implements PhysicsEngine {
 							board.snakesMap.put(pos , snake.playerId);
 							deltaSnake[snake.playerId][0]++;
 						}
-
+						fillSnakeHead(snake);
 						pixStep --;
 						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
 					}
 				}
-				/** Gestion si le snake depasse les bordures  **/
-				if(snake.currentX < 0 
-						|| snake.currentX > board.width 
-						|| snake.currentY < 0
-						|| snake.currentY > board.height) {
-					if (snake.collision == true) {
-						snake.state = false; // Le snake meurt pitoyablement
-					}
-					else {
-						// Translater position de l'autre coté de la board
-						if(snake.currentX < 0)
-							snake.currentX = board.width;
-						else if(snake.currentX > board.width)
-							snake.currentX = 0;
-						if(snake.currentY < 0)
-							snake.currentY = board.height;
-						else if(snake.currentY > board.height)
-							snake.currentY = 0;
-					}	
-				}
-				/** Gestion si le snake cogne un autre snake **/
-				pos.x = snake.currentX;
-				pos.y = snake.currentY;
-				Integer idSnake = board.snakesMap.get(pos);
-				if(idSnake != null && idSnake != snake.playerId) {
-					snake.state = false;	
-				}
+				
+				snakeEncounterBounds(snake);
+				snakeEncounterSnake(snake);
 				// TODO : gestion des trace de la taille de la head
 				// TODO : gestion du hole rate
 				// TODO : test de la bordure vs snake
-				/** Gestion si le snake rencontre un item **/
-				Item itemRecup = board.itemsMap.get(pos);
-				if( itemRecup != null ) {
-					if(snake.state) {
-						snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
-						addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
-						board.itemsMap.remove(pos); // Suppression de l'item sur la map
-					}
-				}
+				snakeEncounterItem(snake,pos);
+
 			}
 		}
 	}
+	
+	/**
+	 * Gestion du snake dans le cas ou il depasse les bordures
+	 * @param snake
+	 */
+	public void snakeEncounterBounds(Snake snake) {
+		if(snake.currentX < 0 
+		|| snake.currentX > board.width 
+		|| snake.currentY < 0
+		|| snake.currentY > board.height) {
+			if (snake.collision == true) { // Le snake meurt pitoyablement
+				snake.state = false; 
+			} else { // Translater position de l'autre coté de la board
+				if(snake.currentX < 0)
+					snake.currentX = board.width;
+				else if(snake.currentX > board.width)
+					snake.currentX = 0;
+				if(snake.currentY < 0)
+					snake.currentY = board.height;
+				else if(snake.currentY > board.height)
+					snake.currentY = 0;
+			}	
+		}
+	}
 
+	/**
+	 * Gestion du snake dans le cas ou il cogne un autre snake 
+	 * @param snake
+	 */
+	public void snakeEncounterSnake(Snake snake) {
+		
+		Position pos = new Position();
+		pos.x = snake.currentX;
+		pos.y = snake.currentY;
+		Integer idSnake = board.snakesMap.get(pos);
+		if(idSnake != null && idSnake != snake.playerId) {
+			snake.state = false;	
+		}
+	}
+	
+	/**
+	 * Gestion du snake si il rencontre un item
+	 * 
+	 * @param snake
+	 * @param pos Position à tester
+	 */
+	public void snakeEncounterItem(Snake snake, Position pos) {
+		Item itemRecup = board.itemsMap.get(pos);
+		if( itemRecup != null ) {
+			if(snake.state) {
+				snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
+				addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
+				board.itemsMap.remove(pos); // Suppression de l'item sur la map
+			}
+		}	
+	}
+	
+	
+	
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
 	 * demandée.
@@ -388,15 +415,32 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-	
-	
+
+
 	/**
-	 * Remplit la trainée du serpent sur ses coordonnées en fonction de la largeur de 
- 	 * sa tête.
+	 * Remplit la snakeMap avec les coordonnées du serpent relatives à la trace
+	 * laissé par la tête du snake (plus la tête est grosse plus la trace l'est).
+	 * 
 	 * @param snake 
 	 */
-	public void drawHeadCircle(Snake snake) {
-		
-		
+	public void fillSnakeHead(Snake snake) {
+		int id  = snake.playerId;
+		int xS  = snake.currentX;
+		int yS  = snake.currentY;
+		int rad = (int) snake.headRadius;
+		Position pos = new Position();
+
+		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
+		// le cercle si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayon
+		for(int i = xS - rad; i < xS + rad ; i++) {
+			for(int j = yS - rad; j < yS + rad ; j++) {
+				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad) {
+					pos.x = i;
+					pos.y = j;
+					board.snakesMap.put(pos, id);
+					System.out.println("Point x:" + i + " y:" + j + " ajouté");
+				}
+			}
+		}
 	}
 }
