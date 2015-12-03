@@ -25,11 +25,12 @@ import fr.univavignon.courbes.common.Profile;
  * pas bloquer l'exécution du jeu.
  */
 public interface ClientCommunication
-{	
+{
 	/**
-     * Renvoie l'adresse IP du serveur auquel le client se connecte.
+     * Renvoie l'adresse IP du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
-     * @return 
+     * @return
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
      */
 	public String getIp();
@@ -44,9 +45,10 @@ public interface ClientCommunication
 	public void setIp(String ip);
 
 	/**
-     * Renvoie le port du serveur auquel le client se connecte.
+     * Renvoie le port du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
-     * @return 
+     * @return
      * 		Un entier qui correspond au port du serveur.
      */
 	public int getPort();
@@ -54,7 +56,7 @@ public interface ClientCommunication
 	/**
      * Modifie le port du serveur auquel le client va se connecter.
      * Cette valeur est à modifier avant d'utiliser {@link #launchClient}.
-     * 
+     *
      * @param port
      * 		Le nouveau port du serveur.
      */
@@ -62,7 +64,7 @@ public interface ClientCommunication
 
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
-     * configuré l'adresse IP et le port. 
+     * configuré l'adresse IP et le port.
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de se connecter à une partie réseau existante.
@@ -73,7 +75,7 @@ public interface ClientCommunication
      * Permet à un client de clore sa connexion avec le serveur.
      */
 	public void closeClient();
-	
+
 	/**
 	 * Récupère la liste des profils des joueurs participant à la manche,
 	 * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
@@ -82,31 +84,31 @@ public interface ClientCommunication
 	 * Cette méthode est invoquée par l'Interface Utilisateur de manière
 	 * à ce que le client obtienne l'identité des joueurs participant à une partie.
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-	 * 
+     * parallèle de l'exécution du jeu.
+	 *
 	 * @return
 	 * 		Liste des profils participant à la partie, ou {@code null} si aucune
 	 * 		liste n'a été envoyée.
 	 */
 	public List<Profile> retrieveProfiles();
-	
+
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,
 	 * limite envoyée par le serveur auquel ce client est connecté.
 	 * <br/>
 	 * Cette méthode est invoquée par l'Interface Utilisateur à chaque
-	 * début de manche. En effet, la limite peut changer à chaque 
+	 * début de manche. En effet, la limite peut changer à chaque
 	 * manche en fonction du nombre de points des joueurs (pour gagner,
-	 * il faut avoir un certain nombre de points d'avance sur le 2ème). 
+	 * il faut avoir un certain nombre de points d'avance sur le 2ème).
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-	 * 
+     * parallèle de l'exécution du jeu.
+	 *
 	 * @return pointThreshold
 	 * 		Limite de point courante de la partie, ou {@code null} si aucune
 	 * 		valeur n'a été envoyée.
@@ -114,17 +116,17 @@ public interface ClientCommunication
 	public Integer retrievePointThreshold();
 
 	/**
-     * Permet au client de récupérer des informations sur l'évolution de 
+     * Permet au client de récupérer des informations sur l'évolution de
      * la manche en cours, envoyées par le serveur auquel il est connecté.
      * <br/>
      * Cette méthode est appelée par l'Interface Utilisateur à
      * chaque itération d'une manche.
       * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-    * 
+     * parallèle de l'exécution du jeu.
+    *
      * @return board
      * 		Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      * 		n'a été envoyée.
@@ -135,15 +137,15 @@ public interface ClientCommunication
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
      * Ces commandes sont passées sous forme de map: l'entier correspond à l'ID du joueur
      * <i>sur le serveur</i>, pour la manche en cours, et la direction correspond à la
-     * commande générée par le joueur. Si un joueur n'a pas généré de commande, alors la 
+     * commande générée par le joueur. Si un joueur n'a pas généré de commande, alors la
      * valeur associée doit être {@link Direction#NONE}.
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
+     * parallèle de l'exécution du jeu.
      *
-     * @param commands 
+     * @param commands
      * 		Une liste contenant les directions choisies par chaque joueur local au client.
      */
 	public void sendCommands(Map<Integer,Direction> commands);
@@ -152,10 +154,10 @@ public interface ClientCommunication
      * Permet au client de récupérer un message textuel envoyé par le serveur
      * auquel il est connecté.
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
+     * parallèle de l'exécution du jeu.
      *
      * @return
      * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
@@ -164,15 +166,15 @@ public interface ClientCommunication
 	public String retrieveText();
 
 	/**
-     * Permet au client d'envoyer un message textuel au serveur auquel il est 
+     * Permet au client d'envoyer un message textuel au serveur auquel il est
      * connecté.
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
+     * parallèle de l'exécution du jeu.
      *
-     * @param message 
+     * @param message
      * 		Le message textuel à envoyer au serveur.
      */
 	public void sendText(String message);

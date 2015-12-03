@@ -1,6 +1,6 @@
-package fr.univavignon.courbes.network.groupe22
+package fr.univavignon.courbes.network.groupe22;
 
-import fr.univavignon.courbes.network.ClientCommunication
+import fr.univavignon.courbes.network.ClientCommunication;
 
 public class ClientCom implements ClientCommunication
 {

@@ -1,11 +1,20 @@
-package fr.univavignon.courbes.network;
+package fr.univavignon.courbes.network.groupe22;
 
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import java.io.BufferedInputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.network.ServerCommunication;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -26,13 +35,34 @@ import fr.univavignon.courbes.common.Profile;
  */
 public class ServerCom implements ServerCommunication
 {
+		private int port = 2345;
+	  private String host = "192.168.0.14";
+	  private ServerSocket server = null;
+	  private boolean isRunning = true;
+	  public static Socket tableauSocket[] = new Socket[100];
+	  public static int nbClient=0;
+
+
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de créer une partie réseau.
      */
-	public void launchServer();
+	public void launchServer()
+	{
+		//Créer le serveur
+		try {
+	 			server = new ServerSocket(port, 100, InetAddress.getByName(host));
+
+		} catch (UnknownHostException e) {
+	 			e.printStackTrace();
+
+		} catch (IOException e) {
+	 			e.printStackTrace();
+}
+		//Ouvrir le serveur
+	}
 
 	/**
      * Permet de stopper le serveur et ainsi déconnecter tous les clients.
@@ -40,7 +70,10 @@ public class ServerCom implements ServerCommunication
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide d'arrêter une partie réseau en cours.
      */
-	public void closeServer();
+	public void closeServer()
+	{
+		isRunning = false;
+	}
 
 	/**
 	 * Envoie la liste des profils des joueurs de la manche à tous les
