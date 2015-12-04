@@ -30,8 +30,11 @@ public class Snake implements Serializable
 	public double currentAngle;
 	/** Rayon de la tête du snake */
 	public double headRadius;
-	/** Vitesse du snake, exprimée en pixel par ms */
-	public double currentSpeed;
+	/** Vitesse de déplacement du snake, exprimée en pixel par ms */
+	public double movingSpeed;
+	
+	/** Vitesse à laquelle le snake change de direction, exprimée en radians par ms */
+	public double turningSpeed;
 	
 	/** Etat du snake : {@code false} il est mort, {@code true} il est vivant */
 	public boolean state;
@@ -53,7 +56,7 @@ public class Snake implements Serializable
 	public int currentScore;
 	
 	/** constructeur avec tout les attributs */
-	public Snake(int playerId, int profileId, int currentX, int currentY, double currentAngle, double headRadius, double currentSpeed, boolean state, boolean collision, boolean inversion, double holeRate, boolean fly, int currentScore )
+	public Snake(int playerId, int profileId, int currentX, int currentY, double currentAngle, double headRadius, double movingSpeed, double turningSpeed, boolean state, boolean collision, boolean inversion, double holeRate, boolean fly, int currentScore )
 	{
 		this.playerId = playerId;
 		this.profileId = profileId;
@@ -61,7 +64,8 @@ public class Snake implements Serializable
 		this.currentY = currentY;
 		this.currentAngle = currentAngle;
 		this.headRadius = headRadius;
-		this.currentSpeed = currentSpeed;
+		this.movingSpeed = movingSpeed;
+		this.turningSpeed = turningSpeed;
 		this.state = state;
 		this.collision = collision;
 		this.inversion = inversion;
@@ -79,8 +83,8 @@ public class Snake implements Serializable
 		      headRadius : 10 px
 		      currentSpeed : 0.1 px/ms
 		*/
-		//    playerId, profileId, currentX, currentY, currentAngle, headRadius, currentSpeed, state, collision, inversion, holeRate, fly, currentScore )
-		this(playerId, profileId, currentX, currentY, currentAngle, 10.0        , 0.1         , true    , true,   false    , 0.0       , false, 0);
+		//    playerId, profileId, currentX, currentY, currentAngle, headRadius, movingSpeed, turningSpeed, state, collision, inversion, holeRate, fly, currentScore )
+		this(playerId, profileId, currentX, currentY, currentAngle, 10.0        , 0.1         , 0.1, true    , true,   false    , 0.0       , false, 0);
 
 	}
 	

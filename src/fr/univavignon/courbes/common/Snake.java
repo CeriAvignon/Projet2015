@@ -29,8 +29,11 @@ public class Snake implements Serializable
 	public double currentAngle;
 	/** Rayon de la tête du snake */
 	public double headRadius;
-	/** Vitesse du snake, exprimée en pixel par ms */
-	public double currentSpeed;
+	/** Vitesse de déplacement du snake, exprimée en pixel par ms */
+	public double movingSpeed;
+	
+	/** Vitesse à laquelle le snake change de direction, exprimée en radians par ms */
+	public double turningSpeed;
 	
 	/** Etat du snake : {@code false} il est mort, {@code true} il est vivant */
 	public boolean state;
