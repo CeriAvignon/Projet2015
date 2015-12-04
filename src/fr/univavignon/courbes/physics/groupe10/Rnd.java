@@ -10,7 +10,7 @@ public class Rnd implements PhysicsEngine {
 	Board br;
 	
 	@Override
-	public Board  init(int width, int height, int[] profileIds)
+	public board  init(int width, int height, int[] profileIds)
 	{
 		/** J'instancie un Board en utilisant le constructeur */
 		br = new Board(width, height);
