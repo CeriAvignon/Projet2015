@@ -16,8 +16,23 @@ public class MainTest {
 		
 		//commandesTest.put(0, Direction.RIGHT );
 		round.update(250, commandesTest);
-		//round.update(250, commandesTest);
-		//round.update(30, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
+		round.update(250, commandesTest);
 	}
 
 }
