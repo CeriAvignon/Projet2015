@@ -15,7 +15,7 @@ import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 public class Round implements PhysicsEngine {
-	
+
 	/** Represente le plateau de jeu de la manche courante **/
 	private Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
@@ -24,10 +24,10 @@ public class Round implements PhysicsEngine {
 	private double itemRate = 1;
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
 	private double itemStack = 0;
-	
+
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
-		
+
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
 
@@ -98,7 +98,7 @@ public class Round implements PhysicsEngine {
 			spawnRandomItem();
 			itemStack = 0;
 		}
-		
+
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class Round implements PhysicsEngine {
 	 * du taux de spawn de l'item est un succès.
 	 */
 	public void spawnRandomItem() {
-		
+
 		// TODO gerer que l'objet ne puisse pas spawn sur un snake
 		// TODO gerer la taille de l'item
 		Position posItem = new Position();
@@ -115,22 +115,23 @@ public class Round implements PhysicsEngine {
 		posItem.y = 10 +(int)(Math.random() * board.width - 10); 
 		board.itemsMap.put(posItem, randItem);
 		System.out.println(randItem.toString() + " ajouté a la pos: " + posItem.x + "  " + posItem.y);
-
 	}
+
 	/**
-	 * Ajoute l'effet relatif à l'item ramassé aux snakes concernés.
+	 * Ajoute l'item ainsi que l'effet relatif à l'item ramassé aux snakes concernés.
 	 * 
 	 * @param id Id du Snake ayant ramassé l'objet
 	 * @param item Item ramassé
 	 */
-	public void addSnakeEffect(int id, Item item) {
+	public void addSnakeItem(int id, Item item) {
 		switch(item)
 		{
-		case COLLECTIVE_ERASER: //TODO
+		case COLLECTIVE_ERASER:
 			board.snakesMap.clear();
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			for(Snake snake : board.snakes) {
+				snake.currentItems.put(item, (long)item.duration);
 				snake.collision = false;
 			}
 			break;
@@ -140,6 +141,7 @@ public class Round implements PhysicsEngine {
 		case OTHERS_REVERSE:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
+					snake.currentItems.put(item, (long)item.duration);
 					snake.inversion = true;
 				}
 			}
@@ -147,6 +149,7 @@ public class Round implements PhysicsEngine {
 		case OTHERS_SLOW:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
+					snake.currentItems.put(item, (long)item.duration);
 					snake.movingSpeed /= 2;
 				}
 			}
@@ -154,6 +157,7 @@ public class Round implements PhysicsEngine {
 		case OTHERS_THICK:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
+					snake.currentItems.put(item, (long)item.duration);
 					snake.headRadius *= 2;
 				}
 			}
@@ -161,23 +165,80 @@ public class Round implements PhysicsEngine {
 		case OTHERS_SPEED:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != id) {
+					snake.currentItems.put(item, (long)item.duration);
 					snake.movingSpeed *= 2;
 				}
 			}
 			break;
 		case USER_BIG_HOLE:
+			board.snakes[id].currentItems.put(item, (long)item.duration);
 			board.snakes[id].holeRate /= 2;
 			break;
 		case USER_SLOW:
+			board.snakes[id].currentItems.put(item, (long)item.duration);
 			board.snakes[id].movingSpeed /= 2;
 			break;
 		case USER_SPEED:
+			board.snakes[id].currentItems.put(item, (long)item.duration);
 			board.snakes[id].movingSpeed *= 2;
 			break;
 		default:
 			break;
 		}
 	}
+
+	/**
+	 * Supprime l'item ainsi que l'effet relatif à l'item ramassé au snake concerné.
+	 * 
+	 * @param id Id du Snake concerné
+	 * @param item Item ramassé
+	 */
+	public void removeSnakeItem(int id, Item item) {
+		switch(item)
+		{
+		case COLLECTIVE_ERASER:
+			board.snakesMap.clear();
+			break;
+		case COLLECTIVE_TRAVERSE_WALL:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].collision = true;
+			break;
+		case COLLECTIVE_THREE_CIRCLES:
+			itemRate /= 3;
+			break;
+		case OTHERS_REVERSE:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].inversion = false;
+			break;
+		case OTHERS_SLOW:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].movingSpeed *= 2;
+			break;
+		case OTHERS_THICK:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].headRadius /= 2;
+			break;
+		case OTHERS_SPEED:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].movingSpeed /= 2;
+			break;
+		case USER_BIG_HOLE:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].holeRate *= 2;
+			break;
+		case USER_SLOW:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].movingSpeed *= 2;
+			break;
+		case USER_SPEED:
+			board.snakes[id].currentItems.remove(item);
+			board.snakes[id].movingSpeed /= 2;
+			break;
+		default:
+			break;
+		}
+	}
+
 
 	/**
 	 * Met à jour le temps restant des effets des snakes et met fin aux effets
@@ -196,10 +257,10 @@ public class Round implements PhysicsEngine {
 
 				// Enlever l'effet et supprimer l'objet de la liste
 				if (refreshedTime <= 0 ) {
-					snake.currentItems.remove(entry.getKey());
+					removeSnakeItem(snake.playerId, entry.getKey());
 				}
 				// Mettre à jour le temps restant pour l'effet de l'Item
-				if (refreshedTime > 0) {
+				else if (refreshedTime > 0) {
 					snake.currentItems.put(entry.getKey(), refreshedTime);
 				}
 			}
@@ -356,9 +417,7 @@ public class Round implements PhysicsEngine {
 					snakeEncounterSnake(snake);
 					snakeEncounterItem(snake,pos);
 				}
-				// TODO : gestion des trace de la taille de la head
 				// TODO : gestion du hole rate
-				// TODO : test de la bordure vs snake
 			}
 		}
 	}
@@ -412,13 +471,11 @@ public class Round implements PhysicsEngine {
 		Item itemRecup = board.itemsMap.get(pos);
 		if( itemRecup != null ) {
 			if(snake.state) {
-				snake.currentItems.put(itemRecup, (long)itemRecup.duration); // Ajout de l'item au Snake
-				addSnakeEffect(snake.playerId, itemRecup); // Declenche l'effet de l'item
+				addSnakeItem(snake.playerId, itemRecup); // Ajoute l'item et l'effet
 				board.itemsMap.remove(pos); // Suppression de l'item sur la map
 			}
 		}	
 	}
-
 
 
 	/**
@@ -438,10 +495,16 @@ public class Round implements PhysicsEngine {
 				switch (direction)
 				{
 				case LEFT:
-					snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
+					if(snake.inversion == false)
+						snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
+					else
+						snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
 					break;
 				case RIGHT:
-					snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
+					if(snake.inversion == false)
+						snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
+					else
+						snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
 					break;
 				case NONE:
 					break;
@@ -451,7 +514,6 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-
 
 	/**
 	 * Remplit la snakeMap avec les coordonnées du serpent relatives à la trace
