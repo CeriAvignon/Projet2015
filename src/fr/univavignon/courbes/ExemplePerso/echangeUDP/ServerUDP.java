@@ -11,9 +11,6 @@ public class ServerUDP {
 
    public final static int port = 2345;
    
-   public static void main(String[] args){
-	  //launchServer();
-   }
     public static void launchServer(){
       Thread t = new Thread(new Runnable(){
          public void run(){
