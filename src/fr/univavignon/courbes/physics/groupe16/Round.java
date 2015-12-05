@@ -15,14 +15,19 @@ import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 public class Round implements PhysicsEngine {
+	
+	/** Represente le plateau de jeu de la manche courante **/
 	private Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
-
-
+	/** Represente la chance qu'un item apparaisse sur le plateau **/
+	private double itemRate = 1;
+	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
+	private double itemStack = 0;
+	
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
-
+		
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
 
@@ -41,11 +46,12 @@ public class Round implements PhysicsEngine {
 			initSnake(board.snakes[i], profileIds[i] , posSpawn);
 			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
 		}
-
 		return board;
 	}
 
 	/**
+	 * Cette fonction initialise les données physiques d'un snake présent sur la board.
+	 * 
 	 * @param snake
 	 * @param id
 	 * @param spawnPosition
@@ -56,7 +62,7 @@ public class Round implements PhysicsEngine {
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 3;		
+		snake.headRadius 	= 3;  // Le rayon de la trace du snake en nombre de pixel
 		snake.movingSpeed   = 0.1;	
 		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 degrés/ms
 		snake.state 		= true;
@@ -77,12 +83,32 @@ public class Round implements PhysicsEngine {
 		majSnakesDirections(elapsedTime, commands);
 		// Mise à jour des effets liés aux snakes
 		majSnakesEffects(elapsedTime);
+		// Mise à jour du prochain spawn d'item
+		majSpawnItem(elapsedTime);
 	}
 
 	/**
-	 * Ajoute un item aléatoire sur la board à une position aléatoire.
+	 * Cette fonction augmente une valeur en fonction du taux de spawn d'un item,
+	 * si ce seuil est passé, une fonction ajoute un item sur la map.
+	 * @param elapsedTime
+	 */
+	private void majSpawnItem(long elapsedTime) {
+		itemStack += elapsedTime*itemRate;
+		if(itemStack >= 10000) {
+			spawnRandomItem();
+			itemStack = 0;
+		}
+		
+	}
+
+	/**
+	 * Ajoute un item aléatoire sur la board à une position aléatoire si l'opération
+	 * du taux de spawn de l'item est un succès.
 	 */
 	public void spawnRandomItem() {
+		
+		// TODO gerer que l'objet ne puisse pas spawn sur un snake
+		// TODO gerer la taille de l'item
 		Position posItem = new Position();
 		Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
 		posItem.x = 10 + (int)(Math.random() * board.height - 10); 
@@ -101,13 +127,15 @@ public class Round implements PhysicsEngine {
 		switch(item)
 		{
 		case COLLECTIVE_ERASER: //TODO
+			board.snakesMap.clear();
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			for(Snake snake : board.snakes) {
 				snake.collision = false;
 			}
 			break;
-		case COLLECTIVE_THREE_CIRCLES: //TODO
+		case COLLECTIVE_THREE_CIRCLES:
+			itemRate *= 3;
 			break;
 		case OTHERS_REVERSE:
 			for(Snake snake : board.snakes) {

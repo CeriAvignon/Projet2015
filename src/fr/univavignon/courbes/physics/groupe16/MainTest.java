@@ -13,26 +13,21 @@ public class MainTest {
 		int[] idPlayers = { 0 };
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
+		commandesTest.put(0, Direction.LEFT);
 		
 		//commandesTest.put(0, Direction.RIGHT );
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
-		round.update(250, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+		round.update(100, commandesTest);
+
 	}
 
 }
