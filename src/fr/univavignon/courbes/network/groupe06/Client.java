@@ -3,9 +3,12 @@ package fr.univavignon.courbes.network.groupe06;
 import fr.univavignon.courbes.network.ClientCommunication;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +19,8 @@ import fr.univavignon.courbes.common.Profile;
 public class Client implements ClientCommunication {
 
 	protected String ip;
-	protected int port;
+	protected int port = 2345;
+	protected Socket connexion = null;
 	protected Board board = new Board();
 	
 	@Override
@@ -47,13 +51,25 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void launchClient() {
-		// TODO Auto-generated method stub
+		try {
+			
+			connexion = new Socket(ip, port);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public void closeClient() {
-		// TODO Auto-generated method stub
+		try {
+			//envoyer message au serveur pour prévenir.
+			connexion.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 		
 	}
 

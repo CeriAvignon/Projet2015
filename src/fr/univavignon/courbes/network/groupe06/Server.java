@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +25,12 @@ import fr.univavignon.courbes.common.Profile;
 public class Server implements ServerCommunication {
 
 	protected String ip;
-	protected int port;
-	protected int size=6;
-	protected int nbConnections=0;
+	protected int port = 2345;
+	protected boolean isRunning = false;
+	protected static int size = 6;
+	protected int nbClients = 0;
 	protected String arrayOfIp[] = new String[size];
+	public static Socket socketArray[] = new Socket[size];
 	
 	@Override
 	public String getIp() {
@@ -48,13 +53,75 @@ public class Server implements ServerCommunication {
 	
 	@Override
 	public void launchServer() {
-		
+		//step 1 : define address ip
+		String adressIp;
+ 	    try {
+ 	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+ 	        while (interfaces.hasMoreElements()) {
+ 	            NetworkInterface iface = interfaces.nextElement();
+ 	            // filters out 127.0.0.1 and inactive interfaces
+ 	            if (iface.isLoopback() || !iface.isUp())
+ 	                continue;
+
+ 	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
+ 	            while(addresses.hasMoreElements()) {
+ 	                InetAddress addr = addresses.nextElement();
+ 	                adressIp = addr.getHostAddress();
+ 	                if (adressIp.startsWith("192.168."))
+ 	                	ip = adressIp;
+ 	            }
+ 	        }
+ 	    } catch (SocketException e) {
+ 	        throw new RuntimeException(e);
+ 	    }
+		//step 2 : define port if value by default is impossible
+ 	   try {
+    		ServerSocket sSocket = new ServerSocket(port);
+    	} catch (IOException e) {
+        	 port = 0;
+    	}
+ 	   
+ 	    if(port == 0) {
+ 	    	for(int portTest = 1; portTest <= 3000; portTest++){
+ 	    		try {
+ 	    			ServerSocket sSocket = new ServerSocket(portTest);
+ 	        		port = portTest;
+ 	        		break;
+ 	    		} catch (IOException e) {
+ 	    			;
+ 	    		}
+ 	    	}
+ 	    }
+		//step 3 : launch server
+ 	    Thread launch = new Thread(new Runnable(){
+ 	    	public void run(){
+ 	    		ServerSocket server = null;
+ 	    		isRunning = true;
+ 	    		while(isRunning == true){
+ 	    			try {
+ 	    				//wait client communication
+ 	    				Socket client = server.accept();			 
+ 	    				socketArray[nbClients] = client;
+ 	    				nbClients++;                 
+ 	    			} catch (IOException e) {
+ 	    				e.printStackTrace();
+ 	    			}
+ 	    		}
+ 	    		try {
+ 	    			server.close();
+ 	    		} catch (IOException e) {
+ 	    			e.printStackTrace();
+ 	    			server = null;
+ 	    		}
+ 	    	}
+ 	    });
+	      
+	   launch.start();
 	}
 
 	@Override
 	public void closeServer() {
-		// TODO Auto-generated method stub
-		
+		isRunning = false;
 	}
 
 	@Override
@@ -91,11 +158,11 @@ public class Server implements ServerCommunication {
 					}
 					DatagramSocket socket = new DatagramSocket(port);
 					int i=0;
-					while(i < nbConnections) {// i < taille du tableau qui contient les ip des clients 
+					while(i < nbClients) { 
 						InetAddress client = InetAddress.getByName(arrayOfIp[i]);
 						DatagramPacket packet = new DatagramPacket(data, 4, client, port);
 	        	      	socket.send(packet);
-	        	      	// now send the payload
+	        	      	// now send the Board
 	        	      	packet = new DatagramPacket(Buf, Buf.length, client, port);
 	        	      	socket.send(packet);
 	        	      	i++;
