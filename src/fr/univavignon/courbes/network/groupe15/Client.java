@@ -60,7 +60,6 @@ public class Client implements ClientCommunication {
 			sendText(sc.nextLine());
 			System.out.println(retrieveText());
 			sc.close();
-			closeClient();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
