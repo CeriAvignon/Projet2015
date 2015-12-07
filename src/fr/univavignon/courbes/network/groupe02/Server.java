@@ -27,16 +27,15 @@ import java.net.InetSocketAddress;
  */
 public class Server implements ServerCommunication
 {
-	int port=2345;
-	InetAddress ip="192.";
+	int port = 2345;
+	String ip="";
+	ServerSocket server = null;
 	
 	@Override
 	public void launchServer() 
 	{
 		System.out.println("lancement serveur....");
-		
-		private ServerSocket server = null;
-		
+	
 	}
 
 	@Override

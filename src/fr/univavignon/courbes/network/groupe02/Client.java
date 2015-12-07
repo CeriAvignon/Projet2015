@@ -1,7 +1,12 @@
 package fr.univavignon.courbes.network.groupe02;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
+
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -18,43 +23,82 @@ import fr.univavignon.courbes.network.ClientCommunication;
 public class Client implements ClientCommunication, Runnable
 {
 
+	Socket socketClient = null;
+	int port = 2345;
+	
 	@Override
 	public String getIp() 
 	{
+		InetAddress ipServer;
+		String ip="";
 		
+		try
+		{
+			ipServer = InetAddress.getLocalHost();
+			ip = ipServer.getHostAddress();
+		}
+		catch(UnknownHostException e)
+		{
+			e.printStackTrace();
+		}
+		return ip;
 	}
 
 	@Override
 	public void setIp(String ip) 
 	{
-		
+	
 	}
 
 	@Override
 	public int getPort() 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return port; //juste pour l'interface utilisateur, pour qu'ils puisssent afficher le port.
 	}
 
 	@Override
 	public void setPort(int port) 
 	{
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void launchClient() 
 	{
-		// TODO Auto-generated method stub
+		String ip = getIp();
+	     try 
+	     {
+	         socketClient = new Socket(getIp(), port);
+	         BufferedReader in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
+	         PrintStream out = new PrintStream(socket.getOutputStream());
+	     } 
+	     catch (UnknownHostException e) 
+	     {
+	         e.printStackTrace();
+	     } 
+	     catch (IOException e) 
+	     {
+	         e.printStackTrace();
+	     }
+		
 		
 	}
 
 	@Override
 	public void closeClient() 
 	{
-			
+			if(socketClient != null)
+			{
+				try
+				{
+					socketClient.close();
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+					socketClient = null;
+				}
+			}
 	}
 
 	@Override
