@@ -38,7 +38,7 @@ public interface ServerCommunication
 	
 	/**
      * Renvoie le port utilisé par le serveur pour accepter les connexions
-     * de de la part des clients. (à préciser <i>avant</i> de se connecter, 
+     * de la part des clients. (à préciser <i>avant</i> de se connecter, 
      * bien sûr).
      *
      * @return 
