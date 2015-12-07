@@ -17,7 +17,7 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
 public class Round implements PhysicsEngine {
 
 	/** Represente le plateau de jeu de la manche courante **/
-	private Board board;
+	public Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
 	/** Represente la chance qu'un item apparaisse sur le plateau **/
