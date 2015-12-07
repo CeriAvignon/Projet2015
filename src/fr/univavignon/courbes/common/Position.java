@@ -1,18 +1,17 @@
-package fr.univavignon.courbes;
+package fr.univavignon.courbes.common;
 
-public class Position 
-{
-	private double x;
-	private double y;
+import java.io.Serializable;
+
+/**
+ * Cette classe permet de représenter la position d'un
+ * pixel dans un repère à deux dimensions.
+ */
+public class Position implements Serializable
+{	/** Numéro de série (pour {@code Serializable}) */
+	private static final long serialVersionUID = 1L;
 	
-	public Position()
-	{
-		x=Math.random()*(800-0);
-		y=Math.random()*(600-0);
-	}
-	
-	void displayPosition()
-	{
-		System.out.println("x = "+x+"\ny = "+y);
-	}
+	/** Position sur l'axe des abscisses */
+	public int x;
+	/** Position sur l'axe des ordonnées */
+	public int y;
 }

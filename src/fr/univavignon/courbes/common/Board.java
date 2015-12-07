@@ -1,114 +1,32 @@
-package fr.univavignon.courbes;
+package fr.univavignon.courbes.common;
 
-import java.util.HashMap;
-// need a capacity to initialize hashmap
-public class Board 
-{
-	private HashMap<Position, Snake> core;  // liste ! chaque mouvement ajoute un objet dedans
-	private HashMap<Position, Item> item;
-	int capacity = 50; // test
+import java.io.Serializable;
+import java.util.Map;
+
+/**
+ * Cette classe correspond à l'ensemble des informations propres à 
+ * l'aire de jeu utilisée pendant une manche.
+ * <br/>
+ * Il faut bien distinguer la notion de partie et de manche. Les joueurs
+ * sont confrontés lors d'une parties se déroulant sur plusieurs manches
+ * distinctes. À chaque, chaque joueur marque un certain nombre de points.
+ * Un joueur gagne la partie quand son score dépasse une certaine valeur
+ * limite. 
+ */
+public class Board implements Serializable
+{	/** Numéro de série (pour {@code Serializable}) */
+	private static final long serialVersionUID = 1L;
 	
-	Board()
-	{
-		core = new HashMap<Position, Snake>(50);
-		item = new HashMap<Position, Item>(50);
-	}
+	/** Largeur de l'aire de jeu, en pixels */
+	public int width;
+	/** Hauteur de l'aire de jeu, en pixels */
+	public int height;
 	
-	double size()
-	{
-		return core.size();
-	}
+	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
+	public Map<Position, Integer> snakesMap;
+	/** Tableau contentant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
+	public Snake snakes[];
 	
-	void addNewElementSnake(Position pos, Snake sna)
-	{
-		core.put(pos, sna);  // now in the hashmap core, the position pos is taken by the snake sna, collision possible
-		
-	}
-	
-	void addNewElementItem(Position pos, Item ite)
-	{
-		item.put(pos, ite);
-	}
-	
-	boolean containsPosition(Position pos)
-	{
-		return core.containsKey(pos);
-	}
+	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
+	public Map<Position, Item> itemsMap;
 }
-	
-	
-	
-	/*
-interface HashMap 
-{
-    void clear()	// constructor OR new round
-    {
-        mapSize = 0;
-        for (unsigned i = 0; i < maxMapSize; ++i)
-        {
-            map[i].key = 0;			
-            map[i].value = NULL;
-        }
-    }
-
-    
-    T* find(unsigned key)
-    {
-        if (!key)
-            return NULL; // invalid key always returns NULL
-
-        // check every key until we find a match
-        unsigned i = hashKey(key) % maxMapSize;
-        const unsigned iStart = i;
-        do
-        {
-            if (map[i].key == key)
-                return map[i].value;
-            i = (i + 1) % maxMapSize;
-        }
-        while (i != iStart);
-
-        return NULL;
-    }
-
-    void insert(unsigned key, T* value)
-    {
-        ASSERT(key && value && !full() && !find(key));
-
-        unsigned i = hashKey(key) % maxMapSize;
-        while (map[i].value)
-            i = (i + 1) % maxMapSize;
-
-        map[i].key = key;
-        map[i].value = value;
-        ++mapSize;
-    }
-
-    void erase(unsigned key)
-    {
-        ASSERT(key && find(key));
-
-        unsigned i = hashKey(key) % maxMapSize;
-        while (map[i].key != key)
-            i = (i + 1) % maxMapSize;
-
-        map[i].key = 0;
-        map[i].value = NULL;
-        --mapSize;
-    }
-
-    unsigned size()     const { return mapSize; }
-    unsigned max_size() const { return maxMapSize; }
-    bool empty()        const { return size() == 0; }
-    bool full()         const { return size() == max_size(); }
-
-private:
-
-    // rehash the key so we make more efficient use of the map
-    unsigned hashKey(unsigned key) { return key*2654435761; }
-
-    struct HashEntry { unsigned key; T* value; };
-    HashEntry map[maxMapSize];
-    unsigned mapSize;
-};
-*/
