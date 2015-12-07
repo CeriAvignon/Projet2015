@@ -24,6 +24,7 @@ public class Round implements PhysicsEngine {
 	private double itemRate = 1;
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
 	private double itemStack = 0;
+	private Object boardActu;
 
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
@@ -267,10 +268,7 @@ public class Round implements PhysicsEngine {
 		}
 	}
 
-	@Override
-	public void forceUpdate(Board board) {
-		// TODO Auto-generated method stub
-	}
+	
 
 
 	/**
@@ -541,4 +539,23 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
+
+	/**
+	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
+	 */
+
+	public void forceUpdate(Board board) {
+				
+		this.board.width = board.width;
+		this.board.height = board.height;
+		this.board.snakesMap=board.snakesMap;
+		this.board.itemsMap = board.itemsMap;
+		this.board.snakes = board.snakes;
+		
+	}
+	
+	
 }
+		
+	
+	
