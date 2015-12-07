@@ -28,7 +28,8 @@ import java.net.InetSocketAddress;
 public class Server implements ServerCommunication
 {
 	int port=2345;
-	int ip="192.";
+	InetAddress ip="192.";
+	
 	@Override
 	public void launchServer() 
 	{

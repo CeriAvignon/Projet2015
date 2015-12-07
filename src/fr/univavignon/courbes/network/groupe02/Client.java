@@ -21,14 +21,12 @@ public class Client implements ClientCommunication, Runnable
 	@Override
 	public String getIp() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
 	public void setIp(String ip) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
