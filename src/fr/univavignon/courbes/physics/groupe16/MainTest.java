@@ -13,20 +13,11 @@ public class MainTest {
 		int[] idPlayers = { 0 };
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
-		commandesTest.put(0, Direction.LEFT);
-		
-		//commandesTest.put(0, Direction.RIGHT );
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
-		round.update(100, commandesTest);
+		//commandesTest.put(0, Direction.LEFT);
+		round.spawnRandomItem();
+		int it = 40;
+		for(int i = 0; i < it; i++)
+			round.update(50, commandesTest);
 
 	}
 

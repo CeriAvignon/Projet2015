@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.physics.groupe16;
 
 import java.awt.List;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +25,17 @@ public class Round implements PhysicsEngine {
 	private double itemRate = 1;
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
 	private double itemStack = 0;
+	/** Map contenant la position du centre d'un item en clé et une liste
+	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
+	public Map<Position, ArrayList<Position>> coordItemMap;
+	 
 
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
-
+		coordItemMap = new HashMap<Position, ArrayList<Position>>();
 		board = new Board();
 		board.width = width;
 		board.height = height;
@@ -98,7 +103,6 @@ public class Round implements PhysicsEngine {
 			spawnRandomItem();
 			itemStack = 0;
 		}
-
 	}
 
 	/**
@@ -108,13 +112,27 @@ public class Round implements PhysicsEngine {
 	public void spawnRandomItem() {
 
 		// TODO gerer que l'objet ne puisse pas spawn sur un snake
-		// TODO gerer la taille de l'item
-		Position posItem = new Position();
+		Position posC = new Position(); // Coordonnée du centre de l'item
+		Position posItem = new Position(); // Va contenir une des coordonnée autour de l'item
+		int radItem = 20; // Rayon d'un item
+		ArrayList<Position> coordItem = new ArrayList<Position>(); // Liste contenant toute les coordonées de l'item
 		Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
-		posItem.x = 10 + (int)(Math.random() * board.height - 10); 
-		posItem.y = 10 +(int)(Math.random() * board.width - 10); 
-		board.itemsMap.put(posItem, randItem);
-		System.out.println(randItem.toString() + " ajouté a la pos: " + posItem.x + "  " + posItem.y);
+		posC.x = 10 + (int)(Math.random() * board.height - 10); 
+		posC.y = 10 +(int)(Math.random() * board.width - 10); 
+		board.itemsMap.put(posC, randItem);
+
+		for(int i = posC.x - radItem; i < posC.x + radItem ; i++) {
+			for(int j = posC.y - radItem; j < posC.y + radItem ; j++) {
+				if(Math.sqrt(Math.pow(i - posC.x, 2) + Math.pow(j - posC.y, 2)) < radItem) {
+					posItem.x = i;
+					posItem.x = j;
+					coordItem.add(posItem);
+					System.out.println("Point item x:" + i + " y:" + j + " ajouté");
+				}
+			}
+		}
+		coordItemMap.put(posC, coordItem);
+		System.out.println(randItem.toString() + " ajouté a la pos: " + posC.x + "  " + posC.y);
 	}
 
 	/**
@@ -473,6 +491,8 @@ public class Round implements PhysicsEngine {
 			if(snake.state) {
 				addSnakeItem(snake.playerId, itemRecup); // Ajoute l'item et l'effet
 				board.itemsMap.remove(pos); // Suppression de l'item sur la map
+				coordItemMap.remove(pos); // Suppression des coordonnées autour de l'item
+				System.out.println("Snake a rencontré un item");
 			}
 		}	
 	}
