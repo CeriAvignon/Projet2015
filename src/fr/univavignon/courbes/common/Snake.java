@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,8 +49,9 @@ public class Snake implements Serializable
 	public boolean fly;
 	
 	/** Items affectant ce snake, associés à leur temps d'effet restant (en ms) */
-	public Map<Item, Long> currentItems;
+	public HashMap<Item, Long> currentItems;
 	
 	/** Score courant du joueur associé au snake dans la partie courante */
 	public int currentScore;
+
 }
