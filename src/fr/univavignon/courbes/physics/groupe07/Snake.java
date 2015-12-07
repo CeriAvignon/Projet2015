@@ -53,22 +53,22 @@ public class Snake implements Serializable
         /** Score courant du joueur associé au snake dans la partie courante */
         public int currentScore;
         
-        public Snake(int id,int numberId, int abscisse, int ordonnee, double direction, double sizeHead, double pace, double turn, boolean alive, boolean invicible, boolean reverse, double cheese, boolean bird, int score)
+        public Snake(int playerId,int profileId, int currentX, int currentY, double currentAngle, double headRadius, double movingSpeed, double turningSpeed, boolean state, boolean collision, boolean inversion, double holeRate, boolean fly, int currentScore)
         {
-                this.playerId = id;
-                this.profileId = numberId;
-                this.currentX = abscisse;
-                this.currentY = ordonnee;
-                this.currentAngle = direction;
-                this.headRadius = sizeHead;
-                this.movingSpeed = pace;
-                this.turningSpeed = turn;
-                this.state = alive;
-                this.collision = invicible;
-                this.inversion = reverse;
-                this.holeRate = cheese;
-                this.fly = bird;
-                this.currentScore = score;
+                this.playerId = playerId;
+                this.profileId = profileId;
+                this.currentX = currentX;
+                this.currentY = currentY;
+                this.currentAngle = currentAngle;
+                this.headRadius = headRadius;
+                this.movingSpeed = movingSpeed;
+                this.turningSpeed = turningSpeed;
+                this.state = state;
+                this.collision = collision;
+                this.inversion = inversion;
+                this.holeRate = holeRate;
+                this.fly = fly;
+                this.currentScore = currentScore;
                 
                 
                 

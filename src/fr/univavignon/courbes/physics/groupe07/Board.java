@@ -29,4 +29,10 @@ public class Board implements Serializable
 	
 	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
 	public Map<Position, Item> itemsMap;
+	
+	public Board(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
+	}
 }
