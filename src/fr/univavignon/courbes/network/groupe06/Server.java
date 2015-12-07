@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -30,7 +31,8 @@ public class Server implements ServerCommunication {
 	protected static int size = 6;
 	protected int nbClients = 0;
 	protected String arrayOfIp[] = new String[size];
-	public static Socket socketArray[] = new Socket[size];
+	protected static Socket socketArray[] = new Socket[size];
+	protected BufferedInputStream reader = null;
 	
 	@Override
 	public String getIp() {
@@ -189,8 +191,19 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public String[] retrieveText() {
-		// TODO Auto-generated method stub
+		
+		//read();
+		
 		return null;
 	}
-
+	
+	private String read() throws IOException {      
+	      String response = "";
+	      int stream;
+	      byte[] b = new byte[4096];
+	      stream = reader.read(b);
+	      response = new String(b, 0, stream);      
+	      return response;
+	   }   
+	
 }
