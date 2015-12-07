@@ -5,6 +5,7 @@ import java.io.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -34,47 +35,46 @@ public class Client implements ClientCommunication {
                                  "Bless you!",
                                  "Is there an owl in here?",
                                  "Is there an echo in here?" };
+    private Socket socket = null;
 
-    public String processInput(String theInput) {
-        String theOutput = null;
-
-        if (state == WAITING) {
-            theOutput = "Knock! Knock!";
-            state = SENTKNOCKKNOCK;
-        } else if (state == SENTKNOCKKNOCK) {
-            if (theInput.equalsIgnoreCase("Who's there?")) {
-                theOutput = clues[currentJoke];
-                state = SENTCLUE;
-            } else {
-                theOutput = "You're supposed to say \"Who's there?\"! " +
-			    "Try again. Knock! Knock!";
-            }
-        } else if (state == SENTCLUE) {
-            if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
-                theOutput = answers[currentJoke] + " Want another? (y/n)";
-                state = ANOTHER;
-            } else {
-                theOutput = "You're supposed to say \"" + 
-			    clues[currentJoke] + 
-			    " who?\"" + 
-			    "! Try again. Knock! Knock!";
-                state = SENTKNOCKKNOCK;
-            }
-        } else if (state == ANOTHER) {
-            if (theInput.equalsIgnoreCase("y")) {
-                theOutput = "Knock! Knock!";
-                if (currentJoke == (NUMJOKES - 1))
-                    currentJoke = 0;
-                else
-                    currentJoke++;
-                state = SENTKNOCKKNOCK;
-            } else {
-                theOutput = "Bye.";
-                state = WAITING;
-            }
-        }
-        return theOutput;
+    /**
+     * 
+     * @param ip The ip of the distant server
+     * @param port The port used to connect
+     */
+    public void initConnection(String ip, int port) {
+    	try{
+    		socket = new Socket(ip, port);
+    		if(socket == null){
+    			System.out.println("FAIL !!!!!!!");
+    		} else {
+    			System.out.println("YOLO SWAG REUSSI !");
+    		}
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			Scanner sc = new Scanner(System.in);
+    		out.println(sc.nextLine());
+    		System.out.println(in.readLine());
+    	}catch (Exception e) {
+    		System.out.println("Catched !");
+    	}
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 	@Override
 	public String getIp() {
