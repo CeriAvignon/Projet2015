@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
@@ -49,3 +50,50 @@ public enum Item implements Serializable
 	/** Durée associée à l'effet de l'item, exprimée en ms */
 	public double duration;
 }
+=======
+package fr.univavignon.courbes;
+
+abstract class Item 
+{
+	protected Position apparition;
+}
+
+abstract class IndividualEffectItem extends Item
+{
+	// ????
+}
+
+public class BonusItem extends IndividualEffectItem
+{
+	private boolean earth=false;
+	private boolean sonicSlow=false;
+	private boolean sonicFast=false;
+	
+	
+	
+}
+
+public class MalusItem extends IndividualEffectItem
+{
+	private boolean feed=false;
+	private boolean invert=false;
+	private boolean hole=false;
+	private boolean passkey=false;
+	private boolean sonicSlow=false;
+	private boolean sonicFast=false;
+}
+
+
+
+
+public class GeneralEffectItem extends Item
+{
+	private boolean clean=false;
+	private boolean earth=false;
+	private boolean moreloops=false;
+}
+
+
+
+
+>>>>>>> 7c32b7e412d00ee50a38af320ead8d73b18e127f
