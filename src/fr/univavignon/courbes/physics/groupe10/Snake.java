@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.univavignon.courbes.common.Direction;
+
 /**
  * Cette classe contient les informations et caractéristiques d'un snake.
  * <br/>
@@ -84,7 +86,7 @@ public class Snake implements Serializable
 		      currentSpeed : 0.1 px/ms
 		*/
 		//    playerId, profileId, currentX, currentY, currentAngle, headRadius, movingSpeed, turningSpeed, state, collision, inversion, holeRate, fly, currentScore )
-		this(playerId, profileId, currentX, currentY, currentAngle, 10.0        , 0.1         , 0.1, true    , true,   false    , 0.0       , false, 0);
+		this(playerId, profileId, currentX, currentY, currentAngle, 1.0        , 0.1         , 0.1, true    , true,   false    , 0.0       , false, 0);
 
 	}
 	
@@ -145,6 +147,9 @@ public class Snake implements Serializable
 		return currentScore;
 	}
 	
-	
-	
+	public void setCurrentAngle(double value)
+	{
+		currentAngle += value;
+	}
+
 }

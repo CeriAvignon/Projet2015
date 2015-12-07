@@ -30,6 +30,11 @@ public class Position implements Serializable
 	{
 		return y;
 	}
-
+	
+	public Position getPosition()
+	{
+		Position pos = new Position(this.x,this.y);
+		return pos;
+	}
 
 }

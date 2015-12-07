@@ -2,9 +2,9 @@ package fr.univavignon.courbes.physics;
 
 import java.util.Map;
 
-import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.physics.groupe10.*;
+
+
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
