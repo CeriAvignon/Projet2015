@@ -6,15 +6,15 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 public class Panel extends JPanel{
-	int posX=0;
-	int posY=0;
-	Color color=Color.white;
-int rayon=6;
-	public void  paint(Graphics g)
+	int posX=0;// position X du Snake
+	int posY=0;// position Y du Snake
+	Color color=Color.white; // couleur du snake
+int rayon=6;// rayon du snake 
+	public void  paint(Graphics g) // fonction que repaint appelle
 {
 		super.paintComponent(g);
 g.setColor(color);
-g.fillOval(posX, posY,rayon,rayon);
+g.fillOval(posX, posY,rayon,rayon); 
 }
 
 	public int getPosX() {
