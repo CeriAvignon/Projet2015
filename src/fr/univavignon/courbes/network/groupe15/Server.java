@@ -13,7 +13,7 @@ import fr.univavignon.courbes.network.ServerCommunication;
 
 /**
  * 
- * @author uapv1504059
+ * @author uapv1301073
  *
  */
 
@@ -61,6 +61,23 @@ public class Server implements ServerCommunication {
         }
     }
 
+	@Override
+	public String getIp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getPort() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setPort(int port) {
+		// TODO Auto-generated method stub
+	}
+	
 	@Override
 	public void launchServer() {
 		// TODO Auto-generated method stub

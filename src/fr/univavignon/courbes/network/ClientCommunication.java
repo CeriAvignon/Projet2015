@@ -27,7 +27,8 @@ import fr.univavignon.courbes.common.Profile;
 public interface ClientCommunication
 {	
 	/**
-     * Renvoie l'adresse IP du serveur auquel le client se connecte.
+     * Renvoie l'adresse IP du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
@@ -44,7 +45,8 @@ public interface ClientCommunication
 	public void setIp(String ip);
 
 	/**
-     * Renvoie le port du serveur auquel le client se connecte.
+     * Renvoie le port du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Un entier qui correspond au port du serveur.
