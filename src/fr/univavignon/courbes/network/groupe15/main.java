@@ -14,7 +14,7 @@ public class main {
 		c.setIp("10.122.46.39");
 		c.setPort(3615);
 		c.launchClient();
-
+		c.closeClient();
 	}
 
 }
