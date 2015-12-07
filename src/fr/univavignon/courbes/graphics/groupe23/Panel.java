@@ -9,11 +9,12 @@ public class Panel extends JPanel{
 	int posX=0;
 	int posY=0;
 	Color color=Color.white;
-public void  paint(Graphics g)
+int rayon=6;
+	public void  paint(Graphics g)
 {
 		super.paintComponent(g);
 g.setColor(color);
-g.fillOval(posX, posY,6 ,6);
+g.fillOval(posX, posY,rayon,rayon);
 }
 
 	public int getPosX() {
@@ -34,5 +35,12 @@ g.fillOval(posX, posY,6 ,6);
 	public void setColor(Color color) {
 		this.color = color;
 	}	
-
+public int getRayon()
+{
+	return rayon;
+}
+public void setRayon(int rayon)
+{
+	this.rayon=rayon;
+}
 }
