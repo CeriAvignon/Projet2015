@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.graphics;
+package fr.univavignon.courbes.graphics.groupe23;
 
 import java.awt.Color;
 import java.awt.Graphics;
