@@ -474,7 +474,25 @@ public class Round implements PhysicsEngine {
 			}
 		}	
 	}
-
+	
+	/**
+	 * cette méthode permet de choisir un snake aléatoirement 
+	 * et lui applique une coupure pendant un certain temp passé en paramétre
+	 * 
+	 * 
+	 * @param temp
+	 * @param profileIds
+	 */
+	
+	public void snakeCut(int temp,int[] profileIds) {
+		int lower = 0;
+		int higher = profileIds.length;
+		int random = (int)(Math.random() * (higher-lower)) + lower;
+		if(board.snakes[random].state == true) {
+			// a finir 
+			board.snakes[random].movingSpeed /= 2;
+		}
+	}
 
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
@@ -542,6 +560,8 @@ public class Round implements PhysicsEngine {
 
 	/**
 	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
+	 * 
+	 * @param board
 	 */
 
 	public void forceUpdate(Board board) {
