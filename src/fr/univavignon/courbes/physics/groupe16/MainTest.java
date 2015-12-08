@@ -21,12 +21,6 @@ public class MainTest {
 	    round1.init(400, 400, idPlayers)
 ;	    
 		//commandesTest.put(0, Direction.RIGHT );
-		round.forceUpdate(round1.board);
-
-		
-
-		
-		
 
 
 	}

@@ -1,9 +1,6 @@
 package fr.univavignon.courbes.physics.groupe16;
 
 
-import java.awt.List;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import fr.univavignon.courbes.common.Board;
@@ -22,11 +19,12 @@ public class Round implements PhysicsEngine {
 	/** Represente la chance qu'un item apparaisse sur le plateau **/
 	private double itemRate = 1;
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
+
 	private double itemStack = 0;
 	/** Map contenant la position du centre d'un item en clé et une liste
 	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
 	public Map<Position, ArrayList<Position>> coordItemMap;
-	 
+
 
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
