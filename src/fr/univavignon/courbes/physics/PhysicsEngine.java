@@ -1,5 +1,5 @@
 package fr.univavignon.courbes.physics;
-
+import fr.univavignon.courbes.common.*;
 import java.util.Map;
 
 import fr.univavignon.courbes.physics.groupe10.*;

@@ -25,13 +25,12 @@ public class Snake implements Serializable
 	/** Position courante de la tête du Snake en ordonnée */
 	public int currentY;
 	
-	/** Angle représentant la direction de déplacement courante du snake */
+	/** Angle représentant la direction de déplacement courante du snake, par rapport à l'horizontale */
 	public double currentAngle;
 	/** Rayon de la tête du snake */
 	public double headRadius;
 	/** Vitesse de déplacement du snake, exprimée en pixel par ms */
 	public double movingSpeed;
-	
 	/** Vitesse à laquelle le snake change de direction, exprimée en radians par ms */
 	public double turningSpeed;
 	

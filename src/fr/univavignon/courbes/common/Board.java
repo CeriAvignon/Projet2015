@@ -24,9 +24,9 @@ public class Board implements Serializable
 	
 	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
 	public Map<Position, Integer> snakesMap;
-	/** Tableau contentant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
+	/** Tableau contenant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
 	
-	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
+	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
 	public Map<Position, Item> itemsMap;
 }
