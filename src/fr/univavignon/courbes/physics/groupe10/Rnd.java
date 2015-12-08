@@ -40,11 +40,20 @@ public class Rnd implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
 	{
-		// Deplacer snakes "mettre à jour les snakes"
+		//on gere l'impact du temps ecoulé sur les snakes (au niveau des Itemes essentielement)
 		
-		//moveSnake(long, commands);
+
 		
-		//on trace le tracé et on test si il 
+		//on gere le déplacement des snakes et les colisions
+		
+		for (snakes)
+		{
+			valeurCollision = moveSnake(id, time, commands[id]);
+			
+			if 2
+			
+		}
+		
 
 	}
 	
@@ -63,7 +72,7 @@ public class Rnd implements PhysicsEngine {
 				{	
 						if(item.getKey() == Item.USER_SPEED)
 						{
-							board.snakes[j].movingSpeed += 1 ;
+							board.snakes[j].movingSpeed = 2 ;
 						}
 						
 						if(item.getKey() == Item.USER_SLOW)
@@ -160,9 +169,16 @@ public class Rnd implements PhysicsEngine {
 		
 		Item item = Item.values()[it];		// Generate a random item 																			
 		
-		board.
-		itemsMap.put(p, item);													// add the new item in the itemsMap
+		board.itemsMap.put(p, item);													// add the new item in the itemsMap
 		
+	}
+	
+	public void boardTimeImpact(long time)
+	{
+		for (int id = 0; i < nbJr; i++)
+		{
+			SnakeTimeImpact(id, time);
+		}
 	}
 	
 	// FONCTIONS QUI MANIPULENT SNAKE
@@ -257,7 +273,7 @@ public class Rnd implements PhysicsEngine {
 		double stepX = interX / distance;
 		double stepY = interY / distance;
 		
-
+		int valeurCollision = 0;
 		//tant que la pointe du tracé n'a pas rejoint la tete,
 		//on dessine le pixel et on incremente
 		for (int i = 0; i <= (int) distance ; i++)
@@ -265,17 +281,18 @@ public class Rnd implements PhysicsEngine {
 			Position po = new Position((int) tmpX, (int) tmpY);
 			System.out.println(po.x+" "+po.y);
 			
-			if(checkCollision(po, id) == 0 || checkCollision(po, id) == 2)	 // 0 Pas de collision --- 2 collision avec item
+			valeurCollision = checkCollision(po, id);
+			if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
 			{
 				board.snakesMap.put(po, id);			// Je déssine la position sur la map
 				
 			}
 			else
 			{
-				if(checkCollision(po, id) == -1 || checkCollision(po, id) == 1)
+				if(valeurCollision == -1 || valeurCollision == 1)
 			 			// Si il y a une collision avec un snake ou un mur je sors de la boucle
 				{					// **Collision */
-				break;
+					return valeurCollision;
 				}
 			
 			}
@@ -283,6 +300,8 @@ public class Rnd implements PhysicsEngine {
 			tmpX += stepX;
 			tmpY += stepY;
 		}
+		
+		return valeurCollision;
 		
 		// on trace le trace sur la HashMap pixel par pixel
 		//si l'on tombe sur un pixel deja utilisé, on renvois un entier:
@@ -334,5 +353,26 @@ public class Rnd implements PhysicsEngine {
 		return 0;								// Pas de collision
 	}
 	
+	public void snakeAddItem(int id, item)
+	{
+		//ajout de l'item au map d'items
+		//ajout des effets correspondants
+	}
+	
+	public void snakeDeleteItem(id, item)
+	{
+		//suppression de l'item dans la map
+		//suppression de l'effet de l'item
+	}
+	
+	public void snakeTimeImpact(int id, long time)
+	{
+		//on enumere les items du snake de l'id passe en param
+		//{
+			//pour chaque items, on enleve le temps ecoule depuis la derniere update
+			//si le temps se retrouve a etre inferieur ou egal a 0, c'est que l'item est devenu obsolete
+				//dans ce cas, on la supprime du snake avec la foncion snakeDeleteItem(id, item);
+		//}
+	}
 
 }
