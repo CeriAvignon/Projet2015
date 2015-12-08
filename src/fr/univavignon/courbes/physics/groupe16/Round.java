@@ -13,25 +13,24 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
 public class Round implements PhysicsEngine {
 
 	/** Represente le plateau de jeu de la manche courante **/
-	public Board board;
+	private Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
 	/** Represente la chance qu'un item apparaisse sur le plateau **/
 	private double itemRate = 1;
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
-
 	private double itemStack = 0;
-	/** Map contenant la position du centre d'un item en clé et une liste
-	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
-	public Map<Position, ArrayList<Position>> coordItemMap;
-
+	/** Represente le nombre de 'ms' avant le prochain spawn d'item, depend aussi de itemRate **/
+	int itemTick;
+	/** Rayon d'un item **/
+	int radItem = 20;
 
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
-		coordItemMap = new HashMap<Position, ArrayList<Position>>();
+		itemTick = 7000 +(int)(Math.random() * 13000);
 		board = new Board();
 		board.width = width;
 		board.height = height;
@@ -93,11 +92,12 @@ public class Round implements PhysicsEngine {
 	 * si ce seuil est passé, une fonction ajoute un item sur la map.
 	 * @param elapsedTime
 	 */
-	private void majSpawnItem(long elapsedTime) {
+	public void majSpawnItem(long elapsedTime) {
 		itemStack += elapsedTime*itemRate;
-		if(itemStack >= 10000) {
+		if(itemStack >= itemTick) {
 			spawnRandomItem();
 			itemStack = 0;
+			itemTick = 5000 +(int)(Math.random() * 13000);
 		}
 	}
 
@@ -108,26 +108,11 @@ public class Round implements PhysicsEngine {
 	public void spawnRandomItem() {
 
 		// TODO gerer que l'objet ne puisse pas spawn sur un snake
-		Position posC = new Position(); // Coordonnée du centre de l'item
-		Position posItem = new Position(); // Va contenir une des coordonnée autour de l'item
-		int radItem = 20; // Rayon d'un item
-		ArrayList<Position> coordItem = new ArrayList<Position>(); // Liste contenant toute les coordonées de l'item
+		int itCenterX = radItem + (int)(Math.random() * board.height - radItem); 
+		int itCenterY = radItem + (int)(Math.random() * board.width - radItem); 
+		Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
 		Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
-		posC.x = 10 + (int)(Math.random() * board.height - 10); 
-		posC.y = 10 +(int)(Math.random() * board.width - 10); 
 		board.itemsMap.put(posC, randItem);
-
-		for(int i = posC.x - radItem; i < posC.x + radItem ; i++) {
-			for(int j = posC.y - radItem; j < posC.y + radItem ; j++) {
-				if(Math.sqrt(Math.pow(i - posC.x, 2) + Math.pow(j - posC.y, 2)) < radItem) {
-					posItem.x = i;
-					posItem.x = j;
-					coordItem.add(posItem);
-					System.out.println("Point item x:" + i + " y:" + j + " ajouté");
-				}
-			}
-		}
-		coordItemMap.put(posC, coordItem);
 		System.out.println(randItem.toString() + " ajouté a la pos: " + posC.x + "  " + posC.y);
 	}
 
@@ -296,7 +281,7 @@ public class Round implements PhysicsEngine {
 	public Position generateSnakeSpawnPos(int widthBoard, int heightBoard) {
 
 		Boolean flagPos;
-		Position posSpawn = new Position();
+		Position posSpawn = new Position(0,0);
 
 		do {
 			posSpawn.x = 20 + (int)(Math.random() * heightBoard - 20); 
@@ -329,7 +314,7 @@ public class Round implements PhysicsEngine {
 		long elapsed;
 		double pixStep;
 		boolean snakeMove = false;
-		Position pos = new Position();
+		Position pos = new Position(0,0);
 		for(Snake snake : board.snakes)
 		{
 
@@ -438,10 +423,10 @@ public class Round implements PhysicsEngine {
 	 * @param snake
 	 */
 	public void snakeEncounterBounds(Snake snake) {
-		if(snake.currentX < 0 
-				|| snake.currentX > board.width 
-				|| snake.currentY < 0
-				|| snake.currentY > board.height) {
+		if(snake.currentX <= 0 
+				|| snake.currentX >= board.width 
+				|| snake.currentY <= 0
+				|| snake.currentY >= board.height) {
 			if (snake.collision == true) { // Le snake meurt pitoyablement
 				snake.state = false; 
 			} else { // Translater position de l'autre coté de la board
@@ -463,15 +448,14 @@ public class Round implements PhysicsEngine {
 	 */
 	public void snakeEncounterSnake(Snake snake) {
 
-		Position pos = new Position();
-		pos.x = snake.currentX;
-		pos.y = snake.currentY;
+		Position pos = new Position(snake.currentX, snake.currentY );
 		Integer idSnake = board.snakesMap.get(pos);
 		if(idSnake != null && idSnake != snake.playerId) {
 			snake.state = false;	
 		}
 	}
 
+	
 	/**
 	 * Gestion du snake si il rencontre un item
 	 * 
@@ -479,15 +463,16 @@ public class Round implements PhysicsEngine {
 	 * @param pos Position à tester
 	 */
 	public void snakeEncounterItem(Snake snake, Position pos) {
-		Item itemRecup = board.itemsMap.get(pos);
-		if( itemRecup != null ) {
-			if(snake.state) {
-				addSnakeItem(snake.playerId, itemRecup); // Ajoute l'item et l'effet
-				board.itemsMap.remove(pos); // Suppression de l'item sur la map
-				coordItemMap.remove(pos); // Suppression des coordonnées autour de l'item
+		Position posItem = new Position(0,0);
+		for (Map.Entry<Position, Item> entry : board.itemsMap.entrySet()) {
+			posItem = entry.getKey();
+			if(Math.sqrt(Math.pow(posItem.x - pos.x, 2) + Math.pow(posItem.y - pos.y, 2)) < radItem )// Detecte si le snake passe dans le rayon de l'objet
+			{
+				addSnakeItem(snake.playerId, entry.getValue()); // Ajoute l'item et l'effet
+				board.itemsMap.remove(posItem); // Suppression de l'item sur la map
 				System.out.println("Snake a rencontré un item");
 			}
-		}	
+		}
 	}
 
 
@@ -539,7 +524,7 @@ public class Round implements PhysicsEngine {
 		int xS  = snake.currentX;
 		int yS  = snake.currentY;
 		int rad = (int) snake.headRadius;
-		Position pos = new Position();
+		Position pos = new Position(0,0);
 
 		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
 		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
@@ -555,10 +540,8 @@ public class Round implements PhysicsEngine {
 		}
 	}
 
-	/**
-	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
-	 */
 
+	@Override
 	public void forceUpdate(Board board) {
 				
 		this.board.width = board.width;

@@ -15,13 +15,10 @@ public class MainTest {
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
 
-		commandesTest.put(0, Direction.LEFT);
+		//commandesTest.put(0, Direction.LEFT);
 		
-	    Round round1= new Round();
-	    round1.init(400, 400, idPlayers)
-;	    
-		//commandesTest.put(0, Direction.RIGHT );
-
+		round.spawnRandomItem();
+		round.update(1000, commandesTest);
 
 	}
 
