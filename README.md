@@ -9,3 +9,4 @@ Remake de [Achtung, Die Kurve!](https://en.wikipedia.org/wiki/Achtung,_die_Kurve
      Groupe 16
 -- Beguin Mickaël   --
 -- Hernandez Thomas --
+-- Azzouzi Rachid --
