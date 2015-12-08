@@ -1,12 +1,7 @@
 package fr.univavignon.courbes.physics.groupe16;
 
-import java.awt.List;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
@@ -98,7 +93,6 @@ public class Round implements PhysicsEngine {
 			spawnRandomItem();
 			itemStack = 0;
 		}
-
 	}
 
 	/**
@@ -311,7 +305,7 @@ public class Round implements PhysicsEngine {
 	/**
 	 * Cette méthode met à jour les positions des têtes de tout les snakes du jeu encore en vie graçe à leur
 	 * vitesse et leur direction en degré, elle remplit aussi dans le même temps la Map avec les tracés des snakes.
-	 * Elle verifie aussi si le snake n'est pas entré en contact avec un autre snake ou un item.
+	 * Elle verifie aussi si le snake n'est pas entré en contact avec un autre snake ou un item ou la bordure du plateau.
 	 * @param elapsedTime Temps ecoulé en ms depuis le dernier update du plateau
 	 */
 	public void majSnakesPositions(long elapsedTime) {
@@ -529,7 +523,7 @@ public class Round implements PhysicsEngine {
 		Position pos = new Position();
 
 		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
-		// le cercle si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayon
+		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
 		for(int i = xS - rad; i < xS + rad ; i++) {
 			for(int j = yS - rad; j < yS + rad ; j++) {
 				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad) {
