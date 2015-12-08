@@ -3,6 +3,7 @@ package fr.univavignon.courbes.physics.groupe16;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 
 
@@ -13,11 +14,20 @@ public class MainTest {
 		int[] idPlayers = { 0 };
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
-		//commandesTest.put(0, Direction.LEFT);
-		round.spawnRandomItem();
-		int it = 40;
-		for(int i = 0; i < it; i++)
-			round.update(50, commandesTest);
+
+		commandesTest.put(0, Direction.LEFT);
+		
+	    Round round1= new Round();
+	    round1.init(400, 400, idPlayers)
+;	    
+		//commandesTest.put(0, Direction.RIGHT );
+		round.forceUpdate(round1.board);
+
+		
+
+		
+		
+
 
 	}
 
