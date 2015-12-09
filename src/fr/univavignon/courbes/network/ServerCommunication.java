@@ -91,7 +91,7 @@ public interface ServerCommunication
 	public void sendProfiles(List<Profile> profiles);
 	
 	/**
-	 * Récupère les profils envoyés par les clients, représentant un joueur qui désire
+	 * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
 	 * participer à la partie en cours de configuration. Le serveur peut refuser
 	 * certains joueurs, par exemple si la partie est complète (plus de place libre).
 	 * <br/>
