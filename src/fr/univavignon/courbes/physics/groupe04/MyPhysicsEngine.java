@@ -292,13 +292,21 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	public void snakeVsSnake(Snake snake) {
 
 		Position pos = new Position(snake.currentX,snake.currentY);
-		int idPixel = ourBoard.snakesMap.get(pos);
+		int idPixel=0;
+		try
+		{
+			idPixel = ourBoard.snakesMap.get(pos);
+		}catch(NullPointerException e)
+		{
+			System.out.println("Position non possédée, pas de collision");
+		}
 		
 		if(!ourBoard.snakesMap.containsKey(pos)){
 			ourBoard.snakesMap.put(pos, snake.playerId);
 		}
 		if(idPixel != snake.playerId) {
-			snake.state = false;	
+			snake.state = false;
+			System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
 		}
 		
 	}
