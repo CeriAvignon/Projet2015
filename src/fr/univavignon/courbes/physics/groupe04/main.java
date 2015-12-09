@@ -29,7 +29,7 @@ public class main {
 		Board board = new Board();
 		board = a.init(800,600,tab);
 		
-		long t = 1;
+		long t = 15;
 		
 		a.updateSnakesPositions(t);
 	}
