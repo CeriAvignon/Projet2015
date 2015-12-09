@@ -79,11 +79,11 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 * @param spawnPosition
 	 */
 	public void initSnake(Snake snake, int id, Position spawnPosition) {
-		snake.currentItems  = new HashMap<Item, Long>() ;
+		snake.ourBoard.snakes[i].currentItems  = new HashMap<Item, Long>() ;
 		snake.playerId 	    = id;
-		snake.currentX      = spawnPosition.x;
-		snake.currentY      = spawnPosition.y;
-		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
+		snake.ourBoard.snakes[i].currentX      = spawnPosition.x;
+		snake.ourBoard.snakes[i].currentY      = spawnPosition.y;
+		snake.ourBoard.snakes[i].currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 3;  					// 3px ?
 		snake.movingSpeed   = 1;					// 1px / ms ?
 		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 rad/ms?
@@ -92,7 +92,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.inversion     = false;
 		snake.fly   		= false;
 		snake.holeRate 	    = 0.05;			// 5% ??	
-		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
+		System.out.println("Angle en degré : " + Double.toString(snake.ourBoard.snakes[i].currentAngle));	
 	}
 	
 	
@@ -135,86 +135,127 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					alterableTime--;
 					pixel += ourBoard.snakes[i].movingSpeed;
 				}
-				// COMPARAISON entre snakeTable & current angle
-				snakeTable[ourBoard.snakes[i].profileId][0] += Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle)); 	
-				snakeTable[ourBoard.snakes[i].profileId][1] += Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle));
+				// COMPARAISON entre snakeTable & ourBoard.snakes[i].current angle
+				
+				if (snakeTable[ourBoard.snakes[i].profileId][0] > Math.cos(Math.toRadians(snake.ourBoard.snakes[i].currentAngle))){
+				     
+				     ourBoard.snakes[i].currentX--; 
+				     
+				}
+				else if ( snakeTable[ourBoard.snakes[i].profileId][0] < Math.cos(Math.toRadians(snake.ourBoard.snakes[i].currentAngle)) {
+				     ourBoard.snakes[i].currentX++;
+				    
+				}
+				
+				else{
+				     if (snakeTable[ourBoard.snakes[i].profileId][0] > 0){
+				          ourBoard.snakes[i].currentX++;
+				     }
+				     
+				     else if (snakeTable[ourBoard.snakes[i].profileId][0] < 0){
+				          ourBoard.snakes[i].currentX--;
+				     }
+				}
+				
+				     ---------------------------------------------------
+				if (snakeTable[ourBoard.snakes[i].profileId][1] > Math.sin(Math.toRadians(snake.ourBoard.snakes[i].currentAngle))){
+				     
+				     ourBoard.snakes[i].currentY--; 
+				     
+				}
+				else if ( snakeTable[ourBoard.snakes[i].profileId][1] < Math.sin(Math.toRadians(snake.ourBoard.snakes[i].currentAngle)) {
+				     ourBoard.snakes[i].currentY++;
+				    
+				}
+				
+				else{
+				     if (snakeTable[ourBoard.snakes[i].profileId][1] > 0){
+				          ourBoard.snakes[i].currentY++;
+				     }
+				     
+				     else if (snakeTable[ourBoard.snakes[i].profileId][1] < 0){
+				          ourBoard.snakes[i].currentY--;
+				     }
+				}
+				/*snakeTable[ourBoard.snakes[i].profileId][0] += Math.cos(Math.toRadians(ourBoard.snakes[i].ourBoard.snakes[i].currentAngle)); 	
+				snakeTable[ourBoard.snakes[i].profileId][1] += Math.sin(Math.toRadians(ourBoard.snakes[i].ourBoard.snakes[i].currentAngle));
 
 				// TESTS ANGLES COS && SIN
 				if(snakeTable[ourBoard.snakes[i].profileId][0] >= 1 && snakeTable[ourBoard.snakes[i].profileId][1] >= 1) {
-					ourBoard.snakes[i].currentY++;
-					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY++;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX++;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1 && snakeTable[ourBoard.snakes[i].profileId][0] >= 1) {
-					ourBoard.snakes[i].currentY--;
-					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY--;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX++;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1 && snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
-					ourBoard.snakes[i].currentY--;
-					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY--;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX--;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 1 && snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
-					ourBoard.snakes[i].currentY++;
-					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY++;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX--;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 1) {
-					ourBoard.snakes[i].currentY++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY++;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1) {
-					ourBoard.snakes[i].currentY--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentY--;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][0] >= 1) {
-					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX++;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
-					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
+					ourBoard.snakes[i].ourBoard.snakes[i].currentX--;
+					pos.x = ourBoard.snakes[i].ourBoard.snakes[i].currentX;
+					pos.y = ourBoard.snakes[i].ourBoard.snakes[i].currentY;
 					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
-				}
+				}*/
 
 				pixel --;
-				System.out.println("Position snake "+ Integer.toString(ourBoard.snakes[i].playerId)+ " x:" + Integer.toString(ourBoard.snakes[i].currentX) + " y:" + Integer.toString(ourBoard.snakes[i].currentY));
+				System.out.println("Position snake "+ Integer.toString(ourBoard.snakes[i].playerId)+ " x:" + Integer.toString(ourBoard.snakes[i].ourBoard.snakes[i].currentX) + " y:" + Integer.toString(ourBoard.snakes[i].ourBoard.snakes[i].currentY));
 
 				/*if(isMoving) {    // tests de collision
 					fillSnakeHead(ourBoard.snakes[i]);
