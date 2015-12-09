@@ -42,8 +42,8 @@ public enum Item implements Serializable
 	 * @param duration
 	 * 		Durée de l'effet de l'item, en ms.
 	 */
-	Item(long duration)
-	{	this.duration = duration;
+	Item(long duration){
+		this.duration = duration;
 	}
 
 	/** Durée associée à l'effet de l'item, exprimée en ms */
