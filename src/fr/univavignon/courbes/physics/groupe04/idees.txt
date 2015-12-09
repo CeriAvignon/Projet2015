@@ -2,64 +2,6 @@
 
 public class Round implements PhysicsEngine {
 
-	/** Represente le plateau de jeu de la manche courante **/
-	public Board board;
-	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
-	private double deltaSnake[][]; 
-	/** Represente la chance qu'un item apparaisse sur le plateau **/
-	private double itemRate = 1;
-	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
-	private double itemStack = 0;
-	private Object boardActu;
-
-/*	@Override
-	public Board init(int width, int height, int[] profileIds) {
-
-		int playerNbr = profileIds.length;
-		deltaSnake = new double[playerNbr][2];
-
-		board = new Board();
-		board.width = width;
-		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
-		board.itemsMap = new HashMap<Position, Item>();
-		board.snakes = new Snake[playerNbr];
-		Position posSpawn;
-
-		for (int i = 0; i < playerNbr ; i++) 
-		{
-			posSpawn = generateSnakeSpawnPos(width, height);
-			board.snakes[i] = new Snake();
-			initSnake(board.snakes[i], profileIds[i] , posSpawn);
-			System.out.println("Snake " + Integer.toString(i) + " spawn a la position " + Integer.toString(posSpawn.x) + " "+Integer.toString(posSpawn.y));
-		}
-		return board;
-	}*/
-
-	/**
-	 * Cette fonction initialise les données physiques d'un snake présent sur la board.
-	 * 
-	 * @param snake
-	 * @param id
-	 * @param spawnPosition
-	 */
-	public void initSnake(Snake snake, int id, Position spawnPosition) {
-		snake.currentItems  = new HashMap<Item, Long>() ;
-		snake.playerId 	    = id;
-		snake.currentX      = spawnPosition.x;
-		snake.currentY      = spawnPosition.y;
-		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 3;  // Le rayon de la trace du snake en nombre de pixel
-		snake.movingSpeed   = 0.1;	
-		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 degrés/ms
-		snake.state 		= true;
-		snake.collision 	= true;
-		snake.inversion     = false;
-		snake.fly   		= false;
-		snake.holeRate 	    = 0.9;	
-		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
-	}
-
 
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
@@ -956,3 +898,65 @@ public class Round implements PhysicsEngine {
 	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
 	 */
 
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	
+	/**
+	 * Cette fonction augmente une valeur en fonction du taux de spawn d'un item,
+	 * si ce seuil est passé, une fonction ajoute un item sur la map.
+	 * @param elapsedTime
+	 */
+	private void updateSpawnItem(long elapsedTime) {
+		itemStack += elapsedTime*itemRate;
+		if(itemStack >= 10000) {
+			spawnRandomItem();
+			itemStack = 0;
+		}
+
+	}
+	
+	
+	/**
+	 * Ajoute un item aléatoire sur la board à une position aléatoire si l'opération
+	 * du taux de spawn de l'item est un succès.
+	 */
+	public void spawnRandomItem() {
+
+		// TODO gerer que l'objet ne puisse pas spawn sur un snake
+		Position posItem = new Position();
+		Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
+		posItem.x = 10 + (int)(Math.random() * board.height - 10); 
+		posItem.y = 10 +(int)(Math.random() * board.width - 10); 
+		ourBoard.itemsMap.put(posItem, randItem);
+		System.out.println(randItem.toString() + " ajouté a la pos: " + posItem.x + "  " + posItem.y);
+	}
+	
