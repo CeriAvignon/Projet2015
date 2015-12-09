@@ -1,12 +1,8 @@
 package fr.univavignon.courbes.physics.groupe04;
 
-import java.awt.List;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -15,38 +11,39 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
+
+
 /**
- * 
+ * @author Castillo Quentin
+ * @author Latif Alexandre
  */
-
-
-
 public class MyPhysicsEngine implements PhysicsEngine{
-	
-	public double snakeTable[][];
-	public Board ourBoard;
-	public double itemRate = 1;   // taux d'apparition d'un item
-	@Override
-		/**
-	 * Cette méthode doit être appelée par l'Interface Utilisateur
-	 * au début de chaque manche.
-	 * <br/>
-	 * Le Moteur Physique doit s'initialiser, et instancier un objet
-	 * de type {@link Board} représentant l'aire de jeu de la manche
-	 * qui va se dérouler ensuite. Il doit pour cela utiliser les
-	 * valeurs passées en paramètres, puis renvoyer cet objet pour 
-	 * que l'Interface Utilisateur puisse l'utiliser à son tour.
-	 * 
-	 * @param width
-	 * 		Largeur de l'aire de jeu, exprimée en pixel.
-	 * @param height
-	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
-	 * @param profileIds
-	 * 		Tableau contenant les numéros de profils des joueurs impliqués dans 
-	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
-	 * @return
-	 * 		Un objet représentant l'aire de jeu de la manche.
+	/**
+	 * snakeTable[][] : tableau à 2D contenant :
+	 * 1er ligne   : playerID
+	 * 2ème ligne  : cos respectifs
+	 * 3ème ligne  : sin respectifs 
 	 */
+	public double snakeTable[][];
+	/**
+	 * ourBoard : Board créé permettant de placer les snakes/items
+	 */
+	public Board ourBoard;
+	/**
+	 * itemRate : taux d'apparition d'un item, permettra de faire spawn un objet
+	 */
+	public double itemRate = 1;   
+	
+	
+	/**				VALIDÉ
+	 * @param width Largeur de l'aire de jeu, exprimée en pixel.
+	 * @param height Hauteur de l'aire de jeu, exprimée en pixel.
+	 * @param profileIds Tableau contenant les numéros de profils des joueurs impliqués
+	 * @return Un objet représentant l'aire de jeu de la manche.
+	 */
+	
+	@Override
+
 	public Board init(int width, int height, int[] profileIds) {
 		
 	Position spawn;
@@ -72,12 +69,13 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 
 	
-	/**
-	 * Cette fonction initialise les données physiques d'un snake présent sur la board.
+	
+	/**				VALIDÉ
+	 * Constructeur de Snake
 	 * 
-	 * @param snake
-	 * @param id
-	 * @param spawnPosition
+	 * @param snake Snake qui va être construit
+	 * @param id Id du player dans la partie
+	 * @param spawnPosition Position aléatoire récupérée grâce à snakeSpawnPos
 	 */
 	public void initSnake(Snake snake, int id, Position spawnPosition) {
 		snake.currentItems  = new HashMap<Item, Long>() ;
@@ -87,20 +85,21 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 3;  					// 3px ?
 		snake.movingSpeed   = 1;					// 1px / ms ?
-		snake.turningSpeed  = 0.0015707963267949; // Est égal a 0.09 rad/ms?
+		snake.turningSpeed  = 0.05; 				// ?
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
-		snake.holeRate 	    = 0.05;			// 5% ??	
+		snake.holeRate 	    = 0.05;					// 5% ??	
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
 	}
 	
 	
-	/**
-	 * @param width 
-	 * @param height
-	 * @return
+	
+	/**				VALIDÉ
+	 * @param width Longueur du board
+	 * @param height Largeur du board
+	 * @return Renvoi une position (aléatoire) 
 	 */
 	public Position snakeSpawnPos(int width, int height){
 		
@@ -110,6 +109,15 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		return pos;
 	}
 	
+	
+	
+	
+	/**				PAS TERMINÉ
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour, exprimé en ms.
+	 * @param commands
+	 * 		Map associant un joueur ID à la dernière commande générée par le joueur correspondant.
+	 */
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
@@ -117,10 +125,17 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		updateSnakesPositions(elapsedTime);
 		// update directions des snakes par rapport au temps
 		updateSnakesDirections(elapsedTime, commands);
+		
+		// TODO : Quoi d'autre a mettre a jour ? 
+		// TODO : CREATION ITEM par rapport a un itemRate (déja créé dans Init)
+		// TODO : UPDATE ITEM pour savoir QUAND rajouter un item
 	}
 
 	
 		
+	/**					A AMELIORÉ
+	 * @param time Temps écoulé
+	 */
 	public void updateSnakesPositions(long time){
 		long alterableTime;        // temps qui passe
 		double pixel;              // permet de remplir la Map du board pixel à pixel
@@ -270,11 +285,16 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 	
 	
+	
+	/**				VALIDÉ
+	 * @param snake Snake testé
+	 */
 	public void outOfBounds(Snake snake) {
 		// Si on sort du cadre
 		if(snake.currentX < 0 || snake.currentX > ourBoard.width || snake.currentY < 0|| snake.currentY > ourBoard.height) {
 			if (!snake.fly) { // S'il ne peut pas traverser les murs 
 				snake.state = false; 
+				System.out.println(snake.playerId + " dead because of bounds!");
 			} 
 			else { // Envoyer le snake a l'opposé
 				if(snake.currentX < 0)
@@ -289,29 +309,38 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		}
 	}
 	
+	
+	
+	
+	/**				SEMBLE OK, A VERIFIER 
+	 * @param snake Snake testé
+	 */
 	public void snakeVsSnake(Snake snake) {
 
 		Position pos = new Position(snake.currentX,snake.currentY);
-		int idPixel=0;
+		
 		try
 		{
-			idPixel = ourBoard.snakesMap.get(pos);
+			Integer idPixel = ourBoard.snakesMap.get(pos);
+			
+			if(idPixel != null && idPixel != snake.playerId) {
+				snake.state = false;
+				System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
+			}
 		}catch(NullPointerException e)
 		{
 			System.out.println("Position non possédée, pas de collision");
 		}
 		
-		if(!ourBoard.snakesMap.containsKey(pos)){
-			ourBoard.snakesMap.put(pos, snake.playerId);
-		}
-		if(idPixel != snake.playerId) {
-			snake.state = false;
-			System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
-		}
-		
 	}
 	
 	
+
+	
+	/**			VALIDÉ
+	 * @param snake Snake testé
+	 * @param pos Position du snake et de l'objet supposé
+	 */
 	public void snakeVsItem(Snake snake, Position pos) {
 		Item newItem = ourBoard.itemsMap.get(pos);
 		if( newItem != null ) {
@@ -322,16 +351,18 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		}	
 	}
 	
-	/**
-	 * @param time
-	 * @param commands
+	
+	
+	/**				SEMBLE OK, A VERIFIER
+	 * @param time Temps écoulé
+	 * @param commands Commande en cours pour chaque player (LEFT,RIGHT,NONE)
 	 */
 	public void updateSnakesDirections(long time, Map<Integer, Direction> commands)
 	{
 		Direction direction;
 		for(int i = 0 ; i < ourBoard.snakes.length ; i++)
 		{
-			direction = commands.get(ourBoard.snakes[i].playerId);
+			direction = commands.get(ourBoard.snakes[i].playerId); // get direction of the snake
 			if(direction != null)
 			{
 				switch (direction)
@@ -360,8 +391,11 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	
-	
+	/**						VALIDÉ
+	 * Mise à jour forcé du board courant
+	 * 
+	 * @param board Board qui va écraser le board courant
+	 */
 	@Override
 	public void forceUpdate(Board board) {
 		this.ourBoard = board;
@@ -369,12 +403,11 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	
-	/**
+	/**						VALIDÉ
 	 * Nouvel item, associé à un ou plusieurs snakes
 	 * 
-	 * @param id 
-	 * @param item
+	 * @param id Id player
+	 * @param item Item concerné
 	 */
 	public void addSnakeItem(int id, Item item) {
 		switch(item){
@@ -423,7 +456,10 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				}
 				break;
 			case COLLECTIVE_THREE_CIRCLES:
-				itemRate *= 3;
+				for(int i = 0 ; i<3;i++)
+				{
+					// TODO  : GENEREATE RANDOM ITEM
+				}
 				break;
 			case COLLECTIVE_TRAVERSE_WALL:
 				for(Snake snake : ourBoard.snakes) {
@@ -441,12 +477,15 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 
 
-	/**
-	 * Supprime l'item ainsi que l'effet relatif à l'item ramassé au snake concerné.
+	
+	
+	/**						VALIDÉ
+	 * Effet Item terminé
 	 * 
-	 * @param id Id du Snake concerné
-	 * @param item Item ramassé
+	 * @param id Id player
+	 * @param item Item concerné
 	 */
+	
 	public void removeSnakeItem(int id, Item item) {
 		
 		switch(item)
@@ -479,9 +518,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				ourBoard.snakes[id].currentItems.remove(item);
 				ourBoard.snakes[id].inversion = false;
 				break;
-			case COLLECTIVE_THREE_CIRCLES:
-				itemRate /= 3;
-				break;
 			case COLLECTIVE_TRAVERSE_WALL:
 				ourBoard.snakes[id].currentItems.remove(item);
 				ourBoard.snakes[id].fly = false;
@@ -491,6 +527,9 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				break;
 		}
 	}
+
+	
+	
 
 	
 }

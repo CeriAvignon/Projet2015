@@ -29,9 +29,12 @@ public class main {
 		Board board = new Board();
 		board = a.init(800,600,tab);
 		
-		long t = 15;
+		Map<Integer,Direction> com = new HashMap<Integer,Direction>();
+		com.put(1, Direction.LEFT);
+		com.put(2, Direction.NONE);
+		long t = 3;
 		
-		a.updateSnakesPositions(t);
+		a.update(t,com);
 	}
 	
 
