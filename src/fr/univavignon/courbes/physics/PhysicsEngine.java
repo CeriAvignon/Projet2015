@@ -1,5 +1,4 @@
 package fr.univavignon.courbes.physics;
-
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
