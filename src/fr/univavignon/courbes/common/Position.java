@@ -14,4 +14,39 @@ public class Position implements Serializable
 	public int x;
 	/** Position sur l'axe des ordonnées */
 	public int y;
+	
+	public Position(int x, int y)
+	{	this.x = x;
+		this.y = y;
+	}
+	
+	@Override
+	public int compareTo(Position position)
+	{	int result = x - position.x;
+		if(result==0)
+			result = y - position.y;
+		return result;
+	}
+
+	@Override
+	public int hashCode()
+	{	final int prime = 31;
+		int result = 1;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{	boolean result = false;
+		if(this==obj)
+			result = true;
+		else if(obj!=null && obj instanceof Position)
+		{	Position position = (Position) obj;
+			result = compareTo(position)==0;
+		}
+		return result;
+	}
+}
 }
