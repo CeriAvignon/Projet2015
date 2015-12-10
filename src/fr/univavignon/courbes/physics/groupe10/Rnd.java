@@ -341,6 +341,7 @@ public class Rnd implements PhysicsEngine {
 		
 		
 		
+		
 	}
 
 	/**Cette fonction detecte si la tete du snake rentre en collision avec des objets, soit avec un mur, un autre snake (ou son propre corps), 
