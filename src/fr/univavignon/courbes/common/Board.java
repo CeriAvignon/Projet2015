@@ -13,6 +13,13 @@ import java.util.Map;
  * Un joueur gagne la partie quand son score dépasse une certaine valeur
  * limite. 
  */
+
+
+
+
+
+
+
 public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
