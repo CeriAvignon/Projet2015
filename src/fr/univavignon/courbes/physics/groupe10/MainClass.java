@@ -11,9 +11,22 @@ public class MainClass {
 		int width = 500;
 		int height = 500;
 		int profileIds[] = {101,102,103};
-	  	Board br = new Board(width, height, profileIds);
 	  	
-
+		Rnd r = new Rnd();
+		
+		Board b = r.init(width, height, profileIds);
+		
+		Position p = new Position(130,253);
+		
+		r.board.itemsMap.put(p, Item.USER_SPEED);
+		
+	//	System.out.println(r.board.itemsMap.containsKey(p));
+		
+	//	r.board.itemsMap.remove(p);
+		
+	//	System.out.println(r.board.itemsMap.containsKey(p));
+		
+		r.snakeMove(0, 100, Direction.NONE);
 		/*
 		Position pos = new Position(130,253);
 
