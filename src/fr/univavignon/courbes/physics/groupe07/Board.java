@@ -19,7 +19,7 @@ public class Board implements Serializable
 	
 	/** Largeur de l'aire de jeu, en pixels */
 	public int width;
-	/** Hauteur de l'aire de jeu, en pixels */
+	/** Hauteur de l'aire de jeu, en pixlenghels */
 	public int height;
 	
 	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
@@ -28,11 +28,11 @@ public class Board implements Serializable
 	public Snake snakes[];
 	
 	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
-	public Map<Position, Item> itemsMap;
+	public Map<Position, Integer> itemsMap;
 	
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
 		
 	}
-}
+	
