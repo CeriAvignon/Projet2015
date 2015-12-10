@@ -96,6 +96,18 @@ public interface ClientCommunication
 	public List<Profile> retrieveProfiles();
 	
 	/**
+	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
+	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
+	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
+	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
+	 * pas accueillir plus de joueurs.
+	 *   
+	 * @param profile
+	 * 		Profil du joueur à ajouter à la partie.
+	 */
+	public void sendProfile(Profile profile);
+	
+	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,
 	 * limite envoyée par le serveur auquel ce client est connecté.
 	 * <br/>
