@@ -14,18 +14,14 @@ public class MainTest {
 		int[] idPlayers = { 0 };
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
+
 		commandesTest.put(0, Direction.LEFT);
 		
 	    Round round1= new Round();
 	    round1.init(400, 400, idPlayers)
 ;	    
 		//commandesTest.put(0, Direction.RIGHT );
-		round.forceUpdate(round1.board);
 
-		
-
-		
-		
 
 	}
 
