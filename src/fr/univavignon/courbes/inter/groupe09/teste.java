@@ -10,6 +10,7 @@ public class teste {
 		Error r1 = new Error(); 
 		r1.displayError("Connexion interompu");
 		
+		
 	}
 
 }
