@@ -12,7 +12,8 @@ public class Controle {
 	    InputStreamReader isr;
 	    BufferedReader bis;        
 	    try {
-	      fis = new FileInputStream(new File("src/text/user.txt"));
+	      fis = new FileInputStream(
+	    		  new File("src/user.txt"));
 	      isr = new InputStreamReader(fis);
 	      bis = new BufferedReader(isr);
 	      
@@ -58,7 +59,8 @@ public class Controle {
 	    InputStreamReader isr;
 	    BufferedReader bis;        
 	    try {
-	      fis = new FileInputStream(new File("src/text/user.txt"));
+	      fis = new FileInputStream(
+	    		  new File("src/user.txt"));
 	      isr = new InputStreamReader(fis);
 	      bis = new BufferedReader(isr);
 	      
@@ -96,7 +98,7 @@ public class Controle {
 public void inscriptionDe(String email, String ps, String mdp,String pays, String temps ){
 		  try {
 			 // int i = 0; 
-				 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/text/user.txt")));
+				 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/user.txt")));
 			     StringBuffer sb = new StringBuffer(); 
 		         String line;      
 		         while((line = reader.readLine()) != null) {
@@ -105,7 +107,8 @@ public void inscriptionDe(String email, String ps, String mdp,String pays, Strin
 		         }
 		         reader.close();
 		         
-		         BufferedWriter out = new BufferedWriter(new FileWriter("src/text/user.txt"));
+		         BufferedWriter out = new BufferedWriter(
+		        		 new FileWriter("src/user.txt"));
 		         out.write(ps+";"+mdp+";"+email+";"+pays+";"+temps);
 		         out.newLine();
 		         out.write(sb.toString());

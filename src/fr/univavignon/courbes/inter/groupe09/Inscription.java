@@ -12,7 +12,11 @@ public class Inscription extends Fenetre implements ActionListener {
 	private JTextField txt2;
 	private JTextField txt3;
 	private JTextField txt4;
-	private JTextField txt5;
+	//private JTextField txt5;
+	private String [] gmt = {"gmt-9","gmt-8","gmt-7","gmt-6","gmt-5","gmt-4","gmt-3",
+			"gmt-2","gmt-1","gmt","gmt+1","gmt+2","gmt+3","gmt+4","gmt+5",
+			"gmt+6","gmt+7","gmt+8","gmt+9"};
+	private JComboBox txt5;
  
 	private JPanel p1;
 	private JPanel p2;
@@ -41,7 +45,10 @@ public class Inscription extends Fenetre implements ActionListener {
 		txt2 = new JTextField();
 		txt3 = new JTextField();
 		txt4 = new JTextField();
-		txt5 = new JTextField();
+		txt5 = new JComboBox(gmt);
+		txt5.setSelectedIndex(10);
+		//JScrollPane scrol = new JScrollPane(txt5);
+		
 		p1.add(lab1);
 		p1.add(lab2);
 		p1.add(email);
@@ -79,12 +86,12 @@ public class Inscription extends Fenetre implements ActionListener {
 		    Pattern pays_1 = Pattern.compile("[^0-9].");
 		    Matcher pays_2 = pays_1.matcher(txt4.getText());
 		    int rep = c.controlePseudo(txt2.getText());
-		    
+		    String ch =(String)txt5.getSelectedItem();
 			if(txt1.getText().equals("") 
 					|| txt2.getText().equals("")
 					|| txt3.getText().equals("")
 					|| txt4.getText().equals("")
-					|| txt5.getText().equals("") 
+					|| ch.equals("") 
 					|| !email_2.find() 
 					|| !pays_2.find()) {
 				JOptionPane.showMessageDialog(this,
@@ -97,7 +104,7 @@ public class Inscription extends Fenetre implements ActionListener {
 							"Erreur", JOptionPane.WARNING_MESSAGE);
 			}
 			else {
-				c.inscriptionDe(txt1.getText(), txt2.getText(), txt3.getText(), txt4.getText(),txt5.getText());
+				c.inscriptionDe(txt1.getText(), txt2.getText(), txt3.getText(), txt4.getText(),ch);
 				this.dispose();
 				new Menu("LE JEUX", 500, 500);
 			}
@@ -109,6 +116,9 @@ public class Inscription extends Fenetre implements ActionListener {
 			this.dispose();
 			break;
 		}
+	}
+	public static void main(String[] argv){
+		Inscription ins = new Inscription("fen",400,400);
 	}
 	
 }
