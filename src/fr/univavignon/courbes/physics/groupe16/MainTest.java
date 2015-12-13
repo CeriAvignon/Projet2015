@@ -18,8 +18,14 @@ public class MainTest {
 		//commandesTest.put(0, Direction.LEFT);
 		
 		round.spawnRandomItem();
+		round.update(500, commandesTest);
+		round.update(500, commandesTest);
+		round.update(500, commandesTest);
+		round.update(500, commandesTest);
 		round.update(1000, commandesTest);
-
+		round.update(1000, commandesTest);
+		round.update(1000, commandesTest);
+		round.update(1000, commandesTest);
 	}
 
 }

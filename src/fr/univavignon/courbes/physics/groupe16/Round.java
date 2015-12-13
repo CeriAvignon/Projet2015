@@ -21,15 +21,21 @@ public class Round implements PhysicsEngine {
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
 	private double itemStack = 0;
 	/** Represente le nombre de 'ms' avant le prochain spawn d'item, depend aussi de itemRate **/
-	int itemTick;
+	private double itemTick;
 	/** Rayon d'un item **/
-	int radItem = 20;
-
+	private int radItem = 20;
+	/** Represente à quel moment le snake 'n' va faire un trou **/
+	private Map<Integer, Integer> holeTick;
+	/** Represente combien de déplacement le snake 'n' a effectué **/
+	private Map<Integer, Integer> moveCount;
+	
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
 		int playerNbr = profileIds.length;
 		deltaSnake = new double[playerNbr][2];
+		holeTick = new HashMap<Integer, Integer>();
+		moveCount = new HashMap<Integer, Integer>();
 		itemTick = 7000 +(int)(Math.random() * 13000);
 		board = new Board();
 		board.width = width;
@@ -69,7 +75,9 @@ public class Round implements PhysicsEngine {
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
-		snake.holeRate 	    = 0.9;	
+		snake.holeRate 	    = 0.1;	
+		holeTick.put(snake.playerId , (int)(Math.random() * 100 - snake.holeRate*100));
+		moveCount.put(snake.playerId  , 0);
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
 	}
 
@@ -330,15 +338,15 @@ public class Round implements PhysicsEngine {
 				}
 				deltaSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
 				deltaSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
-
+				
 				if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] >= 1) {
 					snake.currentY--;
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]--;
 					deltaSnake[snake.playerId][0]--;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] >= 1) {
@@ -346,9 +354,9 @@ public class Round implements PhysicsEngine {
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]++;
 					deltaSnake[snake.playerId][0]--;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] <= -1) {
@@ -356,9 +364,9 @@ public class Round implements PhysicsEngine {
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]++;
 					deltaSnake[snake.playerId][0]++;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] <= -1) {
@@ -366,56 +374,74 @@ public class Round implements PhysicsEngine {
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]--;
 					deltaSnake[snake.playerId][0]++;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][1] >= 1) {
 					snake.currentY--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]--;
+					//moveCount[snake.playerId]++;
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][1] <= -1) {
 					snake.currentY++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][1]++;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][0] >= 1) {
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][0]--;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 				else if(deltaSnake[snake.playerId][0] <= -1) {
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
 					deltaSnake[snake.playerId][0]++;
+					moveCount.put(snake.playerId, moveCount.get(snake.playerId)+1);
 					snakeMove = true;
 				}
 
 				pixStep --;
-				System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
 
 				if(snakeMove) {
-					fillSnakeHead(snake);
+					if (moveCount.get(snake.playerId) <= holeTick.get(snake.playerId)
+					 || moveCount.get(snake.playerId) > holeTick.get(snake.playerId) +10) {
+						board.snakesMap.put(pos , snake.playerId);
+						fillSnakeHead(snake);
+						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
+					}
+					else
+						System.out.println("Hole");
 					snakeEncounterBounds(snake);
 					snakeEncounterSnake(snake);
 					snakeEncounterItem(snake,pos);
+				 	if(moveCount.get(snake.playerId) == 100) {
+						refreshSnakeHoleTick(snake);
+					}
 				}
-				// TODO : gestion du hole rate
 			}
 		}
+	}
+
+	/**
+	 * @param snake
+	 */
+	private void refreshSnakeHoleTick(Snake snake) {
+		moveCount.put(snake.playerId, 0);
+		holeTick.put(snake.playerId, (int)(Math.random() * 100 - snake.holeRate*100));
+		System.out.println("Hole tick refresh");
+		
 	}
 
 	/**
