@@ -4,6 +4,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
+/**
+ * @author Groupe09
+ *
+ */
 public class Authentification extends Fenetre implements ActionListener {
 
 	private JLabel userName, password, ath, vide;
@@ -15,6 +19,14 @@ public class Authentification extends Fenetre implements ActionListener {
 	private JButton b2;
 	Controle c = new Controle();
 
+	/**
+	 * @param titre 
+	 * titre de la fenetre
+	 * @param x
+	 * taille x de la fenetre
+	 * @param y
+	 * taille y de la fenetre
+	 */
 	Authentification(String titre, int x, int y) 
 	
 	{

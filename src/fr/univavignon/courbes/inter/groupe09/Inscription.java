@@ -97,7 +97,8 @@ public class Inscription extends Fenetre implements ActionListener {
 				JOptionPane.showMessageDialog(this,
 						"Erreur dans la saisie du formulaire", 
 						"Erreur", JOptionPane.WARNING_MESSAGE);
-			}	
+				break;
+			}				
 			if ( rep == 1) {
 					JOptionPane.showMessageDialog(this,
 							"User name existe déjà", 
@@ -108,8 +109,6 @@ public class Inscription extends Fenetre implements ActionListener {
 				this.dispose();
 				new Menu("LE JEUX", 500, 500);
 			}
-			//String email, String ps, String mdp,String pays, String temps
-			
 			break;
 		case "ANNULER":
 			new Bienvenu("ma fenere", 300, 400);
