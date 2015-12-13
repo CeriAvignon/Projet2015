@@ -23,16 +23,15 @@ public class main {
 
 	
 	public static void main(String[] args) {
-		
-		MyPhysicsEngine a = new MyPhysicsEngine();
-		int tab[]={1,2,3};
-		Board board = new Board();
-		board = a.init(800,600,tab);
-		
+		int tab[]={1,2,3};		// profileIDs
+		MyPhysicsEngine a = new MyPhysicsEngine(50,50,tab);//  EASIER FOR COLLISIONS
 		Map<Integer,Direction> com = new HashMap<Integer,Direction>();
-		com.put(1, Direction.LEFT);
-		com.put(2, Direction.NONE);
-		long t = 3;
+		com.put(0, Direction.LEFT);
+		com.put(1, Direction.NONE);
+		com.put(2, Direction.RIGHT);
+		a.ourBoard.snakes[1].currentAngle = 0;
+		a.ourBoard.snakes[2].currentAngle = 90; 
+		long t = 50;
 		
 		a.update(t,com);
 	}

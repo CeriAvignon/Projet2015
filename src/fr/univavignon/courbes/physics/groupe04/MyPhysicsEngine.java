@@ -24,7 +24,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 * 2ème ligne  : cos respectifs
 	 * 3ème ligne  : sin respectifs 
 	 */
-	public double snakeTable[][];
+	public double[][] snakeTable;
 	/**
 	 * ourBoard : Board créé permettant de placer les snakes/items
 	 */
@@ -32,8 +32,14 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	/**
 	 * itemRate : taux d'apparition d'un item, permettra de faire spawn un objet
 	 */
-	public double itemRate = 1;   
+	public double itemRate;   
 	
+	
+	public MyPhysicsEngine(int width,int height,int[] profileIds)
+	{
+		ourBoard = init(width,height,profileIds);
+		itemRate = 1;
+	}
 	
 	/**				VALIDÉ
 	 * @param width Largeur de l'aire de jeu, exprimée en pixel.
@@ -129,11 +135,13 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		// TODO : Quoi d'autre a mettre a jour ? 
 		// TODO : CREATION ITEM par rapport a un itemRate (déja créé dans Init)
 		// TODO : UPDATE ITEM pour savoir QUAND rajouter un item
+		// TODO : remplir hashmap snakes avec la TAILLE du snake
+		// TODO : remplir hashmap item avec la taille des items ( 15 px ?)
 	}
 
 	
 		
-	/**					A AMELIORÉ
+	/**					A AMELIORÉ (CORRECTION RECENTE PAR RAPPORT AU HASHMAP
 	 * @param time Temps écoulé
 	 */
 	public void updateSnakesPositions(long time){
@@ -203,7 +211,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentX++;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
@@ -213,7 +220,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentX++;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
@@ -223,7 +229,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentX--;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
@@ -233,7 +238,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentX--;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
@@ -242,8 +246,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 1) {
 					ourBoard.snakes[i].currentY++;
 					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
+					pos.y = ourBoard.snakes[i].currentY;;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					isMoving = true;
 				}
@@ -251,7 +254,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentY--;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					isMoving = true;
 				}
@@ -259,15 +261,13 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					ourBoard.snakes[i].currentX++;
 					pos.x = ourBoard.snakes[i].currentX;
 					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
 					ourBoard.snakes[i].currentX--;
 					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
-					ourBoard.snakesMap.put(pos , ourBoard.snakes[i].playerId);
+					pos.y = ourBoard.snakes[i].currentY;				
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
@@ -280,12 +280,26 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					snakeVsSnake(ourBoard.snakes[i]);
 					snakeVsItem(ourBoard.snakes[i],pos);
 				}
+				if(isMoving) {	// remplir le hashMap des snakes par rapport à la taille
+					sizeSnakePixels(ourBoard.snakes[i]);
+				}
 			}
 		}
 	}
 	
 	
-	
+	/**				NON TERMINÉ VOIR -> http://www.developpez.net/forums/d209/general-developpement/algorithme-mathematiques/general-algorithmique/savoir-1-point-l-interieur-d-cercle/
+	 * 				racine_carre((x_point - x_centre)² + (y_centre - y_point)) < rayon ??
+	 * @param snake Snake concerné
+	 */
+	public void sizeSnakePixels(Snake snake) { // Calculer les pixels qui doivent etre mit dans le hashmap a partir du size
+		Position pos = new Position(0,0);  // contiendra les multiplise positions des pixels
+
+
+		ourBoard.snakesMap.put(pos, snake.playerId);
+	}
+
+
 	/**				VALIDÉ
 	 * @param snake Snake testé
 	 */
@@ -312,7 +326,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	/**				SEMBLE OK, A VERIFIER 
+	/**				VALIDÉ
 	 * @param snake Snake testé
 	 */
 	public void snakeVsSnake(Snake snake) {
@@ -326,6 +340,15 @@ public class MyPhysicsEngine implements PhysicsEngine{
 			if(idPixel != null && idPixel != snake.playerId) {
 				snake.state = false;
 				System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
+			}
+			else if(idPixel == null)
+			{
+				ourBoard.snakesMap.put(pos , snake.playerId);  
+				//System.out.println("new position added to snake n°"+snake.playerId);
+			}
+			else if(idPixel != null)
+			{
+				System.out.print("t");
 			}
 		}catch(NullPointerException e)
 		{
@@ -353,33 +376,33 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	/**				SEMBLE OK, A VERIFIER
+	/**				VALIDÉ
 	 * @param time Temps écoulé
 	 * @param commands Commande en cours pour chaque player (LEFT,RIGHT,NONE)
 	 */
 	public void updateSnakesDirections(long time, Map<Integer, Direction> commands)
 	{
-		Direction direction;
+		Direction direction; // permet de récuper la direction de chaque snakes
 		for(int i = 0 ; i < ourBoard.snakes.length ; i++)
 		{
-			direction = commands.get(ourBoard.snakes[i].playerId); // get direction of the snake
+			direction = commands.get(ourBoard.snakes[i].playerId); // LEFT/RIGHT/NONE
 			if(direction != null)
 			{
 				switch (direction)
 				{
-					case LEFT:  // test en cas d'inversion, si tout va bien, incrémentation de l'angle en fonction de la vitesse de rotation
-						if(ourBoard.snakes[i].inversion == false)
-							ourBoard.snakes[i].currentAngle += time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
-						else
-							ourBoard.snakes[i].currentAngle -= time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
-						break;
-					case RIGHT:
-						if(ourBoard.snakes[i].inversion == false)
+					case LEFT: // Si on va a gauche, il faut augmenter l'angle
+						if(ourBoard.snakes[i].inversion) // test en cas d'inversion, si tout va bien, incrémentation de l'angle en fonction de la vitesse de rotation
 							ourBoard.snakes[i].currentAngle -= time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
 						else
 							ourBoard.snakes[i].currentAngle += time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
 						break;
-					case NONE:
+					case RIGHT: // Si on va à droite, il faut diminuer l'angle
+						if(ourBoard.snakes[i].inversion)
+							ourBoard.snakes[i].currentAngle += time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
+						else
+							ourBoard.snakes[i].currentAngle -= time*Math.toDegrees(ourBoard.snakes[i].turningSpeed);
+						break;
+					case NONE: // rien ne change
 						break;
 					default:
 						System.out.println("ERROR ???");
