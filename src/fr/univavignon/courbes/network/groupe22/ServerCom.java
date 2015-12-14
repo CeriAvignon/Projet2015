@@ -1,15 +1,23 @@
 package fr.univavignon.courbes.network.groupe22;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.net.Socket;
+import java.net.ServerSocket;
+import java.net.DatagramSocket;
+
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
-import java.io.BufferedInputStream;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.net.InetSocketAddress;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -36,10 +44,10 @@ import fr.univavignon.courbes.network.ServerCommunication;
 public class ServerCom implements ServerCommunication
 {
 		private int port = 2345;
-	  private String host = "192.168.0.14";
+	  private String host = "127.0.0.1";
 	  private ServerSocket server = null;
 	  private boolean isRunning = true;
-	  public static Socket tableauSocket[] = new Socket[100];
+	  public static Socket tableauSocketClients[] = new Socket[100];
 	  public static int nbClient=0;
 
 
@@ -49,9 +57,16 @@ public class ServerCom implements ServerCommunication
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de créer une partie réseau.
      */
+
+
 	public void launchServer()
 	{
 		//Créer le serveur
+		port = findPort();
+
+		host = findAdress();
+		//TODO Trouver l'adresse ip! NetworkInterface
+
 		try {
 	 			server = new ServerSocket(port, 100, InetAddress.getByName(host));
 
@@ -60,8 +75,55 @@ public class ServerCom implements ServerCommunication
 
 		} catch (IOException e) {
 	 			e.printStackTrace();
-}
+			}
 		//Ouvrir le serveur
+	Thread t = new Thread(new Runnable(){
+
+     public void run(){
+
+        while(isRunning == true){
+
+           try {
+
+              //On attend une connexion d'un client
+
+              Socket client = server.accept();
+
+              //Une fois reçue, on la traite dans un thread séparé
+
+              System.out.println("Connexion cliente reçue.");
+							tableauSocketClients[nbClient] = client;
+							nbClient++;
+
+              Thread t = new Thread(new ClientCom(client));
+
+              t.start();
+
+           } catch (IOException e) {
+
+              e.printStackTrace();
+           }
+        }
+
+
+
+        try {
+
+           server.close();
+
+        } catch (IOException e) {
+
+           e.printStackTrace();
+
+           server = null;
+
+        }
+
+     }
+
+    });
+
+		t.start();
 	}
 
 	/**
@@ -73,6 +135,40 @@ public class ServerCom implements ServerCommunication
 	public void closeServer()
 	{
 		isRunning = false;
+	}
+
+	/**
+		* Retourne le premier port ouvert trouvé sur le serveur.
+		* @return port
+		*		Premier port libre trouvé
+	*/
+	private int findPort()
+	{
+		for(int port = 1; port <= 65535; port++){
+
+         try {
+
+            ServerSocket sSocket = new ServerSocket(port);
+						break;
+
+         } catch (IOException e) {
+
+            e.printStackTrace();
+
+         }
+
+      }
+		return port;
+	}
+
+	/**
+		* Retourne le premier port ouvert trouvé sur le serveur.
+		* @return port
+		*		Premier port libre trouvé
+	*/
+	private String findAdress()
+	{
+
 	}
 
 	/**
@@ -91,7 +187,10 @@ public class ServerCom implements ServerCommunication
 	 * @param profiles
 	 * 		Liste des profils des joueurs participant à une partie.
 	 */
-	public void sendPlayers(List<Profile> profiles);
+	public void sendPlayers(List<Profile> profiles)
+	{
+		return;
+	}
 
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
@@ -110,7 +209,10 @@ public class ServerCom implements ServerCommunication
 	 * @param pointThreshold
 	 * 		Limite de point courante de la partie.
 	 */
-	public void sendPointThreshold(int pointThreshold);
+	public void sendPointThreshold(int pointThreshold)
+	{
+		return;
+	}
 
 	/**
      * Permet au serveur d'envoyer des informations sur l'évolution de
@@ -127,7 +229,10 @@ public class ServerCom implements ServerCommunication
      * @param board
      * 		Etat courant de l'aire de jeu.
      */
-	public void sendBoard(Board board);
+	public void sendBoard(Board board)
+	{
+		return;
+	}
 
 	/**
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
@@ -145,7 +250,10 @@ public class ServerCom implements ServerCommunication
      * 		un client. Si un client ne renvoie rien, les valeurs manquantes doivent
      * 		être remplacées par des valeurs {@link Direction#NONE}.
      */
-	public Map<Integer,Direction> retrieveCommands();
+	public Map<Integer,Direction> retrieveCommands()
+	{
+		return null;
+	}
 
 	/**
      * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
@@ -159,7 +267,10 @@ public class ServerCom implements ServerCommunication
      * @param message
      * 		Contient le message destiné aux clients.
      */
-	public void sendText(String message);
+	public void sendText(String message)
+	{
+		return;
+	}
 
 	/**
      * Permet au serveur de recevoir des messages textuels provenant de ses clients.
@@ -175,5 +286,8 @@ public class ServerCom implements ServerCommunication
      * 		Un tableau de chaînes de caractères, chacune envoyée par un client donné.
      * 		En l'absence de message, la valeur associée à un client est {@code null}.
      */
-	public String[] retrieveText();
+	public String[] retrieveText()
+	{
+		return null;
+	}
 }

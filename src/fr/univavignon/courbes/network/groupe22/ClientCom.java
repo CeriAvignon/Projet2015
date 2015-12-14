@@ -8,10 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import fr.univavignon.courbes.network.ClientCommunication;
-package fr.univavignon.courbes.network.groupe22;
-
-import fr.univavignon.courbes.network.ClientCommunication;
 
 public class ClientCom implements ClientCommunication
 {
