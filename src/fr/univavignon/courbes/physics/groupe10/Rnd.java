@@ -369,12 +369,11 @@ public class Rnd implements PhysicsEngine {
 			{
 				Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
 				
-				
 				valeurCollision = checkCollision(po, id);
 				
 				if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
 				{
-					//if(!lastDrawnPosition.equals(po))
+					
 					if(new Random().nextDouble() >= board.snakes[id].holeRate)
 					{
 						board.snakesMap.put(po, id);			// Je déssine la position sur la map
@@ -385,7 +384,7 @@ public class Rnd implements PhysicsEngine {
 						
 						System.out.println(po.x+" "+po.y);
 					}
-					//lastDrawnPosition = po;
+					
 				}
 				else
 				{
