@@ -2,6 +2,8 @@ package fr.univavignon.courbes.physics.groupe10;
 import fr.univavignon.courbes.common.*;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class MainClass {
 	
@@ -14,30 +16,24 @@ public class MainClass {
 	  	
 		Rnd r = new Rnd();
 		
-		Board b = r.init(width, height, profileIds);
+		r.board = r.init(width, height, profileIds);
 		
-		Position p = new Position(130,253);
 		
-		r.board.itemsMap.put(p, Item.USER_SPEED);
+		Map<Integer,Direction> commands = new HashMap<Integer, Direction>();
 		
-	//	System.out.println(r.board.itemsMap.containsKey(p));
+		// PROFILE ID OU PLAYER ID ??!
 		
-	//	r.board.itemsMap.remove(p);
+		commands.put(profileIds[0], Direction.LEFT);
+		commands.put(profileIds[1], Direction.RIGHT);
+		commands.put(profileIds[2], Direction.NONE);
 		
-	//	System.out.println(r.board.itemsMap.containsKey(p));
+		r.update(50, commands);
 		
-		r.snakeMove(0, 100, Direction.NONE);
-		/*
-		Position pos = new Position(130,253);
-
-		Item it1 = Item.values()[1];
+		System.out.println(r.board.itemsMap.isEmpty());
 		
-
-		br.itemsMap.put(pos, it1);
-
-		br.moveSnake(0, (long) 100, Direction.NONE);
-		*/
 		
+		
+	
 		
 		
 	
