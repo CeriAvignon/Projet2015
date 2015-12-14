@@ -27,7 +27,7 @@ public class MainClass {
 		commands.put(profileIds[1], Direction.RIGHT);
 		commands.put(profileIds[2], Direction.NONE);
 		
-		r.update(50, commands);
+		r.update(3000, commands);
 		
 		System.out.println(r.board.itemsMap.isEmpty());
 		

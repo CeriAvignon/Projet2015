@@ -279,7 +279,7 @@ public class Rnd implements PhysicsEngine {
 						
 				for ( ; i < (int) distance ; i++)
 				{
-					j = i; 		// Je stocke le i pour une utilisation postérieure
+					//j = i; 		// Je stocke le i pour une utilisation postérieure
 					
 					
 					
@@ -291,115 +291,55 @@ public class Rnd implements PhysicsEngine {
 						valeurCollision = checkCollision(po, id);			// Appel à la fonction qui vérifie la collision
 					
 					if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
-					{
-						
-						if(new Random().nextDouble() >= board.snakes[id].holeRate)  // Pour faire des trous dans le corps du snake
-						{
-							board.snakesMap.put(po, id);			// Je déssine la position sur la map
-							System.out.println(po.x+" "+po.y);
-						}
-						
-						lastDrawnPosition = po;			// Mettre à jour la position dessinée
+					{	
 							
 							
-									/* Cette condition va s'executer si et seulement si le snake arrive jusqu'au mur du board
-									 et il est en mode FLY */
-							
-							if(po.x == board.width || po.y == board.height || po.x == 0 || po.y == 0)
+							if(new Random().nextDouble() >= board.snakes[id].holeRate)  // Pour faire des trous dans le corps du snake
 							{
-								outTheWall = true;					// Mettre à jour la variable outTheWall
-								break;								// Sortir la boucle
-								
+								board.snakesMap.put(po, id);			// Je déssine la position sur la map
+								System.out.println(po.x+" "+po.y);
 							}
+							
+							lastDrawnPosition = po;			// Mettre à jour la position dessinée
 								
 						
 					}
 					else
 					{
-						if(valeurCollision == -1 || valeurCollision == 1)// Si il y a une collision avec un snake ou un mur je sors de la boucle
+						if(valeurCollision == -1 || valeurCollision == 1)
 						{					
 							break;
 						}
 					
 					}
 					}
-						
+				
+			
 					headX += stepX;
 					headY += stepY;
-				}
 				
-				
-				
-				
-		if (board.snakes[id].fly && outTheWall) 	// S'il y a le mode fly et le snake est sortie de la board
-		{
-
-			// Dessiner jusqu'au bord du board est déjà fait dans la boucle précedente
-			
-			
-		
-			
-				if (board.snakes[id].currentX >= board.width)
-				{	
+				if(board.snakes[id].fly)
+				{
+					if (headX >= board.width)
 						headX = 0;
-				}
-				if (board.snakes[id].currentY >= board.height)
-				{	
+
+				if (headY >= board.height)
 						headY = 0;
-				}
 
-			
-
-				if (board.snakes[id].currentX < 0)
-				{	
+				if (headX < 0)
 					headX = board.width;
-					
-				}
+
 				
-				if (board.snakes[id].currentY < 0)
-				{	
+				if (headY < 0)
 					headY = board.height;
-				
-				}
-				
 
 			
-			// dessiner jusqu'à la tête ( currentX et currentY )
-			for ( ; j < (int) distance ; j++)
-			{
-				Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
-				
-				valeurCollision = checkCollision(po, id);
-				
-				if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
-				{
-					
-					if(new Random().nextDouble() >= board.snakes[id].holeRate)
-					{
-						board.snakesMap.put(po, id);			// Je déssine la position sur la map
-															
-						board.snakes[id].currentX = (int) Math.round(headX);
-														// Mettre à jour la tête de snake(c'est à dire currentX et currentY)
-						board.snakes[id].currentY = (int) Math.round(headY);
-						
-						System.out.println(po.x+" "+po.y);
-					}
-					
 				}
-				else
-				{
-					if(valeurCollision == -1 || valeurCollision == 1)// Si il y a une collision avec un snake ou un mur je sors de la boucle
-					{					
-						break;
-					}
-				
-				}
-					
-				headX += stepX;
-				headY += stepY;
 			}
-			
-		}
+				
+		board.snakes[id].currentX = lastDrawnPosition.x;
+		board.snakes[id].currentY = lastDrawnPosition.y;
+				
 		
 		// Pour tester
 		System.out.println("currentX : "+ board.snakes[id].currentX +" - currentY :"+board.snakes[id].currentY);
