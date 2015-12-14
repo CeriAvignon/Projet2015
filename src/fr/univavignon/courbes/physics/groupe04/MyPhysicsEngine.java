@@ -89,7 +89,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 3;  					// 3px ?
+		snake.headRadius 	= 1;  					// 2px ?
 		snake.movingSpeed   = 1;					// 1px / ms ?
 		snake.turningSpeed  = 0.005; 				// ?
 		snake.state 		= true;
@@ -142,7 +142,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 
 	
 		
-	/**					A AMELIORÉ (CORRECTION RECENTE PAR RAPPORT AU HASHMAP)
+	/**					IMPORTANT A MODIFIER
 	 * @param time Temps écoulé
 	 */
 	public void updateSnakesPositions(long time){
@@ -216,14 +216,10 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				}
 				else
 				{
-					ourBoard.snakes[i].currentY++;
-					ourBoard.snakes[i].currentX--;
-					snakeTable[ourBoard.snakes[i].profileId][1]--;
-					snakeTable[ourBoard.snakes[i].profileId][0]++;
-					isMoving = true;
+					// CA ARRIVE TROP SOUVENT OUAICH
 				}
 
-				pixel = 0;  
+				pixel--;  
 				System.out.println("New Position snake "+ Integer.toString(ourBoard.snakes[i].playerId)+ " x:" + Integer.toString(ourBoard.snakes[i].currentX) + " y:" + Integer.toString(ourBoard.snakes[i].currentY));
 
 				if(isMoving) {    // tests de collision
@@ -256,7 +252,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					pos.x = i;
 					pos.y = j;
 					ourBoard.snakesMap.put(pos, snake.playerId);
-					System.out.println("Point x:" + i + " y:" + j + " ajouté");
+				//	System.out.println("Point x:" + i + " y:" + j + " ajouté");
 				}
 			}
 		}
@@ -308,7 +304,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 			
 			else
 			{
-			        if (snake.collision)
+			        if (snake.collision && idPixel != snake.playerId)
 			        {
 				        snake.state = false;
 				        System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);

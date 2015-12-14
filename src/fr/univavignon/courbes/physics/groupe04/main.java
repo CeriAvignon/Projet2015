@@ -26,12 +26,12 @@ public class main {
 		int tab[]={1,2,3};		// profileIDs
 		MyPhysicsEngine a = new MyPhysicsEngine(800,600,tab);//  EASIER FOR COLLISIONS
 		Map<Integer,Direction> com = new HashMap<Integer,Direction>();
-		com.put(1, Direction.LEFT);
-		com.put(2, Direction.NONE);
-		com.put(3, Direction.RIGHT);
 		a.ourBoard.snakes[0].currentAngle = 180;
 		a.ourBoard.snakes[1].currentAngle = 0;
-		a.ourBoard.snakes[2].currentAngle = 90; 
+		a.ourBoard.snakes[2].currentAngle = 90;
+		com.put(1, Direction.NONE);
+		com.put(2, Direction.NONE);
+		com.put(3, Direction.NONE); 
 		System.out.println("Angle en degré : "+a.ourBoard.snakes[0].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[1].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[2].currentAngle);
 		long t = 1;
 		
