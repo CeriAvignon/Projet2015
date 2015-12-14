@@ -242,18 +242,17 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	/**				NON TERMINÉ VOIR -> http://www.developpez.net/forums/d209/general-developpement/algorithme-mathematiques/general-algorithmique/savoir-1-point-l-interieur-d-cercle/
+	/**				Faut Tester-> http://www.developpez.net/forums/d209/general-developpement/algorithme-mathematiques/general-algorithmique/savoir-1-point-l-interieur-d-cercle/
 	 * 				racine_carre((x_point - x_centre)² + (y_centre - y_point)) < rayon ??
 	 * @param snake Snake concerné
 	 */
 	public void sizeSnakePixels(Snake snake) { // Calculer les pixels qui doivent etre mit dans le hashmap a partir du size
 		Position pos = new Position(0,0);  // contiendra les multiplise positions des pixels
-		double headSize = snake.headRadius;
 		
 		// faire un carré, puis récupérer les valeurs qui se trouve dans un cercle de centre snake et de diametre headRadius
-		for(int i = snake.currentX - (int)headSize; i < snake.currentX + (int)headSize ; i++) {
-			for(int j = snake.currentY - (int)headSize; j < snake.currentY + (int)headSize; j++) {
-				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)headSize) {
+		for(int i = snake.currentX - (int)snake.headRadius; i < snake.currentX + (int)snake.headRadius ; i++) {
+			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius; j++) {
+				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos.x = i;
 					pos.y = j;
 					ourBoard.snakesMap.put(pos, snake.playerId);
@@ -306,11 +305,15 @@ public class MyPhysicsEngine implements PhysicsEngine{
 			{
 				ourBoard.snakesMap.put(pos , snake.playerId);  
 			}
+			
 			else
 			{
-				snake.state = false;
-				System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
-				System.out.println("Snake n°"+snake.playerId+ " vient de dire bonjour au snake n°"+ourBoard.snakesMap.get(pos));
+			        if (snake.collision)
+			        {
+				        snake.state = false;
+				        System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
+				        System.out.println("Snake n°"+snake.playerId+ " vient de dire bonjour au snake n°"+ourBoard.snakesMap.get(pos));
+			        }
 			}
 		}catch(NullPointerException e)
 		{
