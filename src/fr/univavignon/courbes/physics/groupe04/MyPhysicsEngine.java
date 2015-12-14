@@ -91,7 +91,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
 		snake.headRadius 	= 3;  					// 3px ?
 		snake.movingSpeed   = 1;					// 1px / ms ?
-		snake.turningSpeed  = 0.05; 				// ?
+		snake.turningSpeed  = 0.005; 				// ?
 		snake.state 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
@@ -127,10 +127,11 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
-		// update coordonnées des snakes par rapport au temps
-		updateSnakesPositions(elapsedTime);
 		// update directions des snakes par rapport au temps
 		updateSnakesDirections(elapsedTime, commands);
+		// update coordonnées des snakes par rapport au temps
+		updateSnakesPositions(elapsedTime);
+
 		
 		// TODO : Quoi d'autre a mettre a jour ? 
 		// TODO : CREATION ITEM par rapport a un itemRate (déja créé dans Init)
@@ -141,7 +142,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 
 	
 		
-	/**					A AMELIORÉ (CORRECTION RECENTE PAR RAPPORT AU HASHMAP
+	/**					A AMELIORÉ (CORRECTION RECENTE PAR RAPPORT AU HASHMAP)
 	 * @param time Temps écoulé
 	 */
 	public void updateSnakesPositions(long time){
@@ -159,48 +160,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					alterableTime--;
 					pixel += ourBoard.snakes[i].movingSpeed;
 				}
-	/*			// COMPARAISON entre snakeTable & ourBoard.snakes[i].current angle
-				
-				if (snakeTable[ourBoard.snakes[i].profileId][0] > Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle))){
-				     
-				     ourBoard.snakes[i].currentX--; 
-				     
-				}
-				else if ( snakeTable[ourBoard.snakes[i].profileId][0] < Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle))) {
-				     ourBoard.snakes[i].currentX++;
-				    
-				}
-				
-				else{
-				     if (snakeTable[ourBoard.snakes[i].profileId][0] > 0){
-				          ourBoard.snakes[i].currentX++;
-				     }
-				     
-				     else if (snakeTable[ourBoard.snakes[i].profileId][0] < 0){
-				          ourBoard.snakes[i].currentX--;
-				     }
-				}
-				
-				if (snakeTable[ourBoard.snakes[i].profileId][1] > Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle))){
-				     
-				     ourBoard.snakes[i].currentY--; 
-				     
-				}
-				else if ( snakeTable[ourBoard.snakes[i].profileId][1] < Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle))) {
-				     ourBoard.snakes[i].currentY++;
-				    
-				}
-				
-				else{
-				     if (snakeTable[ourBoard.snakes[i].profileId][1] > 0){
-				          ourBoard.snakes[i].currentY++;
-				     }
-				     
-				     else if (snakeTable[ourBoard.snakes[i].profileId][1] < 0){
-				          ourBoard.snakes[i].currentY--;
-				     }
-				}*/
-				
 				// VALEURS SERONT COMPRISES ENTRE -2 ET 2
 				snakeTable[ourBoard.snakes[i].profileId][0] += Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle)); 	
 				snakeTable[ourBoard.snakes[i].profileId][1] += Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle));
@@ -209,8 +168,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				if(snakeTable[ourBoard.snakes[i].profileId][0] >= 1 && snakeTable[ourBoard.snakes[i].profileId][1] >= 1) {
 					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
@@ -218,8 +175,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1 && snakeTable[ourBoard.snakes[i].profileId][0] >= 1) {
 					ourBoard.snakes[i].currentY--;
 					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
@@ -227,8 +182,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1 && snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
 					ourBoard.snakes[i].currentY--;
 					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
@@ -236,8 +189,6 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 1 && snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
 					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
@@ -245,34 +196,34 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				// ON A DONC COS OU SINUS = 0, ETUDE DES DERNIERS CAS
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 1) {
 					ourBoard.snakes[i].currentY++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -1) {
 					ourBoard.snakes[i].currentY--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][0] >= 1) {
 					ourBoard.snakes[i].currentX++;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
 				else if(snakeTable[ourBoard.snakes[i].profileId][0] <= -1) {
+					ourBoard.snakes[i].currentX--;				
+					snakeTable[ourBoard.snakes[i].profileId][0]++;
+					isMoving = true;
+				}
+				else
+				{
+					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX--;
-					pos.x = ourBoard.snakes[i].currentX;
-					pos.y = ourBoard.snakes[i].currentY;				
+					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
 
-				pixel = 0;  // Si on peut dépasser 1, alors on doit pixel --
+				pixel = 0;  
 				System.out.println("New Position snake "+ Integer.toString(ourBoard.snakes[i].playerId)+ " x:" + Integer.toString(ourBoard.snakes[i].currentX) + " y:" + Integer.toString(ourBoard.snakes[i].currentY));
 
 				if(isMoving) {    // tests de collision
@@ -288,15 +239,29 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 	
 	
+	
+	
+	
 	/**				NON TERMINÉ VOIR -> http://www.developpez.net/forums/d209/general-developpement/algorithme-mathematiques/general-algorithmique/savoir-1-point-l-interieur-d-cercle/
 	 * 				racine_carre((x_point - x_centre)² + (y_centre - y_point)) < rayon ??
 	 * @param snake Snake concerné
 	 */
 	public void sizeSnakePixels(Snake snake) { // Calculer les pixels qui doivent etre mit dans le hashmap a partir du size
 		Position pos = new Position(0,0);  // contiendra les multiplise positions des pixels
+		double headSize = snake.headRadius;
+		
+		// faire un carré, puis récupérer les valeurs qui se trouve dans un cercle de centre snake et de diametre headRadius
+		for(int i = snake.currentX - (int)headSize; i < snake.currentX + (int)headSize ; i++) {
+			for(int j = snake.currentY - (int)headSize; j < snake.currentY + (int)headSize; j++) {
+				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)headSize) {
+					pos.x = i;
+					pos.y = j;
+					ourBoard.snakesMap.put(pos, snake.playerId);
+					System.out.println("Point x:" + i + " y:" + j + " ajouté");
+				}
+			}
+		}
 
-
-		ourBoard.snakesMap.put(pos, snake.playerId);
 	}
 
 
@@ -337,18 +302,15 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		{
 			Integer idPixel = ourBoard.snakesMap.get(pos);
 			
-			if(idPixel != null && idPixel != snake.playerId) {
-				snake.state = false;
-				System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
-			}
-			else if(idPixel == null)
+			if(idPixel == null)
 			{
 				ourBoard.snakesMap.put(pos , snake.playerId);  
-				//System.out.println("new position added to snake n°"+snake.playerId);
 			}
-			else if(idPixel != null)
+			else
 			{
-				System.out.print("t");
+				snake.state = false;
+				System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
+				System.out.println("Snake n°"+snake.playerId+ " vient de dire bonjour au snake n°"+ourBoard.snakesMap.get(pos));
 			}
 		}catch(NullPointerException e)
 		{
@@ -552,10 +514,49 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 
 	
-	
-
-	
 }
 
+// IDEE ALEX UPDATESNAKEPOSITION
 
+/*			// COMPARAISON entre snakeTable & ourBoard.snakes[i].current angle
+
+if (snakeTable[ourBoard.snakes[i].profileId][0] > Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle))){
+     
+     ourBoard.snakes[i].currentX--; 
+     
+}
+else if ( snakeTable[ourBoard.snakes[i].profileId][0] < Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle))) {
+     ourBoard.snakes[i].currentX++;
+    
+}
+
+else{
+     if (snakeTable[ourBoard.snakes[i].profileId][0] > 0){
+          ourBoard.snakes[i].currentX++;
+     }
+     
+     else if (snakeTable[ourBoard.snakes[i].profileId][0] < 0){
+          ourBoard.snakes[i].currentX--;
+     }
+}
+
+if (snakeTable[ourBoard.snakes[i].profileId][1] > Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle))){
+     
+     ourBoard.snakes[i].currentY--; 
+     
+}
+else if ( snakeTable[ourBoard.snakes[i].profileId][1] < Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle))) {
+     ourBoard.snakes[i].currentY++;
+    
+}
+
+else{
+     if (snakeTable[ourBoard.snakes[i].profileId][1] > 0){
+          ourBoard.snakes[i].currentY++;
+     }
+     
+     else if (snakeTable[ourBoard.snakes[i].profileId][1] < 0){
+          ourBoard.snakes[i].currentY--;
+     }
+}*/
 
