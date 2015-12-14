@@ -240,67 +240,64 @@ public class Rnd implements PhysicsEngine {
 	public void snakeDrawBody(int id, double headX, double headY)
 	{
 		// Remarque : 1 - il faut eviter de déssiner la tête du snake avant le déplacement dans la 1ere itération, 
-		// Comme elle sera dessiné dans la dernière MAJ on tombre dans une collision!! le mieux est de la déssiner dans la dernière itération
-		
+		// Comme elle sera dessiné dans la dernière MAJ on tombre dans une collision!! 
+		// le mieux est de la déssiner dans la dernière itération
+	
 				
-				int j = 0;
+			Position lastDrawnPosition = new Position(-1,-1);	
+			/* Objet qui stocke la dernière position dessinée
+			 Pour ne pas dessiner sur une case déjà dessinée dans l'iteration
+			 précedente */
+			
+			double interX = board.snakes[id].currentX - headX;		
 				
-				boolean outTheWall = false;			// Variable qui indique que le snake en déplacement est sorti du mur ou pas
+			double interY = board.snakes[id].currentY - headY;
+			// Determiner la distance entre la tête avant et après le déplacement				
+			double distance = Math.sqrt( Math.pow(interX, 2) + Math.pow(interY, 2)); 
 				
-				Position lastDrawnPosition = new Position(-1,-1);		/* Objet qui stocke la dernière position dessinée
-																		 Pour ne pas dessiner sur une case déjà dessinée dans l'iteration
-																		 précedente */
+			double stepX = interX / distance;
 				
-				double interX = board.snakes[id].currentX - headX;		
+			double stepY = interY / distance;
 				
-				double interY = board.snakes[id].currentY - headY;
-														// Determiner la distance entre la tête avant et après le déplacement
-				double distance = Math.sqrt( Math.pow(interX, 2) + Math.pow(interY, 2)); 
-				
-				double stepX = interX / distance;
-				
-				double stepY = interY / distance;
-				
-				int valeurCollision = 0;
+			int valeurCollision = 0;
 				
 
 				
-				// Je deplace la tête du snake vers le pixel suivant
+			// Je deplace la tête du snake vers le pixel suivant
 				
-				headX += stepX;
-				headY += stepY;
+			headX += stepX;
+			headY += stepY;
 				
 		
 				
-				// Tant que la pointe du tracé n'a pas rejoint la tete, on dessine le pixel et on incremente
+			// Tant que la pointe du tracé n'a pas rejoint la tete, on dessine le pixel et on incremente
 				
 				
-				int i = 0;
+			
 						
-				for ( ; i < (int) distance ; i++)
-				{
-					//j = i; 		// Je stocke le i pour une utilisation postérieure
+			for (int i = 0 ; i < (int) distance ; i++)
+			{
 					
+				// Créer l'objet Position avec les Coordonnées actuelles de la tête
+				Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
 					
-					
-														// Créer l'objet Position avec les Coordonnées actuelles de la tête
-					Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
-					
-					if(!lastDrawnPosition.equals(po))				// Si cette position n'est pas dessiné dans l'iteration précedente
-					{	
-						valeurCollision = checkCollision(po, id);			// Appel à la fonction qui vérifie la collision
+					// Si cette position n'est pas dessiné dans l'iteration précedente
+				if(!lastDrawnPosition.equals(po))				
+				{	
+						valeurCollision = checkCollision(po, id);	
+						// Appel à la fonction qui vérifie la collision
 					
 					if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
 					{	
 							
+						// Pour faire des trous dans le corps du snake
+						if(new Random().nextDouble() >= board.snakes[id].holeRate)  
+						{
+							board.snakesMap.put(po, id);			// Je déssine la position sur la map
+							System.out.println(po.x+" "+po.y);
+						}
 							
-							if(new Random().nextDouble() >= board.snakes[id].holeRate)  // Pour faire des trous dans le corps du snake
-							{
-								board.snakesMap.put(po, id);			// Je déssine la position sur la map
-								System.out.println(po.x+" "+po.y);
-							}
-							
-							lastDrawnPosition = po;			// Mettre à jour la position dessinée
+						lastDrawnPosition = po;			// Mettre à jour la position dessinée
 								
 						
 					}
@@ -312,15 +309,15 @@ public class Rnd implements PhysicsEngine {
 						}
 					
 					}
-					}
+				}
 				
 			
 					headX += stepX;
 					headY += stepY;
 				
-				if(board.snakes[id].fly)
+			if(board.snakes[id].fly)
 				{
-					if (headX >= board.width)
+				if (headX >= board.width)
 						headX = 0;
 
 				if (headY >= board.height)
@@ -333,9 +330,8 @@ public class Rnd implements PhysicsEngine {
 				if (headY < 0)
 					headY = board.height;
 
-			
 				}
-			}
+		}
 				
 		board.snakes[id].currentX = lastDrawnPosition.x;
 		board.snakes[id].currentY = lastDrawnPosition.y;
@@ -481,7 +477,7 @@ public class Rnd implements PhysicsEngine {
 			// Je mets la tete des snakes dans la map 
 			for(int i = 0; i < board.snakes.length; i++)
 			{
-				board.snakesMap.put(new Position(board.snakes[i].currentX, board.snakes[i].currentY), board.snakes[i].playerId);
+			  board.snakesMap.put(new Position(board.snakes[i].currentX, board.snakes[i].currentY), board.snakes[i].playerId);
 			}
 		}	
 		
