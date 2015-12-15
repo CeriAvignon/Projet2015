@@ -97,6 +97,19 @@ public class ClientCom implements ClientCommunication
     }
 
     /**
+  	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
+  	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
+  	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
+  	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
+  	 * pas accueillir plus de joueurs.
+  	 *
+  	 * @param profile
+  	 * 		Profil du joueur à ajouter à la partie.
+  	 */
+  	public void sendProfile(Profile profile);
+  
+  	/**
+
      * Récupère la liste des profils des joueurs participant à la manche,
      * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
      * des joueurs pour cette partie.
