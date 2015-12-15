@@ -164,7 +164,35 @@ public class ClientCom implements ClientCommunication
      *         Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      *         n'a été envoyée.
      */
-    public Board retrieveBoard();
+    public Board retrieveBoard() {
+      Thread retrieve = new Thread(new Runnable() {
+			     public void run(){
+				         try {
+					              DatagramSocket socket = new DatagramSocket(portServer);
+				                byte[] data = new byte[4];
+				                DatagramPacket packet = new DatagramPacket(data, data.length );
+				                socket.receive(packet);
+				                int leng = 0;
+				                for (int i = 0; i < 4; ++i) {
+				                      leng |= (data[3-i] & 0xff) << (i << 3);
+				                }
+
+				                byte[] buffer = new byte[leng];
+				                packet = new DatagramPacket(buffer, buffer.length );
+				                socket.receive(packet);
+				                ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
+				                ObjectInputStream oos = new ObjectInputStream(baos);
+				                board = (Board)oos.readObject();
+
+				        }
+                catch(Exception e) {
+				              e.printStackTrace();
+				        }
+			    }
+		  });
+		retrieve.start();
+		return board;
+  }
 
     /**
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
@@ -196,7 +224,18 @@ public class ClientCom implements ClientCommunication
      *         Contient le message envoyé par le serveur, ou {@code null} si aucun message
      *         n'a été envoyé.
      */
-    public String retrieveText();
+    public String retrieveText() {
+      try {
+			    String message = "";
+			    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			    message = in.readLine();
+			    return message;
+		  }
+      catch (IOException e) {
+			     e.printStackTrace();
+		  }
+		return null;
+    }
 
     /**
      * Permet au client d'envoyer un message textuel au serveur auquel il est
@@ -210,5 +249,13 @@ public class ClientCom implements ClientCommunication
      * @param message
      *         Le message textuel à envoyer au serveur.
      */
-    public void sendText(String message);
+    public void sendText(String message) {
+      try {
+			    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+    		  out.println(message);
+		  }
+      catch (IOException e) {
+			     e.printStackTrace();
+		  }
+    }
 }
