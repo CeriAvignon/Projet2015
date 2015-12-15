@@ -1,8 +1,10 @@
 package fr.univavignon.courbes.physics.groupe16;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
@@ -28,7 +30,10 @@ public class Round implements PhysicsEngine {
 	private Map<Integer, Integer> holeTick;
 	/** Represente combien de déplacement le snake 'n' a effectué **/
 	private Map<Integer, Integer> moveCount;
-	
+	/** Map contenant la position du centre d'un item en clé et une liste
+	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
+	public Map<Position, ArrayList<Position>> coordItemMap;
+
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
@@ -503,7 +508,43 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-
+	
+	/**
+	 * cette méthode applique une coupure à un snake passé en param ,elle renvoie un double (=0 aucune tracée ,=1 plein tracée)
+	 * 
+	 * 
+	 * @param snake
+	 * @param holeRate
+	 */
+	
+	public double snakeCut(Snake snake) {
+		
+		//le temp initial 
+		int tmphole=1;
+		//nbr de trou initial
+		int cptsnakehole=1;
+		if(cptsnakehole<=0)
+		{
+		//génération d'un nombre aléatoire
+		//le bon moment pour avoir un trou 
+		int nba=(int) (Math.random()*(40+150*(2-snake.holeRate)));
+		//si le dernier trou a eu lieux il y a moin 1 seconde alors pas de nouveau trou
+		if(nba==30 && tmphole < (System.currentTimeMillis()-1000))
+		{
+			
+			cptsnakehole =board.width;
+			//mettre tmphole à jour
+			tmphole = (int) System.currentTimeMillis();
+		}
+		return snake.holeRate=1;
+		}
+		//le snake n'a pas besoin d'etre établi
+		else
+		{
+			cptsnakehole--;
+			return snake.holeRate=0;
+		}
+	}
 
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
@@ -569,7 +610,11 @@ public class Round implements PhysicsEngine {
 		}
 	}
 
-
+	/**
+	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
+	 * 
+	 * @param board
+	 */
 	@Override
 	public void forceUpdate(Board board) {
 				
