@@ -1,8 +1,10 @@
 package fr.univavignon.courbes.physics.groupe16;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
@@ -16,11 +18,38 @@ public class Round implements PhysicsEngine {
 	public Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
+	
+	public double[][] getDeltaSnake() {
+		return deltaSnake;
+	}
+
+	public void setDeltaSnake(double[][] deltaSnake) {
+		this.deltaSnake = deltaSnake;
+	}
+
 	/** Represente la chance qu'un item apparaisse sur le plateau **/
 	private double itemRate = 1;
+	
+	public double getItemRate() {
+		return itemRate;
+	}
+
+	public void setItemRate(double itemRate) {
+		this.itemRate = itemRate;
+	}
+
 	/** Represente une valeur qui augmente et qui fait spawn un objet quand elle arrive a 1 **/
 
 	private double itemStack = 0;
+	
+	public double getItemStack() {
+		return itemStack;
+	}
+
+	public void setItemStack(double itemStack) {
+		this.itemStack = itemStack;
+	}
+
 	/** Map contenant la position du centre d'un item en clé et une liste
 	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
 	public Map<Position, ArrayList<Position>> coordItemMap;
@@ -94,7 +123,7 @@ public class Round implements PhysicsEngine {
 	 * @param elapsedTime
 	 */
 	private void majSpawnItem(long elapsedTime) {
-		itemStack += elapsedTime*itemRate;
+		itemStack += elapsedTime*getItemRate();
 		if(itemStack >= 10000) {
 			spawnRandomItem();
 			itemStack = 0;
@@ -491,21 +520,39 @@ public class Round implements PhysicsEngine {
 	}
 	
 	/**
-	 * cette méthode permet de choisir un snake aléatoirement 
-	 * et lui applique une coupure pendant un certain temp passé en paramétre
+	 * cette méthode applique une coupure à un snake passé en param ,elle renvoie un double (=0 aucune tracée ,=1 plein tracée)
 	 * 
 	 * 
-	 * @param temp
-	 * @param profileIds
+	 * @param snake
+	 * @param holeRate
 	 */
 	
-	public void snakeCut(int temp,int[] profileIds) {
-		int lower = 0;
-		int higher = profileIds.length;
-		int random = (int)(Math.random() * (higher-lower)) + lower;
-		if(board.snakes[random].state == true) {
-			// a finir 
-			board.snakes[random].movingSpeed /= 2;
+	public double snakeCut(Snake snake) {
+		
+		//le temp initial 
+		int tmphole=1;
+		//nbr de trou initial
+		int cptsnakehole=1;
+		if(cptsnakehole<=0)
+		{
+		//génération d'un nombre aléatoire
+		//le bon moment pour avoir un trou 
+		int nba=(int) (Math.random()*(40+150*(2-snake.holeRate)));
+		//si le dernier trou a eu lieux il y a moin 1 seconde alors pas de nouveau trou
+		if(nba==30 && tmphole < (System.currentTimeMillis()-1000))
+		{
+			//cptsnakehole =getWidth();
+			cptsnakehole =board.width;
+			//mettre tmphole à jour
+			tmphole = (int) System.currentTimeMillis();
+		}
+		return snake.holeRate=1;
+		}
+		//le snake n'a pas besoin d'etre établi
+		else
+		{
+			cptsnakehole--;
+			return snake.holeRate=0;
 		}
 	}
 
