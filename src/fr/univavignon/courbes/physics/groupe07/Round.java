@@ -420,6 +420,149 @@ public void setItemRate(double itemRate)
 			}
 		}
 	}
+	
+	
+	/** A modifier 
+	 public void updateSnakesPositions(long elapsedTime) {
+		long elapsed;
+		double pixStep;
+		boolean snakeMove = false;
+		Position pos = new Position();
+		for(Snake snake : board.snakes)
+		{
+
+			elapsed = elapsedTime;
+			pixStep = 0;
+			while (elapsed > 0 && snake.state == true)
+			{ **/
+
+				/** Gestion de la future position du snake en fonction de son angle **/
+				/**while(pixStep < 1 && elapsed > 0) {
+					elapsed--;
+					pixStep += snake.movingSpeed;
+				}
+				deltaSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
+				deltaSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
+
+				if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] >= 1) {
+					snake.currentY--;
+					snake.currentX++;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]--;
+					deltaSnake[snake.playerId][0]--;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] >= 1) {
+					snake.currentY++;
+					snake.currentX++;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]++;
+					deltaSnake[snake.playerId][0]--;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] <= -1) {
+					snake.currentY++;
+					snake.currentX--;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]++;
+					deltaSnake[snake.playerId][0]++;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] <= -1) {
+					snake.currentY--;
+					snake.currentX--;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]--;
+					deltaSnake[snake.playerId][0]++;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][1] >= 1) {
+					snake.currentY--;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]--;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][1] <= -1) {
+					snake.currentY++;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][1]++;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][0] >= 1) {
+					snake.currentX++;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][0]--;
+					snakeMove = true;
+				}
+				else if(deltaSnake[snake.playerId][0] <= -1) {
+					snake.currentX--;
+					pos.x = snake.currentX;
+					pos.y = snake.currentY;
+					board.snakesMap.put(pos , snake.playerId);
+					deltaSnake[snake.playerId][0]++;
+					snakeMove = true;
+				}
+
+				pixStep --;
+				System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
+
+				if(snakeMove) {
+					fillSnakeHead(snake);
+					snakeEncounterBounds(snake);
+					snakeEncounterSnake(snake);
+					snakeEncounterItem(snake,pos);
+				}
+				// TODO : gestion du hole rate
+			}
+		}
+	}
+		public void majSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
+	{
+		Direction direction;
+		for(Snake snake : board.snakes)
+		{
+			direction = commands.get(snake.playerId);
+			if(direction != null)
+			{
+				switch (direction)
+				{
+				case LEFT:
+					if(snake.inversion == false)
+						snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
+					else
+						snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
+					break;
+				case RIGHT:
+					if(snake.inversion == false)
+						snake.currentAngle -= elapsedTime*Math.toDegrees(snake.turningSpeed);
+					else
+						snake.currentAngle += elapsedTime*Math.toDegrees(snake.turningSpeed);
+					break;
+				case NONE:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	**/
+
 	/**
 	 * Cette méthode écrase le tableau actuel.
 	 */
