@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,10 @@ public class Server implements ServerCommunication {
 	 * 
 	 */
 	protected BufferedInputStream reader = null;
+	/**
+	 * 
+	 */
+	private PrintWriter writer = null;
 	/**
 	 * 
 	 */
@@ -131,7 +136,7 @@ public class Server implements ServerCommunication {
 			public void run(){
  	    		ServerSocket server = null;
  	    		try {
- 	    			server = new ServerSocket(port, 100, InetAddress.getByName(ip));
+ 	    			server = new ServerSocket(port, size, InetAddress.getByName(ip));
  	    		} catch (UnknownHostException e) {
  	    			e.printStackTrace();
  	    		} catch (IOException e) {
@@ -164,10 +169,35 @@ public class Server implements ServerCommunication {
 	@Override
 	public void closeServer() {
 		this.isRunning = false;
+		//envoyer un message a tous les clients.
 	}
 
 	@Override
-	public void sendPointThreshold(int pointThreshold) {
+	public void sendPointThreshold(final int pointThreshold) {
+		Thread send = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				Socket sock = null;
+				int i = 0;
+				while(i < nbClients)
+				{
+					sock = socketArray[i];
+					try {
+						writer = new PrintWriter(sock.getOutputStream());
+						writer.write(pointThreshold);
+						writer.flush();
+						writer = null;
+					} catch(SocketException e){
+						//Vire un client, faire une fonction pour ça.
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					i++;
+				}
+				sock = null;
+			}
+		});
+		send.start();
 		return;
 	}
 
@@ -219,7 +249,31 @@ public class Server implements ServerCommunication {
 	}
 
 	@Override
-	public void sendText(String message) {
+	public void sendText(final String message) {
+		Thread send = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				Socket sock = null;
+				int i = 0;
+				while(i < nbClients)
+				{
+					sock = socketArray[i];
+					try {
+						writer = new PrintWriter(sock.getOutputStream());
+						writer.write(message);
+						writer.flush();
+						writer = null;
+					} catch(SocketException e){
+						//Vire un client, faire une fonction pour ça.
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					i++;
+				}
+				sock = null;
+			}
+		});
+		send.start();
 		return ;
 		
 	}
@@ -237,7 +291,7 @@ public class Server implements ServerCommunication {
 	}
 	
 	/**
-	 * @return response = le message qui vient d'être lu.
+	 * @return response soit le message qui vient d'être lu.
 	 * @throws IOException En cas d'erreur de lecture.
 	 */
 	private String read() throws IOException {      

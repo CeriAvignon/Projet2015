@@ -5,9 +5,11 @@ import fr.univavignon.courbes.network.ClientCommunication;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,10 @@ public class Client implements ClientCommunication {
 	 * 
 	 */
 	protected Board board = new Board();
-	
+	/**
+	 * 
+	 */
+	private PrintWriter writer = null;
 	@Override
 	public String getIp() {
 		
@@ -151,7 +156,26 @@ public class Client implements ClientCommunication {
 	}
 
 	@Override
-	public void sendText(String message) {
+	public void sendText(final String message) {
+		Thread send = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				Socket sock = connexion;
+				
+				try {
+					writer = new PrintWriter(sock.getOutputStream());
+					writer.write(message);
+					writer.flush();
+					writer = null;
+				} catch(SocketException e){
+					closeClient();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				sock = null;
+			}
+		});
+		send.start();
 		return;
 		
 	}
