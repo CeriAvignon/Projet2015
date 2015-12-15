@@ -313,7 +313,7 @@ public class Round implements PhysicsEngine
 			}
 			else
 			{
-		        if (snake.collision && snakesPos != snake.playerId)
+		        if (snakesPos != snake.playerId && snake.collision == true)
 		        {
 			        snake.state = false;
 			        System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
