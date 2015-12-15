@@ -27,7 +27,8 @@ import fr.univavignon.courbes.common.Profile;
 public interface ClientCommunication
 {	
 	/**
-     * Renvoie l'adresse IP du serveur auquel le client se connecte.
+     * Renvoie l'adresse IP du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
@@ -44,7 +45,8 @@ public interface ClientCommunication
 	public void setIp(String ip);
 
 	/**
-     * Renvoie le port du serveur auquel le client se connecte.
+     * Renvoie le port du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Un entier qui correspond au port du serveur.
@@ -92,6 +94,18 @@ public interface ClientCommunication
 	 * 		liste n'a été envoyée.
 	 */
 	public List<Profile> retrieveProfiles();
+	
+	/**
+	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
+	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
+	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
+	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
+	 * pas accueillir plus de joueurs.
+	 *   
+	 * @param profile
+	 * 		Profil du joueur à ajouter à la partie.
+	 */
+	public void sendProfile(Profile profile);
 	
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,

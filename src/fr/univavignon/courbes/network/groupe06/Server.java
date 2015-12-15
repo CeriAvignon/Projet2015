@@ -70,7 +70,7 @@ public class Server implements ServerCommunication {
  	                InetAddress addr = addresses.nextElement();
  	                adressIp = addr.getHostAddress();
  	                if (adressIp.startsWith("192.168."))
- 	                	ip = adressIp;
+ 	                	this.ip = adressIp;
  	            }
  	        }
  	    } catch (SocketException e) {
@@ -78,16 +78,16 @@ public class Server implements ServerCommunication {
  	    }
 		//step 2 : define port if value by default is impossible
  	   try {
-    		ServerSocket sSocket = new ServerSocket(port);
+    		ServerSocket sSocket = new ServerSocket(this.port);
     	} catch (IOException e) {
-        	 port = 0;
+        	this.port = 0;
     	}
  	   
- 	    if(port == 0) {
+ 	    if(this.port == 0) {
  	    	for(int portTest = 1; portTest <= 3000; portTest++){
  	    		try {
  	    			ServerSocket sSocket = new ServerSocket(portTest);
- 	        		port = portTest;
+ 	        		this.port = portTest;
  	        		break;
  	    		} catch (IOException e) {
  	    			;
@@ -123,13 +123,7 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void closeServer() {
-		isRunning = false;
-	}
-
-	@Override
-	public void sendPlayers(List<Profile> profiles) {
-		// TODO Auto-generated method stub
-		
+		this.isRunning = false;
 	}
 
 	@Override
@@ -204,6 +198,18 @@ public class Server implements ServerCommunication {
 	      stream = reader.read(b);
 	      response = new String(b, 0, stream);      
 	      return response;
-	   }   
+	   }
+
+	@Override
+	public void sendProfiles(List<Profile> profiles) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Profile> retrieveProfiles() {
+		// TODO Auto-generated method stub
+		return null;
+	}   
 	
 }

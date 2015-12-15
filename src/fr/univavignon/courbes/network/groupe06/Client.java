@@ -53,7 +53,7 @@ public class Client implements ClientCommunication {
 	public void launchClient() {
 		try {
 			
-			connexion = new Socket(ip, port);
+			this.connexion = new Socket(ip, port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -66,7 +66,7 @@ public class Client implements ClientCommunication {
 	public void closeClient() {
 		try {
 			//envoyer message au serveur pour prévenir.
-			connexion.close();
+			this.connexion.close();
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -118,7 +118,7 @@ public class Client implements ClientCommunication {
 			}
 		});
 		retrieve.start();
-		return board;
+		return this.board;
 	}
 
 	@Override
@@ -135,6 +135,12 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void sendText(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendProfile(Profile profile) {
 		// TODO Auto-generated method stub
 		
 	}
