@@ -16,11 +16,27 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 
+/**
+ * @author Loïc
+ *
+ */
 public class Client implements ClientCommunication {
 
+	/**
+	 * 
+	 */
 	protected String ip;
+	/**
+	 * 
+	 */
 	protected int port = 2345;
+	/**
+	 * 
+	 */
 	protected Socket connexion = null;
+	/**
+	 * 
+	 */
 	protected Board board = new Board();
 	
 	@Override
@@ -75,13 +91,13 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public List<Profile> retrieveProfiles() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Integer retrievePointThreshold() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -89,6 +105,7 @@ public class Client implements ClientCommunication {
 	public Board retrieveBoard() {
 		
 		Thread retrieve = new Thread(new Runnable(){
+			@Override
 			public void run(){
 				try {
 					DatagramSocket socket = new DatagramSocket(port);
@@ -111,6 +128,7 @@ public class Client implements ClientCommunication {
 				    ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
 				    ObjectInputStream oos = new ObjectInputStream(baos);
 				    board = (Board)oos.readObject();
+				    socket.close();
 				    
 				} catch(Exception e) {
 				    e.printStackTrace();
@@ -123,25 +141,24 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
-		// TODO Auto-generated method stub
+		return;
 		
 	}
 
 	@Override
 	public String retrieveText() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void sendText(String message) {
-		// TODO Auto-generated method stub
+		return;
 		
 	}
 
 	@Override
 	public void sendProfile(Profile profile) {
-		// TODO Auto-generated method stub
+		return;
 		
 	}
 

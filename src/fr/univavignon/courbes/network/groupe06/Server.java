@@ -13,7 +13,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.Enumeration;
 import java.util.List;
@@ -23,16 +22,48 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 
+/**
+ * @author Loïc
+ *
+ */
 public class Server implements ServerCommunication {
 
+	/**
+	 * 
+	 */
 	protected String ip;
+	/**
+	 * 
+	 */
 	protected int port = 2345;
+	/**
+	 * 
+	 */
 	protected boolean isRunning = false;
+	/**
+	 * 
+	 */
 	protected static int size = 6;
+	/**
+	 * 
+	 */
 	protected int nbClients = 0;
+	/**
+	 * 
+	 */
 	protected String arrayOfIp[] = new String[size];
+	/**
+	 * 
+	 */
 	protected static Socket socketArray[] = new Socket[size];
+	/**
+	 * 
+	 */
 	protected BufferedInputStream reader = null;
+	/**
+	 * 
+	 */
+	ServerSocket sSocket = null;
 	
 	@Override
 	public String getIp() {
@@ -78,26 +109,34 @@ public class Server implements ServerCommunication {
  	    }
 		//step 2 : define port if value by default is impossible
  	   try {
-    		ServerSocket sSocket = new ServerSocket(this.port);
+    		this.sSocket = new ServerSocket(this.port);
     	} catch (IOException e) {
         	this.port = 0;
     	}
  	   
  	    if(this.port == 0) {
- 	    	for(int portTest = 1; portTest <= 3000; portTest++){
+ 	    	for(int portTest = 1; portTest <= 3000; portTest++){ // find a free port
  	    		try {
- 	    			ServerSocket sSocket = new ServerSocket(portTest);
+ 	    			this.sSocket = new ServerSocket(portTest);
  	        		this.port = portTest;
  	        		break;
  	    		} catch (IOException e) {
- 	    			;
+ 	    			; //error here is normal , so we don't need an action.
  	    		}
  	    	}
  	    }
 		//step 3 : launch server
  	    Thread launch = new Thread(new Runnable(){
- 	    	public void run(){
+ 	    	@Override
+			public void run(){
  	    		ServerSocket server = null;
+ 	    		try {
+ 	    			server = new ServerSocket(port, 100, InetAddress.getByName(ip));
+ 	    		} catch (UnknownHostException e) {
+ 	    			e.printStackTrace();
+ 	    		} catch (IOException e) {
+ 	    			e.printStackTrace();
+ 	    		}
  	    		isRunning = true;
  	    		while(isRunning == true){
  	    			try {
@@ -111,6 +150,7 @@ public class Server implements ServerCommunication {
  	    		}
  	    		try {
  	    			server.close();
+ 	    			sSocket.close();
  	    		} catch (IOException e) {
  	    			e.printStackTrace();
  	    			server = null;
@@ -128,13 +168,13 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void sendPointThreshold(int pointThreshold) {
-		// TODO Auto-generated method stub
-		
+		return;
 	}
 
 	@Override
 	public void sendBoard(final Board board) {
 		Thread send = new Thread(new Runnable(){
+			@Override
 			public void run(){
 				try {
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -163,6 +203,7 @@ public class Server implements ServerCommunication {
 	        	      	socket.send(packet);
 	        	      	i++;
 					}
+					socket.close();
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -173,42 +214,49 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public Map<Integer, Direction> retrieveCommands() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void sendText(String message) {
-		// TODO Auto-generated method stub
+		return ;
 		
 	}
 
 	@Override
 	public String[] retrieveText() {
 		
-		//read();
+		try {
+			read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return null;
 	}
 	
+	/**
+	 * @return response = le message qui vient d'être lu.
+	 * @throws IOException En cas d'erreur de lecture.
+	 */
 	private String read() throws IOException {      
 	      String response = "";
 	      int stream;
 	      byte[] b = new byte[4096];
-	      stream = reader.read(b);
+	      stream = this.reader.read(b);
 	      response = new String(b, 0, stream);      
 	      return response;
 	   }
 
 	@Override
 	public void sendProfiles(List<Profile> profiles) {
-		// TODO Auto-generated method stub
+		return;
 		
 	}
 
 	@Override
 	public List<Profile> retrieveProfiles() {
-		// TODO Auto-generated method stub
 		return null;
 	}   
 	
