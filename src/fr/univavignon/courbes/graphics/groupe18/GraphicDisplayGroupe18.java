@@ -35,7 +35,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel) {
 		// TODO Auto-generated method stub
 		this.board = board;
-		this.pointThreshold = pointThreshold;
+		this.pointThreshold = new Integer(pointThreshold);
 		this.players = players;
 		this.boardPanel = boardPanel;
 		this.scorePanel = scorePanel;
@@ -146,9 +146,6 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		    break;
 			case 7:
 				label.setForeground(Color.orange);
-		    break;
-			case 8:
-				label.setForeground(Color.lightGray);
 		    break;
 		}
 	}

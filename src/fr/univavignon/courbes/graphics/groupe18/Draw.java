@@ -56,11 +56,17 @@ public class Draw extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        for(int i = 0; i < board.snakes.length; i++) {
+        	g.setColor(getColor(board.snakes[i].playerId));
+        	int x = (int)Math.round(board.snakes[i].headRadius);
+        	g.fillOval(board.snakes[i].currentX, board.snakes[i].currentY, x, x);
+        	
+        }
 		for (Map.Entry<Position, Integer> entry : board.snakesMap.entrySet())
 		{
 			g.setColor(getColor(entry.getValue()));
 			int x = (int)Math.round(board.snakes[entry.getValue()].headRadius);
-			g.fillOval(entry.getKey().x, entry.getKey().y, x, x);
+			g.fillRect(entry.getKey().x, entry.getKey().y, x, x);
 		}
         
     }          
