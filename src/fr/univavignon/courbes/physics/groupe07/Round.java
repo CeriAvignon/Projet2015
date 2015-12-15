@@ -307,22 +307,50 @@ public class Round implements PhysicsEngine
 		{
 			Integer snakesPos = ourBoard.snakesMap.get(pos);	// position des autres snakes
 			
-			if(snakesPos != null && snakesPos != snake.playerId)
+			if(snakesPos == null)
 			{
-				snake.state = false;
-				System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
+				ourBoard.snakesMap.put(pos,snake.playerId);  
 			}
-			else if(snakesPos == null)
+			else
 			{
-				ourBoard.snakesMap.put(pos,snake.playerId);
-			}
-			else if(snakesPos != null)
-			{
-				System.out.print("Le suicide est formellement interdit !");
+		        if (snake.collision && snakesPos != snake.playerId)
+		        {
+			        snake.state = false;
+			        System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
+		        }
 			}
 		}catch(NullPointerException e)
 		{
 			System.out.println("Impossible d'obtenir la position !");
+		}
+		
+	}
+	
+	public void snakeVsSnake(Snake snake) {
+
+		Position pos = new Position(snake.currentX,snake.currentY);
+		
+		try
+		{
+			Integer idPixel = ourBoard.snakesMap.get(pos);
+			
+			if(idPixel == null)
+			{
+				ourBoard.snakesMap.put(pos , snake.playerId);  
+			}
+			
+			else
+			{
+			        if (snake.collision && idPixel != snake.playerId)
+			        {
+				        snake.state = false;
+				        System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
+				        System.out.println("Snake n°"+snake.playerId+ " vient de dire bonjour au snake n°"+ourBoard.snakesMap.get(pos));
+			        }
+			}
+		}catch(NullPointerException e)
+		{
+			System.out.println("Position non possédée, pas de collision");
 		}
 		
 	}
