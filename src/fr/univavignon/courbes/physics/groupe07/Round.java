@@ -15,7 +15,7 @@ public class Round implements PhysicsEngine
 {
 	public Board ourBoard;
 	private double[][] coordSnake;	// donne les coordonnées de la position d'un snake
-	private double itemRate = 1;
+	private double itemRate = 0.5;
 	
 	public Round(int width, int height, int[] profileIds)
 	{
@@ -96,6 +96,24 @@ public class Round implements PhysicsEngine
 		Random snake = new Random();
 		Position pos = new Position((snake.nextInt((width-20)-20)+ 20), (snake.nextInt((height-20)-20)+ 20));
 		return pos;
+	}
+	
+	
+	
+	/**
+	 * Cette méthode créé un Item de façon aléatoire à des coordonnées aléatoires.
+	 */
+	
+	public void itemSpawnPos()
+	{
+		
+		int width = (int) (Math.random() * ourBoard.width);
+		int height = (int) (Math.random() * ourBoard.height);
+		Position posNewItem = new Position(width,height);
+		int nbItems = (int)(Math.random()*Item.values().length);
+		Item newItem = Item.values()[nbItems];																			
+		ourBoard.itemsMap.put(posNewItem,newItem);
+
 	}
 	
 	
