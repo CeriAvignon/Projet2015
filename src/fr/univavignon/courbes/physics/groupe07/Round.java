@@ -17,6 +17,24 @@ public class Round implements PhysicsEngine
 	private double[][] coordSnake;	// donne les coordonnées de la position d'un snake
 	private double itemRate = 0.5;
 	
+	private double ratioItem = 0; // permet de gérer le flux de spawn d'objet, si 0 pas de spawn d'objet, si 1, spawn d'objet
+	
+	public double getRatioItem() {
+		return ratioItem;
+	}
+
+	public void setRatioItem(double ratioItem) {
+		this.ratioItem = ratioItem;
+	}
+	
+    public double getItemRate() 
+    {
+         return itemRate; 
+}        
+public void setItemRate(double itemRate) 
+{  
+     this.itemRate = itemRate; 
+ }
 	public Round(int width, int height, int[] profileIds)
 	{
 		ourBoard = init(width,height,profileIds);
@@ -363,11 +381,45 @@ public class Round implements PhysicsEngine
 	
 	public void update(long elapsedTime, Map<Integer, Direction> commands)
 	{
-		
+		// Mise à jour des coordonnées des snakes
+		updateSnakesPositions(elapsedTime);
+		// Mise à jour des directions des snakes
+		updateSnakesDirections(elapsedTime, commands);
+		// Mise à jour des effets liés aux snakes
+		updateSnakesEffects(elapsedTime);
+		// Mise à jour du prochain spawn d'item
+		updateSpawnItem(elapsedTime);
 	}
 	
 	
+	private void majSpawnItem(long elapsedTime) {
+		ratioItem += elapsedTime*getItemRate();
+		if(ratioItem >= 10000) {
+			itemSpawnPos();
+			ratioItem = 0;
+		}
+	}
 	
+	public void updateSnakesEffects(long elapsedTime) {
+
+		for(Snake snake : board.snakes)
+		{
+			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
+			{
+				long roundTime = entry.getValue();
+				long timeLeft = remainingTime - elapsedTime;
+
+				// Enlever l'effet et supprimer l'objet de la liste
+				if (timeLeft <= 0 ) {
+					removeItemToSnake(snake.playerId, entry.getKey());
+				}
+				// Mettre à jour le temps restant pour l'effet de l'Item
+				else if (timeLeft > 0) {
+					snake.currentItems.put(entry.getKey(), refreshedTime);
+				}
+			}
+		}
+	}
 	/**
 	 * Cette méthode écrase le tableau actuel.
 	 */
