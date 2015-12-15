@@ -476,8 +476,11 @@ public class Round implements PhysicsEngine {
 
 		Position pos = new Position(snake.currentX, snake.currentY );
 		Integer idSnake = board.snakesMap.get(pos);
+
 		if(idSnake != null && idSnake != snake.playerId) {
+			//if(Math.sqrt(Math.pow(pos.x - pos.x, 2) + Math.pow(pos.y - pos.y, 2)) < snake.headRadius )
 			snake.state = false;	
+			System.out.println("Un snake est mort contre un autre snake"); // TODO faire gestion snake rencontre lui même
 		}
 	}
 
