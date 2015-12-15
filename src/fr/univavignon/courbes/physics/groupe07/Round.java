@@ -344,36 +344,7 @@ public void setItemRate(double itemRate)
 		
 	}
 	
-	public void snakeVsSnake(Snake snake) {
 
-		Position pos = new Position(snake.currentX,snake.currentY);
-		
-		try
-		{
-			Integer idPixel = ourBoard.snakesMap.get(pos);
-			
-			if(idPixel == null)
-			{
-				ourBoard.snakesMap.put(pos , snake.playerId);  
-			}
-			
-			else
-			{
-			        if (snake.collision && idPixel != snake.playerId)
-			        {
-				        snake.state = false;
-				        System.out.println(snake.playerId + " is DEAD\nX="+pos.x+"   Y="+pos.y);
-				        System.out.println("Snake n°"+snake.playerId+ " vient de dire bonjour au snake n°"+ourBoard.snakesMap.get(pos));
-			        }
-			}
-		}catch(NullPointerException e)
-		{
-			System.out.println("Position non possédée, pas de collision");
-		}
-		
-	}
-	
-	
 	
 	/**
 	 * Cette méthode effectue la mise à jour
@@ -391,7 +362,7 @@ public void setItemRate(double itemRate)
 		updateSpawnItem(elapsedTime);
 	}
 	
-	
+	/*
 	private void majSpawnItem(long elapsedTime) {
 		ratioItem += elapsedTime*getItemRate();
 		if(ratioItem >= 10000) {
@@ -402,7 +373,7 @@ public void setItemRate(double itemRate)
 	
 	public void updateSnakesEffects(long elapsedTime) {
 
-		for(Snake snake : board.snakes)
+		for(Snake snake : ourBoard.snakes)
 		{
 			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
 			{
@@ -422,98 +393,98 @@ public void setItemRate(double itemRate)
 	}
 	
 	
-	/** A modifier 
+	
 	 public void updateSnakesPositions(long elapsedTime) {
 		long elapsed;
 		double pixStep;
 		boolean snakeMove = false;
-		Position pos = new Position();
-		for(Snake snake : board.snakes)
+		Position pos = new Position(0,0);
+		for(Snake snake : ourBoard.snakes)
 		{
 
 			elapsed = elapsedTime;
 			pixStep = 0;
 			while (elapsed > 0 && snake.state == true)
-			{ **/
+			{
 
 				/** Gestion de la future position du snake en fonction de son angle **/
 				/**while(pixStep < 1 && elapsed > 0) {
 					elapsed--;
 					pixStep += snake.movingSpeed;
 				}
-				deltaSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
-				deltaSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
+				coordSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
+				coordSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
 
-				if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] >= 1) {
+				if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] >= 1) {
 					snake.currentY--;
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]--;
-					deltaSnake[snake.playerId][0]--;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]--;
+					coordSnake[snake.playerId][0]--;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] >= 1) {
+				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] >= 1) {
 					snake.currentY++;
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]++;
-					deltaSnake[snake.playerId][0]--;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]++;
+					coordSnake[snake.playerId][0]--;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][1] <= -1 && deltaSnake[snake.playerId][0] <= -1) {
+				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] <= -1) {
 					snake.currentY++;
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]++;
-					deltaSnake[snake.playerId][0]++;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]++;
+					coordSnake[snake.playerId][0]++;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][1] >= 1 && deltaSnake[snake.playerId][0] <= -1) {
+				else if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] <= -1) {
 					snake.currentY--;
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]--;
-					deltaSnake[snake.playerId][0]++;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]--;
+					coordSnake[snake.playerId][0]++;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][1] >= 1) {
+				else if(coordSnake[snake.playerId][1] >= 1) {
 					snake.currentY--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]--;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]--;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][1] <= -1) {
+				else if(coordSnake[snake.playerId][1] <= -1) {
 					snake.currentY++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][1]++;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][1]++;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][0] >= 1) {
+				else if(coordSnake[snake.playerId][0] >= 1) {
 					snake.currentX++;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][0]--;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][0]--;
 					snakeMove = true;
 				}
-				else if(deltaSnake[snake.playerId][0] <= -1) {
+				else if(coordSnake[snake.playerId][0] <= -1) {
 					snake.currentX--;
 					pos.x = snake.currentX;
 					pos.y = snake.currentY;
-					board.snakesMap.put(pos , snake.playerId);
-					deltaSnake[snake.playerId][0]++;
+					ourBoard.snakesMap.put(pos , snake.playerId);
+					coordSnake[snake.playerId][0]++;
 					snakeMove = true;
 				}
 
@@ -526,14 +497,17 @@ public void setItemRate(double itemRate)
 					snakeEncounterSnake(snake);
 					snakeEncounterItem(snake,pos);
 				}
+				/**
 				// TODO : gestion du hole rate
+				 */
+				
 			}
 		}
 	}
 		public void majSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
 	{
 		Direction direction;
-		for(Snake snake : board.snakes)
+		for(Snake snake : ourBoard.snakes)
 		{
 			direction = commands.get(snake.playerId);
 			if(direction != null)
@@ -561,7 +535,7 @@ public void setItemRate(double itemRate)
 		}
 	}
 
-	**/
+	
 
 	/**
 	 * Cette méthode écrase le tableau actuel.
