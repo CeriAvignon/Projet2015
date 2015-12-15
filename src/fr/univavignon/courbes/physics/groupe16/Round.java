@@ -541,7 +541,7 @@ public class Round implements PhysicsEngine {
 		//si le dernier trou a eu lieux il y a moin 1 seconde alors pas de nouveau trou
 		if(nba==30 && tmphole < (System.currentTimeMillis()-1000))
 		{
-			//cptsnakehole =getWidth();
+			
 			cptsnakehole =board.width;
 			//mettre tmphole à jour
 			tmphole = (int) System.currentTimeMillis();
