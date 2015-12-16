@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
@@ -38,30 +36,35 @@ public class Test {
 		joueur1.currentY = 100;
 		joueur1.currentScore = 10;
 		joueur1.headRadius = 10;
+		joueur1.state = false;
 		Snake joueur2 = new Snake();
 		joueur2.playerId = 1;
 		joueur2.currentX = 700;
 		joueur2.currentY = 100;
 		joueur2.currentScore = 20;
 		joueur2.headRadius = 10;
+		joueur2.state = false;
 		Snake joueur3 = new Snake();
 		joueur3.playerId = 2;
 		joueur3.currentX = 100;
 		joueur3.currentY = 700;
 		joueur3.currentScore = 39;
 		joueur3.headRadius = 10;
+		joueur3.state = false;
 		Snake joueur4 = new Snake();
 		joueur4.playerId = 3;
 		joueur4.currentX = 700;
 		joueur4.currentY = 700;
 		joueur4.currentScore = 30;
 		joueur4.headRadius = 10;
+		joueur4.state = false;
 		Snake joueur5 = new Snake();
 		joueur5.playerId = 4;
 		joueur5.currentX = 400;
 		joueur5.currentY = 400;
 		joueur5.currentScore = 35;
 		joueur5.headRadius = 10;
+		joueur5.state = true;
 
 		
 		Profile joueur1Profile = new Profile();
@@ -98,14 +101,13 @@ public class Test {
 		GraphicDisplayGroupe18 Test = new GraphicDisplayGroupe18();
 		Test.init(board, pointThreshold,players,boardPanel,scorePanel);
 		
-		for(int i = 0; i<99; i++){
+		for(int i = 0; i<100; i++){
 			for(int j = 100; j<110; j++) {
 				snakesMap.put(new Position(i,j),0);
 			}
 		}
 		Test.update();
 		Test.end();
-		
 		
 		
 		fenetreScore.add(scorePanel);

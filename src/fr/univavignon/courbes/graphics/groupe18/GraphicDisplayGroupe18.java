@@ -5,12 +5,13 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-
 import java.awt.Color; 
 import java.util.Map;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+import javax.swing.SwingConstants;
 import java.awt.Graphics;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
@@ -37,7 +38,6 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 
 	@Override
 	public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel) {
-		// TODO Auto-generated method stub
 		this.board = board;
 		this.players = players;
 		this.pointThreshold = pointThreshold;
@@ -49,14 +49,12 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		this.boardPanel.removeAll();
 		setBoardPanel(this.board, this.boardPanel);
 	}
 
 	@Override
 	public void end() {
-		// TODO Auto-generated method stub
 		this.boardPanel.removeAll();
 		int max = 0 ;
 		String winner = "init";
@@ -69,13 +67,19 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 			}
 		}
 		if(max < this.pointThreshold) {
-			//boardPanel = new JPanel(new BorderLayout());
-			//JLabel text = new JLabel (winner + " remport la manche !");
-		   // text.setFont(new Font("Verdana",1,25));
-		   // setColor(text,id);
-			//text.setHorizontalAlignment(JLabel.CENTER);
-			//text.setVerticalAlignment(JLabel.CENTER);
-			//this.boardPanel.add(text);
+			for(int i = 0 ; i<this.board.snakes.length;i++) {
+				if(this.board.snakes[i].state == true) {
+					 winner = this.players.get(i).userName;
+					 profileId = this.board.snakes[i].playerId;
+				}
+			}
+			JLabel text = new JLabel(winner + " remporte la manche !");
+		    text.setFont(new Font("Verdana",1,23));
+		    setColor(text,profileId);
+		    this.boardPanel.setBackground(Color.BLACK);
+		    this.boardPanel.add(text,BorderLayout.CENTER);
+
+		    
 		}
 		else {
 		    GridLayout display = new GridLayout(board.snakes.length+1,board.snakes.length+1);
