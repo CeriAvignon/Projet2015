@@ -1,7 +1,6 @@
 package fr.univavignon.courbes.graphics.groupe18;
 
 import java.util.List;
-
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Color; 
