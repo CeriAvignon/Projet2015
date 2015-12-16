@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,16 +28,19 @@ public class Server implements ServerCommunication {
 	/** Port du serveur */
 	private int port;
 	/** Connecteur Serveur/Clients */
-	private Socket socket;
+	private ArrayList<Socket> sockets;
 	/** Connecteur côté Serveur */
-	private ServerSocket socketServeur;
+	private ServerSocket serverSocket;
+	
+	String[] messages = { "" };
+	String messageSent;
 	
 	/**
-	 * @param socket Connecteur Serveur/Clients
+	 * @param sockets Connecteur Serveur/Clients
 	 */
-	public Server(Socket socket) {
+	/*public Server(Socket socket) {
 	    this.socket = socket;
-	}
+	}*/
 
 	@Override
 	public String getIp() {
@@ -63,25 +67,42 @@ public class Server implements ServerCommunication {
 	@Override
 	public void launchServer() {
 		try {
-			socketServeur = new ServerSocket(port);
+			this.serverSocket = new ServerSocket(port);
 			System.out.println("Lancement du serveur");
-			while (true) {
-				Socket socketClient = socketServeur.accept();
-				Server Serveur = new Server(socketClient);
-				System.out.println("Connexion avec le client : " + socket.getInetAddress());
-				String[] s = Serveur.retrieveText();
+			new Thread(new Runnable(){
+				public void run(){
+					try {
+						sockets.add(serverSocket.accept());
+						System.out.println("Connexion avec le client : " + sockets.get(sockets.size()-1).getInetAddress());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			messageSent = this.retrieveText()[0];
+			this.sendText(messageSent);
+			
+			/*while (true) {
+				Socket socketClient = serverSocket.accept();
+				Server server = new Server(socketClient);
+				System.out.println("Connexion avec le client : " + sockets.getInetAddress());
+				String[] s = server.retrieveText();
 				sendText(s[0]);
-			}
+				
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 		}
 	}
 
 	@Override
 	public void closeServer() {
 		try {
-			socketServeur.close();
-			socket.close();
+			for(Socket socket:sockets){
+				socket.close();
+			}
+			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,30 +110,39 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void sendText(String message) {
-		try {
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			System.out.println(message);
-			if(message.contains("yolo"))
-				out.println("swag");
-			else
-				out.println("yolo?");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		messageSent = message;
+		new Thread(new Runnable(){
+			public void run(){
+				try {
+					for(Socket socket:sockets){
+						PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+						out.println(messageSent);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	@Override
 	public String[] retrieveText() {
-		try {
-			String[] messages = { "" };
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			messages[0] = in.readLine();
-			System.out.println(messages[0]);
-			return messages;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		new Thread(new Runnable(){
+			public void run(){
+				try {
+					int i = 0;
+					for(Socket socket:sockets){
+						BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+						messages[i] = in.readLine();
+						System.out.println(messages[i]);
+						i++;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		return messages;
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class Client implements ClientCommunication {
 	@Override
 	public void launchClient() {
 		try {
-			socket = new Socket(ip, port);
+			this.socket = new Socket(ip, port);
 			if(socket == null) {
     			System.out.println("Connexion échouée...");
     		} else {
@@ -57,7 +57,7 @@ public class Client implements ClientCommunication {
     		}
 			// TODO Supprimer le scan après les tests
 			Scanner sc = new Scanner(System.in);
-			sendText(sc.nextLine());
+			this.sendText(sc.nextLine());
 			System.out.println(retrieveText());
 			sc.close();
 		} catch (IOException e) {
@@ -68,7 +68,7 @@ public class Client implements ClientCommunication {
 	@Override
 	public void closeClient() {
 		try {
-			socket.close();
+			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
