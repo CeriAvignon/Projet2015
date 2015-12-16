@@ -30,10 +30,10 @@ public class Round implements PhysicsEngine {
 	private Map<Integer, Integer> holeTick;
 	/** Represente combien de déplacement le snake 'n' a effectué **/
 	private Map<Integer, Integer> moveCount;
-	/** Map contenant la position du centre d'un item en clé et une liste
-	 *  contenant toutes les coordonnées de l'item situés autour du centre **/
-	public Map<Position, ArrayList<Position>> coordItemMap;
-
+	/** Represente les pixels de la tête des snakes pour ne pas qu'un
+	 *  snake soit en collision avec lui même **/
+	private Map<Position, Integer> mapBuffPos;
+	
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
@@ -119,7 +119,6 @@ public class Round implements PhysicsEngine {
 	 * du taux de spawn de l'item est un succès.
 	 */
 	public void spawnRandomItem() {
-
 		// TODO gerer que l'objet ne puisse pas spawn sur un snake
 		int itCenterX = radItem + (int)(Math.random() * board.height - radItem); 
 		int itCenterY = radItem + (int)(Math.random() * board.width - radItem); 
@@ -426,9 +425,10 @@ public class Round implements PhysicsEngine {
 						fillSnakeHead(snake);
 						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
 					}
-					else
+					else {
 						System.out.println("Hole");
-					snakeEncounterBounds(snake);
+					}
+					snakeEncounterBounds(snake); // voir dans le fill head pour les collision
 					snakeEncounterSnake(snake);
 					snakeEncounterItem(snake,pos);
 				 	if(moveCount.get(snake.playerId) == 100) {
@@ -454,20 +454,20 @@ public class Round implements PhysicsEngine {
 	 * @param snake
 	 */
 	public void snakeEncounterBounds(Snake snake) {
-		if(snake.currentX <= 0 
-				|| snake.currentX >= board.width 
-				|| snake.currentY <= 0
-				|| snake.currentY >= board.height) {
+		if(snake.currentX - snake.headRadius <= 0 
+				|| snake.currentX + snake.headRadius >= board.width 
+				|| snake.currentY - snake.headRadius <= 0
+				|| snake.currentY + snake.headRadius >= board.height) {
 			if (snake.collision == true) { // Le snake meurt pitoyablement
 				snake.state = false; 
 			} else { // Translater position de l'autre coté de la board
-				if(snake.currentX < 0)
+				if(snake.currentX - snake.headRadius <= 0)
 					snake.currentX = board.width;
-				else if(snake.currentX > board.width)
+				else if(snake.currentX + snake.headRadius >= board.width )
 					snake.currentX = 0;
-				if(snake.currentY < 0)
+				else if(snake.currentY - snake.headRadius <= 0)
 					snake.currentY = board.height;
-				else if(snake.currentY > board.height)
+				else if(snake.currentY + snake.headRadius >= board.height)
 					snake.currentY = 0;
 			}	
 		}
@@ -485,7 +485,7 @@ public class Round implements PhysicsEngine {
 		if(idSnake != null && idSnake != snake.playerId) {
 			//if(Math.sqrt(Math.pow(pos.x - pos.x, 2) + Math.pow(pos.y - pos.y, 2)) < snake.headRadius )
 			snake.state = false;	
-			System.out.println("Un snake est mort contre un autre snake"); // TODO faire gestion snake rencontre lui même
+			System.out.println("Un snake est mort contre un autre snake"); 
 		}
 	}
 
@@ -500,7 +500,7 @@ public class Round implements PhysicsEngine {
 		Position posItem = new Position(0,0);
 		for (Map.Entry<Position, Item> entry : board.itemsMap.entrySet()) {
 			posItem = entry.getKey();
-			if(Math.sqrt(Math.pow(posItem.x - pos.x, 2) + Math.pow(posItem.y - pos.y, 2)) < radItem )// Detecte si le snake passe dans le rayon de l'objet
+			if(Math.sqrt(Math.pow(posItem.x - pos.x, 2) + Math.pow(posItem.y - pos.y, 2)) < radItem + snake.headRadius)// Detecte si le snake passe dans le rayon de l'objet
 			{
 				addSnakeItem(snake.playerId, entry.getValue()); // Ajoute l'item et l'effet
 				board.itemsMap.remove(posItem); // Suppression de l'item sur la map
@@ -595,25 +595,40 @@ public class Round implements PhysicsEngine {
 		int yS  = snake.currentY;
 		int rad = (int) snake.headRadius;
 		Position pos = new Position(0,0);
-
 		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
 		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
+		headloop:
 		for(int i = xS - rad; i < xS + rad ; i++) {
 			for(int j = yS - rad; j < yS + rad ; j++) {
 				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad) {
 					pos.x = i;
 					pos.y = j;
-					board.snakesMap.put(pos, id);
+					if(board.snakesMap.get(pos) == null) {
+						board.snakesMap.put(pos, id);
+					}
+					else if(board.snakesMap.get(pos) != snake.playerId ){
+						snake.state = false;
+						break headloop;
+					}
+					else if(board.snakesMap.get(pos) == snake.playerId){ 
+						System.out.println("Point du snake deja écrit"); // Le snake 
+					}
+
+					
+					
 					//System.out.println("Point x:" + i + " y:" + j + " ajouté");
 				}
 			}
 		}
 	}
 
+	
+	
 	/**
-	 * cette fonction sert a remplacer le Board actuel par celui passé en paramétre
+	 * Cette fonction sert à remplacer les attributs du Board actuel
+	 *  par ceux de celui passé en paramétre.
 	 * 
-	 * @param board
+	 * @param board Board comportant les attributs que l'on doit importer
 	 */
 	@Override
 	public void forceUpdate(Board board) {
