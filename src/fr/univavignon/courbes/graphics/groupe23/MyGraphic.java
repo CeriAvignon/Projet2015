@@ -98,19 +98,15 @@ i++;
 		{
 		text=j.score+ " "+j.userName;
 		dm.set(i, text);
-panel.setPosX(b.snakes[i].currentX);
-panel.setPosY(b.snakes[i].currentY);
-panel.setRayon((int)b.snakes[i].headRadius);
-panel.setColor(couleur[i]);
-panel.repaint((prec.get(i).getX()<b.snakes[i].currentX)?(int)(b.snakes[i].currentX+b.snakes[i].headRadius/2):(int)(b.snakes[i].currentX-b.snakes[i].headRadius/2),(prec.get(i).getY()<b.snakes[i].currentY)?(int)(b.snakes[i].currentY+b.snakes[i].headRadius/2):(int)(b.snakes[i].currentY-b.snakes[i].headRadius/2),(int) b.snakes[i].headRadius, (int) b.snakes[i].headRadius);
-prec.set(i, new Point(b.snakes[i].currentX,b.snakes[i].currentY));
-
+Thread th =new Thread(new Repaint(b.snakes[i].currentX, b.snakes[i].currentY, (int)b.snakes[i].headRadius, couleur[i],panel,prec.get(i)));
+th.start();
 try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	Thread.sleep(20);;
+} catch (InterruptedException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+prec.set(i, new Point(b.snakes[i].currentX,b.snakes[i].currentY));
 		i++;
 		}
 		
@@ -122,6 +118,21 @@ try {
 		
 	}
 
-	
-
+class Repaint implements Runnable
+{
+	int x; int y;int rayon;Color couleur;Panel panel;Point prec;
+	public Repaint(int x, int y,int rayon,Color couleur,Panel panel,Point prec)
+	{
+	this.x=x;
+	this.y=y;
+	this.rayon=rayon;
+	this.couleur=couleur;
+	this.panel=panel;
+	this.prec=prec;
+	}
+public void run()
+{
+panel.repaint(x, y, rayon,couleur,prec);	
+}
+}
 }
