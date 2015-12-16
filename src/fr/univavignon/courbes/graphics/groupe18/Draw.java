@@ -65,8 +65,7 @@ public class Draw extends JPanel {
 		for (Map.Entry<Position, Integer> entry : board.snakesMap.entrySet())
 		{
 			g.setColor(getColor(entry.getValue()));
-			int x = (int)Math.round(board.snakes[entry.getValue()].headRadius);
-			g.fillRect(entry.getKey().x, entry.getKey().y, x, x);
+			g.fillRect(entry.getKey().x, entry.getKey().y, 1, 1);
 		}
         
     }          
