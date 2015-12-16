@@ -60,10 +60,10 @@ public class Draw extends JPanel {
   				color = Color.green; 
   		    break;
   			case 3:
-  				color = Color.white; 
+  				color = Color.cyan; 
   		    break;
   			case 4:
-  				color = Color.cyan; 
+  				color = Color.orange; 
   		    break;
   			case 5:
   				color = Color.magenta; 
@@ -72,10 +72,7 @@ public class Draw extends JPanel {
   				color = Color.pink; 
   		    break;
   			case 7:
-  				color = Color.orange; 
-  		    break;
-  			case 8:
-  				color = Color.lightGray; 
+  				color = Color.white; 
   		    break;
   		} 
         return color;
