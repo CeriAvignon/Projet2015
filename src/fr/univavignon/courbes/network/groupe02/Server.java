@@ -28,81 +28,73 @@ import java.net.InetSocketAddress;
 public class Server implements ServerCommunication
 {
 	int port = 2345;
-	String ip="";
+	String ip;
 	ServerSocket server = null;
 	
 	@Override
 	public void launchServer() 
 	{
-		System.out.println("lancement serveur....");
-	
+
 	}
 
 	@Override
 	public void closeServer() 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void sendPlayers(List<Profile> profiles) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void sendPointThreshold(int pointThreshold) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void sendBoard(Board board) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Map<Integer, Direction> retrieveCommands() 
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void sendText(String message) 
 	{
-		// TODO Auto-generated method stub
-		
+		return;
 	}
 
 	@Override
 	public String[] retrieveText() 
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getIp() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getIp() 
+	{
+		return this.ip;
 	}
 
 	@Override
-	public int getPort() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getPort() 
+	{
+		return this.port;
 	}
 
 	@Override
-	public void setPort(int port) {
-		// TODO Auto-generated method stub
-		
+	public void setPort(int port) 
+	{
+		this.port = port;
 	}
 	
 }

@@ -17,7 +17,6 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
 /**
  * 
- * 
  * @author Marie et Mary    
  * 
  * On fait la classe Client
@@ -28,50 +27,38 @@ public class Client implements ClientCommunication
 
 	protected Socket socketClient = null;
 	protected int port = 2345;
+	protected String ip;
 	
 	@Override
 	public String getIp() 
 	{
-		InetAddress ipServer;
-		String ip="";
-		
-		try
-		{
-			ipServer = InetAddress.getLocalHost();
-			ip = ipServer.getHostAddress();
-		}
-		catch(UnknownHostException e)
-		{
-			e.printStackTrace();
-		}
-		return ip;
+		return this.ip;	//juste pour l'interface utilisateur, pour qu'ils puisssent afficher l'ip.
 	}
 
 	@Override
 	public void setIp(String ip) 
 	{
-	
+		this.ip = ip;
 	}
 
 	@Override
 	public int getPort() 
 	{
-		return port; //juste pour l'interface utilisateur, pour qu'ils puisssent afficher le port.
+		return this.port; //juste pour l'interface utilisateur, pour qu'ils puisssent afficher le port.
 	}
 
 	@Override
 	public void setPort(int port) 
 	{
-
+		this.port = port;
 	}
 
 	@Override
 	public void launchClient() 
 	{
-		String ip = getIp();
 	     try 
 	     {
-	         socketClient = new Socket(getIp(), port);
+	         socketClient = new Socket(this.ip, this.port);
 	         BufferedReader in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
 	         PrintStream out = new PrintStream(socketClient.getOutputStream());
 	     } 
