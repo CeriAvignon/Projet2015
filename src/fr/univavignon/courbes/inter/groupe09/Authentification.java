@@ -4,9 +4,9 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-/**
+/** 
  * @author Groupe09
- *
+ * Classe correspendant au menu d'authentification afficher au joueur lorsqu'il demande à s'enthetifier
  */
 public class Authentification extends Fenetre implements ActionListener {
 
@@ -20,12 +20,12 @@ public class Authentification extends Fenetre implements ActionListener {
 	Controle c = new Controle();
 
 	/**
-	 * @param titre 
-	 * titre de la fenetre
+	 * @param titre
+	 * Titre de la fenetre
 	 * @param x
-	 * taille x de la fenetre
+	 * Taille en abscisse de la fenetre 
 	 * @param y
-	 * taille y de la fenetre
+	 * Taille en ordonné de la fenetre
 	 */
 	Authentification(String titre, int x, int y) 
 	

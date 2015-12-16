@@ -4,6 +4,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
+/**
+ * @author fgroupe09
+ * Classe correspendant au menu afficher au joueur lorsqu'il lance le jeu 
+ */
 public class Bienvenu extends Fenetre implements ActionListener {
 
 
@@ -11,6 +15,14 @@ public class Bienvenu extends Fenetre implements ActionListener {
 	private JPanel j;
 	private JLabel l;
 	
+	/**
+	 * @param titre
+	 * Titre de la fenetre
+	 * @param x
+	 * Taille en abscisse de la fenetre 
+	 * @param y
+	 * Taille en ordonné de la fenetre
+	 */
 	Bienvenu(String titre, int x, int y) 
 	{
 		super(titre, x, y);

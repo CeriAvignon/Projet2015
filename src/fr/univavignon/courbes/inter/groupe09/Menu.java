@@ -4,6 +4,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+/**
+ * @author groupe09
+ * Classe correspendant au menu afficher au joueur lorsqu'il c est authentifié 
+ */
 public class Menu extends Fenetre implements ActionListener {
 	
 	private JButton b1,b2,b3,b4;
@@ -11,6 +15,14 @@ public class Menu extends Fenetre implements ActionListener {
 	private JLabel l;
 	private JLabel l2;
 	
+	/**
+	 * @param titre
+	 * Titre de la fenetre
+	 * @param x
+	 * Taille en abscisse de la fenetre 
+	 * @param y
+	 * Taille en ordonné de la fenetre
+	 */
 	Menu(String titre, int x, int y) {
 		
 		super(titre, x, y);

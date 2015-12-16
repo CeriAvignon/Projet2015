@@ -1,9 +1,20 @@
 package fr.univavignon.courbes.inter.groupe09;
-
 import java.io.*;
 
+/**
+ * @author groupe09
+ * classe contenant un ensemble de méthodes de controle sur les formulaire d'inscription, d'authentification
+ *
+ */
 public class Controle {
 	
+	/**
+	 * méthode permetant de vérifier si le pseudonyme saisie lors de l'inscription existe déjà ou non 
+	 * @param ps
+	 * pseudonyme de l'utilisateur, correspendant au userName de la classe profil 
+	 * @return 
+	 * return 1 si le pseudo existe déjà, 2 si il n'existe pas 
+	 */
 	public static int controlePseudo(String ps)
 	{	
 		boolean existe = false;
@@ -42,6 +53,19 @@ public class Controle {
 	}
 	
 	
+	/**
+	 * Contrôle l'authentification d'un utilisateur, en vérifiant si il existe et si les donnée saisie sont juste
+	 * @param ps
+	 * pseudo de l'utilisateur, correspand à userName de la classe Profil
+	 * @param mdp
+	 * mot de passe de l'utilisateur 
+	 * @return
+	 * 0 si le pseudo donner est vide
+	 * 1 si tout est ok, le pseudo est le mot de passe sont correcte, et l'utilisateur existe
+	 * 2 si le pseudo donner est inccorecte
+	 * 3 si le mot de passe donner est vide
+	 * 4 si le pseudo est juste, donc l'utilisateur existe mais le mot de passe est incorrecte
+	 */
 	public int controleConnexion(String ps,String mdp){
 		 
 		if(ps.equals("")){
@@ -85,16 +109,29 @@ public class Controle {
 	    } catch (IOException e) {
 	      e.printStackTrace();
 	    }
-	    if(existe){ // si le mot de passe et le pseudo sont juste
+	    if(existe) { // si le mot de passe et le pseudo sont juste
 	    	return 1;
 	    }
-	    if(entree == 1){ // si le pseudo est juste mais pas le mot de passe
+	    if(entree == 1) { // si le pseudo est juste mais pas le mot de passe
 	    	return 4;
 	    }
 	    return 2; // pseudo faux mais mdp juste 
 	}
 	
 
+/**
+ * Méthode qui permet d'inscrire l'utilisateur, si tout les donner saisie sont correcte dans la base de donner du jeu  
+ * @param email
+ * Eamil saisie par l'utilisateur
+ * @param ps
+ * Pseudonyme saisie par l'utilisateur, correspend à userName de la classe Profil
+ * @param mdp
+ * Mot de passe saisie par l'utilisateur 
+ * @param pays
+ * Pays de l'utilisateur 
+ * @param temps
+ * Fuseau horraire de l'utilisateur, correspend à timeZone de la classe profil  
+ */
 public void inscriptionDe(String email, String ps, String mdp,String pays, String temps ){
 		  try {
 			 // int i = 0; 
