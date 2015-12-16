@@ -47,7 +47,7 @@ public class Inscription extends Fenetre implements ActionListener {
 		txt4 = new JTextField();
 		txt5 = new JComboBox(gmt);
 		txt5.setSelectedIndex(10);
-		//JScrollPane scrol = new JScrollPane(txt5);
+		
 		
 		p1.add(lab1);
 		p1.add(lab2);
