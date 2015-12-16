@@ -2,38 +2,48 @@ package fr.univavignon.courbes.graphics.groupe18;
 
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Color; 
-import java.util.Map;
-import java.awt.Component;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ArrayList;
-import javax.swing.SwingConstants;
-import java.awt.Graphics;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Font;
 
 import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 
 /**
- * @author uapv1504323
- * @author uapv1402334
+ * GraphicDisplayGroupe 18 est la classe implémentant l'interface GraphicDisplay 
+ * et qui permet l'affichage du Board et des scores
+ * @author uapv1504323 Antoine Letourneur
+ * @author uapv1402334 Axel Clerici
  */
 public class GraphicDisplayGroupe18 implements GraphicDisplay {
 
+	/**
+	 * Aire de jeu
+	 */
 	public Board board;
+	
+	/**
+	 * Panel graphique utilisé comme support pour dessiner l'aire de jeu.
+	 */
 	public JPanel boardPanel;
+
+	/**
+	 * Panel graphique utilisé comme support pour dessiner les scores 
+	 * 	de la partie en cours.
+	 */
 	public JPanel scorePanel;
+	/**
+	 * Liste des joueurs impliqués dans la manche.
+	 */
 	public List<Profile> players;
+	/**
+	 * Limite de points initiale pour cette manche.
+	 */
 	public int pointThreshold;
 
 	@Override
@@ -110,7 +120,17 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		
 		
 	}
-	
+	/**
+	 * Dessine le panel scorePanel en entier, affiche le score a atteindre et le score de chaque joueur pendant la partie
+	 * @param board 
+	 *	 	C'est l'aire de jeu
+	 * @param pointThreshold 
+	 * 		C'est le score maximal a atteindre
+	 * @param players 
+	 *  	La liste des profils des joueurs
+	 * @param scorePanel 
+	 * 		Le JPanel sur lequel on dessine
+	 */
 	public static void setScorePanel(Board board, int pointThreshold, List<Profile> players, JPanel scorePanel) {
 	    int size = players.size();
 	    int goal = pointThreshold;
@@ -143,6 +163,14 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 
 	}
 	
+	/**
+	 * Dessine le panel boardPanel, le plateau de jeu
+	 * @param board
+	 * 		C'est l'aire de jeu
+	 * @param boardPanel
+	 *		 Panel graphique utilisé comme support pour dessiner les scores 
+	 * 	de la partie en cours.
+	 */
 	public static void setBoardPanel(Board board, JPanel boardPanel) {
 		JPanel draw = new Draw(board.width, board.height, board);
 		draw.setBackground(Color.black);
@@ -150,6 +178,23 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		
 	}
 	
+	/**
+	 * drawScores est la fonction qui affiche la liste des joueurs et leur scores dans l'ordre décroissant
+	 * @param goal
+	 * 		Le score a atteindre
+	 * @param size
+	 * 		Le nombre de joueurs
+	 * @param board
+	 * 		C'est l'aire de jeu
+	 * @param players
+	 * 		La liste des profils des joueurs
+	 * @param leftColumn
+	 * 		Le layout des panels de la colonne gauche, pour gérer l'alignement du texte
+	 * @param rightColumn
+	 * 		Le layout des panels de la colonne de droite, pour gérer l'alignement du texte
+	 * @param gridPanel
+	 * 		C'est le layout du panel, découpe en 2 colonnes et n+1 lignes (la ligne score a atteindre + n joueurs)
+	 */
 	public static void drawScores(int goal, int size, Board board, List<Profile> players, FlowLayout leftColumn, FlowLayout rightColumn, JPanel gridPanel) {
 		   for(int n = goal; n>0; n--) {
 		    	for(int i=0; i<size;i++) {
@@ -180,6 +225,14 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		   }
 	}
 	
+	/**
+	 * Assigne une couleur au label qu'on lui passe en fonction de l'id du joueur 
+	 * 	par rapport a un code couleur prédéfini
+	 * @param label
+	 * 		Le texte que l'on veut colorier
+	 * @param playerId
+	 * 		L'id du joueur
+	 */
 	public static void setColor(JLabel label, int playerId) {
 		switch (playerId)
 		{

@@ -11,7 +11,16 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
 
+/**
+ * Sert a effectuer les tests de notre composante
+ * @author uapv1504323 Antoine Letourneur
+ * @author uapv1402334 Axel Clerici
+ */
 public class Test {
+	/**
+	 * @param args
+	 * 		parametre par defaut de la fonction main, non utilisé dans notre programme
+	 */
 	public static void main(String[] args){
 		
 		JFrame fenetreScore = new JFrame();
@@ -107,7 +116,7 @@ public class Test {
 			}
 		}
 		Test.update();
-		Test.end();
+		//Test.end();
 		
 		
 		fenetreScore.add(scorePanel);

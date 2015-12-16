@@ -9,15 +9,43 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Position;
 
  
+/**
+ * La classe Draw sert a dessiner les snakes sur l'aire de jeu
+ * @author uapv1504323 Antoine Letourneur
+ * @author uapv1402334 Axel Clerici
+ */
 public class Draw extends JPanel { 
+	/**
+	 * Numéro de série (pour {@code Serializable})
+	 */
 	private static final long serialVersionUID = 1L;
+	
+	
+	/**
+	 * Aire de jeu
+	 */
 	private Board board;
 	
+    /**
+     * Constructeur de la classe Draw pour construire le panel où la fonction paintComponent dessinera
+     * @param X
+     * 		Taille en X de la matrice 
+     * @param Y
+     * 		Taille en Y de la matrice 
+     * @param board
+     * 		L'aire de jeu
+     */
     Draw(int X, int Y, Board board) {
         setPreferredSize(new Dimension(X, Y));
         this.board = board;
     }
 
+    /**
+     * Renvoie la couleur associée à l'id du joueur
+     * @param id
+     * 		L'id du joueur
+     * @return Un objet Color de la couleur associée à ,l'id du joueur
+     */
     public static Color getColor(int id) {
     	Color color = Color.black;
         switch (id)
