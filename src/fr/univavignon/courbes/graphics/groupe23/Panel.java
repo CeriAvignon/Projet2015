@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 public class Panel extends JPanel{
 	int posX=0;// position X du Snake
 	int posY=0;// position Y du Snake
-	Color color=Color.white; // couleur du snake
-int rayon=6;// rayon du snake 
+	Color color=Color.black; // couleur du snake
+int rayon;// rayon du snake 
 	public void  paint(Graphics g) // fonction que repaint appelle
 {
 		super.paintComponent(g);
@@ -43,4 +43,5 @@ public void setRayon(int rayon)
 {
 	this.rayon=rayon;
 }
+ 
 }
