@@ -479,13 +479,22 @@ public class Round implements PhysicsEngine {
 	 */
 	public void snakeEncounterSnake(Snake snake) {
 
-		Position pos = new Position(snake.currentX, snake.currentY );
-		Integer idSnake = board.snakesMap.get(pos);
-
-		if(idSnake != null && idSnake != snake.playerId) {
-			//if(Math.sqrt(Math.pow(pos.x - pos.x, 2) + Math.pow(pos.y - pos.y, 2)) < snake.headRadius )
-			snake.state = false;	
-			System.out.println("Un snake est mort contre un autre snake"); // TODO faire gestion snake rencontre lui même
+		// Calculer 3 pts avant le fillhead, tester si les pts retourne un truc sur la snakemap
+		int hitBox[][] = new int[3][2];
+		hitBox[0][0] = snake.currentX + (int) (snake.headRadius * Math.cos(Math.toRadians(snake.currentAngle)));
+		hitBox[0][1] = snake.currentY + (int) (snake.headRadius * Math.sin(Math.toRadians(snake.currentAngle)));
+		hitBox[1][0] = snake.currentX + (int) (snake.headRadius * Math.cos(Math.toRadians(snake.currentAngle + 75)));
+		hitBox[1][1] = snake.currentY + (int) (snake.headRadius * Math.sin(Math.toRadians(snake.currentAngle + 75)));
+		hitBox[2][0] = snake.currentX + (int) (snake.headRadius * Math.cos(Math.toRadians(snake.currentAngle - 75)));
+		hitBox[2][1] = snake.currentY + (int) (snake.headRadius * Math.sin(Math.toRadians(snake.currentAngle - 75)));
+		
+		for(int i = 0; i < 3; i++) {
+			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
+			Integer flg = board.snakesMap.get(posChk);
+			if(flg != null) {
+				snake.state = false;	
+				System.out.println("Un snake est mort contre un autre snake");
+			}
 		}
 	}
 
