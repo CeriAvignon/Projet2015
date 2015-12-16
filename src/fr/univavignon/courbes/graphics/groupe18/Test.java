@@ -25,7 +25,7 @@ public class Test {
 		
 		JFrame fenetreScore = new JFrame();
 		fenetreScore.setTitle("Démonstration Score Panel");
-		fenetreScore.setSize(350, 800);
+		fenetreScore.setSize(380, 800);
 		fenetreScore.setLocationRelativeTo(null);
 		fenetreScore.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
 		fenetreScore.setVisible(true);
