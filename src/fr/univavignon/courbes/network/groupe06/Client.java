@@ -40,10 +40,7 @@ public class Client implements ClientCommunication {
 	 * 
 	 */
 	protected Board board = new Board();
-	/**
-	 * 
-	 */
-	private PrintWriter writer = null;
+
 	@Override
 	public String getIp() {
 		
@@ -160,26 +157,34 @@ public class Client implements ClientCommunication {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				Socket sock = connexion;
-				
-				try {
-					writer = new PrintWriter(sock.getOutputStream());
-					writer.write(message);
-					writer.flush();
-					writer = null;
-				} catch(SocketException e){
-					closeClient();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				sock = null;
+				sendTextSecure(message);
 			}
 		});
 		send.start();
 		return;
 		
 	}
-
+	/**
+	 * @param message
+	 */
+	synchronized public void sendTextSecure(String message)
+	{
+		Socket sock = connexion;
+		
+		try {
+			PrintWriter writer = new PrintWriter(sock.getOutputStream());
+			writer.write(message);
+			writer.flush();
+			writer = null;
+		} catch(SocketException e){
+			closeClient();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		sock = null;
+	}
+	
+	
 	@Override
 	public void sendProfile(Profile profile) {
 		return;

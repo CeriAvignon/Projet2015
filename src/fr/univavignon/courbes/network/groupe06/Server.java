@@ -11,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.ObjectOutputStream;
@@ -49,7 +48,7 @@ public class Server implements ServerCommunication {
 	/**
 	 * 
 	 */
-	protected int nbClients = 0;
+	protected static int nbClients = 0;
 	/**
 	 * 
 	 */
@@ -61,15 +60,7 @@ public class Server implements ServerCommunication {
 	/**
 	 * 
 	 */
-	protected BufferedInputStream reader = null;
-	/**
-	 * 
-	 */
-	private PrintWriter writer = null;
-	/**
-	 * 
-	 */
-	ServerSocket sSocket = null;
+	private ServerSocket sSocket = null;
 	
 	@Override
 	public String getIp() {
@@ -132,24 +123,27 @@ public class Server implements ServerCommunication {
  	    	}
  	    }
 		//step 3 : launch server
+ 	   
+		try {
+			sSocket.close();
+			sSocket = new ServerSocket(this.port, Server.size, InetAddress.getByName(this.ip));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
  	    Thread launch = new Thread(new Runnable(){
  	    	@Override
 			public void run(){
- 	    		sSocket = null;
- 	    		try {
- 	    			sSocket = new ServerSocket(port, size, InetAddress.getByName(ip));
- 	    		} catch (UnknownHostException e) {
- 	    			e.printStackTrace();
- 	    		} catch (IOException e) {
- 	    			e.printStackTrace();
- 	    		}
  	    		isRunning = true;
  	    		while(isRunning == true){
  	    			try {
  	    				//wait client communication
- 	    				Socket client = sSocket.accept();			 
+ 	    				Socket client = sSocket.accept(); 
  	    				socketArray[nbClients] = client;
- 	    				nbClients++;                 
+ 	    				nbClients++;
+ 	    				Thread newClient = new Thread(new ClientProcessor(client));
+ 	    				newClient.start();
  	    			} catch (IOException e) {
  	    				e.printStackTrace();
  	    			}
@@ -183,7 +177,7 @@ public class Server implements ServerCommunication {
 				{
 					sock = socketArray[i];
 					try {
-						writer = new PrintWriter(sock.getOutputStream());
+						PrintWriter writer = new PrintWriter(sock.getOutputStream());
 						writer.write(pointThreshold);
 						writer.flush();
 						writer = null;
@@ -259,7 +253,7 @@ public class Server implements ServerCommunication {
 				{
 					sock = socketArray[i];
 					try {
-						writer = new PrintWriter(sock.getOutputStream());
+						PrintWriter writer = new PrintWriter(sock.getOutputStream());
 						writer.write(message);
 						writer.flush();
 						writer = null;
@@ -281,27 +275,9 @@ public class Server implements ServerCommunication {
 	@Override
 	public String[] retrieveText() {
 		
-		try {
-			read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		return null;
 	}
 	
-	/**
-	 * @return response soit le message qui vient d'être lu.
-	 * @throws IOException En cas d'erreur de lecture.
-	 */
-	private String read() throws IOException {      
-	      String response = "";
-	      int stream;
-	      byte[] b = new byte[4096];
-	      stream = this.reader.read(b);
-	      response = new String(b, 0, stream);      
-	      return response;
-	   }
 
 	@Override
 	public void sendProfiles(final List<Profile> profiles) {
