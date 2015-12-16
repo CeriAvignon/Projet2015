@@ -22,7 +22,7 @@ DefaultListModel dm =new DefaultListModel();
 JList list=new JList(dm);
 Color couleur[]={Color.blue,Color.red,Color.orange,Color.green,Color.yellow};
 List<Profile> players;
-Point [] prec ;
+List<Point> prec=new ArrayList();
 public static void main(String[] args) throws InterruptedException
 {
 	JFrame fenetre= new JFrame();
@@ -30,7 +30,6 @@ public static void main(String[] args) throws InterruptedException
 	fenetre.setLayout(null);
 	JPanel boardPanel = new JPanel();
 	boardPanel.setBounds(126, 11, 314, 267);
-
 JPanel scorePanel = new JPanel();
 scorePanel.setBounds(10, 11, 100, 278);
 Board board = new Board();
@@ -58,6 +57,7 @@ graph.init(board,0,pro,boardPanel,scorePanel);
 fenetre.add(boardPanel);
 fenetre.add(scorePanel);
 fenetre.setVisible(true);
+
 for(int i=0;i<200;i++)
 {
 	board.snakes[0].currentX++;
@@ -84,8 +84,9 @@ int i=0;
 for(Profile j:players)
 {
 	text=pointThreshold+ " "+j.userName;
-	dm.add(i++,text);	
-prec[i]=new Point(0,0);
+	dm.add(i,text);	
+prec.add(new Point(b.snakes[i].currentX,b.snakes[i].currentX));
+i++;
 }
 	}
 
@@ -101,9 +102,9 @@ panel.setPosX(b.snakes[i].currentX);
 panel.setPosY(b.snakes[i].currentY);
 panel.setRayon((int)b.snakes[i].headRadius);
 panel.setColor(couleur[i]);
-panel.repaint((int)(b.snakes[i].currentX+b.snakes[i].headRadius/2),(int)( b.snakes[i].currentY-b.snakes[i].headRadius/2),(int) b.snakes[i].headRadius, (int) b.snakes[i].headRadius);
-prec[i].x=b.snakes[i].currentX;
-prec[i].y=b.snakes[i].currentY;
+panel.repaint((prec.get(i).getX()<b.snakes[i].currentX)?(int)(b.snakes[i].currentX+b.snakes[i].headRadius/2):(int)(b.snakes[i].currentX-b.snakes[i].headRadius/2),(prec.get(i).getY()<b.snakes[i].currentY)?(int)(b.snakes[i].currentY+b.snakes[i].headRadius/2):(int)(b.snakes[i].currentY-b.snakes[i].headRadius/2),(int) b.snakes[i].headRadius, (int) b.snakes[i].headRadius);
+prec.set(i, new Point(b.snakes[i].currentX,b.snakes[i].currentY));
+
 try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
