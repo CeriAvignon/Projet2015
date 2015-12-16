@@ -13,6 +13,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -134,9 +135,9 @@ public class Server implements ServerCommunication {
  	    Thread launch = new Thread(new Runnable(){
  	    	@Override
 			public void run(){
- 	    		ServerSocket server = null;
+ 	    		sSocket = null;
  	    		try {
- 	    			server = new ServerSocket(port, size, InetAddress.getByName(ip));
+ 	    			sSocket = new ServerSocket(port, size, InetAddress.getByName(ip));
  	    		} catch (UnknownHostException e) {
  	    			e.printStackTrace();
  	    		} catch (IOException e) {
@@ -146,7 +147,7 @@ public class Server implements ServerCommunication {
  	    		while(isRunning == true){
  	    			try {
  	    				//wait client communication
- 	    				Socket client = server.accept();			 
+ 	    				Socket client = sSocket.accept();			 
  	    				socketArray[nbClients] = client;
  	    				nbClients++;                 
  	    			} catch (IOException e) {
@@ -154,11 +155,10 @@ public class Server implements ServerCommunication {
  	    			}
  	    		}
  	    		try {
- 	    			server.close();
  	    			sSocket.close();
  	    		} catch (IOException e) {
  	    			e.printStackTrace();
- 	    			server = null;
+ 	    			sSocket = null;
  	    		}
  	    	}
  	    });
@@ -304,7 +304,50 @@ public class Server implements ServerCommunication {
 	   }
 
 	@Override
-	public void sendProfiles(List<Profile> profiles) {
+	public void sendProfiles(final List<Profile> profiles) {
+		Thread send = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ObjectOutputStream oos = new ObjectOutputStream(baos);
+					oos.writeObject(profiles);
+					oos.flush();
+					// get the byte array of the object
+					byte[] Buf= baos.toByteArray();
+			
+					int number = Buf.length;;
+					byte[] data = new byte[4];
+			
+					// int -> byte[]
+					for (int i = 0; i < 4; ++i) {
+						int shift = i << 3; // i * 8
+						data[3-i] = (byte)((number & (0xff << shift)) >>> shift);
+					}
+					
+					Socket sock = null;
+					int i = 0;
+					while(i < nbClients)
+					{
+						sock = socketArray[i];
+						try {
+							DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
+							dos.write(data, 0, 4);
+							dos.write(Buf, 0, Buf.length);
+						} catch(SocketException e){
+							//Vire un client, faire une fonction pour ça.
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						i++;
+					}
+					sock = null;
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		send.start();
 		return;
 		
 	}
