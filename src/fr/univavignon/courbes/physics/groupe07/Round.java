@@ -285,12 +285,12 @@ public class Round implements PhysicsEngine
 	
 	
 	/**
-	 * Remplit la snakeMap avec les coordonnées du serpent relatives à la trace
-	 * laissé par la tête du snake (plus la tête est grosse plus la trace l'est).
+	 * Remplit la snakeMap en fonction des coordonnées du snake
 	 * 
 	 * @param snake 
 	 */
-	public void fillSnakeHead(Snake snake) {
+	public void fillSnakeHead(Snake snake)
+	{
 		int id  = snake.playerId;
 		int xS  = snake.currentX;
 		int yS  = snake.currentY;
@@ -299,9 +299,12 @@ public class Round implements PhysicsEngine
 
 		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
 		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
-		for(int i = xS - rad; i < xS + rad ; i++) {
-			for(int j = yS - rad; j < yS + rad ; j++) {
-				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad) {
+		for(int i = xS - rad; i < xS + rad ; i++)
+		{
+			for(int j = yS - rad; j < yS + rad ; j++)
+			{
+				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad)
+				{
 					pos.x = i;
 					pos.y = j;
 					ourBoard.snakesMap.put(pos, id);
@@ -392,6 +395,11 @@ public class Round implements PhysicsEngine
 		updateSpawnItem(elapsedTime);
 	}
 	
+
+	
+	/**
+	 * Cette méthode génère l'apparition d'un item pendant la mise à jour
+	 */
 	
 	private void updateSpawnItem(long elapsedTime) {
 		ratioItem += elapsedTime*getItemRate();
@@ -400,6 +408,12 @@ public class Round implements PhysicsEngine
 			ratioItem = 0;
 		}
 	}
+	
+
+	
+	/**
+	 * Cette méthode affecte un item à un snake.
+	 */
 	
 	public void updateSnakesEffects(long elapsedTime) {
 
@@ -422,9 +436,13 @@ public class Round implements PhysicsEngine
 		}
 	}
 	
+
 	
+	/**
+	 * Cette méthode effectue la mise à jour de la position du snake.
+	 */
 	
-	 public void updateSnakesPositions(long elapsedTime) {
+	public void updateSnakesPositions(long elapsedTime) {
 		long elapsed;
 		double pixStep;
 		boolean snakeMove = false;
@@ -531,7 +549,14 @@ public class Round implements PhysicsEngine
 			}
 		}
 	}
-		public void updateSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
+	
+
+	
+	/**
+	 * Cette méthode effectue la mise à jour de la direction du snake.
+	 */
+	
+	public void updateSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
 	{
 		Direction direction;
 		for(Snake snake : ourBoard.snakes)
