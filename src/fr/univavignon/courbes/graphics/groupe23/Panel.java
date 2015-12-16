@@ -14,7 +14,7 @@ int rayon=6;// rayon du snake
 {
 		super.paintComponent(g);
 g.setColor(color);
-g.fillOval(posX, posY,rayon,rayon); 
+g.fillOval(posX, posY,rayon,rayon); // dessine 
 }
 
 	public int getPosX() {
