@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.graphics.groupe02;
+package fr.univavignon.courbes.graphics;
 
 import java.util.List;
 
