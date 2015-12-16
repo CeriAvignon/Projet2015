@@ -61,8 +61,12 @@ public class Rnd implements PhysicsEngine {
 		
 		for (int i = 0; i < board.snakes.length; i++)
 		{
-			idP = board.snakes[i].profileId;
-			snakeMove(i, elapsedTime, commands.get(idP));
+			if(board.snakes[i].state)
+			{
+				idP = board.snakes[i].profileId;
+				snakeMove(i, elapsedTime, commands.get(idP));
+			}
+		
 		}
 		
 		if(new Random().nextDouble() <= itemProbability)	
@@ -171,13 +175,13 @@ public class Rnd implements PhysicsEngine {
 		s.currentY = currentY;
 		s.currentAngle = 0/*Math.random()*(2*Math.PI)*/;
 		s.headRadius = 1;
-		s.movingSpeed = 0.1;
+		s.movingSpeed = 0.5;
 		s.turningSpeed = 1;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
 		s.holeRate = 0;
-		s.fly = true;
+		s.fly = false;
 		s.currentScore = 0;
 		
 		s.currentItems = new HashMap<Item, Long>();
@@ -194,10 +198,12 @@ public class Rnd implements PhysicsEngine {
 		// PS** le cas d'inversion de commande est-ce que c'est à nous d'inverser les commandes ou plutôt IU  ??
 		// On fais tourner le snake
 		
-		if (command == Direction.LEFT)
+		if (command == Direction.LEFT ||
+								(command == Direction.RIGHT && board.snakes[id].inversion))
 			board.snakes[id].currentAngle +=  board.snakes[id].turningSpeed*elapsedTime;
 
-		if (command == Direction.RIGHT)
+		if (command == Direction.RIGHT ||
+								(command == Direction.LEFT && board.snakes[id].inversion))
 			board.snakes[id].currentAngle -=  board.snakes[id].turningSpeed*elapsedTime;
 		
 		// On regarde si l'angle sors des limites du certcle trigo
@@ -259,7 +265,7 @@ public class Rnd implements PhysicsEngine {
 				
 			double stepY = interY / distance;
 				
-			int valeurCollision = 0;
+			Collision vCollision;
 				
 
 				
@@ -271,9 +277,7 @@ public class Rnd implements PhysicsEngine {
 		
 				
 			// Tant que la pointe du tracé n'a pas rejoint la tete, on dessine le pixel et on incremente
-				
-				
-			
+					
 						
 			for (int i = 0 ; i < (int) distance ; i++)
 			{
@@ -284,16 +288,21 @@ public class Rnd implements PhysicsEngine {
 					// Si cette position n'est pas dessiné dans l'iteration précedente
 				if(!lastDrawnPosition.equals(po))				
 				{	
-						valeurCollision = checkCollision(po, id);	
+						vCollision = checkCollision(po, id);	
 						// Appel à la fonction qui vérifie la collision
 					
-					if(valeurCollision == 0 ||valeurCollision == 2)	 // 0 Pas de collision --- 2 collision avec item
+					if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 // 0 Pas de collision --- 2 collision avec item
 					{	
 							
 						// Pour faire des trous dans le corps du snake
 						if(new Random().nextDouble() >= board.snakes[id].holeRate)  
 						{
 							board.snakesMap.put(po, id);			// Je déssine la position sur la map
+							
+							board.snakes[id].currentX = po.x;
+							
+							board.snakes[id].currentY = po.y;
+									
 							System.out.println(po.x+" "+po.y);
 						}
 							
@@ -303,7 +312,7 @@ public class Rnd implements PhysicsEngine {
 					}
 					else
 					{
-						if(valeurCollision == -1 || valeurCollision == 1)
+						if(vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
 						{					
 							break;
 						}
@@ -314,33 +323,35 @@ public class Rnd implements PhysicsEngine {
 			
 					headX += stepX;
 					headY += stepY;
-				
-			if(board.snakes[id].fly)
-				{
-				if (headX >= board.width)
-						headX = 0;
+					
+					if(board.snakes[id].fly)
+					{
+					if (headX >= board.width)
+							headX = 0;
 
-				if (headY >= board.height)
-						headY = 0;
+					if (headY >= board.height)
+							headY = 0;
 
-				if (headX < 0)
-					headX = board.width;
+					if (headX < 0)
+						headX = board.width-1;
 
-				
-				if (headY < 0)
-					headY = board.height;
+					
+					if (headY < 0)
+						headY = board.height-1;
 
-				}
+					}
+					
 		}
 				
-		board.snakes[id].currentX = lastDrawnPosition.x;
-		board.snakes[id].currentY = lastDrawnPosition.y;
+	/*	board.snakes[id].currentX = lastDrawnPosition.x;
+		board.snakes[id].currentY = lastDrawnPosition.y;*/
 				
 		
 		// Pour tester
 		System.out.println("currentX : "+ board.snakes[id].currentX +" - currentY :"+board.snakes[id].currentY);
 		
 		System.out.println("This snake still alive ? "+board.snakes[id].state);
+		
 		
 	}
 
@@ -355,7 +366,7 @@ public class Rnd implements PhysicsEngine {
 	 * @return int qui spécifie le type de la collision
 	 * */
 	
-	public int checkCollision(Position p, int id)
+	public Collision checkCollision(Position p, int id)
 	{
 		
 		if(p.x <= 0 || p.y <= 0 || p.x >= board.width-1 || p.y >= board.height-1) // Collision avec le mur
@@ -363,7 +374,7 @@ public class Rnd implements PhysicsEngine {
 			if(board.snakes[id].fly == false)					// mode avion n'est pas activé
 			{
 				board.snakes[id].state = false;			// Je change l'état du snake (mort)
-				return -1; 
+				return Collision.BORDER; 
 			}
 
 		}
@@ -371,7 +382,7 @@ public class Rnd implements PhysicsEngine {
 		if(board.snakesMap.containsKey(p) && board.snakes[id].fly == false)	 // Si il y a une collision et le mode avion n'est pas activé
 		{																		// Collision avec un autre snake
 			board.snakes[id].state = false;
-			return 1;										
+			return Collision.SNAKE;										
 		}
 			
 		if(board.itemsMap.containsKey(p))			// Collision avec un item
@@ -381,10 +392,10 @@ public class Rnd implements PhysicsEngine {
 			
 			snakeAddItem(id, board.itemsMap.get(p));				// J'ajoute l'effect de l'item
 			
-			return 2;
+			return Collision.ITEM;
 		}
 		
-		return 0;								// Pas de collision
+		return Collision.NONE;								// Pas de collision
 	}
 	
 	/**
@@ -393,7 +404,7 @@ public class Rnd implements PhysicsEngine {
 	 * @param id est le paramètre du joueur
 	 * @param item c'est l'item qui se trouve dans la map des items du snake
 	 */
-	
+
 	public void snakeAddItem(int id, Item item)
 	{
 		//ajout de l'item au map d'items
