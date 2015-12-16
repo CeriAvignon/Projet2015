@@ -1,6 +1,9 @@
 package fr.univavignon.courbes.network.groupe02;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -20,11 +23,11 @@ import fr.univavignon.courbes.network.ClientCommunication;
  * On fait la classe Client
  *
  */
-public class Client implements ClientCommunication, Runnable
+public class Client implements ClientCommunication
 {
 
-	Socket socketClient = null;
-	int port = 2345;
+	protected Socket socketClient = null;
+	protected int port = 2345;
 	
 	@Override
 	public String getIp() 
@@ -70,7 +73,7 @@ public class Client implements ClientCommunication, Runnable
 	     {
 	         socketClient = new Socket(getIp(), port);
 	         BufferedReader in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-	         PrintStream out = new PrintStream(socket.getOutputStream());
+	         PrintStream out = new PrintStream(socketClient.getOutputStream());
 	     } 
 	     catch (UnknownHostException e) 
 	     {

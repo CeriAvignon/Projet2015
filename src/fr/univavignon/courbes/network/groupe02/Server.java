@@ -22,7 +22,7 @@ import java.net.InetSocketAddress;
  * 
  * @author Marie et Mary    
  * 
- * On fait la classe Client
+ * On fait la classe serveur
  *
  */
 public class Server implements ServerCommunication
@@ -85,6 +85,24 @@ public class Server implements ServerCommunication
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getIp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getPort() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setPort(int port) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
