@@ -15,7 +15,7 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 
 /**
- * GraphicDisplayGroupe 18 est la classe implémentant l'interface GraphicDisplay 
+ * GraphicDisplayGroupe18 est la classe implémentant l'interface GraphicDisplay 
  * et qui permet l'affichage du Board et des scores
  * @author uapv1504323 Antoine Letourneur
  * @author uapv1402334 Axel Clerici
