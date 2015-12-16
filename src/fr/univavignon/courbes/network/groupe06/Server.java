@@ -141,6 +141,8 @@ public class Server implements ServerCommunication {
  	    				//wait client communication
  	    				Socket client = sSocket.accept(); 
  	    				socketArray[nbClients] = client;
+ 	    				arrayOfIp[nbClients] = client.getInetAddress().getHostAddress();
+ 	    				//System.out.println(arrayOfIp[nbClients]);
  	    				nbClients++;
  	    				Thread newClient = new Thread(new ClientProcessor(client));
  	    				newClient.start();
@@ -220,10 +222,10 @@ public class Server implements ServerCommunication {
 					int i=0;
 					while(i < nbClients) { 
 						InetAddress client = InetAddress.getByName(arrayOfIp[i]);
-						DatagramPacket packet = new DatagramPacket(data, 4, client, port);
+						DatagramPacket packet = new DatagramPacket(data, 4, client, port+1);
 	        	      	socket.send(packet);
 	        	      	// now send the Board
-	        	      	packet = new DatagramPacket(Buf, Buf.length, client, port);
+	        	      	packet = new DatagramPacket(Buf, Buf.length, client, port+1);
 	        	      	socket.send(packet);
 	        	      	i++;
 					}

@@ -110,7 +110,7 @@ public class Client implements ClientCommunication {
 			@Override
 			public void run(){
 				try {
-					DatagramSocket socket = new DatagramSocket(port);
+					DatagramSocket socket = new DatagramSocket(port+1);
 
 				    byte[] data = new byte[4];
 				    DatagramPacket packet = new DatagramPacket(data, data.length );
@@ -138,6 +138,12 @@ public class Client implements ClientCommunication {
 			}
 		});
 		retrieve.start();
+		try {
+			retrieve.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return this.board;
 	}
 
