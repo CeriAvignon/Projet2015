@@ -570,12 +570,7 @@ public class Round implements PhysicsEngine
 	
 	public void forceUpdate(Board board)
 	{
-		//this.ourBoard = board;
-		this.ourBoard.width = board.width;
-		this.ourBoard.height = board.height;
-		this.ourBoard.snakes = board.snakes;
-		this.ourBoard.snakesMap=board.snakesMap;
-		this.ourBoard.itemsMap = board.itemsMap;
+		this.ourBoard = board;
 	}
 	
 	
