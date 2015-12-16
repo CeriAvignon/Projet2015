@@ -1,12 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
-
-import fr.univavignon.courbes.common.Item;
-import fr.univavignon.courbes.common.Position;
-import fr.univavignon.courbes.common.Snake;
 
 /**
  * Cette classe correspond à l'ensemble des informations propres à 
@@ -21,20 +16,17 @@ import fr.univavignon.courbes.common.Snake;
 public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
-
+	
 	/** Largeur de l'aire de jeu, en pixels */
 	public int width;
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
-
+	
 	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
 	public Map<Position, Integer> snakesMap;
-	/** Tableau contentant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
+	/** Tableau contenant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
-
-	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
+	
+	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
 	public Map<Position, Item> itemsMap;
-
-
-
 }
