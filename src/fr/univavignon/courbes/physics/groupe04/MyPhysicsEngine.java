@@ -158,37 +158,38 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					System.out.println("MOUVEMENT");
 				}
 				// VALEURS SERONT COMPRISES ENTRE -2 ET 2
-		/*		System.out.println("COS snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][0]);
+			/*	System.out.println("COS snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][0]);
 				System.out.println("SIN snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][1]);*/
 				snakeTable[ourBoard.snakes[i].profileId][0] += Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle)); 	
 				snakeTable[ourBoard.snakes[i].profileId][1] += Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle));
-	/*			System.out.println("snake n°"+i+" : "+Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle)));
+				System.out.println("snake n°"+i+"  sin: "+Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle)));
+				System.out.println("snake n°"+i+"  cos: "+Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle)));
 				System.out.println("COS snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][0]);
-				System.out.println("SIN snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][1]);*/
+				System.out.println("SIN snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][1]);
 				// TESTS ANGLES COS && SIN
 				// !!!!!!!!!!!     0.99 A CAUSE DES APPROXIMATIONS, NE PAS METTRE 1 !!!!!!!!!!!
-				if(snakeTable[ourBoard.snakes[i].profileId][0] >= 0.99 && snakeTable[ourBoard.snakes[i].profileId][1] >= 0.99) {
+				if(snakeTable[ourBoard.snakes[i].profileId][1] >= 0 && snakeTable[ourBoard.snakes[i].profileId][0] >= 0) {
 					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX++;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -0.99 && snakeTable[ourBoard.snakes[i].profileId][0] >= 0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][1] < 0 && snakeTable[ourBoard.snakes[i].profileId][0] > 0) {
 					ourBoard.snakes[i].currentY--;
 					ourBoard.snakes[i].currentX++;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -0.99 && snakeTable[ourBoard.snakes[i].profileId][0] <= -0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][1] < 0 && snakeTable[ourBoard.snakes[i].profileId][0] < 0) {
 					ourBoard.snakes[i].currentY--;
 					ourBoard.snakes[i].currentX--;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 0.99 && snakeTable[ourBoard.snakes[i].profileId][0] <= -0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][1] > 0 && snakeTable[ourBoard.snakes[i].profileId][0] < 0) {
 					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX--;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
@@ -196,28 +197,28 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					isMoving = true;
 				}
 				// ON A DONC COS OU SINUS = 0, ETUDE DES DERNIERS CAS
-				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][1] >= 0) {
 					ourBoard.snakes[i].currentY++;
 					snakeTable[ourBoard.snakes[i].profileId][1]--;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= -0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][1] <= 0) {
 					ourBoard.snakes[i].currentY--;
 					snakeTable[ourBoard.snakes[i].profileId][1]++;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][0] >= 0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][0] >= 0) {
 					ourBoard.snakes[i].currentX++;
 					snakeTable[ourBoard.snakes[i].profileId][0]--;
 					isMoving = true;
 				}
-				else if(snakeTable[ourBoard.snakes[i].profileId][0] <= -0.99) {
+				else if(snakeTable[ourBoard.snakes[i].profileId][0] <= 0) {
 					ourBoard.snakes[i].currentX--;				
 					snakeTable[ourBoard.snakes[i].profileId][0]++;
 					isMoving = true;
 				}
 				else{
-					System.out.println("ERREUR  : \nCos : "+snakeTable[ourBoard.snakes[i].profileId][0]+"\nSIN : "+snakeTable[ourBoard.snakes[i].profileId][1]);
+					System.out.println("ERREUR");
 				}
 
 				pixel--;  
