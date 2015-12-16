@@ -17,7 +17,7 @@ public class Main
 	public static void main(String[] args)
 	
 	{
-		int idPlayers[] = {0,1};
+		int idPlayers[] = {0,1,2,3,4,5};
 		Round newRound = new Round(500,500,idPlayers);
 		Map<Integer, Direction> command = new HashMap<Integer, Direction>();
 		long timeRound = 1;

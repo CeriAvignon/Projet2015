@@ -143,7 +143,8 @@ public class Round implements PhysicsEngine
 	 */
 	
 	public void addItemToSnake(int id, Item item) {
-		switch(item){
+		switch(item)
+		{
 			case USER_SPEED:
 				ourBoard.snakes[id].currentItems.put(item, (long)item.duration);
 				ourBoard.snakes[id].movingSpeed *= 2;
@@ -463,7 +464,8 @@ public class Round implements PhysicsEngine
 				coordSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
 				coordSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
 
-				if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] >= 1) {
+				if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] >= 1)
+				{
 					snake.currentY--;
 					snake.currentX++;
 					pos.x = snake.currentX;
@@ -473,7 +475,8 @@ public class Round implements PhysicsEngine
 					coordSnake[snake.playerId][0]--;
 					snakeMove = true;
 				}
-				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] >= 1) {
+				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] >= 1)
+				{
 					snake.currentY++;
 					snake.currentX++;
 					pos.x = snake.currentX;
@@ -483,7 +486,8 @@ public class Round implements PhysicsEngine
 					coordSnake[snake.playerId][0]--;
 					snakeMove = true;
 				}
-				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] <= -1) {
+				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] <= -1)
+				{
 					snake.currentY++;
 					snake.currentX--;
 					pos.x = snake.currentX;
@@ -493,7 +497,8 @@ public class Round implements PhysicsEngine
 					coordSnake[snake.playerId][0]++;
 					snakeMove = true;
 				}
-				else if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] <= -1) {
+				else if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] <= -1)
+				{
 					snake.currentY--;
 					snake.currentX--;
 					pos.x = snake.currentX;
