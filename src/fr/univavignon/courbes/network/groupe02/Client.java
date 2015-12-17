@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 
 import fr.univavignon.courbes.common.Board;
@@ -59,8 +61,7 @@ public class Client implements ClientCommunication
 	     try 
 	     {
 	         socketClient = new Socket(this.ip, this.port);
-	         BufferedReader in = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-	         PrintStream out = new PrintStream(socketClient.getOutputStream());
+	       
 	     } 
 	     catch (UnknownHostException e) 
 	     {
@@ -70,7 +71,6 @@ public class Client implements ClientCommunication
 	     {
 	         e.printStackTrace();
 	     }
-		
 		
 	}
 
@@ -94,43 +94,105 @@ public class Client implements ClientCommunication
 	@Override
 	public List<Profile> retrieveProfiles() 
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Integer retrievePointThreshold() 
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Board retrieveBoard() 
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public String retrieveText() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		final BufferedReader rec; //Pour recevoir		
+		try 
+		{
+			socketClient = new Socket(this.ip, this.port);
+			//flux pour recevoir
+			rec = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
+			
+			Thread receive = new Thread(new Runnable()
+			{
+				String message;
+				
+				@Override
+				public void run()
+				{
+					try
+					{
+						message = rec.readLine();
+						while(message != null)
+						{
+							System.out.println("Server :" + message);
+							message = rec.readLine();
+						}
+						System.out.println("Server disconnected");
+						socketClient.close();
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			});
+			receive.start();
+		}
+		catch (UnknownHostException e) 
+	     {
+	         e.printStackTrace();
+	     } 
+	     catch (IOException e) 
+	     {
+	         e.printStackTrace();
+	     }
 	}
 
 	@Override
-	public void sendText(String message) 
+	public void sendText(final String message) 
 	{
-		// TODO Auto-generated method stub
+		final PrintWriter out; // Pour envoyer
 		
+		try 
+		{
+			socketClient = new Socket(this.ip, this.port);
+			out = new PrintWriter(socketClient.getOutputStream()); //flux pour envoyer
+			
+			Thread send = new Thread(new Runnable()
+			{				
+				@Override
+				public void run()
+				{
+					out.println(message);
+					out.flush();
+				}
+			});
+			send.start();
+		} 
+		catch (UnknownHostException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}		
 	}
 	
 }
