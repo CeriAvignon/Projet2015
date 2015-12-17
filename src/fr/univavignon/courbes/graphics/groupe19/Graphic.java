@@ -91,8 +91,6 @@ public class Graphic extends JFrame implements GraphicDisplay  {
             	      PanelBoard.revalidate();
             	      
                       PanelBoard.repaint();
-                      	                      	                        
-                        
                      /*   PanelBoard.add(myButton, BorderLayout.SOUTH);
                         add(PanelBoard);
                         pack();
@@ -128,7 +126,6 @@ public class Graphic extends JFrame implements GraphicDisplay  {
 	@Override
 	public void end() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	
@@ -145,6 +142,13 @@ public class Graphic extends JFrame implements GraphicDisplay  {
 
           fenetre.setVisible(true);
     }
+
+	@Override
+	public void init(Board board, int pointThreshold, List<Profile> players,
+			JPanel boardPanel, JPanel scorePanel) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 	
