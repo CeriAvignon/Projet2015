@@ -3,6 +3,7 @@ package fr.univavignon.courbes.network.groupe15;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -69,7 +70,7 @@ public class Server implements ServerCommunication {
 		try {
 			this.serverSocket = new ServerSocket(port);
 			System.out.println("Lancement du serveur");
-			new Thread(new Runnable(){
+			Thread t = new Thread(new Runnable(){
 				public void run(){
 					try {
 						sockets.add(serverSocket.accept());
@@ -79,6 +80,7 @@ public class Server implements ServerCommunication {
 					}
 				}
 			});
+			t.start();
 			messageSent = this.retrieveText()[0];
 			this.sendText(messageSent);
 			
@@ -161,6 +163,15 @@ public class Server implements ServerCommunication {
 	public void sendBoard(Board board) {
 		// TODO Auto-generated method stub
 		
+		for(Socket socket:sockets){
+			try{
+				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+				oos.writeObject(board);
+			} catch (Exception e) {
+				
+			}
+			
+		}
 	}
 
 	@Override
