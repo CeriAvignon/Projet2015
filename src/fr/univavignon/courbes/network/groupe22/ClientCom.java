@@ -1,19 +1,43 @@
 package fr.univavignon.courbes.network.groupe22;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
+
 import java.net.*;
+
 import java.io.*;
 
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Christophe Castel
+ *
+ */
 public class ClientCom implements ClientCommunication
 {
-    private PrintWriter writer = null;
-    private BufferedInputStream reader = null;
+    /**
+     * 
+     */
     private String ipServer;
+    /**
+     * 
+     */
     private int portServer;
+    /**
+     * 
+     */
     private Socket connexion = null;
+	/**
+	 * 
+	 */
 	String message = null;
+	/**
+	 * 
+	 */
 	Board board = null;
   /**
      * Renvoie l'adresse IP du serveur auquel le client se connecte.
@@ -108,7 +132,7 @@ public class ClientCom implements ClientCommunication
     
     @Override
   	public void sendProfile(Profile profile) {
-    	
+    	;
     }
   
   	/**
@@ -228,7 +252,7 @@ public class ClientCom implements ClientCommunication
     
     @Override
     public void sendCommands(Map<Integer,Direction> commands) {
-    	
+    	;
     }
 
     /**
