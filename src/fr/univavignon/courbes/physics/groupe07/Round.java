@@ -264,120 +264,6 @@ public class Round implements PhysicsEngine
 		}
 	}
 	
-	
-	
-	/**
-	 * Cette méthode retire l'item de la map dès qu'il est récupéré.
-	 */
-	public void removeItem(Snake snake, Position pos)
-	{
-		Item itemRecup = ourBoard.itemsMap.get(pos);
-		if(itemRecup != null)
-		{
-			if(snake.state)
-			{
-				addItemToSnake(snake.playerId, itemRecup);
-				ourBoard.itemsMap.remove(pos);
-				System.out.println("Snake a rencontré un item");
-			}
-		}
-	}
-	
-	
-	
-	/**
-	 * Remplit la snakeMap en fonction des coordonnées du snake
-	 * 
-	 * @param snake 
-	 */
-	public void fillSnakeHead(Snake snake)
-	{
-		int id  = snake.playerId;
-		int xS  = snake.currentX;
-		int yS  = snake.currentY;
-		int rad = (int) snake.headRadius;
-		Position pos = new Position(0,0);
-
-		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
-		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
-		for(int i = xS - rad; i < xS + rad ; i++)
-		{
-			for(int j = yS - rad; j < yS + rad ; j++)
-			{
-				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad)
-				{
-					pos.x = i;
-					pos.y = j;
-					ourBoard.snakesMap.put(pos, id);
-				}
-			}
-		}
-	}
-	
-	
-	
-	/**
-	 * Cette méthode teste si le snake rentre en contact avec les bords.
-	 * <br/>
-	 * Il faut prévoir le cas où l'item COLLECTIVE_TRAVERSE_WALL a été utilisé.
-	 */
-	
-	public void deathVsBounds(Snake snake)
-	{
-		if(snake.currentX < 0 || snake.currentX > ourBoard.width || snake.currentY < 0|| snake.currentY > ourBoard.height) {
-			if (!snake.fly)
-			{
-				snake.state = false; 
-				System.out.println("Snake " + snake.playerId + " a touché les bords");
-			} 
-			else
-			{
-				if(snake.currentX < 0)
-					snake.currentX = ourBoard.width;
-				else if(snake.currentX > ourBoard.width)
-					snake.currentX = 0;
-				if(snake.currentY < 0)
-					snake.currentY = ourBoard.height;
-				else if(snake.currentY > ourBoard.height)
-					snake.currentY = 0;
-			}	
-		}
-	}
-	
-	
-	
-	/**
-	 * Cette méthode teste si le snake rentre en contact avec la trainée d'un autre snake.
-	 */
-	
-	public void deathVsSnake(Snake snake)
-	{
-
-		Position pos = new Position(snake.currentX,snake.currentY);
-		
-		try
-		{
-			Integer snakesPos = ourBoard.snakesMap.get(pos);	// position des autres snakes
-			
-			if(snakesPos == null)
-			{
-				ourBoard.snakesMap.put(pos,snake.playerId);  
-			}
-			else
-			{
-		        if (snakesPos != snake.playerId && snake.collision == true)
-		        {
-			        snake.state = false;
-			        System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
-		        }
-			}
-		}catch(NullPointerException e)
-		{
-			System.out.println("Impossible d'obtenir la position !");
-		}
-		
-	}
-	
 
 	
 	/**
@@ -394,47 +280,6 @@ public class Round implements PhysicsEngine
 		updateSnakesEffects(elapsedTime);
 		// Mise à jour du prochain spawn d'item
 		updateSpawnItem(elapsedTime);
-	}
-	
-
-	
-	/**
-	 * Cette méthode génère l'apparition d'un item pendant la mise à jour
-	 */
-	
-	private void updateSpawnItem(long elapsedTime) {
-		ratioItem += elapsedTime*getItemRate();
-		if(ratioItem >= 1000) {
-			itemSpawnPos();
-			ratioItem = 0;
-		}
-	}
-	
-
-	
-	/**
-	 * Cette méthode affecte un item à un snake.
-	 */
-	
-	public void updateSnakesEffects(long elapsedTime) {
-
-		for(Snake snake : ourBoard.snakes)
-		{
-			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
-			{
-				long roundTime = entry.getValue();
-				long timeLeft = roundTime - elapsedTime;
-
-				// Enlever l'effet et supprimer l'objet de la liste
-				if (timeLeft <= 0 ) {
-					removeItemToSnake(snake.playerId, entry.getKey());
-				}
-				// Mettre à jour le temps restant pour l'effet de l'Item
-				else if (timeLeft > 0) {
-					snake.currentItems.put(entry.getKey(), timeLeft);
-				}
-			}
-		}
 	}
 	
 
@@ -544,13 +389,128 @@ public class Round implements PhysicsEngine
 				pixStep --;
 				System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
 
-				if(snakeMove) {
+				if(snakeMove)
+				{
 					fillSnakeHead(snake);
 					deathVsBounds(snake);
 					deathVsSnake(snake);
 					removeItem(snake,pos);
 				}
 				
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * Remplit la snakeMap en fonction des coordonnées du snake
+	 * 
+	 * @param snake 
+	 */
+	public void fillSnakeHead(Snake snake)
+	{
+		int id  = snake.playerId;
+		int xS  = snake.currentX;
+		int yS  = snake.currentY;
+		int rad = (int) snake.headRadius;
+		Position pos = new Position(0,0);
+
+		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
+		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
+		for(int i = xS - rad; i < xS + rad ; i++)
+		{
+			for(int j = yS - rad; j < yS + rad ; j++)
+			{
+				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad)
+				{
+					pos.x = i;
+					pos.y = j;
+					ourBoard.snakesMap.put(pos, id);
+				}
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * Cette méthode teste si le snake rentre en contact avec les bords.
+	 * <br/>
+	 * Il faut prévoir le cas où l'item COLLECTIVE_TRAVERSE_WALL a été utilisé.
+	 */
+	
+	public void deathVsBounds(Snake snake)
+	{
+		if(snake.currentX < 0 || snake.currentX > ourBoard.width || snake.currentY < 0|| snake.currentY > ourBoard.height) {
+			if (!snake.fly)
+			{
+				snake.state = false; 
+				System.out.println("Snake " + snake.playerId + " a touché les bords");
+			} 
+			else
+			{
+				if(snake.currentX < 0)
+					snake.currentX = ourBoard.width;
+				else if(snake.currentX > ourBoard.width)
+					snake.currentX = 0;
+				if(snake.currentY < 0)
+					snake.currentY = ourBoard.height;
+				else if(snake.currentY > ourBoard.height)
+					snake.currentY = 0;
+			}	
+		}
+	}
+	
+	
+	
+	/**
+	 * Cette méthode teste si le snake rentre en contact avec la trainée d'un autre snake.
+	 */
+	
+	public void deathVsSnake(Snake snake)
+	{
+
+		Position pos = new Position(snake.currentX,snake.currentY);
+		
+		try
+		{
+			Integer snakesPos = ourBoard.snakesMap.get(pos);	// trainées des autres snakes
+			
+			if(snakesPos == null)		// test si un snake a touché une trainée
+			{
+				ourBoard.snakesMap.put(pos,snake.playerId);  
+			}
+			else
+			{
+		        if (snakesPos != snake.playerId && snake.collision == true)
+		        {
+			        snake.state = false;
+			        System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
+		        }
+			}
+		}catch(NullPointerException e)
+		{
+			System.out.println("Impossible d'obtenir la position !");
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * Cette méthode retire l'item de la map dès qu'il est récupéré.
+	 */
+	public void removeItem(Snake snake, Position pos)
+	{
+		Item itemRecup = ourBoard.itemsMap.get(pos);
+		if(itemRecup != null)
+		{
+			if(snake.state)
+			{
+				addItemToSnake(snake.playerId, itemRecup);
+				ourBoard.itemsMap.remove(pos);
+				System.out.println("Snake a rencontré un item");
 			}
 		}
 	}
@@ -589,6 +549,49 @@ public class Round implements PhysicsEngine
 					break;
 				}
 			}
+		}
+	}
+	
+
+	
+	/**
+	 * Cette méthode affecte un item à un snake.
+	 */
+	
+	public void updateSnakesEffects(long elapsedTime)
+	{
+		for(Snake snake : ourBoard.snakes)
+		{
+			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
+			{
+				long roundTime = entry.getValue();
+				long timeLeft = roundTime - elapsedTime;
+
+				// Enlever l'effet et supprimer l'objet de la liste
+				if (timeLeft <= 0 )
+				{
+					removeItemToSnake(snake.playerId, entry.getKey());
+				}
+				// Mettre à jour le temps restant pour l'effet de l'Item
+				else if (timeLeft > 0)
+				{
+					snake.currentItems.put(entry.getKey(), timeLeft);
+				}
+			}
+		}
+	}
+	
+
+	
+	/**
+	 * Cette méthode génère l'apparition d'un item pendant la mise à jour
+	 */
+	
+	private void updateSpawnItem(long elapsedTime) {
+		ratioItem += elapsedTime*getItemRate();
+		if(ratioItem >= 1000) {
+			itemSpawnPos();
+			ratioItem = 0;
 		}
 	}
 	
