@@ -30,7 +30,7 @@ public class main {
 		a.ourBoard.snakes[0].currentAngle = 180;
 		a.ourBoard.snakes[1].currentAngle = 0;
 		a.ourBoard.snakes[2].currentAngle = 90;
-		com.put(1, Direction.NONE);
+		com.put(1, Direction.RIGHT);
 		com.put(2, Direction.NONE);
 		com.put(3, Direction.NONE); 
 		System.out.println("Angle en degré : "+a.ourBoard.snakes[0].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[1].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[2].currentAngle);
@@ -38,11 +38,7 @@ public class main {
 		
 		while(true){
 			a.update(t,com);
-			try{
-				Thread.sleep(25);
-			} catch(InterruptedException e){
-				Thread.currentThread().interrupt();
-			}
+
 			
 		}
 		
