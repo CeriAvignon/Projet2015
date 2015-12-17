@@ -224,14 +224,13 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				System.out.println("New Position snake "+ Integer.toString(ourBoard.snakes[i].playerId)+ " x:" + Integer.toString(ourBoard.snakes[i].currentX) + " y:" + Integer.toString(ourBoard.snakes[i].currentY));
 
 
-
+				if(isMoving && !samePos){  // évite une répétition sur le même pixel
+					snakeVsSnake(ourBoard.snakes[i],prec);
+				}
 				if(isMoving) {    // tests de collision
 					outOfBounds(ourBoard.snakes[i]);
 					snakeVsItem(ourBoard.snakes[i],pos);
 					sizeSnakePixels(ourBoard.snakes[i]);
-				}
-				if(isMoving && !samePos){  // évite une répétition sur le même pixel
-					snakeVsSnake(ourBoard.snakes[i],prec);
 				}
 			}
 		}
@@ -292,35 +291,18 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 */
 	public void snakeVsSnake(Snake snake, Position prec) {
 
-		try{
-			Position pos = new Position(snake.currentX,snake.currentY);
-			boolean flag = false;
-			
-			boolean exist = ourBoard.snakesMap.containsKey(prec);
-			
-			if(exist){
-				if((Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1) && ourBoard.snakesMap.get(prec)==snake.playerId){
-					flag = true;
-				//	System.out.println(pos.x + ","+pos.y+"  ////  "+prec.x+","+prec.y+"  ===> "+ Math.abs(pos.x - prec.x)+"  //// "+ Math.abs(pos.y - prec.y));
-				}
-			}
-			else{
-				if(ourBoard.snakesMap.containsKey(pos) && snake.collision && !flag){
-					snake.state = false;
-					System.out.println("Snake n°"+snake.playerId+" is DEAD !");
-					System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
-					System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
-				}
-				else
-				{
-					ourBoard.snakesMap.put(pos, snake.playerId);
-				}
-			}
-		}catch(NullPointerException e)
-		{
-			System.out.println("EXISTE PAS");
+		Position pos = new Position(snake.currentX,snake.currentY);
+		boolean flag = false;
+		if(Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1){
+			flag = true;
 		}
-
+		
+		if(ourBoard.snakesMap.containsKey(pos) && snake.collision && !flag){
+			snake.state = false;
+			System.out.println("Snake n°"+snake.playerId+" is DEAD !");
+			System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
+			System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
+		}
 	}
 	
 	
