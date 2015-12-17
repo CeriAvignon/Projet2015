@@ -38,7 +38,7 @@ public interface ServerCommunication
 	
 	/**
      * Renvoie le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients. (à préciser <i>avant</i> de se connecter, 
+     * de de la part des clients. (à préciser <i>avant</i> de se connecter, 
      * bien sûr).
      *
      * @return 
@@ -88,7 +88,23 @@ public interface ServerCommunication
 	 * @param profiles
 	 * 		Liste des profils des joueurs participant à une partie.
 	 */
-	public void sendPlayers(List<Profile> profiles);
+	public void sendProfiles(List<Profile> profiles);
+	
+	/**
+	 * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
+	 * participer à la partie en cours de configuration. Le serveur peut refuser
+	 * certains joueurs, par exemple si la partie est complète (plus de place libre).
+	 * <br/>
+	 * À noter que La liste doit contenir les profils <i>dans l'ordre où ils ont été reçus</i>
+	 * par le Moteur Réseau, afin que l'Interface Utilisateur puisse déterminer lesquels refuser
+	 * le cas échéant. Le moteur réseau doit également garder trace de quel joueur correspond
+	 * à quel client.
+	 * 
+	 * @return
+	 * 		La liste des profils reçus par le Moteur Réseau (peut être vide si aucun n'a été 
+	 * 		reçu depuis la dernière fois que la méthode a été invoquée). 
+	 */
+	public List<Profile> retrieveProfiles();
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
