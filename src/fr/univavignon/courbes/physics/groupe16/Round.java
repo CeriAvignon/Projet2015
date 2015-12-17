@@ -525,7 +525,7 @@ public class Round implements PhysicsEngine {
 	 * @param snake
 	 * @param holeRate
 	 */
-	
+	/*
 	public double snakeCut(Snake snake) {
 		
 		//le temp initial 
@@ -554,7 +554,7 @@ public class Round implements PhysicsEngine {
 			return snake.holeRate=0;
 		}
 	}
-
+*/
 	/**
 	 * Cette méthode met à jour les différents angles courants des snakes selon la direction
 	 * demandée.

@@ -15,17 +15,6 @@ public class MainTest {
 		round.init(400, 400, idPlayers);
 		Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
 
-		//commandesTest.put(0, Direction.LEFT);
-		
-		round.spawnRandomItem();
-		round.update(500, commandesTest);
-		round.update(500, commandesTest);
-		round.update(500, commandesTest);
-		round.update(500, commandesTest);
-		round.update(1000, commandesTest);
-		round.update(1000, commandesTest);
-		round.update(1000, commandesTest);
-		round.update(1000, commandesTest);
 	}
 
 }
