@@ -224,10 +224,9 @@ public class MyPhysicsEngine implements PhysicsEngine{
 
 
 				if(isMoving && !samePos){  // évite une répétition sur le même pixel
-					snakeVsSnake(ourBoard.snakes[i]);
-				}
-				if(isMoving) {    // tests de collision
 					outOfBounds(ourBoard.snakes[i]);
+				}
+				if(isMoving) {    // tests de collision		
 					snakeVsItem(ourBoard.snakes[i],pos);
 					sizeSnakePixels(ourBoard.snakes[i]);
 				}
@@ -245,15 +244,22 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 */
 	public void sizeSnakePixels(Snake snake) { // Calculer les pixels qui doivent etre mit dans le hashmap a partir du size
 		Position pos = new Position(0,0);  // contiendra les multiplise positions des pixels
-		
 		// faire un carré, puis récupérer les valeurs qui se trouve dans un cercle de centre snake et de diametre headRadius
 		for(int i = snake.currentX - (int)snake.headRadius; i < snake.currentX + (int)snake.headRadius ; i++) {
 			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius; j++) {
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos.x = i;
 					pos.y = j;
-					
-					ourBoard.snakesMap.put(pos, snake.playerId);
+
+					if(ourBoard.snakesMap.containsKey(pos) && snake.collision){
+						snake.state = false;
+						System.out.println("Snake n°"+snake.playerId+" is DEAD !");
+						System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
+						System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
+					}
+					else{
+						ourBoard.snakesMap.put(pos, snake.playerId);
+					}
 				}
 			}
 		}
@@ -286,22 +292,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
-	
-	/**				VALIDÉ
-	 * @param snake Snake testé
-	 */
-	public void snakeVsSnake(Snake snake) {
 
-		Position pos = new Position(snake.currentX,snake.currentY);
-		
-		if(ourBoard.snakesMap.containsKey(pos) && snake.collision){
-			snake.state = false;
-			System.out.println("Snake n°"+snake.playerId+" is DEAD !");
-			System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
-			System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
-		}
-	}
-	
 	
 
 	
