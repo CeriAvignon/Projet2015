@@ -1,12 +1,7 @@
 package fr.univavignon.courbes.network.groupe06;
 
-import fr.univavignon.courbes.physics.PhysicsEngine;
 import fr.univavignon.courbes.physics.groupe04.MyPhysicsEngine;
-import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Item;
-import fr.univavignon.courbes.common.Position;
-import fr.univavignon.courbes.common.Snake;
+
 
 public class MainServer {
 

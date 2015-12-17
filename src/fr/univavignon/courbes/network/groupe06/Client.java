@@ -25,19 +25,19 @@ import fr.univavignon.courbes.common.Profile;
 public class Client implements ClientCommunication {
 
 	/**
-	 * 
+	 * Variable qui contient l'adresse ip du serveur
 	 */
 	protected String ip;
 	/**
-	 * 
+	 * Variable qui contient le port du serveur
 	 */
 	protected int port = 2345;
 	/**
-	 * 
+	 * Socket du client connecté au serveur
 	 */
 	protected Socket connexion = null;
 	/**
-	 * 
+	 * Buffer pour le board 
 	 */
 	protected Board board = null;
 
@@ -182,18 +182,20 @@ public class Client implements ClientCommunication {
 	synchronized public void sendTextSecure(String message)
 	{
 		Socket sock = connexion;
-		
-		try {
-			PrintWriter writer = new PrintWriter(sock.getOutputStream());
-			writer.write(message);
-			writer.flush();
-			writer = null;
-		} catch(SocketException e){
-			closeClient();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(connexion != null) {
+			try {
+				PrintWriter writer = new PrintWriter(sock.getOutputStream());
+				writer.write(message);
+				writer.flush();
+				writer = null;
+			} catch(SocketException e){
+				closeClient();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		sock = null;
+		
 	}
 	
 	

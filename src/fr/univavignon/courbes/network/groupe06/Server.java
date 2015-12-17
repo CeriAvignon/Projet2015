@@ -30,35 +30,37 @@ import fr.univavignon.courbes.common.Profile;
 public class Server implements ServerCommunication {
 
 	/**
-	 * 
+	 * Variable qui contient l'adresse ip du serveur
 	 */
 	protected String ip;
 	/**
-	 * 
+	 * Variable qui contient le port du serveur
 	 */
 	protected int port = 2345;
 	/**
-	 * 
+	 * Variable qui contient permet au serveur d'attendre 
+	 * des connexions clients tant qu'il est ouvert.
 	 */
 	protected boolean isRunning = false;
 	/**
-	 * 
+	 * Variable qui définit le nombre maximum de connexion 
+	 * que le serveur peut accueillir.
 	 */
 	protected static int size = 6;
 	/**
-	 * 
+	 * Variable qui gére le nombre de clients connectés
 	 */
 	protected static int nbClients = 0;
 	/**
-	 * 
+	 * Tableau qui contient toute les adresses ip des clients pour l'envoie en UDP
 	 */
 	protected String arrayOfIp[] = new String[size];
 	/**
-	 * 
+	 * Tableau qui contient toute les sockets pour l'envoie en TCP
 	 */
 	protected static Socket socketArray[] = new Socket[size];
 	/**
-	 * 
+	 * Socket du serveur.
 	 */
 	private ServerSocket sSocket = null;
 	
