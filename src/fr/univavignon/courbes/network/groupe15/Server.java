@@ -179,7 +179,7 @@ public class Server implements ServerCommunication {
 	public void sendBoard(Board board) {
 		for(Socket socket:sockets) {
 			try {
-				ObjectOutputStream oos = new ObjectOutputStream(sockets.get(sockets.size()-1).getOutputStream());
+				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 				oos.writeObject(board);
 				oos.flush();
 			} catch (Exception e) {
