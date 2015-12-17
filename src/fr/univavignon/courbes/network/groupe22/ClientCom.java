@@ -129,7 +129,11 @@ public class ClientCom implements ClientCommunication
      *         Liste des profils participant à la partie, ou {@code null} si aucune
      *         liste n'a été envoyée.
      */
-    public List<Profile> retrieveProfiles();
+    
+    @Override
+    public List<Profile> retrieveProfiles() {
+    	return null;
+    }
 
     /**
      * Récupère la limite de points à atteindre pour gagner la partie,
@@ -149,7 +153,11 @@ public class ClientCom implements ClientCommunication
      *         Limite de point courante de la partie, ou {@code null} si aucune
      *         valeur n'a été envoyée.
      */
-    public Integer retrievePointThreshold();
+    
+    @Override
+    public Integer retrievePointThreshold() {
+    	return 0;
+    }
 
     /**
      * Permet au client de récupérer des informations sur l'évolution de
@@ -167,6 +175,8 @@ public class ClientCom implements ClientCommunication
      *         Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      *         n'a été envoyée.
      */
+    
+    @Override
     public Board retrieveBoard() {
     	
     	Thread retrieve = new Thread(new Runnable() {
@@ -188,6 +198,7 @@ public class ClientCom implements ClientCommunication
 				                ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
 				                ObjectInputStream oos = new ObjectInputStream(baos);
 				                board = (Board)oos.readObject();
+				                socket.close();
 
 				        }
 				        catch(Exception e) {
@@ -214,7 +225,11 @@ public class ClientCom implements ClientCommunication
      * @param commands
      *         Une liste contenant les directions choisies par chaque joueur local au client.
      */
-    public void sendCommands(Map<Integer,Direction> commands);
+    
+    @Override
+    public void sendCommands(Map<Integer,Direction> commands) {
+    	
+    }
 
     /**
      * Permet au client de récupérer un message textuel envoyé par le serveur
