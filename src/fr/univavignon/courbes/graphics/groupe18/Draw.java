@@ -84,8 +84,8 @@ public class Draw extends JPanel {
         for(int i = 0; i < board.snakes.length; i++) {
         	g.setColor(getColor(board.snakes[i].playerId));
         	int x = (int)Math.round(board.snakes[i].headRadius);
-        	g.drawOval(board.snakes[i].currentX, board.snakes[i].currentY, x, x);
-        	g.fillOval(board.snakes[i].currentX, board.snakes[i].currentY, x, x);
+        	g.drawOval(board.snakes[i].currentX-(x/2), board.snakes[i].currentY-(x/2), x, x);
+        	g.fillOval(board.snakes[i].currentX-(x/2), board.snakes[i].currentY-(x/2), x, x);
         	
         }
 		for (Map.Entry<Position, Integer> entry : board.snakesMap.entrySet())

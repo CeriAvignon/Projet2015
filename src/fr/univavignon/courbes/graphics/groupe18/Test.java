@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
@@ -41,7 +43,7 @@ public class Test {
 
 		Snake joueur1 = new Snake();
 		joueur1.playerId = 0;
-		joueur1.currentX = 100;
+		joueur1.currentX = 0;
 		joueur1.currentY = 100;
 		joueur1.currentScore = 10;
 		joueur1.headRadius = 10;
@@ -49,14 +51,14 @@ public class Test {
 		Snake joueur2 = new Snake();
 		joueur2.playerId = 1;
 		joueur2.currentX = 700;
-		joueur2.currentY = 100;
+		joueur2.currentY = 300;
 		joueur2.currentScore = 20;
 		joueur2.headRadius = 10;
 		joueur2.state = false;
 		Snake joueur3 = new Snake();
 		joueur3.playerId = 2;
-		joueur3.currentX = 100;
-		joueur3.currentY = 700;
+		joueur3.currentX = 250;
+		joueur3.currentY = 400;
 		joueur3.currentScore = 39;
 		joueur3.headRadius = 10;
 		joueur3.state = false;
@@ -64,13 +66,13 @@ public class Test {
 		joueur4.playerId = 3;
 		joueur4.currentX = 700;
 		joueur4.currentY = 700;
-		joueur4.currentScore = 30;
+		joueur4.currentScore = 17;
 		joueur4.headRadius = 10;
 		joueur4.state = false;
 		Snake joueur5 = new Snake();
 		joueur5.playerId = 4;
-		joueur5.currentX = 400;
-		joueur5.currentY = 400;
+		joueur5.currentX = 150;
+		joueur5.currentY = 600;
 		joueur5.currentScore = 35;
 		joueur5.headRadius = 10;
 		joueur5.state = true;
@@ -110,19 +112,54 @@ public class Test {
 		GraphicDisplayGroupe18 Test = new GraphicDisplayGroupe18();
 		Test.init(board, pointThreshold,players,boardPanel,scorePanel);
 		
-		for(int i = 0; i<100; i++){
-			for(int j = 100; j<110; j++) {
-				snakesMap.put(new Position(i,j),0);
-			}
-		}
-		Test.update();
-		//Test.end();
-		
 		
 		fenetreScore.add(scorePanel);
-		fenetreBoard.add(boardPanel);        
+		fenetreBoard.add(boardPanel);
+		
+		int head = (int)joueur1.headRadius;
+		int xDepart = joueur1.currentX;	
+	
+		for(int i = joueur1.currentX; i<xDepart+100; i++){
+			for(int j = joueur1.currentY-(head/2); j<=joueur1.currentY+(head/2); j++) {
+				snakesMap.put(new Position(i,j),joueur1.playerId);
+			}
+			joueur1.currentX = i;
+			Test.update();       
+			fenetreScore.setVisible(true);
+			fenetreBoard.setVisible(true);
+			
+			try {
+	    		Thread.sleep(30);
+				} 
+			catch(InterruptedException ex) {
+	    		Thread.currentThread().interrupt();
+				}
+		}
+		
+		int yDepart = joueur2.currentY;
+		int head2 = (int)joueur2.headRadius;
+		fenetreBoard.setVisible(true);
+		for(int i = joueur2.currentY; i<yDepart+200; i++){
+			for(int j = joueur2.currentX-(head2/2); j<=joueur2.currentX+(head2/2); j++) {
+				snakesMap.put(new Position(j,i),joueur2.playerId);
+			}
+			joueur2.currentY = i;
+			Test.update();   
+			fenetreScore.setVisible(true);
+			fenetreBoard.setVisible(true);
+			
+			try {
+	    		Thread.sleep(30);
+				} 
+			catch(InterruptedException ex) {
+	    		Thread.currentThread().interrupt();
+				}
+		}
+		Test.end();
 		fenetreScore.setVisible(true);
 		fenetreBoard.setVisible(true);
+		
+
 
 	}
 }
