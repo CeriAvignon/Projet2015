@@ -155,11 +155,9 @@ public class Test {
 	    		Thread.currentThread().interrupt();
 				}
 		}
-		Test.end();
+		/*Test.end();
 		fenetreScore.setVisible(true);
 		fenetreBoard.setVisible(true);
-		
-
-
+		*/
 	}
 }
