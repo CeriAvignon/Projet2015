@@ -57,8 +57,8 @@ public class Round implements PhysicsEngine
 		snake.currentY = spawnPosition.y;
 		snake.currentAngle = (int)(Math.random() * 359);
 		snake.headRadius = 2;
-		snake.movingSpeed = 0.5;
-		snake.turningSpeed = 1;
+		snake.movingSpeed = 0.25;
+		snake.turningSpeed = 0.01;
 		snake.state = true;
 		snake.collision = true;
 		snake.inversion = false;
