@@ -294,7 +294,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	try{
 		Position pos = new Position(snake.currentX,snake.currentY);
 		boolean flag = false;
-		if((Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1) && ourBoard.snakesMap.get(pos) == snake.playerId){
+		if((Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1) && ourBoard.snakesMap.equals(prec) != ourBoard.snakesMap.equals(pos)){
 			flag = true;
 		}
 		
