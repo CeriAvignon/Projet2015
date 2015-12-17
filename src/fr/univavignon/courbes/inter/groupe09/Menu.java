@@ -1,9 +1,7 @@
 package fr.univavignon.courbes.inter.groupe09;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 /**
  * @author groupe09
  * Classe correspendant au menu afficher au joueur lorsqu'il c est authentifié 
@@ -14,8 +12,7 @@ public class Menu extends Fenetre implements ActionListener {
 	private JPanel j;
 	private JLabel l;
 	private JLabel l2;
-	
-	/**
+		/**
 	 * @param titre
 	 * Titre de la fenetre
 	 * @param x
@@ -55,6 +52,8 @@ public class Menu extends Fenetre implements ActionListener {
 			
 			break;
 		case "PROFIL": 
+			new Myprofil ("myprofil", 400, 400);
+			this.dispose();
 			
 			break;
 		case "QUITTER": 

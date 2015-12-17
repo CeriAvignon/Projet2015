@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-
 /** 
  * @author Groupe09
  * Classe correspendant au menu d'authentification afficher au joueur lorsqu'il demande à s'enthetifier
@@ -18,7 +17,6 @@ public class Authentification extends Fenetre implements ActionListener {
 	private JButton b1;
 	private JButton b2;
 	Controle c = new Controle();
-
 	/**
 	 * @param titre
 	 * Titre de la fenetre
@@ -76,6 +74,8 @@ public class Authentification extends Fenetre implements ActionListener {
 	
 				break;
 			case 1: 
+				user = txt1.getText();
+				
 				this.dispose();
 				new Menu("JEUX", 500, 500);
 				break;

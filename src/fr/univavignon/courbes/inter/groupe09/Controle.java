@@ -1,6 +1,6 @@
 package fr.univavignon.courbes.inter.groupe09;
-import java.io.*;
 
+import java.io.*;
 /**
  * @author groupe09
  * classe contenant un ensemble de méthodes de controle sur les formulaire d'inscription, d'authentification
@@ -8,7 +8,7 @@ import java.io.*;
  */
 public class Controle {
 	
-	/**
+		/**
 	 * méthode permetant de vérifier si le pseudonyme saisie lors de l'inscription existe déjà ou non 
 	 * @param ps
 	 * pseudonyme de l'utilisateur, correspendant au userName de la classe profil 
@@ -52,8 +52,7 @@ public class Controle {
 	    return 2; // tout est ok, le pseudo n'existe pas  
 	}
 	
-	
-	/**
+		/**
 	 * Contrôle l'authentification d'un utilisateur, en vérifiant si il existe et si les donnée saisie sont juste
 	 * @param ps
 	 * pseudo de l'utilisateur, correspand à userName de la classe Profil
@@ -109,17 +108,42 @@ public class Controle {
 	    } catch (IOException e) {
 	      e.printStackTrace();
 	    }
-	    if(existe) { // si le mot de passe et le pseudo sont juste
+	    if(existe){ // si le mot de passe et le pseudo sont juste
 	    	return 1;
 	    }
-	    if(entree == 1) { // si le pseudo est juste mais pas le mot de passe
+	    if(entree == 1){ // si le pseudo est juste mais pas le mot de passe
 	    	return 4;
 	    }
 	    return 2; // pseudo faux mais mdp juste 
 	}
 	
-
-/**
+	public int idPlayer()
+	{ String str;
+      int count = 0;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("src/user.txt");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LineNumberReader l = new LineNumberReader(       
+		       new BufferedReader(new InputStreamReader(fis)));
+		              try {
+		            	  if((str = l.readLine()) == null)
+		            		  count = 1;
+		            	  else {
+							  while ((str=l.readLine())!=null)
+								  count = l.getLineNumber();
+		            	  	   }
+					
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		            return count;
+	}
+	/**
  * Méthode qui permet d'inscrire l'utilisateur, si tout les donner saisie sont correcte dans la base de donner du jeu  
  * @param email
  * Eamil saisie par l'utilisateur
@@ -132,7 +156,8 @@ public class Controle {
  * @param temps
  * Fuseau horraire de l'utilisateur, correspend à timeZone de la classe profil  
  */
-public void inscriptionDe(String email, String ps, String mdp,String pays, String temps ){
+	public void inscriptionDe(String email, String ps, String mdp,String pays, String temps ,int score  ){
+		
 		  try {
 			 // int i = 0; 
 				 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/user.txt")));
@@ -144,9 +169,10 @@ public void inscriptionDe(String email, String ps, String mdp,String pays, Strin
 		         }
 		         reader.close();
 		         
+		         int id = this.idPlayer();
 		         BufferedWriter out = new BufferedWriter(
 		        		 new FileWriter("src/user.txt"));
-		         out.write(ps+";"+mdp+";"+email+";"+pays+";"+temps);
+		         out.write(ps+";"+mdp+";"+id+";"+email+";"+pays+";"+temps+";"+score);
 		         out.newLine();
 		         out.write(sb.toString());
 		         out.close();
@@ -156,6 +182,7 @@ public void inscriptionDe(String email, String ps, String mdp,String pays, Strin
 			}
 		      
 	}
+	
 
 	
 }

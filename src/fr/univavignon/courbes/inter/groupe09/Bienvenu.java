@@ -4,25 +4,14 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-/**
- * @author fgroupe09
- * Classe correspendant au menu afficher au joueur lorsqu'il lance le jeu 
- */
 public class Bienvenu extends Fenetre implements ActionListener {
+	
 
-
+	
 	private JButton b1,b2,b3;
 	private JPanel j;
 	private JLabel l;
 	
-	/**
-	 * @param titre
-	 * Titre de la fenetre
-	 * @param x
-	 * Taille en abscisse de la fenetre 
-	 * @param y
-	 * Taille en ordonné de la fenetre
-	 */
 	Bienvenu(String titre, int x, int y) 
 	{
 		super(titre, x, y);
@@ -64,5 +53,11 @@ public class Bienvenu extends Fenetre implements ActionListener {
 			break;
 		}
 	}
+	public static void main(String[] args) {
+	
+		// teste des menu du jeu
+		Bienvenu m1 = new Bienvenu("Atchung Die Kurv", 250, 300);		
+		}
+
 	
 }
