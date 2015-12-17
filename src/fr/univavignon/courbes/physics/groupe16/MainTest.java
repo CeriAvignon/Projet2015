@@ -86,7 +86,7 @@ public class MainTest {
 			round.board.snakes[0].currentX =  100;
 			round.board.snakes[0].currentY =  150;
 			round.board.snakes[0].currentAngle =  180;
-			round.board.snakes[0].collision =  false;
+			round.board.snakes[0].collision =  true;
 			
 			for(int i = 0; i< 50; i++) {
 				round.update(20, commandesTest);
