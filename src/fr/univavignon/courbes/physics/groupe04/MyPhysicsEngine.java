@@ -85,7 +85,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 1;  					// 2px ?
+		snake.headRadius 	= 2;  					// 2px ?
 		snake.movingSpeed   = 1;					// 1px / ms ?
 		snake.turningSpeed  = 0.008; 				// ?
 		snake.state 		= true;
@@ -146,22 +146,23 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		double pixel;              // permet de remplir la Map du board pixel à pixel
 		boolean isMoving, samePos = false;  // permet le test de collisions
 		Position pos = new Position(0,0);
+		Position prec = new Position(0,0);
 		
 		for (int i = 0; i < ourBoard.snakes.length ; i++){
 			alterableTime = time;
 			pixel = 0;
-			
 			while(ourBoard.snakes[i].state && alterableTime > 0){   // SI SNAKE EST EN VIE & MOUVEMENTS PAS TERMINÉS
 				while(alterableTime > 0 && pixel < 1){ 	// DIMINUE LE TEMPS TANT QU'ON A PAS FAIT UN PIXEL DE MOUVEMENT
 					alterableTime--;
 					pixel += ourBoard.snakes[i].movingSpeed;
 				}
-				// VALEURS SERONT COMPRISES ENTRE -2 ET 2
-			/*	System.out.println("COS snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][0]);
-				System.out.println("SIN snake n°"+i+" : "+snakeTable[ourBoard.snakes[i].profileId][1]);*/
+				/*  NOUS PERMET DE RECUPERER LA POSITION PRECEDENTE POUR GERER LA COLLISION*/
+				prec.x = ourBoard.snakes[i].currentX;
+				prec.y = ourBoard.snakes[i].currentY;
+				
 				snakeTable[ourBoard.snakes[i].profileId][0] += Math.cos(Math.toRadians(ourBoard.snakes[i].currentAngle)); 	
 				snakeTable[ourBoard.snakes[i].profileId][1] += Math.sin(Math.toRadians(ourBoard.snakes[i].currentAngle));
-				// TESTS ANGLES COS && SIN
+				
 				if(Math.round(snakeTable[ourBoard.snakes[i].profileId][1]) >= 1 && Math.round(snakeTable[ourBoard.snakes[i].profileId][0]) >= 1) {
 					ourBoard.snakes[i].currentY++;
 					ourBoard.snakes[i].currentX++;
@@ -224,9 +225,10 @@ public class MyPhysicsEngine implements PhysicsEngine{
 
 
 				if(isMoving && !samePos){  // évite une répétition sur le même pixel
-					outOfBounds(ourBoard.snakes[i]);
+					snakeVsSnake(ourBoard.snakes[i],prec);
 				}
-				if(isMoving) {    // tests de collision		
+				if(isMoving) {    // tests de collision
+					outOfBounds(ourBoard.snakes[i]);
 					snakeVsItem(ourBoard.snakes[i],pos);
 					sizeSnakePixels(ourBoard.snakes[i]);
 				}
@@ -250,16 +252,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos.x = i;
 					pos.y = j;
-
-					if(ourBoard.snakesMap.containsKey(pos) && snake.collision){
-						snake.state = false;
-						System.out.println("Snake n°"+snake.playerId+" is DEAD !");
-						System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
-						System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
-					}
-					else{
-						ourBoard.snakesMap.put(pos, snake.playerId);
-					}
+					ourBoard.snakesMap.put(pos, snake.playerId);
 				}
 			}
 		}
@@ -292,7 +285,26 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	
 	
+	
+	/**				VALIDÉ
+	 * @param snake Snake testé
+	 */
+	public void snakeVsSnake(Snake snake, Position prec) {
 
+		Position pos = new Position(snake.currentX,snake.currentY);
+		boolean flag = false;
+		if(Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1){
+			flag = true;
+		}
+		
+		if(ourBoard.snakesMap.containsKey(pos) && snake.collision && !flag){
+			snake.state = false;
+			System.out.println("Snake n°"+snake.playerId+" is DEAD !");
+			System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
+			System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
+		}
+	}
+	
 	
 
 	
