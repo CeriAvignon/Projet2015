@@ -39,7 +39,7 @@ public class Client implements ClientCommunication {
 	/**
 	 * 
 	 */
-	protected Board board = new Board();
+	protected Board board = null;
 
 	@Override
 	public String getIp() {
@@ -72,6 +72,7 @@ public class Client implements ClientCommunication {
 		try {
 			
 			this.connexion = new Socket(ip, port);
+			this.threadRetrieveBoard();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -85,6 +86,7 @@ public class Client implements ClientCommunication {
 		try {
 			//envoyer message au serveur pour prévenir.
 			this.connexion.close();
+			this.connexion = null;
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -105,52 +107,55 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public Board retrieveBoard() {
-		
+		return this.board;
+	}
+	
+	/**
+	 * Permet de constament recevoir un objet board 
+	 * et de le stocker dans la variable de classe.
+	 */
+	public void threadRetrieveBoard()
+	{
 		Thread retrieve = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					DatagramSocket socket = new DatagramSocket(port+1);
+				while(connexion != null)
+				{
+					try {
+						DatagramSocket socket = new DatagramSocket(port+1);
 
-				    byte[] data = new byte[4];
-				    DatagramPacket packet = new DatagramPacket(data, data.length );
-				    socket.receive(packet);
+						byte[] data = new byte[4];
+						DatagramPacket packet = new DatagramPacket(data, data.length );
+						socket.receive(packet);
 
-				    int len = 0;
-				    // byte[] -> int
-				    for (int i = 0; i < 4; ++i) {
-				        len |= (data[3-i] & 0xff) << (i << 3);
-				    }
+						int len = 0;
+						// byte[] -> int
+						for (int i = 0; i < 4; ++i) {
+							len |= (data[3-i] & 0xff) << (i << 3);
+						}
 
-				    // now we know the length of the payload
-				    byte[] buffer = new byte[len];
-				    packet = new DatagramPacket(buffer, buffer.length );
-				    socket.receive(packet);
+						// now we know the length of the payload
+						byte[] buffer = new byte[len];
+						packet = new DatagramPacket(buffer, buffer.length );
+						socket.receive(packet);
 
-				    ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
-				    ObjectInputStream oos = new ObjectInputStream(baos);
-				    board = (Board)oos.readObject();
-				    socket.close();
+						ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
+						ObjectInputStream oos = new ObjectInputStream(baos);
+						board = (Board)oos.readObject();
+						socket.close();
 				    
-				} catch(Exception e) {
-				    e.printStackTrace();
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
 		retrieve.start();
-		try {
-			retrieve.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this.board;
+		
 	}
-
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
 		return;
-		
 	}
 
 	@Override
@@ -171,7 +176,8 @@ public class Client implements ClientCommunication {
 		
 	}
 	/**
-	 * @param message
+	 * @param message 
+	 * 		Le message a envoyer.
 	 */
 	synchronized public void sendTextSecure(String message)
 	{

@@ -85,6 +85,7 @@ public class Server implements ServerCommunication {
 	public void launchServer() {
 		//step 1 : define address ip
 		String adressIp;
+		System.setProperty("java.net.preferIPv4Stack" , "true");
  	    try {
  	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
  	        while (interfaces.hasMoreElements()) {
@@ -94,12 +95,12 @@ public class Server implements ServerCommunication {
  	                continue;
 
  	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
- 	            while(addresses.hasMoreElements()) {
+ 	           // while(addresses.hasMoreElements()) {
  	                InetAddress addr = addresses.nextElement();
  	                adressIp = addr.getHostAddress();
- 	                if (adressIp.startsWith("192.168."))
- 	                	this.ip = adressIp;
- 	            }
+ 	                this.ip = adressIp;
+ 	                System.out.println(this.ip);
+ 	           // }
  	        }
  	    } catch (SocketException e) {
  	        throw new RuntimeException(e);

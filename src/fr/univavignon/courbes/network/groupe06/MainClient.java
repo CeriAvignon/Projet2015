@@ -20,7 +20,7 @@ public class MainClient {
 		b.ourBoard.snakes[2].currentAngle = 90;
 		
 		Client C = new Client();
-		C.setIp("192.168.0.14");
+		C.setIp("10.104.33.107");
 		C.setPort(2345);
 		C.launchClient();
 		
@@ -29,17 +29,19 @@ public class MainClient {
 						+ " "+b.ourBoard.snakes[2].currentAngle);
 
 		while(true) {
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			b.ourBoard = C.retrieveBoard();
 			if (b.ourBoard != null) {
 				System.out.println("Angle en degré : "+b.ourBoard.snakes[0].currentAngle+
 				"\nAngle en degré : "+b.ourBoard.snakes[1].currentAngle+"\nAngle en degré :"
 						+ " "+b.ourBoard.snakes[2].currentAngle);
 			}
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			
 			
 		}
 		//C.sendText("/quit");
