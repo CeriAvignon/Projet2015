@@ -1,10 +1,13 @@
 package fr.univavignon.courbes.network.groupe15;
 
 import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -24,7 +27,7 @@ public class Client implements ClientCommunication {
 	/** Adresse ip du serveur */
 	private String ip;
 	/** Connecteur côté client */
-	private Socket socket = null;
+	private Socket socket;
 
     @Override
 	public String getIp() {
@@ -55,11 +58,6 @@ public class Client implements ClientCommunication {
     		} else {
     			System.out.println("Connexion établie !!");
     		}
-			// TODO Supprimer le scan après les tests
-			Scanner sc = new Scanner(System.in);
-			this.sendText(sc.nextLine());
-			System.out.println(retrieveText());
-			sc.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -112,6 +110,14 @@ public class Client implements ClientCommunication {
 	@Override
 	public Board retrieveBoard() {
 		// TODO Auto-generated method stub
+		try{
+			System.out.println("YOLOOOOOOOOOO !!!!!");
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			Board b = (Board)ois.readObject();
+			return b;
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 		return null;
 	}
 
