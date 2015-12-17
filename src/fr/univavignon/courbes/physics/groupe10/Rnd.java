@@ -175,8 +175,8 @@ public class Rnd implements PhysicsEngine {
 		s.currentY = currentY;
 		s.currentAngle = 0/*Math.random()*(2*Math.PI)*/;
 		s.headRadius = 1;
-		s.movingSpeed = 0.5;
-		s.turningSpeed = 1;
+		s.movingSpeed = 1;
+		s.turningSpeed = 0.02;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
@@ -291,7 +291,7 @@ public class Rnd implements PhysicsEngine {
 						vCollision = checkCollision(po, id);	
 						// Appel à la fonction qui vérifie la collision
 					
-					if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 // 0 Pas de collision --- 2 collision avec item
+					if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
 					{	
 							
 						// Pour faire des trous dans le corps du snake
@@ -356,14 +356,14 @@ public class Rnd implements PhysicsEngine {
 	}
 
 	/**Cette fonction detecte si la tete du snake rentre en collision avec des objets, soit avec un mur, un autre snake (ou son propre corps), 
-	 * Retourne -1 s'il s'agit d'une collision avec le mur
-	 * Retourne 1 s'il y a une collision avec snake
-	 * Retourne 2 s'il s'agit d'un d'une collision avec item
-	 * Retourne 0 pas de collision
+	 * Retourne Collision.BORDER s'il s'agit d'une collision avec le mur
+	 * Retourne Collision.SNAKE s'il y a une collision avec snake
+	 * Retourne Collision.ITEM s'il s'agit d'un d'une collision avec item
+	 * Retourne Collision.NONE pas de collision
 	 * 
 	 * @param p la position où je vérifie si il y a une collision
 	 * @param id l'id du joueur
-	 * @return int qui spécifie le type de la collision
+	 * @return Un type enumeré qui spécifie le type de la collision
 	 * */
 	
 	public Collision checkCollision(Position p, int id)
@@ -598,6 +598,50 @@ public class Rnd implements PhysicsEngine {
 
 		}
 	}
+	
+	public void snakeDrawHead(int id)
+	{
+		int centerX = (int) board.snakes[id].currentX;
+		int centerY = (int) board.snakes[id].currentY;
+		int radius = (int) board.snakes[id].headRadius;
+		
+		//on enumere les pixels du carre dans lequel le cercle s'inscrit
+		for (int x  = centerX - radius + 1; x < centerX + radius; x++)
+		{
+			for (int y = centerY - radius + 1; y < centerY + radius; y++)
+			{
+				//on regarde si le pixel enuemre appartient au disque
+				//si sa distance au centre est inf ou egal au rayon
+				if ( Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
+				{
+					System.out.println("cercle : "+ x + "," + y);
+					//board.snakesMap.put(new Position(x, y), id);
+				}
+			}
+		}
+	}
+	
+	public void snakeHeadColision(int id)
+	{
+		double[] tabAngle = {board.snakes[id].currentAngle + Math.PI / 8,
+							board.snakes[id].currentAngle + Math.PI / 4,
+							board.snakes[id].currentAngle,
+							board.snakes[id].currentAngle - Math.PI / 4,
+							board.snakes[id]. currentAngle - Math.PI / 8};
+		
+		int collisionValue[] = new int[tabAngle.length];
+		
+		Position pos = new Position(-1,-1);
+		for (int i = 0; i < tabAngle.length; i++)
+		{
+			pos.x = (int) Math.round( Math.cos(tabAngle[i]) * board.snakes[id].headRadius + board.snakes[id].currentX );
+			pos.y = (int) Math.round( Math.sin(tabAngle[i]) * board.snakes[id].headRadius + board.snakes[id].currentX );
+			
+			System.out.println("colision ? : (" + pos.x + ", " + pos.y + ")");
+			//collisionValue[i] = checkCollision(pos, id);
+		}
+	}
+
 	
 
 }

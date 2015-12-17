@@ -23,12 +23,12 @@ public class MainClass {
 		
 		// PROFILE ID OU PLAYER ID ??!
 		
-		commands.put(profileIds[0], Direction.RIGHT);
+		commands.put(profileIds[0], Direction.LEFT);
 		commands.put(profileIds[1], Direction.RIGHT);
 		commands.put(profileIds[2], Direction.NONE);
 
-
-		r.update(50, commands);
+		while (true)
+			r.update(1, commands);
 
 		
 		//System.out.println(r.board.itemsMap.isEmpty());
