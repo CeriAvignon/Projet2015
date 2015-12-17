@@ -3,6 +3,7 @@ package fr.univavignon.courbes.network.groupe15;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -27,20 +28,30 @@ public class Server implements ServerCommunication {
 	
 	/** Port du serveur */
 	private int port;
-	/** Connecteur Serveur/Clients */
-	private ArrayList<Socket> sockets;
+	/** Liste des connecteurs Serveur/Clients */
+	private volatile ArrayList<Socket> sockets;
+	
+	/**
+	 * @return Connecteurs Serveur/Clients
+	 */
+	public ArrayList<Socket> getSockets() {
+		return sockets;
+	}
+
 	/** Connecteur côté Serveur */
 	private ServerSocket serverSocket;
 	
+	/** Liste des messages récupéré des clients */
 	String[] messages = { "" };
+	/** Message à envoyer au côté client */
 	String messageSent;
 	
 	/**
-	 * @param sockets Connecteur Serveur/Clients
+	 * Initialize la liste de sockets.
 	 */
-	/*public Server(Socket socket) {
-	    this.socket = socket;
-	}*/
+	public Server() {
+	    this.sockets = new ArrayList<Socket>();
+	}
 
 	@Override
 	public String getIp() {
@@ -64,32 +75,35 @@ public class Server implements ServerCommunication {
 		this.port = port;
 	}
 	
+	/**
+	 * On synchronise l'affichage
+	 * @param s Message à afficher
+	 */
+	public void safePrintln(String s) {
+		synchronized(System.out) {
+			System.out.println(s);
+		}
+	}
+	
 	@Override
 	public void launchServer() {
 		try {
-			this.serverSocket = new ServerSocket(port);
+			this.serverSocket = new ServerSocket(this.port);
 			System.out.println("Lancement du serveur");
-			new Thread(new Runnable(){
-				public void run(){
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
 					try {
-						sockets.add(serverSocket.accept());
-						System.out.println("Connexion avec le client : " + sockets.get(sockets.size()-1).getInetAddress());
+						while(true) {
+							sockets.add(serverSocket.accept());
+							safePrintln("Connexion avec le client : " + sockets.get(sockets.size()-1).getInetAddress());
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			});
-			messageSent = this.retrieveText()[0];
-			this.sendText(messageSent);
-			
-			/*while (true) {
-				Socket socketClient = serverSocket.accept();
-				Server server = new Server(socketClient);
-				System.out.println("Connexion avec le client : " + sockets.getInetAddress());
-				String[] s = server.retrieveText();
-				sendText(s[0]);
-				
-			}*/
+			t.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -111,7 +125,8 @@ public class Server implements ServerCommunication {
 	@Override
 	public void sendText(String message) {
 		messageSent = message;
-		new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable(){
+			@Override
 			public void run(){
 				try {
 					for(Socket socket:sockets){
@@ -123,11 +138,13 @@ public class Server implements ServerCommunication {
 				}
 			}
 		});
+		t.start();
 	}
 
 	@Override
 	public String[] retrieveText() {
-		new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable(){
+			@Override
 			public void run(){
 				try {
 					int i = 0;
@@ -142,6 +159,7 @@ public class Server implements ServerCommunication {
 				}
 			}
 		});
+		t.start();
 		return messages;
 	}
 
@@ -159,8 +177,15 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void sendBoard(Board board) {
-		// TODO Auto-generated method stub
-		
+		for(Socket socket:sockets) {
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(sockets.get(sockets.size()-1).getOutputStream());
+				oos.writeObject(board);
+				oos.flush();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
