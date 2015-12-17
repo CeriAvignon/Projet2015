@@ -291,9 +291,10 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 */
 	public void snakeVsSnake(Snake snake, Position prec) {
 
+	try{
 		Position pos = new Position(snake.currentX,snake.currentY);
 		boolean flag = false;
-		if(Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1){
+		if((Math.abs(pos.x - prec.x) <= 1 && Math.abs(pos.y - prec.y) <= 1) && ourBoard.snakesMap.get(pos) == snake.playerId){
 			flag = true;
 		}
 		
@@ -303,6 +304,10 @@ public class MyPhysicsEngine implements PhysicsEngine{
 			System.out.println("X = "+snake.currentX+"\tY= "+snake.currentY);
 			System.out.println("Snake n°"+snake.playerId+" vient de rencontrer snake n°"+ourBoard.snakesMap.get(pos));			
 		}
+	}catch(NullPointerException e)
+	{
+		
+	}
 	}
 	
 	
