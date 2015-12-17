@@ -142,6 +142,7 @@ public class Round implements PhysicsEngine {
 		{
 		case COLLECTIVE_ERASER:
 			board.snakesMap.clear();
+			
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			for(Snake snake : board.snakes) {
