@@ -42,49 +42,41 @@ public class Graphic extends JFrame implements GraphicDisplay  {
     	
     //	pnln.add(panelLibelle);
     	//pnln.add(panelScore);
+   
         
-     // créer le modèle du jeu
      //   this.graphic = new GraphicDisplay();
 		
-        // fermeture de l'application lorsque la fenêtre est fermée
+      
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // pas de redimensionnement possible de la fenêtre
+   
         setResizable(false);
 
         
-        // créer un conteneur qui affichera le jeu
+     
         final JPanel PanelBoard = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                   super.paintComponent(g);
                   
-                  // affichage du modèle du jeu
+               
              //    Graphic.this.graphic.init(null, null, null);;
             }
           
       };
       
-   // dimension de ce conteneur 
+
       PanelBoard.setPreferredSize(new Dimension(500, 500));
       PanelBoard.setBackground(Color.BLACK);
-   // s'assurer du focus pour le listener clavier
       setFocusable(false);
       PanelBoard.setFocusable(true);
-      // ajouter le conteneur à la fenêtre
       setContentPane(PanelBoard);
       
-   // Créer un thread infini
       Thread thread = new Thread(new Runnable() {                  
             @Override
             public void run() {
                   while (true) { 
  
-                	  // à chaque fois que la boucle est exécutée, la
-                        // méthode de calcul du jeu est appelée.
-                        // Comme la boucle est infinie, la méthode de calcul
-                        // sera appelée en cycle perpétuel.
-                   //     Graphic.this.modele.calcul();
-                     // demander à l'EDT de redessiner le conteneur
+              
                        
                 	  Graphic.this.setLayout(new BorderLayout());
                         
@@ -109,13 +101,9 @@ public class Graphic extends JFrame implements GraphicDisplay  {
             }
       });
       
-      
-      // lancer le thread
       thread.start();
       
 	}
-    
-
 
 	@Override
 	public void init(Board board, int pointThreshold, List<Profile> players) {
@@ -143,19 +131,18 @@ public class Graphic extends JFrame implements GraphicDisplay  {
 		
 	}
 	
-	// Lancement du jeu 
+	
     /**
      * @param args
      */
     public static void main(String[] args) {
-          // création de la fenêtre
+         
           Graphic fenetre = new Graphic();
-          // dimensionnement de la fenêre "au plus juste" suivant
-          // la taille des composants qu'elle contient
+      
           fenetre.pack();
-          // centrage sur l'écran
+     
           fenetre.setLocationRelativeTo(null);
-          // affichage
+
           fenetre.setVisible(true);
     }
 
