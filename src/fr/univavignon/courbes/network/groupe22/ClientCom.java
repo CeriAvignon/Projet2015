@@ -1,13 +1,10 @@
 package fr.univavignon.courbes.network.groupe22;
+import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
 import java.net.*;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.io.*;
 
 public class ClientCom implements ClientCommunication
 {
@@ -15,7 +12,9 @@ public class ClientCom implements ClientCommunication
     private BufferedInputStream reader = null;
     private String ipServer;
     private int portServer;
-    private Socket connexion=null;
+    private Socket connexion = null;
+	String message = null;
+	Board board = null;
   /**
      * Renvoie l'adresse IP du serveur auquel le client se connecte.
      *
@@ -106,7 +105,11 @@ public class ClientCom implements ClientCommunication
   	 * @param profile
   	 * 		Profil du joueur à ajouter à la partie.
   	 */
-  	public void sendProfile(Profile profile);
+    
+    @Override
+  	public void sendProfile(Profile profile) {
+    	
+    }
   
   	/**
 
@@ -165,10 +168,12 @@ public class ClientCom implements ClientCommunication
      *         n'a été envoyée.
      */
     public Board retrieveBoard() {
-      Thread retrieve = new Thread(new Runnable() {
+    	
+    	Thread retrieve = new Thread(new Runnable() {
+    	  		@Override
 			     public void run(){
 				         try {
-					              DatagramSocket socket = new DatagramSocket(portServer);
+					            DatagramSocket socket = new DatagramSocket(portServer);
 				                byte[] data = new byte[4];
 				                DatagramPacket packet = new DatagramPacket(data, data.length );
 				                socket.receive(packet);
@@ -185,11 +190,11 @@ public class ClientCom implements ClientCommunication
 				                board = (Board)oos.readObject();
 
 				        }
-                catch(Exception e) {
-				              e.printStackTrace();
+				        catch(Exception e) {
+				        	e.printStackTrace();
 				        }
-			    }
-		  });
+			     }
+		});
 		retrieve.start();
 		return board;
   }
@@ -224,17 +229,19 @@ public class ClientCom implements ClientCommunication
      *         Contient le message envoyé par le serveur, ou {@code null} si aucun message
      *         n'a été envoyé.
      */
+    
+    @Override
     public String retrieveText() {
-      try {
-			    String message = "";
-			    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			    message = in.readLine();
-			    return message;
-		  }
-      catch (IOException e) {
-			     e.printStackTrace();
-		  }
-		return null;
+    	
+    		try {
+    			BufferedReader in = new BufferedReader(new InputStreamReader(connexion.getInputStream()));
+    			
+    			message = in.readLine();
+    		}
+    		catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		return message;
     }
 
     /**
@@ -249,13 +256,22 @@ public class ClientCom implements ClientCommunication
      * @param message
      *         Le message textuel à envoyer au serveur.
      */
-    public void sendText(String message) {
-      try {
-			    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    		  out.println(message);
-		  }
-      catch (IOException e) {
-			     e.printStackTrace();
-		  }
+    
+    @Override
+    public void sendText(final String message) {
+    	Thread send = new Thread(new Runnable() {
+    		@Override
+    		public void run() {
+    			try {
+    				PrintWriter out = new PrintWriter(connexion.getOutputStream(), true);
+    				out.println(message);
+    			}
+    			catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	});
+    	send.start();
     }
+    
 }
