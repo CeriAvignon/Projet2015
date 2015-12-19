@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import javax.swing.JFrame;
+
 public class MainClass {
 	
 	public static void main(String[] args) {
-		
 		
 		int width = 500;
 		int height = 500;
@@ -19,6 +20,7 @@ public class MainClass {
 		r.board = r.init(width, height, profileIds);
 		
 		
+		/*
 		Map<Integer,Direction> commands = new HashMap<Integer, Direction>();
 		
 		// PROFILE ID OU PLAYER ID ??!
@@ -30,6 +32,10 @@ public class MainClass {
 		while (true)
 			r.update(1, commands);
 
+		*/
+		
+		r.snakeDrawHead(0);
+		r.snakeHeadColision(0);
 		
 		//System.out.println(r.board.itemsMap.isEmpty());
 		

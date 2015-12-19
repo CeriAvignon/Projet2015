@@ -173,8 +173,8 @@ public class Rnd implements PhysicsEngine {
 		s.profileId = profileId;
 		s.currentX = currentX;
 		s.currentY = currentY;
-		s.currentAngle = 0/*Math.random()*(2*Math.PI)*/;
-		s.headRadius = 1;
+		s.currentAngle = 1.2/*Math.random()*(2*Math.PI)*/;
+		s.headRadius = 5;
 		s.movingSpeed = 1;
 		s.turningSpeed = 0.02;
 		s.state = true;
@@ -239,10 +239,6 @@ public class Rnd implements PhysicsEngine {
 	 * @param headY la coordonnée en ordonnée de la tête avant le déplacement.
 	 * 
 	 * */
-	
-	
-	
-	
 	public void snakeDrawBody(int id, double headX, double headY)
 	{
 		// Remarque : 1 - il faut eviter de déssiner la tête du snake avant le déplacement dans la 1ere itération, 
@@ -354,7 +350,89 @@ public class Rnd implements PhysicsEngine {
 		
 		
 	}
-
+	
+	/**
+	 * Fonction qui dessine la tete du snake dans la HashMap
+	 * 
+	 * @param id c'est l'id du snake que l'on veux dessiner
+	 */
+	public void snakeDrawHead(int id)
+	{
+		int centerX = board.snakes[id].currentX;
+		int centerY = board.snakes[id].currentY;
+		int radius = (int) Math.round(board.snakes[id].headRadius) ;
+		
+		//on enumere les pixels du carre dans lequel le cercle s'inscrit
+		for (int x  = centerX - radius ; x <= centerX + radius; x++)
+		{
+			for (int y = centerY - radius ; y <= centerY + radius; y++)
+			{
+				//on regarde si le pixel enuemre appartient au disque
+				//si sa distance au centre est <= au rayon
+				if ( Math.round(Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) )) <= radius )
+				{
+					System.out.println("pixel de head : "+ x + "," + y);
+					//board.snakesMap.put(new Position(x, y), id);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Fonction qui detecte si la tete d'un snake est en colision avec quelque chose
+	 * Si jamais une colision est detecté, active automatiquement les conséquence de la colision
+	 * La colision est calculé sur un ensemble de pixels periphérique a la Head, dans son angle de déplacement
+	 * 
+	 * @param id
+	 */
+	public void snakeHeadColision(int id)
+	{
+		/*
+		double[] tabAngle = {board.snakes[id].currentAngle + Math.PI / 8,
+							board.snakes[id].currentAngle + Math.PI / 4,
+							board.snakes[id].currentAngle,
+							board.snakes[id].currentAngle - Math.PI / 4,
+							board.snakes[id]. currentAngle - Math.PI / 8};
+		*/
+		
+		
+		double headRadius = board.snakes[id].headRadius;
+		
+		//on calcule le perimetre de la tete (en pxl)
+		double perimetreHead = headRadius * Math.PI * 2;
+		//on calcule l'angle qu'il y a entre deux pixels adjacent du perimetre
+		double pasAngle = (2 * Math.PI) / perimetreHead * 2;
+		//Notre pas sera le double de cette angle car on prendre 1 pixel sur 2 du perimetre
+		
+		//l'angleTest, c'est le 'champ de vision du snake', soit la largeur de la head sensible aux colisions
+		double angleTest = Math.PI/2; // on prend un angle de 90° ici
+		
+		// nbAngle est le nombre d'angles que l'on va enumerer
+		int nbAngle = (int) Math.round(angleTest / (2 * Math.PI) * perimetreHead / 2);
+		double[] tabAngle = new double[nbAngle]; // ce tableau stocke les angles
+		
+		//la variable angle va prendre successivement les valeur de nos angles
+		double angle = board.snakes[id].currentAngle - (angleTest / 2);
+		for (int i = 0; i < nbAngle; i++)
+		{
+			tabAngle[i] = angle;
+			angle += pasAngle;
+		}
+	
+		//Maintenant que l'on a les angles a enumerer
+		//on en déduis pour chacun d'eux la coordonné de son pixel, perihérique a Head
+		
+		Position pos = new Position(-1,-1);
+		for (int i = 0; i < tabAngle.length; i++)
+		{
+			pos.x = (int) Math.round(board.snakes[id].currentX + Math.cos(tabAngle[i]) * board.snakes[id].headRadius);
+			pos.y = (int) Math.round(board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
+			
+			System.out.println("pixel de colision : (" + pos.x + ", " + pos.y + ")");
+			//checkCollision(pos, id);
+		}
+	}
+	
 	/**Cette fonction detecte si la tete du snake rentre en collision avec des objets, soit avec un mur, un autre snake (ou son propre corps), 
 	 * Retourne Collision.BORDER s'il s'agit d'une collision avec le mur
 	 * Retourne Collision.SNAKE s'il y a une collision avec snake
@@ -598,50 +676,5 @@ public class Rnd implements PhysicsEngine {
 
 		}
 	}
-	
-	public void snakeDrawHead(int id)
-	{
-		int centerX = (int) board.snakes[id].currentX;
-		int centerY = (int) board.snakes[id].currentY;
-		int radius = (int) board.snakes[id].headRadius;
-		
-		//on enumere les pixels du carre dans lequel le cercle s'inscrit
-		for (int x  = centerX - radius + 1; x < centerX + radius; x++)
-		{
-			for (int y = centerY - radius + 1; y < centerY + radius; y++)
-			{
-				//on regarde si le pixel enuemre appartient au disque
-				//si sa distance au centre est inf ou egal au rayon
-				if ( Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
-				{
-					System.out.println("cercle : "+ x + "," + y);
-					//board.snakesMap.put(new Position(x, y), id);
-				}
-			}
-		}
-	}
-	
-	public void snakeHeadColision(int id)
-	{
-		double[] tabAngle = {board.snakes[id].currentAngle + Math.PI / 8,
-							board.snakes[id].currentAngle + Math.PI / 4,
-							board.snakes[id].currentAngle,
-							board.snakes[id].currentAngle - Math.PI / 4,
-							board.snakes[id]. currentAngle - Math.PI / 8};
-		
-		int collisionValue[] = new int[tabAngle.length];
-		
-		Position pos = new Position(-1,-1);
-		for (int i = 0; i < tabAngle.length; i++)
-		{
-			pos.x = (int) Math.round( Math.cos(tabAngle[i]) * board.snakes[id].headRadius + board.snakes[id].currentX );
-			pos.y = (int) Math.round( Math.sin(tabAngle[i]) * board.snakes[id].headRadius + board.snakes[id].currentX );
-			
-			System.out.println("colision ? : (" + pos.x + ", " + pos.y + ")");
-			//collisionValue[i] = checkCollision(pos, id);
-		}
-	}
-
-	
 
 }
