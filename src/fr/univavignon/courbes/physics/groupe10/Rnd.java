@@ -15,6 +15,10 @@ public class Rnd implements PhysicsEngine {
 	
 	double itemProbability = 0.3;
 	
+	double currentAngleTEST =  Math.PI * 3/2;
+	double headRadiusTEST = 2;
+	double angleVisionTEST = Math.PI / 2;
+	
 	
 	
 	Rnd()
@@ -173,8 +177,8 @@ public class Rnd implements PhysicsEngine {
 		s.profileId = profileId;
 		s.currentX = currentX;
 		s.currentY = currentY;
-		s.currentAngle = 1.2/*Math.random()*(2*Math.PI)*/;
-		s.headRadius = 5;
+		s.currentAngle = currentAngleTEST/*Math.random()*(2*Math.PI)*/;
+		s.headRadius = headRadiusTEST/*5*/;
 		s.movingSpeed = 1;
 		s.turningSpeed = 0.02;
 		s.state = true;
@@ -371,7 +375,7 @@ public class Rnd implements PhysicsEngine {
 				//si sa distance au centre est <= au rayon
 				if ( Math.round(Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) )) <= radius )
 				{
-					System.out.println("pixel de head : "+ x + "," + y);
+					System.out.println(x + " " + y + " green");
 					//board.snakesMap.put(new Position(x, y), id);
 				}
 			}
@@ -405,7 +409,7 @@ public class Rnd implements PhysicsEngine {
 		//Notre pas sera le double de cette angle car on prendre 1 pixel sur 2 du perimetre
 		
 		//l'angleTest, c'est le 'champ de vision du snake', soit la largeur de la head sensible aux colisions
-		double angleTest = Math.PI/2; // on prend un angle de 90° ici
+		double angleTest = angleVisionTEST; // on prend un angle de 90° ici
 		
 		// nbAngle est le nombre d'angles que l'on va enumerer
 		int nbAngle = (int) Math.round(angleTest / (2 * Math.PI) * perimetreHead / 2);
@@ -428,7 +432,7 @@ public class Rnd implements PhysicsEngine {
 			pos.x = (int) Math.round(board.snakes[id].currentX + Math.cos(tabAngle[i]) * board.snakes[id].headRadius);
 			pos.y = (int) Math.round(board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
 			
-			System.out.println("pixel de colision : (" + pos.x + ", " + pos.y + ")");
+			System.out.println(pos.x + " " + pos.y + " blue");
 			//checkCollision(pos, id);
 		}
 	}
