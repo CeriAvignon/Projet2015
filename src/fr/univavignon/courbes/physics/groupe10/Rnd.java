@@ -15,6 +15,9 @@ public class Rnd implements PhysicsEngine {
 	
 	double itemProbability = 0.3;
 	
+	
+	/* CES VARIABLES SONT POUR DEBUGGER */
+	//elles seront enlevé
 	double currentAngleTEST =  Math.PI * 3/2;
 	double headRadiusTEST = 2;
 	double angleVisionTEST = Math.PI / 2;

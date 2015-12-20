@@ -18,6 +18,8 @@ public class MainClass {
 		Rnd r = new Rnd();
 		
 		r.board = r.init(width, height, profileIds);
+		r.board.snakes[0].currentX = 20;
+		r.board.snakes[0].currentY = 20;
 		
 		
 		/*
