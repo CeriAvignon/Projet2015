@@ -19,7 +19,7 @@ public class Rnd implements PhysicsEngine {
 	/* CES VARIABLES SONT POUR DEBUGGER */
 	//elles seront enlevé
 	double currentAngleTEST =  0;
-	double headRadiusTEST = 3;
+	double headRadiusTEST = 1;
 	double angleVisionTEST = 2 * Math.PI / 3;
 	
 	
@@ -180,10 +180,10 @@ public class Rnd implements PhysicsEngine {
 		s.profileId = profileId;
 		s.currentX = currentX;
 		s.currentY = currentY;
-		s.currentAngle = 0/*Math.random()*(2*Math.PI)*/;
-		s.headRadius = 5/*5*/;
+		s.currentAngle = currentAngleTEST/*Math.random()*(2*Math.PI)*/;
+		s.headRadius = headRadiusTEST/*5*/;
 		s.movingSpeed = 1;
-		s.turningSpeed = 0.02;
+		s.turningSpeed = 0.008;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
@@ -341,7 +341,7 @@ public class Rnd implements PhysicsEngine {
 				//Si la colision n'est pas mortel, on dessine le corp du tracé
 				if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
 				{	
-					snakeDrawHead(po.x, po.y, (int) board.snakes[id].headRadius);
+					snakeDrawHead(id, po.x, po.y, (int) board.snakes[id].headRadius);
 				}
 				//si la colision est mortel, on ne dessine plus le tracé car le snake est deja mort
 				else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
@@ -394,7 +394,7 @@ public class Rnd implements PhysicsEngine {
 	 * 
 	 * @param id c'est l'id du snake que l'on veux dessiner
 	 */
-	public void snakeDrawHead(int centerX, int centerY, int radius)
+	public void snakeDrawHead(int id, int centerX, int centerY, int radius)
 	{
 		/*
 		int centerX = board.snakes[id].currentX;
@@ -412,8 +412,8 @@ public class Rnd implements PhysicsEngine {
 				if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
 				{
 					
-					System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
-					//board.snakesMap.put(new Position(x, y), id);
+					//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
+					board.snakesMap.put(new Position(x, y), id);
 				}
 			}
 		}
