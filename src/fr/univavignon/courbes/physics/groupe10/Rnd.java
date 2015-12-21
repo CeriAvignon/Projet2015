@@ -18,8 +18,8 @@ public class Rnd implements PhysicsEngine {
 	
 	/* CES VARIABLES SONT POUR DEBUGGER */
 	//elles seront enlevé
-	double currentAngleTEST =  0;
-	double headRadiusTEST = 1;
+	double currentAngleTEST =  1.6;
+	double headRadiusTEST = 10;
 	double angleVisionTEST = 2 * Math.PI / 3;
 	
 	
@@ -412,8 +412,8 @@ public class Rnd implements PhysicsEngine {
 				if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
 				{
 					
-					//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
-					board.snakesMap.put(new Position(x, y), id);
+					System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
+					//board.snakesMap.put(new Position(x, y), id);
 				}
 			}
 		}
@@ -506,8 +506,8 @@ public class Rnd implements PhysicsEngine {
 			pos.x = (int) Math.round((double) board.snakes[id].currentX + Math.cos(tabAngle[i]) * board.snakes[id].headRadius);
 			pos.y = (int) Math.round((double) board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
 			
-			//System.out.println(pos.x + " " + pos.y + " blue");
-			return checkCollision(pos, id);
+			System.out.println(pos.x + " " + pos.y + " blue");
+			//return checkCollision(pos, id);
 		}
 		return Collision.NONE;
 
