@@ -14,26 +14,59 @@ import java.util.regex.*;
  */
 public class Inscription extends Fenetre implements ActionListener {
 
+	/**
+	 * 
+	 */
 	Controle c = new Controle();
+	/**
+	 * 
+	 */
 	public static Profile[] tabP ; 
+	
+	/**
+	 * 
+	 */
 	private JLabel email, userName, password, country, timeZone;
+	/**
+	 * 
+	 */
 	private JTextField txt1;
+	/**
+	 * 
+	 */
 	private JTextField txt2;
+	/**
+	 * 
+	 */
 	private JTextField txt3;
+	/**
+	 * 
+	 */
 	private JTextField txt4;
-	//private JTextField txt5;
+	/**
+	 * 
+	 */
 	private String [] gmt = {"gmt-9","gmt-8","gmt-7","gmt-6","gmt-5","gmt-4","gmt-3",
 			"gmt-2","gmt-1","gmt","gmt+1","gmt+2","gmt+3","gmt+4","gmt+5",
 			"gmt+6","gmt+7","gmt+8","gmt+9"};
+	/**
+	 * 
+	 */
 	private JComboBox txt5;
- 
-	private JPanel p1;
-	private JPanel p2;
-	private JButton b1;
-	private JButton b2;
-	private JLabel lab1;
-	private JLabel lab2;
-		/**
+	/**
+	 * 
+	 */
+	private JPanel p1, p2;
+	/**
+	 * 
+	 */
+	private JButton b1,b2;
+	/**
+	 * 
+	 */
+	private JLabel lab1,lab2;
+
+	 /**
 	 * @param titre
 	 * Titre de la fenetre
 	 * @param x
@@ -41,8 +74,8 @@ public class Inscription extends Fenetre implements ActionListener {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	Inscription (String titre, int x, int y) 
-	{
+	Inscription (String titre, int x, int y) {
+		
 		super(titre, x, y);
 		p1 = new JPanel();
 		p2 = new JPanel();
@@ -64,7 +97,6 @@ public class Inscription extends Fenetre implements ActionListener {
 		txt4 = new JTextField();
 		txt5 = new JComboBox(gmt);
 		txt5.setSelectedIndex(10);
-		//JScrollPane scrol = new JScrollPane(txt5);
 		
 		p1.add(lab1);
 		p1.add(lab2);
@@ -134,13 +166,19 @@ public class Inscription extends Fenetre implements ActionListener {
 			break;
 		}
 	}
+	
+	/**
+	 * @param p
+	 */
 	public void loadProfile(LinkedList p) {
+		
 		p.add ( txt1.getText());
 		p.add(txt2.getText());
 		p.add( txt4.getText());
 		p.add( (String)txt5.getSelectedItem());
 		p.add("0");
 		p.add(txt3.getText());
+		
 	}
 	
 	

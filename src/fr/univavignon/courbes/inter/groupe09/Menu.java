@@ -7,12 +7,20 @@ import javax.swing.*;
  * Classe correspendant au menu afficher au joueur lorsqu'il c est authentifié 
  */
 public class Menu extends Fenetre implements ActionListener {
-	
+	/**
+	 * 
+	 */
 	private JButton b1,b2,b3,b4;
+	/**
+	 * 
+	 */
 	private JPanel j;
-	private JLabel l;
-	private JLabel l2;
-		/**
+	/**
+	 * 
+	 */
+	private JLabel l,l2;
+
+	/**
 	 * @param titre
 	 * Titre de la fenetre
 	 * @param x
@@ -49,6 +57,8 @@ public class Menu extends Fenetre implements ActionListener {
 		String nom = event.getActionCommand();
 		switch (nom) {
 		case "JOUER": 
+			new Game("Partie", 400, 400);
+			this.dispose();
 			
 			break;
 		case "PROFIL": 

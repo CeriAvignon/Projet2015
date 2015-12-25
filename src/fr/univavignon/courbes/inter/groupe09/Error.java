@@ -14,4 +14,5 @@ public class Error extends JFrame implements ErrorHandler {
 		JOptionPane.showMessageDialog(this, errorMessage, "Erreur", JOptionPane.WARNING_MESSAGE);
 
 	}
+
 }	

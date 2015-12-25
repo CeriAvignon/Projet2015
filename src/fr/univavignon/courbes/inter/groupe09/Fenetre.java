@@ -8,13 +8,25 @@ import javax.swing.*;
 
 /**
  * @author groupe09
- * Classe abstraite héritant de la classe JFrame qui nous permet de créer des fenetre  
+ * Classe abstraite héritant de la classe JFrame qui nous permet de créer des fenetres  
  */
 abstract class Fenetre extends JFrame {
 
+	/**
+	 * 
+	 */
 	protected static LinkedList profil = new LinkedList();
+	/**
+	 * 
+	 */
 	protected static boolean v = false;
+	/**
+	 * 
+	 */
 	protected static String  user;
+	/**
+	 * 
+	 */
 	protected Container contenu;
 	/**
 	 * @param titre

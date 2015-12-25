@@ -4,14 +4,30 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
+/**
+ * @author groupe09
+ *
+ */
 public class Bienvenu extends Fenetre implements ActionListener {
 	
-
-	
+	/**
+	 * 
+	 */
 	private JButton b1,b2,b3;
+	/**
+	 * 
+	 */
 	private JPanel j;
+	/**
+	 * 
+	 */
 	private JLabel l;
 	
+	/**
+	 * @param titre
+	 * @param x
+	 * @param y
+	 */
 	Bienvenu(String titre, int x, int y) 
 	{
 		super(titre, x, y);
@@ -40,23 +56,23 @@ public class Bienvenu extends Fenetre implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		String nom = event.getActionCommand();
 		switch (nom) {
-		case "INSCRIPTION": 
-			new Inscription("Inscription", 400, 400);
-			this.dispose();
-			break;
-		case "AUTHENTIFICATION": 
-			new Authentification("Authentification", 400, 400);
-			this.dispose();
-			break;
-		case "QUITTER": 
-			System.exit(0);
-			break;
+			case "INSCRIPTION": 
+				new Inscription("Inscription", 400, 400);
+				this.dispose();
+				break;
+			case "AUTHENTIFICATION": 
+				new Authentification("Authentification", 400, 400);
+				this.dispose();
+				break;
+			case "QUITTER": 
+				System.exit(0);
+				break;
 		}
 	}
 	public static void main(String[] args) {
 	
 		// teste des menu du jeu
-		Bienvenu m1 = new Bienvenu("Atchung Die Kurv", 250, 300);		
+		Bienvenu m1 = new Bienvenu("Atchung Die Kurv", 700, 500);		
 		}
 
 	

@@ -9,13 +9,35 @@ import javax.swing.*;
  */
 public class Authentification extends Fenetre implements ActionListener {
 
+	/**
+	 * 
+	 */
 	private JLabel userName, password, ath, vide;
+	/**
+	 * 
+	 */
 	private JTextField txt1;
 	private JTextField txt2;
+	/**
+	 * 
+	 */
 	private JPanel p1;
+	/**
+	 * 
+	 */
 	private JPanel p2;
+	/**
+	 * 
+	 */
 	private JButton b1;
+	/**
+	 * 
+	 */
 	private JButton b2;
+	/**
+	 * 
+	 */
+	public static Error err = new Error();
 	Controle c = new Controle();
 	/**
 	 * @param titre
@@ -67,36 +89,31 @@ public class Authentification extends Fenetre implements ActionListener {
 		String nom = event.getActionCommand();
 		int rep = c.controleConnexion(txt1.getText(), txt2.getText());
 		switch (nom) {
-		case "Connexion":
-			switch (rep) {
-			case 0: 
-				JOptionPane.showMessageDialog(this,"Veuillez saisire votre Username","Erreur", JOptionPane.WARNING_MESSAGE);
-	
+			case "Connexion":
+				switch (rep) {
+					case 0: 
+						err.displayError("Veuillez saisire votre Username");
+						break;
+					case 1: 
+						user = txt1.getText();
+						this.dispose();
+						new Menu("JEUX", 500, 500);
+						break;
+					case 2: 
+						err.displayError("Username incorrecte");
+						break;
+					case 3: 
+						err.displayError("Veuillez saisire votre Mot de passe");
+						break;
+					case 4: 
+						err.displayError("Mot de passe Incorrecte");
+						break;
+				}
 				break;
-			case 1: 
-				user = txt1.getText();
-				
+			case "ANNULER":
+				new Bienvenu("ma fenere", 300, 400);
 				this.dispose();
-				new Menu("JEUX", 500, 500);
 				break;
-			case 2: 
-				JOptionPane.showMessageDialog(this,"Username incorrecte","Erreur", JOptionPane.WARNING_MESSAGE);
-
-				break;
-			case 3: 
-				JOptionPane.showMessageDialog(this,"Veuillez saisire votre Mot de passe","Erreur", JOptionPane.WARNING_MESSAGE);
-	
-				break;
-			case 4: 
-				JOptionPane.showMessageDialog(this,"Mot de passe Incorrecte","Erreur", JOptionPane.WARNING_MESSAGE);
-	
-				break;
-			}
-			break;
-		case "ANNULER":
-			new Bienvenu("ma fenere", 300, 400);
-			this.dispose();
-			break;
 		}
 	}
 	
