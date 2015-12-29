@@ -87,7 +87,7 @@ public static int nbClient = 0;
     }
 
   /**
-    * Retourne la première adresse IP actie trouvée sur le serveur.
+    * Retourne la première adresse IP active trouvée sur le serveur.
     * @return adressIp
     *    Première adresse libre trouvée
     * @throws SocketException
@@ -193,10 +193,12 @@ public void launchServer()
 
 	try
 	{
+    //Récuperer l'adresse IP du serveur
     host = findAdress();
 	} catch (SocketException e) {
 		e.printStackTrace();
 	}
+  //Récupérer le port du serveur
     port = findPort();
 
     try {
@@ -223,6 +225,8 @@ public void launchServer()
               Socket client = server.accept();
               tableauSocketClients[nbClient] = client;
               nbClient++;
+
+              Thread tClient = new Thread(new ClientProcessorTCP(client));
 
            } catch (IOException e) {
               e.printStackTrace();
@@ -260,27 +264,6 @@ public void closeServer()
 
 
   /**
-   * Envoie la liste des profils des joueurs de la manche à tous les
-   * clients connectés à ce serveur.
-   * <br/>
-   * Cette méthode est invoquée par l'Interface Utilisateur de manière
-   * à ce que le serveur transmette au client l'identité des joueurs
-   * participant à une partie.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
-   *
-   * @param profiles
-   *     Liste des profils des joueurs participant à une partie.
-   */
-  public void sendPlayers(List<Profile> profiles)
-  {
-    return;
-  }
-
-  /**
    * Envoie la limite de points à atteindre pour gagner la partie,
    * à tous les clients connectés à ce serveur.
    * <br/>
@@ -300,7 +283,7 @@ public void closeServer()
   @Override
 public void sendPointThreshold(int pointThreshold)
   {
-    
+
     return;
   }
 
@@ -385,11 +368,43 @@ public String[] retrieveText()
     return null;
   }
 
+  /**
+   * Envoie la liste des profils des joueurs de la manche à tous les
+   * clients connectés à ce serveur.
+   * <br/>
+   * Cette méthode est invoquée par l'Interface Utilisateur de manière
+   * à ce que le serveur transmette au client l'identité des joueurs
+   * participant à une partie.
+     * <br/>
+     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
+     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+     * parallèle de l'exécution du jeu.
+   *
+   * @param profiles
+   *     Liste des profils des joueurs participant à une partie.
+   */
+
 @Override
 public void sendProfiles(List<Profile> profiles) {
 	// TODO Auto-generated method stub
 
 }
+
+/**
+ * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
+ * participer à la partie en cours de configuration. Le serveur peut refuser
+ * certains joueurs, par exemple si la partie est complète (plus de place libre).
+ * <br/>
+ * À noter que La liste doit contenir les profils <i>dans l'ordre où ils ont été reçus</i>
+ * par le Moteur Réseau, afin que l'Interface Utilisateur puisse déterminer lesquels refuser
+ * le cas échéant. Le moteur réseau doit également garder trace de quel joueur correspond
+ * à quel client.
+ *
+ * @return
+ * 		La liste des profils reçus par le Moteur Réseau (peut être vide si aucun n'a été
+ * 		reçu depuis la dernière fois que la méthode a été invoquée).
+ */
 
 @Override
 public List<Profile> retrieveProfiles() {

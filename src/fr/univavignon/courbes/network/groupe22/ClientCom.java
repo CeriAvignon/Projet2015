@@ -20,23 +20,23 @@ import java.util.Map;
 public class ClientCom implements ClientCommunication
 {
     /**
-     * 
+     *
      */
     private String ipServer;
     /**
-     * 
+     *
      */
     private int portServer;
     /**
-     * 
+     *
      */
     private Socket connexion = null;
 	/**
-	 * 
+	 *
 	 */
 	String message = null;
 	/**
-	 * 
+	 *
 	 */
 	Board board = null;
   /**
@@ -129,12 +129,12 @@ public class ClientCom implements ClientCommunication
   	 * @param profile
   	 * 		Profil du joueur à ajouter à la partie.
   	 */
-    
+
     @Override
   	public void sendProfile(Profile profile) {
     	;
     }
-  
+
   	/**
 
      * Récupère la liste des profils des joueurs participant à la manche,
@@ -153,7 +153,7 @@ public class ClientCom implements ClientCommunication
      *         Liste des profils participant à la partie, ou {@code null} si aucune
      *         liste n'a été envoyée.
      */
-    
+
     @Override
     public List<Profile> retrieveProfiles() {
     	return null;
@@ -177,7 +177,7 @@ public class ClientCom implements ClientCommunication
      *         Limite de point courante de la partie, ou {@code null} si aucune
      *         valeur n'a été envoyée.
      */
-    
+
     @Override
     public Integer retrievePointThreshold() {
     	return 0;
@@ -199,10 +199,10 @@ public class ClientCom implements ClientCommunication
      *         Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      *         n'a été envoyée.
      */
-    
+
     @Override
     public Board retrieveBoard() {
-    	
+
     	Thread retrieve = new Thread(new Runnable() {
     	  		@Override
 			     public void run(){
@@ -249,7 +249,7 @@ public class ClientCom implements ClientCommunication
      * @param commands
      *         Une liste contenant les directions choisies par chaque joueur local au client.
      */
-    
+
     @Override
     public void sendCommands(Map<Integer,Direction> commands) {
     	;
@@ -268,13 +268,13 @@ public class ClientCom implements ClientCommunication
      *         Contient le message envoyé par le serveur, ou {@code null} si aucun message
      *         n'a été envoyé.
      */
-    
+
     @Override
     public String retrieveText() {
-    	
+
     		try {
     			BufferedReader in = new BufferedReader(new InputStreamReader(connexion.getInputStream()));
-    			
+
     			message = in.readLine();
     		}
     		catch (IOException e) {
@@ -295,7 +295,7 @@ public class ClientCom implements ClientCommunication
      * @param message
      *         Le message textuel à envoyer au serveur.
      */
-    
+
     @Override
     public void sendText(final String message) {
     	Thread send = new Thread(new Runnable() {
@@ -312,5 +312,5 @@ public class ClientCom implements ClientCommunication
     	});
     	send.start();
     }
-    
+
 }
