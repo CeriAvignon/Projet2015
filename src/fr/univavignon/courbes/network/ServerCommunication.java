@@ -27,6 +27,36 @@ import fr.univavignon.courbes.common.Profile;
 public interface ServerCommunication
 {	
 	/**
+     * Renvoie l'adresse IP de ce serveur, que les clients doivent
+     * utiliser pour se connecter à lui. Cette valeur n'est pas 
+     * modifiable, elle dépend directement du système.
+     *
+     * @return 
+     * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
+     */
+	public String getIp();
+	
+	/**
+     * Renvoie le port utilisé par le serveur pour accepter les connexions
+     * de la part des clients. (à préciser <i>avant</i> de se connecter, 
+     * bien sûr).
+     *
+     * @return 
+     * 		Un entier qui correspond au port du serveur.
+     */
+	public int getPort();
+
+	/**
+     * Modifie le port utilisé par le serveur pour accepter les connexions
+     * de la part des clients. Cette valeur est à modifier avant d'utiliser 
+     * {@link #launchServer}.
+     * 
+     * @param port
+     * 		Le nouveau port du serveur.
+     */
+	public void setPort(int port);
+	
+	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
@@ -58,7 +88,7 @@ public interface ServerCommunication
 	 * @param profiles
 	 * 		Liste des profils des joueurs participant à une partie.
 	 */
-	public void sendPlayers(List<Profile> profiles);
+	public void sendProfiles(List<Profile> profiles);
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
