@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.client;
+package fr.univavignon.courbes.network.groupe20.client;
 
 import java.util.List;
 import java.util.Map;

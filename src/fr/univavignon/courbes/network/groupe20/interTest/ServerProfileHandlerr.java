@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.interTest;
+package fr.univavignon.courbes.network.groupe20.interTest;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;

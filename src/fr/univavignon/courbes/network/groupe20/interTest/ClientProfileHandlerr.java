@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.interTest;
+package fr.univavignon.courbes.network.groupe20.interTest;
 
 
 
