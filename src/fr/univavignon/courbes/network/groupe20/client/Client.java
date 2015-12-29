@@ -10,9 +10,11 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
 
 public class Client implements ClientCommunication {
+	
 	private Socket client;
 	private String ip;
 	private int port;
+	
 	@Override
 	public String getIp() {
 		return ip;
