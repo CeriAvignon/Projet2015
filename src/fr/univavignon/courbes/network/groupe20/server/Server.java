@@ -67,7 +67,6 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void launchServer() {
-		// TODO Auto-generated method stub
 
 	}
 
