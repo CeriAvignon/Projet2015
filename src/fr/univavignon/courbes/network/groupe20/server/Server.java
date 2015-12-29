@@ -44,7 +44,7 @@ public class Server implements ServerCommunication {
 	}
 
 	/**
-	 * Gets the first and last name of this Student.
+	 * 
 	 * @return un entier qui correspond au port utiliser par le serveur.
 	 */
 	
