@@ -1,5 +1,6 @@
 package fr.univavignon.courbes.network.groupe20.client;
 
+import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 
@@ -9,29 +10,27 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
 
 public class Client implements ClientCommunication {
-
+	private Socket client;
+	private String ip;
+	private int port;
 	@Override
 	public String getIp() {
-		// TODO Auto-generated method stub
-		return null;
+		return ip;
 	}
 
 	@Override
 	public void setIp(String ip) {
-		// TODO Auto-generated method stub
-
+		this.ip = ip;
 	}
 
 	@Override
 	public int getPort() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.port;
 	}
 
 	@Override
 	public void setPort(int port) {
-		// TODO Auto-generated method stub
-
+		this.port = port;
 	}
 
 	@Override
