@@ -41,7 +41,8 @@ public interface GraphicDisplay
 	 * 		Panel graphique utilisé comme support pour dessiner les scores
 	 * 		de la partie en cours.
 	 */
-public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel);
+	public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel);
+
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * à chaque itération d'une manche. Elle raffraichit la représentation
