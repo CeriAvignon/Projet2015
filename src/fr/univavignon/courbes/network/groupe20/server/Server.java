@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -23,6 +24,14 @@ public class Server implements ServerCommunication {
      * de la part des clients.
 	 */
 	private ServerSocket server;
+	
+	/**
+	 * 
+	 *List des  profils envoyés par les clients, et chaque profil représente un joueur qui désire
+	 * participer à la partie en cours de configuration.
+	 */
+	List<Profile> profileClients = new CopyOnWriteArrayList<Profile>();
+	
 	
 	/**
      * Renvoie l'adresse IP de ce serveur, que les clients doivent
