@@ -137,9 +137,13 @@ public class Client implements ClientCommunication {
 	
 	public static void main(String[] args) throws InterruptedException {
 		Client c = new Client();
+		c.setIp("localhost");
+		c.setPort(1117);
 		c.launchClient();
 		while (true){
-			System.out.println(c.retrievePointThreshold());
+			Integer nbr = c.retrievePointThreshold();
+			if(nbr != null)
+				System.out.println(nbr);
 		}
 		
 	}
