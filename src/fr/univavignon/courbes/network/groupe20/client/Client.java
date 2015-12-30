@@ -147,9 +147,9 @@ public class Client implements ClientCommunication {
 			@Override
 			public void run() {
 				while(true){
-					Integer a = c.retrievePointThreshold();
+					Board a = c.retrieveBoard();
 					if(a != null){
-						System.out.println(a+".");
+						System.out.println(a.height+".");
 					}
 					System.out.print("");
 				}
