@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -256,8 +257,14 @@ public class Server implements ServerCommunication {
 		b.snakes = sss;
 		s.sendBoard(b);
 		while (true) {
-			Map<Integer, Direction> q = s.retrieveCommands();
-			System.out.println(q.size());
+			Map<Integer, Direction> map = s.retrieveCommands();
+			for(Iterator i=map.keySet().iterator();i.hasNext();){
+	            Object key=i.next();
+	           // System.out.println(key + "=" + map.get(key));
+	            if(map.get(key).equals(Direction.RIGHT) || map.get(key).equals(Direction.LEFT)){
+	            	System.out.println(key + "=" + map.get(key));
+	            }
+			}
 		}
 	}
 
