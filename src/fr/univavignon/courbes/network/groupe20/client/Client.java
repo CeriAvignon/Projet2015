@@ -19,6 +19,7 @@ public class Client implements ClientCommunication {
 	private int port;
 	 List<ProfileReponse> addProfil = new CopyOnWriteArrayList<ProfileReponse>();
 	 Integer point = null;
+	 Board board = null;
 	
 	@Override
 	public String getIp() {
@@ -67,6 +68,7 @@ public class Client implements ClientCommunication {
 	public void removeProfile(Profile profile) {
 		this.sendObject(profile, (byte)2);
 	}
+	
 	@Override
 	public Integer retrievePointThreshold() {
 		Integer nbr = point;
@@ -75,8 +77,9 @@ public class Client implements ClientCommunication {
 	}
 	@Override
 	public Board retrieveBoard() {
-		// TODO Auto-generated method stub
-		return null;
+		Board nBoard = board;
+		board = null;
+		return nBoard;
 	}
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
@@ -136,14 +139,22 @@ public class Client implements ClientCommunication {
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		Client c = new Client();
+		final Client c = new Client();
 		c.setIp("localhost");
 		c.setPort(1117);
 		c.launchClient();
-		while (true){
-			Integer nbr = c.retrievePointThreshold();
-			System.out.println(nbr);
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					Integer a = c.retrievePointThreshold();
+					if(a != null){
+						System.out.println(a+".");
+					}
+					System.out.print("");
+				}
+			}
+		}).start();
 		
 	}
 }

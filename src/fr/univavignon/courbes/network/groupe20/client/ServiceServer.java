@@ -50,7 +50,9 @@ public class ServiceServer {
 						try {
 							ois = new ObjectInputStream(bytesIn);
 						    Object obj = ois.readObject();
-						    if(obj instanceof ProfileReponse){
+						    if(obj instanceof Board){
+						    	c.board = (Board)obj;
+						    }else if(obj instanceof ProfileReponse){
 						    	ProfileReponse p = (ProfileReponse)obj;
 						    		c.addProfil.add(p);
 						    }else if(obj instanceof ArrayList){
