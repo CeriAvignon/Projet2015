@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -140,23 +141,17 @@ public class Client implements ClientCommunication {
 		
 	}
 	
-	public static void main(String[] args) throws InterruptedException {
-		final Client c = new Client();
-		c.setIp("localhost");
-		c.setPort(1117);
-		c.launchClient();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(true){
-					Board a = c.retrieveBoard();
-					if(a != null){
-						System.out.println(a.height+".");
-					}
-					System.out.print("");
-				}
-			}
-		}).start();
-		
+		public static void main(String[] args) throws InterruptedException {
+			final Client c = new Client();
+			c.setIp("localhost");
+			c.setPort(1117);
+			c.launchClient();
+			Map< Integer, Direction> map = new HashMap<Integer, Direction>();
+			map.put(1, Direction.RIGHT);
+			while(true)
+				c.sendCommands(map);
+			
+		}
 	}
-}
+
+
