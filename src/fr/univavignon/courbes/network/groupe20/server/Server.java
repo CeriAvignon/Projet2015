@@ -1,7 +1,13 @@
 package fr.univavignon.courbes.network.groupe20.server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,6 +30,11 @@ public class Server implements ServerCommunication {
      * de la part des clients.
 	 */
 	private ServerSocket server;
+	
+	/**
+	 * List de type socket qui contient les clients qui sont connéctés au serveur
+	 */
+	private List<Socket> clients = new CopyOnWriteArrayList<Socket>();
 	
 	/**
 	 * 
@@ -74,9 +85,27 @@ public class Server implements ServerCommunication {
 	@Override
 	public void setPort(int port) {this.port = port;}
 
+	/**
+     * Permet de lancer un serveur pour que les clients puissent s'y connecter.
+     * <br/>
+     * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
+     * l'utilisateur décide de créer une partie réseau.
+     */
 	@Override
 	public void launchServer() {
-
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					server = new ServerSocket(1117);
+					while(true){
+						Socket client = server.accept();
+						System.out.println("Nouveau client");
+						clients.add(client);
+						new ServiceClient(Server.this,client);
+					}
+				} catch (IOException e) {e.printStackTrace();}
+			}
+		}).start();
 	}
 
 	@Override
@@ -85,10 +114,21 @@ public class Server implements ServerCommunication {
 
 	}
 
+	/**
+	 * Envoie la liste des profils des joueurs de la manche à tous les 
+	 * clients connectés à ce serveur.
+	 * 
+	  @param profiles
+	 * 		Liste des profils des joueurs participant à une partie.
+	 */
 	@Override
 	public void sendProfiles(List<Profile> profiles) {
-		// TODO Auto-generated method stub
-
+		List<Profile> tProfiles = new ArrayList<Profile>();
+		for(Profile p : profiles)
+			tProfiles.add(p);
+		for(Profile p : profileClients)
+			tProfiles.add(p);
+		this.sendObject(tProfiles, clients);
 	}
 
 	@Override
@@ -119,6 +159,43 @@ public class Server implements ServerCommunication {
 	public String[] retrieveText() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	
+	
+	private void sendObject(Object o,List<Socket> clients){
+		for(Socket client : clients)
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos;
+				oos = new ObjectOutputStream(bos);
+				oos.writeObject(o);
+				oos.flush();
+				oos.close();
+				bos.close();
+				
+				DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
+				byte [] data = bos.toByteArray();
+				dos.writeInt(data.length);
+			    dos.write(data);
+			    dos.flush();
+			} catch (IOException e) {e.printStackTrace();}
+		
+	}
+	public static void main(String[] args) {
+		Server s = new Server();
+		s.launchServer();
+		//Test de l'ajout d'un profil
+		while(true)
+			if(s.profileClients.size() == 3){
+				System.out.println(".");
+				Profile p = new Profile();
+				p.profileId = 15;
+				List<Profile> pp = new ArrayList<Profile>();
+				pp.add(p);
+				s.sendProfiles(pp);
+				break;
+			}
 	}
 
 }
