@@ -130,9 +130,20 @@ public class Server implements ServerCommunication {
 		this.sendObject(tProfiles, clients);
 	}
 
+	/**
+	 * Envoie la limite de points à atteindre pour gagner la partie,
+	 * à tous les clients connectés à ce serveur.
+	 *
+	 * @param pointThreshold
+	 * 		pointThreshold doit être un entier
+	 * 		Limite de point courante de la partie.
+	 */
 	@Override
-	public void sendPointThreshold(int pointThreshold) {
-		// TODO Auto-generated method stub
+	public void sendPointThreshold(final int pointThreshold) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {sendObject(pointThreshold, clients);}
+		}).start();
 
 	}
 
