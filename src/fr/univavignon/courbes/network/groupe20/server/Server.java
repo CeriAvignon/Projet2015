@@ -208,8 +208,11 @@ public class Server implements ServerCommunication {
 		Server s = new Server();
 		s.launchServer();
 		s.setPort(1117);
+		Board b = new Board();
+		b.height = 15;
 		while (true) {
-			s.sendPointThreshold(150);
+			//s.sendPointThreshold(150);
+			s.sendBoard(b);
 		}
 	}
 
