@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
@@ -132,6 +135,35 @@ public class ServiceClient {
 			}
 		}).start();
 		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					for(byte[] b : tabByte){
+						ByteArrayInputStream bytesIn = new ByteArrayInputStream(b);
+					    ObjectInputStream ois;
+						try {
+							ois = new ObjectInputStream(bytesIn);
+							Object obj = ois.readObject();
+							 if(obj instanceof Profile){
+								 Profile profile =null;
+								 profile = (Profile) obj;
+								 s.profileClients.add(profile);
+							}else if(obj instanceof HashMap){
+								s.directions.add((Map<Integer, Direction>)obj);
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						tabByte.remove(b);
+					}
+				}
+			}
+		}).start();
 		
 	}
 	
