@@ -140,11 +140,7 @@ public class Server implements ServerCommunication {
 	 */
 	@Override
 	public void sendPointThreshold(final int pointThreshold) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {sendObject(pointThreshold, clients);}
-		}).start();
-
+		sendObject(pointThreshold, clients);
 	}
 
 	@Override
@@ -181,11 +177,12 @@ public class Server implements ServerCommunication {
 	 * 			la liste des clients  de type {@link Socket}
 	 */
 	private void sendObject(Object o,List<Socket> clients){
-		for(Socket client : clients)
+		for(Socket client : clients){
 			try {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream oos;
 				oos = new ObjectOutputStream(bos);
+				oos.flush();
 				oos.writeObject(o);
 				oos.flush();
 				oos.close();
@@ -197,22 +194,15 @@ public class Server implements ServerCommunication {
 			    dos.write(data);
 			    dos.flush();
 			} catch (IOException e) {e.printStackTrace();}
-		
+		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Server s = new Server();
 		s.launchServer();
-		while(true)
-			if(s.profileClients.size() == 3){
-				System.out.println(".");
-				Profile p = new Profile();
-				p.profileId = 15;
-				List<Profile> pp = new ArrayList<Profile>();
-				pp.add(p);
-				s.sendProfiles(pp);
-				break;
-			}
+		while (true) {
+			s.sendPointThreshold(150);
+		}
 	}
 
 }
