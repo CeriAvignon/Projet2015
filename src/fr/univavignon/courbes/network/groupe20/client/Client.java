@@ -83,7 +83,9 @@ public class Client implements ClientCommunication {
 	}
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
-		// TODO Auto-generated method stub
+		this.sendObject(commands);
+     
+	
 	}
 	@Override
 	public String retrieveText() {
