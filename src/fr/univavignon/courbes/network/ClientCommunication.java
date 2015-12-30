@@ -1,6 +1,5 @@
 package fr.univavignon.courbes.network;
 
-import java.util.List;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
@@ -27,7 +26,8 @@ import fr.univavignon.courbes.common.Profile;
 public interface ClientCommunication
 {	
 	/**
-     * Renvoie l'adresse IP du serveur auquel le client se connecte.
+     * Renvoie l'adresse IP du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
@@ -44,7 +44,8 @@ public interface ClientCommunication
 	public void setIp(String ip);
 
 	/**
-     * Renvoie le port du serveur auquel le client se connecte.
+     * Renvoie le port du serveur auquel le client se connecte
+     * (à préciser <i>avant</i> de se connecter, bien sûr).
      *
      * @return 
      * 		Un entier qui correspond au port du serveur.
@@ -75,23 +76,29 @@ public interface ClientCommunication
 	public void closeClient();
 	
 	/**
-	 * Récupère la liste des profils des joueurs participant à la manche,
-	 * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
-	 * des joueurs pour cette partie.
-	 * <br/>
-	 * Cette méthode est invoquée par l'Interface Utilisateur de manière
-	 * à ce que le client obtienne l'identité des joueurs participant à une partie.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-	 * 
+-	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
+	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
+	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
+	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
+	 * pas accueillir plus de joueurs.
+	 *   
+	 * @param profile
+	 * 		Profil du joueur à ajouter à la partie.
 	 * @return
-	 * 		Liste des profils participant à la partie, ou {@code null} si aucune
-	 * 		liste n'a été envoyée.
+	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou 
+	 * 		rejeté ({@code false}). 
 	 */
-	public List<Profile> retrieveProfiles();
+	public boolean addProfile(Profile profile);
+	
+	/**
+	 * Envoie au serveur le profil d'un joueur inscrit mais ne désirant plus participer 
+	 * à la partie en cours de configuration. Si le joueur n'est pas inscrit à la partie,
+	 * alors rien ne se passe (pas d'erreur).
+	 *   
+	 * @param profile
+	 * 		Profil du joueur à retirer de la partie.
+	 */
+	public void removeProfile(Profile profile);
 	
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,

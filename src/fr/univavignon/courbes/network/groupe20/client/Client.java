@@ -48,12 +48,6 @@ public class Client implements ClientCommunication {
 	}
 
 	@Override
-	public List<Profile> retrieveProfiles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Integer retrievePointThreshold() {
 		// TODO Auto-generated method stub
 		return null;
@@ -81,6 +75,18 @@ public class Client implements ClientCommunication {
 	public void sendText(String message) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean addProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
