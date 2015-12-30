@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.network.ServerCommunication;
 
 public class Server implements ServerCommunication {
@@ -43,7 +45,15 @@ public class Server implements ServerCommunication {
 	 */
 	List<Profile> profileClients = new CopyOnWriteArrayList<Profile>();
 	
+	/**
+	 * List des maps contenant les commandes envoyés par les clients.
+	 */
+	List<Map<Integer,Direction>> directions = new CopyOnWriteArrayList<Map<Integer,Direction>>();
 	
+	/**
+	 * List qui contient les playerId des joueurs qui jouent dans une partie.
+	 */
+	List<Integer> player = new CopyOnWriteArrayList<Integer>();
 	/**
      * Renvoie l'adresse IP de ce serveur, que les clients doivent
      * utiliser pour se connecter à lui.
@@ -153,13 +163,42 @@ public class Server implements ServerCommunication {
 	 */
 	@Override
 	public void sendBoard(Board board) {
-		this.sendObject(board, clients);
+		player.clear();
+		for(int i=0;i<board.snakes.length;i++){
+			player.add(board.snakes[i].playerId);
+		}
+		Server.this.sendObject(board, clients);
 	}
 
+	/**
+     * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
+     * renvoie une map, associant à l'ID d'un joueur la dernière commande qu'il a
+     * envoyée.
+     *
+     * @return 
+     * 		Une map contenant les directions choisies par chaque joueur traité par
+     * 		un client. Si un client ne renvoie rien, les valeurs manquantes doivent
+     * 		être remplacées par des valeurs {@link Direction#NONE}.
+     */
 	@Override
 	public Map<Integer, Direction> retrieveCommands() {
-		// TODO Auto-generated method stub
-		return null;
+		Map< Integer, Direction> map = new HashMap<Integer, Direction>();
+		boolean b = false;
+			for(Map<Integer,Direction> direction : directions){
+				b = true;
+				for(Integer player: player){
+					if(direction.containsKey(player))
+							map.put(player, direction.get(player));
+					else
+						map.put(player, Direction.NONE);
+				}
+				directions.remove(direction);
+				break;
+			}
+			if(b == false)
+				for(Integer player: player)
+					map.put(player, Direction.NONE);
+		return map;
 	}
 
 	@Override
@@ -208,11 +247,17 @@ public class Server implements ServerCommunication {
 		Server s = new Server();
 		s.launchServer();
 		s.setPort(1117);
+		
+		Snake sN = new Snake();
+		sN.playerId = 1;
+		Snake [] sss = {sN};
+		
 		Board b = new Board();
-		b.height = 15;
+		b.snakes = sss;
+		s.sendBoard(b);
 		while (true) {
-			//s.sendPointThreshold(150);
-			s.sendBoard(b);
+			Map<Integer, Direction> q = s.retrieveCommands();
+			System.out.println(q.size());
 		}
 	}
 
