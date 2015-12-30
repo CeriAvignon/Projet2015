@@ -142,8 +142,7 @@ public class Client implements ClientCommunication {
 		c.launchClient();
 		while (true){
 			Integer nbr = c.retrievePointThreshold();
-			if(nbr != null)
-				System.out.println(nbr);
+			System.out.println(nbr);
 		}
 		
 	}
