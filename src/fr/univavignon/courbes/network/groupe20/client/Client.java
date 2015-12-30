@@ -1,20 +1,24 @@
 package fr.univavignon.courbes.network.groupe20.client;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.network.groupe20.ProfileReponse;
 
 public class Client implements ClientCommunication {
 	
-	private Socket client;
+	Socket client;
 	private String ip;
 	private int port;
-	
+	 List<ProfileReponse> addProfil = new CopyOnWriteArrayList<ProfileReponse>();
+	 Integer point = null;
 	@Override
 	public String getIp() {
 		return ip;
@@ -37,7 +41,10 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void launchClient() {
-		// TODO Auto-generated method stub
+		try {
+			client = new Socket(this.ip, this.port);
+			new ServiceServer(this);
+		} catch (IOException e) {e.printStackTrace();}
 
 	}
 
