@@ -200,6 +200,7 @@ public class Server implements ServerCommunication {
 	public static void main(String[] args) throws InterruptedException {
 		Server s = new Server();
 		s.launchServer();
+		s.setPort(1117);
 		while (true) {
 			s.sendPointThreshold(150);
 		}
