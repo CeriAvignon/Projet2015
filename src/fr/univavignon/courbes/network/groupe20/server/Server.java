@@ -110,8 +110,7 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void closeServer() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	/**
@@ -162,7 +161,14 @@ public class Server implements ServerCommunication {
 	}
 	
 	
-	
+	/**
+	 * L'envoie d'un objet(aprés la sérialisation de ce dérnier) entrer en paramétre 
+	 * vers les clients connectés au serveur
+	 * @param o 
+	 * 			object de type {@link Object} à envoyer
+	 * @param clients 
+	 * 			la liste des clients  de type {@link Socket}
+	 */
 	private void sendObject(Object o,List<Socket> clients){
 		for(Socket client : clients)
 			try {
@@ -182,10 +188,10 @@ public class Server implements ServerCommunication {
 			} catch (IOException e) {e.printStackTrace();}
 		
 	}
+	
 	public static void main(String[] args) {
 		Server s = new Server();
 		s.launchServer();
-		//Test de l'ajout d'un profil
 		while(true)
 			if(s.profileClients.size() == 3){
 				System.out.println(".");
