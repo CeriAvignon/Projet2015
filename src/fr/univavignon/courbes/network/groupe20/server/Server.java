@@ -142,11 +142,18 @@ public class Server implements ServerCommunication {
 	public void sendPointThreshold(final int pointThreshold) {
 		sendObject(pointThreshold, clients);
 	}
-
+	
+	/**
+	 * Permet au serveur d'envoyer des informations sur l'évolution de 
+     * la manche en cours, à tous les clients connectés au serveur.
+	 *
+	 * @param board
+	 * 		board est de type {@link Board}
+	 * 		Etat courant de l'aire de jeu.
+	 */
 	@Override
 	public void sendBoard(Board board) {
-		// TODO Auto-generated method stub
-
+		this.sendObject(board, clients);
 	}
 
 	@Override
