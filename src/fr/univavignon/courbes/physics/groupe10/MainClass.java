@@ -17,21 +17,22 @@ public class MainClass {
 		a.board = a.init(800,600,tab);
 		
 		Map<Integer,Direction> com = new HashMap<Integer,Direction>();
-		com.put(1, Direction.NONE);
+		com.put(1, Direction.RIGHT);
 		//com.put(2, Direction.NONE);
 		//com.put(3, Direction.LEFT);
 		
-		a.board.snakes[0].currentX = 10;
-		a.board.snakes[0].currentY = 10;
+		
+		//a.board.snakes[0].currentX = 10;
+		//a.board.snakes[0].currentY = 10;
 		
 
-		a.snakeDrawHead(0, a.board.snakes[0].currentX, a.board.snakes[0].currentY, (int) a.board.snakes[0].headRadius);
-		a.snakeHeadCollision(0);
+		//a.snakeDrawHead(0, a.board.snakes[0].currentX, a.board.snakes[0].currentY, (int) a.board.snakes[0].headRadius);
+		//a.snakeHeadCollision(0);
 		
 		//a.board.snakes[1].currentAngle = 0;
 		//a.board.snakes[2].currentAngle = 90;
 		
-		/*
+		
 		JPanel c = new JPanel();
 		JPanel b = new JPanel();
 
@@ -49,26 +50,27 @@ public class MainClass {
 		fen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fen.setVisible(true);
 		
-		for (int i = 0; i < 100; i++)
+		/*
+		for (int i = 0; i < 1000; i++)
 		{
-			a.update(10, com);
+			a.update(1, com);
 			z.update();
 		}
+		*/
 		
-		/*
 		while(true)
 		{
 		
-			a.update(10, com);
+			a.update(30, com);
 			z.update();
 			
 			
 			try {
-    		Thread.sleep(25);                 //25 milliseconds is one second.
+    		Thread.sleep(20);                 //25 milliseconds is one second.
 			} catch(InterruptedException ex) {
     		Thread.currentThread().interrupt();
 			}
 
-		}*/
+		}
 	}
 }

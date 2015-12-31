@@ -18,9 +18,20 @@ public class Rnd implements PhysicsEngine {
 	
 	/* CES VARIABLES SONT POUR DEBUGGER */
 	//elles seront enlevé
-	double currentAngleTEST = 3.14;
-	double headRadiusTEST = 6;
-	double angleVisionTEST = 2 * Math.PI / 3;
+	double currentAngleTEST = 0;
+	double headRadiusTEST = 4;
+	//double angleVisionTEST = 2 * Math.PI / 3;
+	double turningSpeedTEST = 0.003;
+	boolean flyTEST = false;
+	double movingSpeedTEST = 0.1;
+	
+	/*
+	 * valeurs deduite de curveFever
+	 * headRadius = 4
+	 * board: 850 * 850
+	 * turningSpeed = 0.003 rad/ms
+	 * movingSpeed = 0.1 px/ms 
+	 */
 	
 	
 	
@@ -182,13 +193,13 @@ public class Rnd implements PhysicsEngine {
 		s.currentY = currentY;
 		s.currentAngle = currentAngleTEST/*Math.random()*(2*Math.PI)*/;
 		s.headRadius = headRadiusTEST/*5*/;
-		s.movingSpeed = 1;
-		s.turningSpeed = 0.008;
+		s.movingSpeed = movingSpeedTEST;
+		s.turningSpeed = turningSpeedTEST;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
 		s.holeRate = 0;
-		s.fly = false;
+		s.fly = flyTEST;
 		s.currentScore = 0;
 		
 		s.currentItems = new HashMap<Item, Long>();
@@ -334,7 +345,8 @@ public class Rnd implements PhysicsEngine {
 				//on test si il y a une collision aux abort de la tete du snake
 				//si il y a une collision, ses effets seront automatiquement appliqués
 				vCollision = snakeHeadCollision(id);
-			
+				
+				System.out.println(vCollision);
 				
 				//en fonction du type de colision, on decide de continuer ou non a dessiner le corps :
 				
@@ -412,8 +424,8 @@ public class Rnd implements PhysicsEngine {
 				if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
 				{
 					
-					System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
-					//board.snakesMap.put(new Position(x, y), id);
+					//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
+					board.snakesMap.put(new Position(x, y), id);
 				}
 			}
 		}
@@ -456,11 +468,11 @@ public class Rnd implements PhysicsEngine {
 					board.snakes[id].currentAngle,
 					board.snakes[id].currentAngle - Math.PI / 4,
 					board.snakes[id]. currentAngle - Math.PI / 8};*/
-			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 4;
+			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 5;
 			tabAngle[1] = board.snakes[id].currentAngle + Math.PI / 8;
 			tabAngle[2] = board.snakes[id].currentAngle;
 			tabAngle[3] = board.snakes[id].currentAngle - Math.PI / 8;
-			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 4;
+			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 5;
 			
 			nbAngles = 5;
 					
@@ -507,7 +519,7 @@ public class Rnd implements PhysicsEngine {
 			pos.x = (int) Math.round((double) board.snakes[id].currentX + Math.cos(tabAngle[i]) * board.snakes[id].headRadius);
 			pos.y = (int) Math.round((double) board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
 			
-			System.out.println(pos.x + " " + pos.y + " blue");
+			//System.out.println(pos.x + " " + pos.y + " blue");
 			
 			vCol = checkCollision(pos, id);
 			
