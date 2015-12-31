@@ -18,8 +18,8 @@ public class Rnd implements PhysicsEngine {
 	
 	/* CES VARIABLES SONT POUR DEBUGGER */
 	//elles seront enlevé
-	double currentAngleTEST =  1.6;
-	double headRadiusTEST = 10;
+	double currentAngleTEST = 3.14;
+	double headRadiusTEST = 6;
 	double angleVisionTEST = 2 * Math.PI / 3;
 	
 	
@@ -430,6 +430,7 @@ public class Rnd implements PhysicsEngine {
 	{
 		double[] tabAngle = new double[5];
 		int nbAngles;
+		Collision vCol;
 		
 		if (board.snakes[id].headRadius == 1)
 		{
@@ -507,8 +508,17 @@ public class Rnd implements PhysicsEngine {
 			pos.y = (int) Math.round((double) board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
 			
 			System.out.println(pos.x + " " + pos.y + " blue");
-			//return checkCollision(pos, id);
+			
+			vCol = checkCollision(pos, id);
+			
+			if (vCol == Collision.BORDER || vCol == Collision.SNAKE)
+			{
+				return vCol;
+			}
+			
+			
 		}
+		
 		return Collision.NONE;
 
 	}
