@@ -8,41 +8,51 @@ import java.util.Random;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 import fr.univavignon.courbes.common.*;
 
+/**
+ * 
+ * 
+ * cette classe implémente l'interface PhysicsEngine
+ * Elle permet de manipuler le moteur physique d'une manche (round)
+ * le moteur physique gère la position, le déplacements et les colisions des Snakes et des Items sur la Board
+ * 
+ * @see PhysicsEngine
+ * @see Board
+ * @see Snake
+ * @see Item
+ *
+ * @author Charlie & Sabri - groupe 10
+ */
 public class Rnd implements PhysicsEngine {
 	
-	Board board;
-			// Une fois sur dix un item apparait
 	
-	double itemProbability = 0.3;
+	// |||||||||||||||||||| VARIABLES DE CLASSES ||||||||||||||||||||
 	
-	
-	/* CES VARIABLES SONT POUR DEBUGGER */
-	//elles seront enlevé
-	double currentAngleTEST = 0;
-	double headRadiusTEST = 4;
-	//double angleVisionTEST = 2 * Math.PI / 3;
-	double turningSpeedTEST = 0.003;
-	boolean flyTEST = false;
-	double movingSpeedTEST = 0.1;
-	
-	/*
-	 * valeurs deduite de curveFever
-	 * headRadius = 4
-	 * board: 850 * 850
-	 * turningSpeed = 0.003 rad/ms
-	 * movingSpeed = 0.1 px/ms 
+	/**
+	 * C'est la Board du jeu, elle contient tout les éléments d'une manche.
+	 * 
+	 * @see Board
 	 */
+	Board board;
 	
+	/**
+	 * Cette variable donne la probabilité d'apparition d'une Item.
+	 */
+	double itemProbability;
 	
+	// |||||||||||||||||||| FONCTIONS DE CLASSES ||||||||||||||||||||
 	
+	/**
+	 * Constructeur de de la classe Rnd.
+	 * construit une Board avec son constructeur par défaut
+	 */
 	Rnd()
 	{
 		board = new Board();
+		this.itemProbability = 0.3;
 	}
-	
-	
-	// FONCTIONS QUI MANIPULENT BOARD
-	
+
+	// ---------- FONCTIONS QUI MANIPULENT BOARD ----------
+
 	@Override
 	public Board init(int width, int height, int[] profileIds)
 	{
@@ -69,24 +79,21 @@ public class Rnd implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
 	{
-		//on gère l'impact du temps ecoulé sur les snakes (au niveau des Itemes essentiellement)
-		
+		//on gère l'impact du temps ecoulé sur la board
 		boardTimeImpact(elapsedTime);
 		
-		//on gère le déplacement des snakes et les collisions
-		
-		int idP;
-		
+		//on fait bouger les snakes
+		int idProfil;
 		for (int i = 0; i < board.snakes.length; i++)
 		{
 			if(board.snakes[i].state)
 			{
-				idP = board.snakes[i].profileId;
-				snakeMove(i, elapsedTime, commands.get(idP));
+				idProfil = board.snakes[i].profileId;
+				snakeMove(i, elapsedTime, commands.get(idProfil));
 			}
-		
 		}
 		
+		//on gère la génération des items sur la board
 		if(new Random().nextDouble() <= itemProbability)	
 			generateItem();
 	}
@@ -95,51 +102,49 @@ public class Rnd implements PhysicsEngine {
 	public void forceUpdate(Board board) {
 		// TODO Auto-generated method stub
 		
+		//on ecrase les dimensions
 		this.board.height = board.height;
-		
 		this.board.width = board.width;
 		
+		//on ecrase les snakes
 		for(int i = 0; i < this.board.snakes.length; i++)
 			this.board.snakes[i] = board.snakes[i];
 		
-		
-		
+		//on ecrases les la snakesMap
 		this.board.snakesMap.clear();
-		
 		this.board.snakesMap.putAll(board.snakesMap);;
 		
+		//on ecrases les items
 		this.board.itemsMap.clear();
-		
 		this.board.itemsMap.putAll(board.itemsMap);
-		
 	}
 	
-
-	
-	
 	/**
-	 * Génère une item à une position aléatoire sur la board
+	 * Génère une item à une position aléatoire sur la board.
 	 * */
 	public void generateItem()
 	{
+		// on créé une nouvelle position aléatoire
+		int x = (int) (Math.random() * board.width); // Generer un x aléatoire
+		int y = (int) (Math.random() * board.height);// Generer un y aléatoire
+		Position p = new Position( x , y );	
 		
-				int wdt = (int) (Math.random() * board.width);	// Generer un x aléatoire
-				
-				int hgt = (int) (Math.random() * board.height);	// Generer un y aléatoire
-				
-				Position p = new Position( wdt , hgt );		// Créer une noubelle position
-				
-				int it = (int)(Math.random()*Item.values().length);				// Item.value est un tableau qui contient les differents items
-				
-				Item item = Item.values()[it];		// Generer un item aléatoire 																			
-				
-				board.itemsMap.put(p, item);			// Ajouter l'item à itemsMap
+		// on genère un item aléatoire 	
+		int it = (int)(Math.random()*Item.values().length);	
+		Item item = Item.values()[it]; 																		
 		
+		// On ajoute l'item
+		board.itemsMap.put(p, item); 
 	}
 	
-	
+	/**
+	 * Applique à la Board les effets du au temps. 
+	 * @param time
+	 *				le temps passé depuis le dernier appel de cette fonction
+	 */
 	public void boardTimeImpact(long time)
 	{
+		//on applique l'effet du temps sur chaque snakes
 		for (int i = 0; i < board.snakes.length; i++)
 		{
 			snakeTimeImpact(i, time);
@@ -147,13 +152,33 @@ public class Rnd implements PhysicsEngine {
 	}
 	
 	
-	// FONCTIONS QUI MANIPULENT SNAKE
+	// ---------- FONCTIONS QUI MANIPULENT SNAKE ----------
 	
 	/**
-	 *  Ce consctructeur initialise tout les attributs
+	 *  Ce constructeur initialise un snake en demendant tout les attributs qui le constituent.
+	 *  les attributs du snake entré en paramètre seront écrasés.
 	 *  
-	 *  @return Snake  avec les valeurs passées en paramètre
+	 * @param s				la reference du snake que l'on veux initialiser
+	 * @param playerId		l'id du snake (id local à la manche)
+	 * @param profileId 	l'id du joueur qui joue le snake (id global au jeu)
+	 * @param currentX 		abscisse de la tete du snake
+	 * @param currentY 		ordonnée de la tete du snake
+	 * @param currentAngle 	direction du snake (exprimé en rad)
+	 * @param headRadius 	rayon de la tete en pixel
+	 * @param movingSpeed 	vitesse du snake en px/ms
+	 * @param turningSpeed  vitesse de rotation du snake en rad/ms
+	 * @param state 		état du snake : True -> vivant, False -> mort
+	 * @param collision     True -> le snake est sensible au colisions, False -> il ne l'est pas
+	 * @param inversion 	True -> les commande sont inversé, False -> commandes normales
+	 * @param holeRate 		Probabilité de trouver des trous dans le tracé du corp du snake
+	 * @param fly 			False -> mode fly désactivé, True -> mode fly activé
+	 * @param currentScore  Score courant du snake (score locale à la manche)
+	 *  
+	 *  @see Snake
+	 *  
+	 *  @return Snake  		retourne un snake initialisé selon les paramètres
 	 */
+	
 	public Snake snakeCreator(
 			Snake s,
 			int playerId, int profileId, 
@@ -175,258 +200,208 @@ public class Rnd implements PhysicsEngine {
 		s.holeRate = holeRate;
 		s.fly = fly;
 		s.currentScore = currentScore;
-		
 		s.currentItems = new HashMap<Item, Long>();
 
 		return s;
 	}
 
 	/** 
-	 * constructeur simplifié : créé un snake de base en début de partie
+	 * Construit un snake de manière plus simple.
+	 * Seul les paramètres de positions et de déplacements son demandées.
+	 * Les autres paramètres sont dans l'état 'de base'
+	 * 
+	 * @param s 			la reference du snake que l'on veux initialiser
+	 * @param playerId 		l'id du snake (id local à la manche)
+	 * @param profileId 	l'id du joueur qui joue le snake (id global au jeu)
+	 * @param currentX 		abscisse de la tete du snake
+	 * @param currentY 		ordonnée de la tete du snake
+	 * @param currentAngle 	direction du snake (exprimé en rad)
+	 * 
+	 *  @return Snake  		retourne un snake initialisé selon les paramètres
+	 *  
+	 *  @see Snake
 	 */
 	public Snake snakeCreator(Snake s,int playerId, int profileId,int currentX, int currentY, double currentAngle)
 	{
+		/*
+		valeurs deduite de curveFever
+			headRadius = 4
+		 	board: 850 * 850
+		 	turningSpeed = 0.003 rad/ms
+		 	movingSpeed = 0.1 px/ms 
+		*/
 		
 		s.playerId = playerId;
 		s.profileId = profileId;
 		s.currentX = currentX;
 		s.currentY = currentY;
-		s.currentAngle = currentAngleTEST/*Math.random()*(2*Math.PI)*/;
-		s.headRadius = headRadiusTEST/*5*/;
-		s.movingSpeed = movingSpeedTEST;
-		s.turningSpeed = turningSpeedTEST;
+		s.currentAngle = 0;
+		s.headRadius = 1;
+		s.movingSpeed = 0.1;
+		s.turningSpeed = 0.003;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
 		s.holeRate = 0;
-		s.fly = flyTEST;
+		s.fly = false;
 		s.currentScore = 0;
-		
 		s.currentItems = new HashMap<Item, Long>();
 		
 		return s;
 	}
 	
 	/**
-	 * fonction qui bouge le snake selon la direction passée en paramètre
+	 * Bouge le snake dans la direction donné et en fonction d'un temps donné
+	 * 
+	 * @param id 			id du snake 
+	 * @param elapsedTime 	temps qui s'est passé depuis la derniere update
+	 * @param command 		la commande qu'il faut applique au snake : aller a droite, a gauche ou ne rien faire
+	 * 
 	 */
-	
 	public void snakeMove(int id, long elapsedTime, Direction command)
 	{
-		// PS** le cas d'inversion de commande est-ce que c'est à nous d'inverser les commandes ou plutôt IU  ??
 		// On fais tourner le snake
 		
+		//a gauche
 		if (command == Direction.LEFT ||
-								(command == Direction.RIGHT && board.snakes[id].inversion))
+		     (command == Direction.RIGHT && board.snakes[id].inversion))
+		{
 			board.snakes[id].currentAngle +=  board.snakes[id].turningSpeed*elapsedTime;
-
+		}
+		//a droite	
 		if (command == Direction.RIGHT ||
-								(command == Direction.LEFT && board.snakes[id].inversion))
+		     (command == Direction.LEFT && board.snakes[id].inversion))
+		{
 			board.snakes[id].currentAngle -=  board.snakes[id].turningSpeed*elapsedTime;
-		
+		}
+				
 		// On regarde si l'angle sors des limites du certcle trigo
 		
-		// On determine les coordonnée du pixels objectif et la distance qui le separe
-		
-		//on fixe la position initiale de la tete
+		// On stocke la positon de la tete avant de la déplacer
 		double tmpX = board.snakes[id].currentX;
-		
 		double tmpY = board.snakes[id].currentY;
-		//c'est egalement les coordonnée de la 'pointe du tracé'
 		
-		//on deplace la tete vers l'objectif
+		//on deplace la tete vers sa destination finale
 		board.snakes[id].currentX += (int) Math.round((Math.cos(board.snakes[id].currentAngle)*board.snakes[id].movingSpeed*elapsedTime));
-		
 		board.snakes[id].currentY += (int) Math.round((Math.sin(board.snakes[id].currentAngle)*board.snakes[id].movingSpeed*elapsedTime));
-		
-		
-		//la 'pointe du tracé' va chercher à rejoindre en ligne droite la tete du Snake
-		//en couvrant chaque pixel
-		
-	
-		// Appel à la fonction qui dessine le tracé du snake
+
+		// On dessine le corp du snake
 		snakeDrawBody(id, tmpX, tmpY);
 		
 	}
 	
 	/**
-	 * Fonction qui dessine le tracé du snake spécifié avec son id.
+	 * Dessine le corp du snake.
+	 * Précisément, dessine le corp du snake (en prenant en compte sa largeur)
+	 * en ligne droite entre son ancienne position et sa nouvelle position
+	 * son ancienne position étant passé en paramètre, sa nouvelle étant les attributs currentX et currentY
 	 * 
-	 * @param id du snake
+	 * @param id 	id du snake
 	 * @param headX la coordonnée en abscisse de la tête avant le déplacement.
 	 * @param headY la coordonnée en ordonnée de la tête avant le déplacement.
 	 * 
 	 * */
 	public void snakeDrawBody(int id, double headX, double headY)
-	{
-		// Remarque : 1 - il faut eviter de déssiner la tête du snake avant le déplacement dans la 1ere itération, 
-		// Comme elle sera dessiné dans la dernière MAJ on tombre dans une collision!! 
-		// le mieux est de la déssiner dans la dernière itération
-	
+	{	
+		// ----- CALCUL DE DISTANCES ------
+		
+		//distance entre l'ancienne et la nouvelle position en x et en y
+		double interX = board.snakes[id].currentX - headX;		
+		double interY = board.snakes[id].currentY - headY;
+		// distance entre l'ancienne et la nouvelle position (Th de Pythagore)				
+		double distance = Math.sqrt( Math.pow(interX, 2) + Math.pow(interY, 2)); 
+		// distance en x et en y effectué quand la tete se déplace de 1 pxl
+		double stepX = interX / distance;
+		double stepY = interY / distance;
+		
+		// ------ BOUCLE -----
+		
+		Collision vCollision; //cette variable prendra les valeurs des colisions
+		
+		// Je deplace la tête du snake vers le pixel suivant
+		//car l'on ne dessine jamais sur la position initiale 
+		//(pour éviter de redissiner la tete a l'identique, ce qui poserait des problèmes de colisions)
+		headX += stepX;
+		headY += stepY;
 				
-			//Position lastDrawnPosition = new Position(-1,-1);	
-			/* Objet qui stocke la dernière position dessinée
-			 Pour ne pas dessiner sur une case déjà dessinée dans l'iteration
-			 précedente */
+		//on avance sur la ligne droite a dessiner pixels par pixels		
+		for (int i = 0 ; i < (int) distance ; i++)
+		{
+				
+			// Créer l'objet Position avec les Coordonnées actuelles de la tête
+			Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
 			
-			double interX = board.snakes[id].currentX - headX;		
-				
-			double interY = board.snakes[id].currentY - headY;
-			// Determiner la distance entre la tête avant et après le déplacement				
-			double distance = Math.sqrt( Math.pow(interX, 2) + Math.pow(interY, 2)); 
-				
-			double stepX = interX / distance;
-				
-			double stepY = interY / distance;
-				
-			Collision vCollision;
-				
-
-				
-			// Je deplace la tête du snake vers le pixel suivant
-				
+			//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
+			board.snakes[id].currentX = po.x;
+			board.snakes[id].currentY = po.y;
+			
+			//on test si il y a une collision aux abort de la tete du snake
+			//si il y a une colision, ses effets seront automatiquement appliqués
+			vCollision = snakeHeadCollision(id);
+			
+			//AFFICHAGE DEBUG
+			if (vCollision != Collision.NONE)
+				System.out.println("collision du snake " + id + " : " + vCollision);
+		
+			//Si la colision n'est pas mortel, on dessine le corp du tracé
+			if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
+			{	
+				//if(new Random().nextDouble() >= board.snakes[id].holeRate)  
+				snakeDrawHead(id);
+			}
+			//si la colision est mortel, on dessine la tete et on quitte la boucle car le snake est deja mort
+			else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
+			{
+				snakeDrawHead(id);
+				break;
+			}
+		
+			//on incrémente la position de la tete pour la prochaine itération	
 			headX += stepX;
 			headY += stepY;
-				
-		
-				
-			// Tant que la pointe du tracé n'a pas rejoint la tete, on dessine le pixel et on incremente
-					
-						
-			for (int i = 0 ; i < (int) distance ; i++)
-			{
-					
-				// Créer l'objet Position avec les Coordonnées actuelles de la tête
-				Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
-				
-				/* DEBUT : VERSION QUI NE PREND PAS EN COMPTE LA LARGEUR DU TRACE
-				
-				// Si cette position n'est pas dessiné dans l'iteration précedente
-				if(!lastDrawnPosition.equals(po))				
-				{	
-						vCollision = checkCollision(po, id);	
-						// Appel à la fonction qui vérifie la collision
-					
-					if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
-					{	
-							
-						// Pour faire des trous dans le corps du snake
-						if(new Random().nextDouble() >= board.snakes[id].holeRate)  
-						{
-							board.snakesMap.put(po, id);			// Je déssine la position sur la map
-							
-							board.snakes[id].currentX = po.x;
-							
-							board.snakes[id].currentY = po.y;
-									
-							System.out.println(po.x+" "+po.y);
-						}
-							
-						lastDrawnPosition = po;			// Mettre à jour la position dessinée
-								
-						
-					}
-					else
-					{
-						if(vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
-						{					
-							break;
-						}
-					
-					}
-				}
-				
-				FIN : VERSION QUI NE PREND PAS EN COMPTE LA LARGEUR DU TRACE */
-				
-				
-				
-				/* DEBUT : VERSION QUI PREND EN CHARGE LA LARGEUR DU TRACE  */
-				
-				//on test si il y a une collision aux abort de la tete du snake
-				//si il y a une collision, ses effets seront automatiquement appliqués
-				vCollision = snakeHeadCollision(id);
-				
-				System.out.println(vCollision);
-				
-				//en fonction du type de colision, on decide de continuer ou non a dessiner le corps :
-				
-				//Si la colision n'est pas mortel, on dessine le corp du tracé
-				if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
-				{	
-					snakeDrawHead(id, po.x, po.y, (int) board.snakes[id].headRadius);
-				}
-				//si la colision est mortel, on ne dessine plus le tracé car le snake est deja mort
-				else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
-				{
-					break;
-				}
-				
-
-				/* FIN  : VERSION QUI PREND EN CHARGE LA LARGEUR DU TRACE */
-					
 			
-					headX += stepX;
-					headY += stepY;
-					
-					if(board.snakes[id].fly)
-					{
-					if (headX >= board.width)
-							headX = 0;
-
-					if (headY >= board.height)
-							headY = 0;
-
-					if (headX < 0)
-						headX = board.width-1;
-
-					
-					if (headY < 0)
-						headY = board.height-1;
-
-					}
-					
+			//on gere le cas ou le snake est en mode fly est se trouve aux limites du plateau
+			if(board.snakes[id].fly)
+			{
+				if (headX >= board.width)  headX = 0;
+		
+				if (headY >= board.height) headY = 0;
+		
+				if (headX < 0) headX = board.width-1;
+		
+				if (headY < 0) headY = board.height-1;
+			}		
 		}
-				
-	/*	board.snakes[id].currentX = lastDrawnPosition.x;
-		board.snakes[id].currentY = lastDrawnPosition.y;*/
-				
 		
-			/*
-		// Pour tester
-		System.out.println("currentX : "+ board.snakes[id].currentX +" - currentY :"+board.snakes[id].currentY);
-		
-		System.out.println("This snake still alive ? "+board.snakes[id].state);
-		*/
-		
-		
+		//System.out.println("This snake still alive ? "+board.snakes[id].state);
 	}
 	
 	/**
-	 * Fonction qui dessine la tete du snake dans la HashMap
+	 * Dessine la tete d'un snake dans la Board.
+	 * Ajoute les pixels qui constituent le disque centré sur (currentX, currentY) et de rayon headRadius
+	 * dans snakesMap
 	 * 
-	 * @param id c'est l'id du snake que l'on veux dessiner
+	 * @param id	c'est l'id du snake dont on veux dessiner la tête
 	 */
-	public void snakeDrawHead(int id, int centerX, int centerY, int radius)
+	public void snakeDrawHead(int id)
 	{
-		/*
+		//on determine les variables du disque
 		int centerX = board.snakes[id].currentX;
 		int centerY = board.snakes[id].currentY;
 		int radius = (int) board.snakes[id].headRadius ;
-		*/
 		
-		//on enumere les pixels du carre dans lequel le cercle s'inscrit
-		for (int x  = centerX - radius ; x <= centerX + radius; x++)
+		//pour dessiner le disque,
+		//on enumere les pixels du carre dans lequel le disque s'inscrit
+		for (int x = centerX - radius ; x <= centerX + radius; x++)
+		for (int y = centerY - radius ; y <= centerY + radius; y++)
 		{
-			for (int y = centerY - radius ; y <= centerY + radius; y++)
+			//on regarde si le pixel enuemre appartient au disque en fonction de sa distance au centre
+			if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
 			{
-				//on regarde si le pixel enuemre appartient au disque
-				//si sa distance au centre est <= au rayon
-				if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
-				{
-					
-					//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
-					board.snakesMap.put(new Position(x, y), id);
-				}
+				//si c'est le cas, on l'ajoute
+				board.snakesMap.put(new Position(x, y), id);
+				
+				//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
 			}
 		}
 	}
@@ -437,345 +412,269 @@ public class Rnd implements PhysicsEngine {
 	 * La colision est calculé sur un ensemble de pixels periphérique a la Head, dans son angle de déplacement
 	 * 
 	 * @param id
+	 * 
+	 * @return un objet de type Collision, correspondant au type de collision détecté (Collision.NULL sinon)
 	 */
 	public Collision snakeHeadCollision(int id)
 	{
+		//tabAngle contient les angles des pixels qui vont être testé
+		//cet ensemble d'angle sera toujours centré sur currentAngle
 		double[] tabAngle = new double[5];
-		int nbAngles;
-		Collision vCol;
+		int nbAngles; //le nombre d'angles testé
+		
+		//On choisi un nombre d'angles a tester croissant au rayon de la tete:
 		
 		if (board.snakes[id].headRadius == 1)
 		{
-			tabAngle[0] = board.snakes[id].currentAngle;
-			
 			nbAngles = 1;
-								
+			tabAngle[0] = board.snakes[id].currentAngle;								
 		}
 		
 		else if (board.snakes[id].headRadius < 5)
 		{
-			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 4;
-			tabAngle[1] = board.snakes[id].currentAngle;
-			tabAngle[2] = board.snakes[id]. currentAngle - Math.PI / 4;
-			
 			nbAngles = 3;
+			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 5;
+			tabAngle[1] = board.snakes[id].currentAngle;
+			tabAngle[2] = board.snakes[id]. currentAngle - Math.PI / 5;
 		}
 		else
 		{
-			/*
-			double[] tabAngle = {board.snakes[id].currentAngle + Math.PI / 8,
-					board.snakes[id].currentAngle + Math.PI / 4,
-					board.snakes[id].currentAngle,
-					board.snakes[id].currentAngle - Math.PI / 4,
-					board.snakes[id]. currentAngle - Math.PI / 8};*/
+			nbAngles = 5;
 			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 5;
 			tabAngle[1] = board.snakes[id].currentAngle + Math.PI / 8;
 			tabAngle[2] = board.snakes[id].currentAngle;
 			tabAngle[3] = board.snakes[id].currentAngle - Math.PI / 8;
-			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 5;
-			
-			nbAngles = 5;
-					
+			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 5;		
 		}
 		
-	
-		/*
+		//on enumere les angles, et l'on en déduit le pixel correspondant
+		//ce pixel se trouve a la périphérie de la tete
+
+		Collision vCol; //valeurs des colision énumeré
+		Position pos = new Position(-1,-1); //valeur des position énumré
 		
-		double headRadius = board.snakes[id].headRadius;
-		
-		//on calcule le perimetre de la tete (en pxl)
-		int perimetreHead = (int) Math.round(headRadius * Math.PI * 2);
-		//on calcule l'angle qu'il y a entre deux pixels adjacent du perimetre
-		double pasAngle = (2 * Math.PI) / perimetreHead;
-		//Notre pas sera le double de cette angle car on prendre 1 pixel sur 2 du perimetre
-		
-		//l'angleTest, c'est le 'champ de vision du snake', soit la largeur de la head sensible aux colisions
-		double angleTest = angleVisionTEST; // on prend un angle de 90° ici
-		
-		// nbAngle est le nombre d'angles que l'on va enumerer
-		int nbAngle = (int) Math.round(angleTest / (2 * Math.PI) * perimetreHead) + 1;
-		double[] tabAngle = new double[nbAngle]; // ce tableau stocke les angles
-		
-		//la variable angle va prendre successivement les valeur de nos angles
-		double angle = board.snakes[id].currentAngle - (angleTest / 2);
-		
-		
-		
-		for (int i = 0; i < nbAngle; i++)
-		{
-			tabAngle[i] = angle;
-			angle += pasAngle;
-			//System.out.println(180 * tabAngle[i] / Math.PI + "°");
-			//Angle en degré = 180 * (angle en radian) / pi 
-		}
-		*/
-		
-		//Maintenant que l'on a les angles a enumerer
-		//on en déduis pour chacun d'eux la coordonné de son pixel, perihérique a Head
-		
-		Position pos = new Position(-1,-1);
 		for (int i = 0; i < nbAngles; i++)
 		{
+			//on utilise sinus et cosinus
 			pos.x = (int) Math.round((double) board.snakes[id].currentX + Math.cos(tabAngle[i]) * board.snakes[id].headRadius);
 			pos.y = (int) Math.round((double) board.snakes[id].currentY + Math.sin(tabAngle[i]) * board.snakes[id].headRadius);
 			
 			//System.out.println(pos.x + " " + pos.y + " blue");
 			
+			//la colision est ici testé et ses effets son appliqué
 			vCol = checkCollision(pos, id);
 			
+			//si l'on viens de détécter une collision, on quitte la fonction : le snake est mort
 			if (vCol == Collision.BORDER || vCol == Collision.SNAKE)
 			{
 				return vCol;
 			}
-			
-			
 		}
 		
+		//si aucune colision mortel n'est detecté,
 		return Collision.NONE;
 
 	}
 	
-	/**Cette fonction detecte si la tete du snake rentre en collision avec des objets, soit avec un mur, un autre snake (ou son propre corps), 
-	 * Retourne Collision.BORDER s'il s'agit d'une collision avec le mur
-	 * Retourne Collision.SNAKE s'il y a une collision avec snake
-	 * Retourne Collision.ITEM s'il s'agit d'un d'une collision avec item
-	 * Retourne Collision.NONE pas de collision
+	/**
+	 * Cette fonction detecte un pixel est en collision avec un objet et applique a un snake l'effet de la colision
+	 * Soit avec un mur, un autre snake (ou son propre corps), ou avec un item.
+	 * La fonction test si le pixel appartient deja a un objet de la map ou sors de la board.
+	 * Retourne :
+	 * <ul>
+	 * 		<li> Collision.BORDER s'il s'agit d'une collision avec le mur </li>
+	 * 		<li> Collision.SNAKE s'il y a une collision avec snake </li>
+	 * 		<li> Collision.ITEM s'il s'agit d'un d'une collision avec item </li>
+	 * 		<li> Collision.NONE pas de collision </li>
+	 * </ul>
 	 * 
-	 * @param p la position où je vérifie si il y a une collision
-	 * @param id l'id du joueur
+	 * @param p 	la position où l'on vérifie si il y a une collision
+	 * @param id 	l'id du snake a qui l'on applique l'effet de la collision
+	 * 
 	 * @return Un type enumeré qui spécifie le type de la collision
 	 * */
-	
 	public Collision checkCollision(Position p, int id)
 	{
-		
-		if(p.x <= 0 || p.y <= 0 || p.x >= board.width-1 || p.y >= board.height-1) // Collision avec le mur
+		//on test les colision de type BORDER et SNAKE si le snake n'est pas en mode fly
+		if (board.snakes[id].fly == false)
 		{
-			if(board.snakes[id].fly == false)					// mode avion n'est pas activé
+			//si le pixel est hors des limites de l'ecran, il y a une colision avec le bord
+			if(p.x <= 0 || p.y <= 0 || p.x >= board.width-1 || p.y >= board.height-1) // Collision avec le mur
 			{
-				board.snakes[id].state = false;			// Je change l'état du snake (mort)
+				//dans ce cas, on tue le snake
+				board.snakes[id].state = false;
+				
 				return Collision.BORDER; 
 			}
-
-		}
-
-		if(board.snakesMap.containsKey(p) && board.snakes[id].fly == false)	 // Si il y a une collision et le mode avion n'est pas activé
-		{																		// Collision avec un autre snake
-			board.snakes[id].state = false;
-			return Collision.SNAKE;										
-		}
 			
-		if(board.itemsMap.containsKey(p))			// Collision avec un item
+			//si le pixel appartient au corpe d'un des snakes de la board
+			if(board.snakesMap.containsKey(p))	 
+			{	
+				//dans ce cas, on tue le snake
+				board.snakes[id].state = false;
+				
+				return Collision.SNAKE;										
+			}
+		}
+		
+		//si le pixel appartient au un item
+		if(board.itemsMap.containsKey(p))			
 		{
-				// Je rajoute l'item à la map des items de snake
-			board.snakes[id].currentItems.put(board.itemsMap.get(p), (long) board.itemsMap.get(p).duration);
-			
-			snakeAddItem(id, board.itemsMap.get(p));				// J'ajoute l'effect de l'item
+			// On rajoute l'item à la map des items de snake
+			snakeAddItem(id, board.itemsMap.get(p));
 			
 			return Collision.ITEM;
 		}
 		
-		return Collision.NONE;								// Pas de collision
+		//si aucune collsion n'a été détécté, on en retourne une de type NONE
+		return Collision.NONE;
 	}
 	
 	/**
-	 * 	Fonction qui ajoute l'effet de l'item du snake id
+	 * 	Ajoute l'item dans le currentItem d'un snake et applique son effet a ce snake
 	 * 
-	 * @param id est le paramètre du joueur
-	 * @param item c'est l'item qui se trouve dans la map des items du snake
+	 * @param id 	id du snake a qui l'on veux ajouter l'item
+	 * @param item 	item que l'on veux affecter au snake
 	 */
-
 	public void snakeAddItem(int id, Item item)
 	{
-		//ajout de l'item au map d'items
+		//ajout de l'item au map currentItem
+		board.snakes[id].currentItems.put(item, (long) item.duration);
 		
 		//ajout des effets correspondants
 		if(item == Item.USER_SPEED)
-		{
 			board.snakes[id].movingSpeed *= 1.5 ;
-		}
 		
 		if(item == Item.USER_SLOW)
-		{
 			board.snakes[id].movingSpeed /= 1.5;
-		}
 		
 		if(item == Item.USER_BIG_HOLE)
-		{
 			board.snakes[id].holeRate += 0.2;
-		}
 		
 		if(item == Item.OTHERS_SPEED)
-		{
 			for( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].movingSpeed *= 1.5;
-				}
 			}
-		}
 		
 		if(item == Item.OTHERS_THICK)
-		{
 			for( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].headRadius += 2;
-				}
 			}
-		}
 		
 		if(item == Item.OTHERS_SLOW)
-		{
 			for ( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].movingSpeed /= 1.5;
-				}
 			}
-		}
 			
 		if(item == Item.OTHERS_REVERSE)
-		{
 			for ( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].inversion = true;
-				}
 			}
-		}
 		
+		// Augmenter la probabilité d'apparition d'un item
 		if(item == Item.COLLECTIVE_THREE_CIRCLES)
-		{
-			// Augmenter la probabilité d'apparition d'un item
 			itemProbability *= 2;
-		}
 		
 		if(item == Item.COLLECTIVE_TRAVERSE_WALL)
-		{
 			board.snakes[id].fly = true;
-		}
 		
 		if(item == Item.COLLECTIVE_ERASER)
 		{
-			// J'efface tout les tracés de snakes (Enlever le tracé de la map)
+			// On efface tout les tracés de snakes (Enlever le tracé de la map)
 			board.snakesMap.clear();
 			
-			// Je mets la tete des snakes dans la map 
+			// On met la tete des snakes dans la map 
 			for(int i = 0; i < board.snakes.length; i++)
-			{
-			  board.snakesMap.put(new Position(board.snakes[i].currentX, board.snakes[i].currentY), board.snakes[i].playerId);
-			}
+				snakeDrawHead(i);
 		}	
 		
 	}
 	
+	/**
+	 * 	Supprime l'item dans le currentItem d'un snake et  supprime son effet sur ce snake
+	 * 
+	 * @param id 	id du snake a qui l'on veux ajouter l'item
+	 * @param item 	item que l'on veux affecter au snake
+	 */
 	public void snakeDeleteItem(int id, Item item)
 	{
-		//suppression de l'item dans la map
+		//suppression de l'item dans la map currentItem
+		board.snakes[id].currentItems.remove(item);
+		
 		//suppression de l'effet de l'item
 		if(item == Item.USER_SPEED)
-		{
 			board.snakes[id].movingSpeed /= 1.5 ;
-		}
-		
+
 		if(item == Item.USER_SLOW)
-		{
 			board.snakes[id].movingSpeed *= 1.5;
-		}
 		
 		if(item == Item.USER_BIG_HOLE)
-		{
 			board.snakes[id].holeRate -= 0.2;
-		}
 		
 		if(item == Item.OTHERS_SPEED)
-		{
 			for( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].movingSpeed /= 1.5;
-				}
 			}
-		}
 		
 		if(item == Item.OTHERS_THICK)
-		{
 			for( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].headRadius -= 2;
-				}
 			}
-		}
 		
 		if(item == Item.OTHERS_SLOW)
-		{
 			for ( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].movingSpeed *= 1.5;
-				}
 			}
-		}
 			
 		if(item == Item.OTHERS_REVERSE)
-		{
 			for ( int i = 0; i < board.snakes.length; i++)
 			{
 				if(i != id)
-				{
 					board.snakes[i].inversion = false;
-				}
 			}
-		}
 		
+		// rendre la probabilité d'apparition d'un item à sa valeur par défault
 		if(item == Item.COLLECTIVE_THREE_CIRCLES)
-		{
-			// rendre la probabilité d'apparition d'un item à sa valeur par défault
 			itemProbability /= 2;
-		}
 		
 		if(item == Item.COLLECTIVE_TRAVERSE_WALL)
-		{
 			board.snakes[id].fly = false;
-		}
 		
-		if(item == Item.COLLECTIVE_ERASER)
-		{
-			// J'efface tout les tracés de snakes (Enlever le tracé de la map)
-			board.snakesMap.clear();
-			// Je mets la tete des snakes dans la map 
-			for(int i = 0; i < board.snakes.length; i++)
-			{
-				board.snakesMap.put(new Position(board.snakes[i].currentX, board.snakes[i].currentY), board.snakes[i].playerId);
-			}
-		}
-
+		//Item.COLLECTIVE_ERASER -> Pas d'effets a la fin de cette item
 	}
 	
 	
+	/**
+	 * Applique à un snake les effets du au temps. 
+	 * @param id 	l'id du snake
+	 * @param time	le temps passé depuis le dernier appel de cette fonction
+	 */
 	public void snakeTimeImpact(int id, long time)
 	{
 
-		
-		for (Map.Entry<Item, Long> item : board.snakes[id].currentItems.entrySet())	// je parcours la map des items du joueur id
+		// Pour chaque items
+		for (Map.Entry<Item, Long> item : board.snakes[id].currentItems.entrySet())	
 		{
-			board.snakes[id].currentItems.put(item.getKey(), item.getValue() - time);		// Je decrémente le temps écoulé depuis la dernière mise à jour
+			// Je decrémente le temps écoulé depuis la dernière mise à jour
+			board.snakes[id].currentItems.put(item.getKey(), item.getValue() - time);
 			
-			if(item.getValue() <= 0)		// Si la valeur est inferieure ou égale à 0
-			{
-				snakeDeleteItem(id, item.getKey());			// J'enlève les effects des items
-				board.snakes[id].currentItems.remove(item.getKey());		// Et je supprime l'item obselète de la map
-			}
-
+			// Si le temps d'action est inferieure ou égale à 0, on enlève les effects de l'item
+			if(item.getValue() <= 0) 
+				snakeDeleteItem(id, item.getKey()); 
 		}
 	}
 
