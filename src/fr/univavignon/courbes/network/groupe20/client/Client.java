@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
 public class Client implements ClientCommunication {
@@ -21,7 +24,8 @@ public class Client implements ClientCommunication {
 	 List<ProfileReponse> addProfil = new CopyOnWriteArrayList<ProfileReponse>();
 	 Integer point = null;
 	 Board board = null;
-	
+	 ErrorHandler errorHandler; 
+	 ClientProfileHandler profileHandler;
 	@Override
 	public String getIp() {
 		return ip;
@@ -37,6 +41,16 @@ public class Client implements ClientCommunication {
 	@Override
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
+	
+	@Override
+	public void setProfileHandler(ClientProfileHandler profileHandler) {
+		this.profileHandler = profileHandler;
 	}
 	@Override
 	public void launchClient() {
@@ -135,20 +149,7 @@ public class Client implements ClientCommunication {
 		    dos.flush();
 		    
 		} catch (IOException e) {e.printStackTrace();}
-		
-		
-	}
-	
-		public static void main(String[] args) throws InterruptedException {
-			final Client c = new Client();
-			c.setIp("localhost");
-			c.setPort(1117);
-			c.launchClient();
-			Map< Integer, Direction> map = new HashMap<Integer, Direction>();
-			map.put(1, Direction.RIGHT);
-			while(true)
-				c.sendCommands(map);
-		}
-	}
+	}		
+}
 
 

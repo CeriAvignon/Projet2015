@@ -18,7 +18,6 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
 import fr.univavignon.courbes.network.groupe20.client.Client;
-import fr.univavignon.courbes.network.groupe20.interTest.ServerProfileHandlerr;
 /**
  * Cette classe  permet de traiter les requettes (coté serveur) envoyer par le client entrer en paramétre.Et aprés le 
  * traitement il enregistre chaque objet reçu dans sa propre place
@@ -35,7 +34,6 @@ public class ServiceClient {
 	 */
 	List<ProfileAction> tabProfile = new CopyOnWriteArrayList<ProfileAction>();
 	
-	ServerProfileHandlerr sHandler = new ServerProfileHandlerr();
 	/**
 	 * Lors de l'instance de la classe ServiceClient : 
 	 * </br> 
@@ -102,7 +100,7 @@ public class ServiceClient {
 							Object obj = ois.readObject();
 								Profile p = (Profile)obj;
 								if(pA.getAction() == 1){
-									boolean actionAccept = sHandler.fetchProfile(p);
+									boolean actionAccept = s.profileHandler.fetchProfile(p);
 									if(actionAccept == true){	
 										s.profileClients.add(p);
 										ProfileReponse pR = new ProfileReponse();

@@ -6,6 +6,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -48,13 +50,37 @@ public interface ServerCommunication
 
 	/**
      * Modifie le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients. Cette valeur est à modifier avant d'utiliser 
-     * {@link #launchServer}.
+     * de la part des clients. 
+     * <br/>
+     * Cette valeur est à modifier avant d'utiliser {@link #launchServer}.
      * 
      * @param port
      * 		Le nouveau port du serveur.
      */
 	public void setPort(int port);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
+	public void setErrorHandler(ErrorHandler errorHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
+     */
+	public void setProfileHandler(ServerProfileHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.

@@ -18,6 +18,8 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.ServerCommunication;
 
 public class Server implements ServerCommunication {
@@ -55,6 +57,7 @@ public class Server implements ServerCommunication {
 	 * List qui contient les playerId des joueurs qui jouent dans une partie.
 	 */
 	List<Integer> player = new CopyOnWriteArrayList<Integer>();
+	
 	/**
      * Renvoie l'adresse IP de ce serveur, que les clients doivent
      * utiliser pour se connecter à lui.
@@ -63,7 +66,8 @@ public class Server implements ServerCommunication {
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
      * 	 	En cas d'erreur,elle renvoit null.
      */
-	
+	ErrorHandler errorHandler;
+	ServerProfileHandler profileHandler;
 	@Override
 	public String getIp() {
 		try {
@@ -95,7 +99,16 @@ public class Server implements ServerCommunication {
 	
 	@Override
 	public void setPort(int port) {this.port = port;}
+	
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
 
+	@Override
+	public void setProfileHandler(ServerProfileHandler profileHandler) {
+		this.profileHandler = profileHandler;
+	}
 	/**
      * Permet de lancer un serveur pour que les clients puissent s'y connecter.
      * <br/>
@@ -243,29 +256,4 @@ public class Server implements ServerCommunication {
 			} catch (IOException e) {e.printStackTrace();}
 		}
 	}
-	
-	public static void main(String[] args) throws InterruptedException {
-		Server s = new Server();
-		s.launchServer();
-		s.setPort(1117);
-		
-		Snake sN = new Snake();
-		sN.playerId = 1;
-		Snake [] sss = {sN};
-		
-		Board b = new Board();
-		b.snakes = sss;
-		s.sendBoard(b);
-		while (true) {
-			Map<Integer, Direction> map = s.retrieveCommands();
-			for(Iterator i=map.keySet().iterator();i.hasNext();){
-	            Object key=i.next();
-	           // System.out.println(key + "=" + map.get(key));
-	            if(map.get(key).equals(Direction.RIGHT) || map.get(key).equals(Direction.LEFT)){
-	            	System.out.println(key + "=" + map.get(key));
-	            }
-			}
-		}
-	}
-
 }

@@ -13,10 +13,9 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
-import fr.univavignon.courbes.network.groupe20.interTest.ClientProfileHandlerr;
 public class ServiceServer {
 	List<byte[]> tabByte = new CopyOnWriteArrayList<byte[]>();
-	ClientProfileHandlerr cHandler = new ClientProfileHandlerr();
+
 	
 	public ServiceServer(final Client c){
 		new Thread(new Runnable() {
@@ -57,7 +56,7 @@ public class ServiceServer {
 						    		c.addProfil.add(p);
 						    }else if(obj instanceof ArrayList){
 						    	List<Profile> profile = (List<Profile>) obj;
-						    	cHandler.updateProfiles(profile);
+						    	c.profileHandler.updateProfiles(profile);
 						    }else if(obj instanceof Integer){
 						    	c.point = (Integer) obj;
 						    }
@@ -77,5 +76,4 @@ public class ServiceServer {
 			}
 		}).start();
 	}
-	
 }

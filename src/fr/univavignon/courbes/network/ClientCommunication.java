@@ -5,6 +5,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté client
@@ -36,6 +38,7 @@ public interface ClientCommunication
 
 	/**
      * Modifie l'adresse IP du serveur auquel le client va se connecter.
+     * <br/>
      * Cette valeur est à modifier avant d'utiliser {@link #launchClient}.
      *
      * @param ip
@@ -54,12 +57,36 @@ public interface ClientCommunication
 
 	/**
      * Modifie le port du serveur auquel le client va se connecter.
+     * <br/>
      * Cette valeur est à modifier avant d'utiliser {@link #launchClient}.
      * 
      * @param port
      * 		Le nouveau port du serveur.
      */
 	public void setPort(int port);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution. 
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
+	public void setErrorHandler(ErrorHandler errorHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie. 
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
+     */
+	public void setProfileHandler(ClientProfileHandler profileHandler);
 
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
