@@ -61,7 +61,7 @@ public class MainTest {
 			}
 		}
 		
-		if(false) { // TEST ITEM COLLISION
+		if(true) { // TEST ITEM COLLISION
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
@@ -78,7 +78,7 @@ public class MainTest {
 			}
 		}
 		
-		if(true) { // TEST BORDURE COLLISION
+		if(false) { // TEST BORDURE COLLISION
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
