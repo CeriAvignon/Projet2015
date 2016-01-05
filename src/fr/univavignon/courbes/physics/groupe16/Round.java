@@ -435,6 +435,7 @@ public class Round implements PhysicsEngine {
 					 || moveCount.get(snake.playerId) > holeTick.get(snake.playerId) +10) {
 						board.snakesMap.put(pos , snake.playerId);
 						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
+						snakeEncounterItem(snake);
 					}
 					else {
 						System.out.println("Snake " + snake.playerId + " hole");
@@ -442,7 +443,6 @@ public class Round implements PhysicsEngine {
 					snakeEncounterBounds(snake);
 					if(invincibleTime <= 0)
 						snakeEncounterSnake(snake);
-					snakeEncounterItem(snake);
 					fillSnakeHead(snake);
 				 	if(moveCount.get(snake.playerId) == 100) {
 						refreshSnakeHoleTick(snake);
