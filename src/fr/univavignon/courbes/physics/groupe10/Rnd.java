@@ -79,6 +79,7 @@ public class Rnd implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
 	{
+		System.out.println("deb update");
 		//on gère l'impact du temps ecoulé sur la board
 		boardTimeImpact(elapsedTime);
 		
@@ -96,6 +97,8 @@ public class Rnd implements PhysicsEngine {
 		//on gère la génération des items sur la board
 		if(new Random().nextDouble() <= itemProbability)	
 			generateItem();
+		
+		System.out.println("fin update");
 	}
 	
 	@Override
@@ -236,7 +239,7 @@ public class Rnd implements PhysicsEngine {
 		s.currentX = currentX;
 		s.currentY = currentY;
 		s.currentAngle = 0;
-		s.headRadius = 1;
+		s.headRadius = 5;
 		s.movingSpeed = 0.1;
 		s.turningSpeed = 0.003;
 		s.state = true;
@@ -311,12 +314,19 @@ public class Rnd implements PhysicsEngine {
 		// distance entre l'ancienne et la nouvelle position (Th de Pythagore)				
 		double distance = Math.sqrt( Math.pow(interX, 2) + Math.pow(interY, 2)); 
 		// distance en x et en y effectué quand la tete se déplace de 1 pxl
-		double stepX = interX / distance;
-		double stepY = interY / distance;
+		double stepX = (interX / distance);
+		double stepY =(interY / distance);
 		
 		// ------ BOUCLE -----
 		
 		Collision vCollision; //cette variable prendra les valeurs des colisions
+		
+		//on stocke aussi le pixel de la derniere colision
+		//que l'on initialise a une valeur spéciale pour que lors de la première itération,
+		//la condition s'execute toujours
+		double lastPixelX = -10;
+		double lastPixelY = -10;
+		
 		
 		// Je deplace la tête du snake vers le pixel suivant
 		//car l'on ne dessine jamais sur la position initiale 
@@ -327,35 +337,40 @@ public class Rnd implements PhysicsEngine {
 		//on avance sur la ligne droite a dessiner pixels par pixels		
 		for (int i = 0 ; i < (int) distance ; i++)
 		{
-				
-			// Créer l'objet Position avec les Coordonnées actuelles de la tête
-			Position po = new Position((int) Math.round(headX) , (int) Math.round(headY));
-			
-			//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
-			board.snakes[id].currentX = po.x;
-			board.snakes[id].currentY = po.y;
-			
-			//on test si il y a une collision aux abort de la tete du snake
-			//si il y a une colision, ses effets seront automatiquement appliqués
-			vCollision = snakeHeadCollision(id);
-			
-			//AFFICHAGE DEBUG
-			if (vCollision != Collision.NONE)
-				System.out.println("collision du snake " + id + " : " + vCollision);
-		
-			//Si la colision n'est pas mortel, on dessine le corp du tracé
-			if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
-			{	
-				//if(new Random().nextDouble() >= board.snakes[id].holeRate)  
-				snakeDrawHead(id);
-			}
-			//si la colision est mortel, on dessine la tete et on quitte la boucle car le snake est deja mort
-			else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
+			//Avant de dessiner la nouvelle tete, on test si elle a une distance d'au moin 2 pixels
+			//avec la précédente (si la tete est au même endroit ou a 1 pixel de distance, cela créé des problèmes de collisions)
+			if ( Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2)) >= 2)
 			{
-				snakeDrawHead(id);
-				break;
+				//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
+				board.snakes[id].currentX = (int) Math.round(headX);
+				board.snakes[id].currentY = (int) Math.round(headY);
+				
+				System.out.println(headX + ", " + headY);
+				
+				//on test si il y a une collision aux abort de la tete du snake
+				//si il y a une colision, ses effets seront automatiquement appliqués
+				vCollision = snakeHeadCollision(id);
+				
+				//AFFICHAGE DEBUG
+				if (vCollision != Collision.NONE)
+					System.out.println("collision du snake " + id + " : " + vCollision);
+			
+				//Si la colision n'est pas mortel, on dessine le corp du tracé
+				if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
+				{	
+					//if(new Random().nextDouble() >= board.snakes[id].holeRate)  
+					snakeDrawHead(id);
+				}
+				//si la colision est mortel, on dessine la tete et on quitte la boucle car le snake est deja mort
+				else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
+				{
+					snakeDrawHead(id);
+					break;
+				}
+				//on sauvegarde la position de la tete avant de la changer
+				lastPixelX = headX;
+				lastPixelY = headY;
 			}
-		
 			//on incrémente la position de la tete pour la prochaine itération	
 			headX += stepX;
 			headY += stepY;
@@ -385,23 +400,24 @@ public class Rnd implements PhysicsEngine {
 	 */
 	public void snakeDrawHead(int id)
 	{
-		//on determine les variables du disque
+		
 		int centerX = board.snakes[id].currentX;
 		int centerY = board.snakes[id].currentY;
 		int radius = (int) board.snakes[id].headRadius ;
 		
-		//pour dessiner le disque,
-		//on enumere les pixels du carre dans lequel le disque s'inscrit
-		for (int x = centerX - radius ; x <= centerX + radius; x++)
-		for (int y = centerY - radius ; y <= centerY + radius; y++)
+		//on enumere les pixels du carre dans lequel le cercle s'inscrit
+		for (int x  = centerX - radius ; x <= centerX + radius; x++)
 		{
-			//on regarde si le pixel enuemre appartient au disque en fonction de sa distance au centre
-			if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
+			for (int y = centerY - radius ; y <= centerY + radius; y++)
 			{
-				//si c'est le cas, on l'ajoute
-				board.snakesMap.put(new Position(x, y), id);
-				
-				//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
+				//on regarde si le pixel enuemre appartient au disque
+				//si sa distance au centre est <= au rayon
+				if (Math.sqrt( Math.pow( x-centerX ,2) + Math.pow( y-centerY, 2) ) <= radius )
+				{
+					
+					//System.out.println( (int) Math.round(x) + " " + (int) Math.round(y) + " green");
+					board.snakesMap.put(new Position(x, y), id);
+				}
 			}
 		}
 	}
@@ -440,11 +456,11 @@ public class Rnd implements PhysicsEngine {
 		else
 		{
 			nbAngles = 5;
-			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 5;
+			tabAngle[0] = board.snakes[id].currentAngle + Math.PI / 7;
 			tabAngle[1] = board.snakes[id].currentAngle + Math.PI / 8;
 			tabAngle[2] = board.snakes[id].currentAngle;
 			tabAngle[3] = board.snakes[id].currentAngle - Math.PI / 8;
-			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 5;		
+			tabAngle[4] = board.snakes[id].currentAngle - Math.PI / 7;		
 		}
 		
 		//on enumere les angles, et l'on en déduit le pixel correspondant
