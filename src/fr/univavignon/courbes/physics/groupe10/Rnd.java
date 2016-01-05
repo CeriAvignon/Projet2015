@@ -79,7 +79,6 @@ public class Rnd implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
 	{
-		System.out.println("deb update");
 		//on gère l'impact du temps ecoulé sur la board
 		boardTimeImpact(elapsedTime);
 		
@@ -97,8 +96,6 @@ public class Rnd implements PhysicsEngine {
 		//on gère la génération des items sur la board
 		if(new Random().nextDouble() <= itemProbability)	
 			generateItem();
-		
-		System.out.println("fin update");
 	}
 	
 	@Override
@@ -239,7 +236,7 @@ public class Rnd implements PhysicsEngine {
 		s.currentX = currentX;
 		s.currentY = currentY;
 		s.currentAngle = 0;
-		s.headRadius = 5;
+		s.headRadius = 4;
 		s.movingSpeed = 0.1;
 		s.turningSpeed = 0.003;
 		s.state = true;
@@ -341,11 +338,10 @@ public class Rnd implements PhysicsEngine {
 			//avec la précédente (si la tete est au même endroit ou a 1 pixel de distance, cela créé des problèmes de collisions)
 			if ( Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2)) >= 2)
 			{
+				System.out.println(Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2)));
 				//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
 				board.snakes[id].currentX = (int) Math.round(headX);
 				board.snakes[id].currentY = (int) Math.round(headY);
-				
-				System.out.println(headX + ", " + headY);
 				
 				//on test si il y a une collision aux abort de la tete du snake
 				//si il y a une colision, ses effets seront automatiquement appliqués
