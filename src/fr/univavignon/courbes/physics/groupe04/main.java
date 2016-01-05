@@ -41,7 +41,6 @@ public class main {
 
 			
 		}
-		
 		//System.out.println("Angle en degré : "+a.ourBoard.snakes[0].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[1].currentAngle+"\nAngle en degré : "+a.ourBoard.snakes[2].currentAngle);
 	}
 	

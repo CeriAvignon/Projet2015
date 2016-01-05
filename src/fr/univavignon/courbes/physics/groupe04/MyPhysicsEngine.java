@@ -85,8 +85,8 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= 2;  					// 2px ?
-		snake.movingSpeed   = 1;					// 1px / ms ?
+		snake.headRadius 	= 4;  					// 4px 
+		snake.movingSpeed   = 0.1;					// 1px / ms ?
 		snake.turningSpeed  = 0.008; 				// ?
 		snake.state 		= true;
 		snake.collision 	= true;
@@ -112,6 +112,28 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	}
 	
 	
+	public void itemSpawn(int width, int height){
+		Random r = new Random();
+		// Création position avec deux paramétres aléatoires et avec une marge de 20px pour éviter de spawn sur les bords
+		Position pos = new Position((r.nextInt((width-20)-20)+ 20), (r.nextInt((height-20)-20)+ 20));	
+		Item p = Item.values()[(int) (Math.random() * Item.values().length)];
+		sizeItemsPixels(p,pos);   // rempli le hashMap item
+	}
+	
+	public void sizeItemsPixels(Item item, Position posi) { 
+		Position pos = new Position(0,0);
+		// faire un carré, puis récupérer les valeurs qui se trouve dans un cercle de centre snake et de diametre headRadius
+		for(int i = posi.x - 20; i < posi.x + 20 ; i++) {    // Soit 20 la taille de l'item
+			for(int j = posi.y - 20; j < posi.y + 20; j++) {
+				if(Math.sqrt(Math.pow(i - posi.x, 2) + Math.pow(j - posi.y, 2)) < 20) {
+					pos.x = i;
+					pos.y = j;
+					ourBoard.itemsMap.put(pos, item);
+				}
+			}
+		}
+
+	}
 	
 	
 	/**				PAS TERMINÉ
@@ -127,13 +149,16 @@ public class MyPhysicsEngine implements PhysicsEngine{
 		updateSnakesDirections(elapsedTime, commands);
 		// update coordonnées des snakes par rapport au temps
 		updateSnakesPositions(elapsedTime);
-
+		
+		if(itemRate == 1){
+			itemSpawn(ourBoard.width,ourBoard.height);
+		}
+		else{
+			itemRate+=0.01;		// a choisir
+		}
 		
 		// TODO : Quoi d'autre a mettre a jour ? 
-		// TODO : CREATION ITEM par rapport a un itemRate (déja créé dans Init)
 		// TODO : UPDATE ITEM pour savoir QUAND rajouter un item
-		// TODO : remplir hashmap snakes avec la TAILLE du snake
-		// TODO : remplir hashmap item avec la taille des items ( 15 px ?)
 	}
 
 	
@@ -156,6 +181,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 					alterableTime--;
 					pixel += ourBoard.snakes[i].movingSpeed;
 				}
+				
 				/*  NOUS PERMET DE RECUPERER LA POSITION PRECEDENTE POUR GERER LA COLLISION*/
 				prec.x = ourBoard.snakes[i].currentX;
 				prec.y = ourBoard.snakes[i].currentY;
@@ -265,7 +291,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	 */
 	public void outOfBounds(Snake snake) {
 		// Si on sort du cadre
-		if(snake.currentX < 0 || snake.currentX > ourBoard.width || snake.currentY < 0|| snake.currentY > ourBoard.height) {
+		if(snake.currentX < 1 || snake.currentX > ourBoard.width-1 || snake.currentY < 1|| snake.currentY > ourBoard.height-1) {
 			if (!snake.fly) { // S'il ne peut pas traverser les murs 
 				snake.state = false; 
 				System.out.println(snake.playerId + " dead because of bounds!");
@@ -288,6 +314,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 	
 	/**				VALIDÉ
 	 * @param snake Snake testé
+	 * @param prec Position du snake précedent
 	 */
 	public void snakeVsSnake(Snake snake, Position prec) {
 
@@ -434,7 +461,7 @@ public class MyPhysicsEngine implements PhysicsEngine{
 			case COLLECTIVE_THREE_CIRCLES:
 				for(int i = 0 ; i<3;i++)
 				{
-					// TODO  : GENEREATE RANDOM ITEM
+					itemSpawn(ourBoard.width,ourBoard.height);
 				}
 				break;
 			case COLLECTIVE_TRAVERSE_WALL:
