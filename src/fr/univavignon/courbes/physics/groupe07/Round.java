@@ -19,11 +19,13 @@ public class Round implements PhysicsEngine
 	
 	private double ratioItem = 0; // permet de gérer le flux de spawn d'objet, si 0 pas de spawn d'objet, si 1, spawn d'objet
 	
-	public double getRatioItem() {
+	public double getRatioItem()
+	{
 		return ratioItem;
 	}
 
-	public void setRatioItem(double ratioItem) {
+	public void setRatioItem(double ratioItem)
+	{
 		this.ratioItem = ratioItem;
 	}
 	
@@ -40,34 +42,6 @@ public class Round implements PhysicsEngine
 	public Round(int width, int height, int[] profileIds)
 	{
 		ourBoard = init(width,height,profileIds);
-	}
-	
-	
-	
-	/**	
-	 * Cette méthode correspond au constructeur de Snake.
-	 * <br/>
-	 * Les valeurs sont pour le moment fixées arbitrairement.
-	 */
-	
-	public Snake init(Snake snake, int id, Position spawnPosition)
-	{
-		snake.playerId = id;
-		snake.currentX = spawnPosition.x;
-		snake.currentY = spawnPosition.y;
-		snake.currentAngle = (int)(Math.random() * 359);
-		snake.headRadius = 2;
-		snake.movingSpeed = 0.25;
-		snake.turningSpeed = 0.01;
-		snake.state = true;
-		snake.collision = true;
-		snake.inversion = false;
-		snake.holeRate = 0.05;
-		snake.fly = false;
-		snake.currentItems = new HashMap<Item, Long>() ;
-		snake.currentScore = 0;		// à enlever pour l'IU ?
-		
-		return snake;
 	}
 	
 	
@@ -104,6 +78,34 @@ public class Round implements PhysicsEngine
 	
 	
 	
+	/**	
+	 * Cette méthode correspond au constructeur de Snake.
+	 * <br/>
+	 * Les valeurs sont pour le moment fixées arbitrairement.
+	 */
+
+	public Snake init(Snake snake, int id, Position spawnPosition)
+	{
+		snake.playerId = id;
+		snake.currentX = spawnPosition.x;
+		snake.currentY = spawnPosition.y;
+		snake.currentAngle = (int)(Math.random() * 359);
+		snake.headRadius = 2;
+		snake.movingSpeed = 0.25;
+		snake.turningSpeed = 0.01;
+		snake.state = true;
+		snake.collision = true;
+		snake.inversion = false;
+		snake.holeRate = 0.05;
+		snake.fly = false;
+		snake.currentItems = new HashMap<Item, Long>() ;
+		snake.currentScore = 0;		// à enlever pour l'IU ?
+		
+		return snake;
+	}
+	
+	
+	
 	/**
 	 * Cette méthode retourne une position aléatoire où un snake va spawn.
 	 * <br/>
@@ -114,7 +116,7 @@ public class Round implements PhysicsEngine
 	{
 		
 		Random snake = new Random();
-		Position pos = new Position((snake.nextInt((width-20)-20)+ 20), (snake.nextInt((height-20)-20)+ 20));
+		Position pos = new Position((snake.nextInt((width-100)-100)+ 100), (snake.nextInt((height-100)-100)+ 100));
 		return pos;
 	}
 	
@@ -126,14 +128,12 @@ public class Round implements PhysicsEngine
 	
 	public void itemSpawnPos()
 	{
-		
 		int width = (int) (Math.random() * ourBoard.width);
 		int height = (int) (Math.random() * ourBoard.height);
 		Position posNewItem = new Position(width,height);
 		int nbItems = (int)(Math.random()*Item.values().length);
 		Item newItem = Item.values()[nbItems];																			
 		ourBoard.itemsMap.put(posNewItem,newItem);
-
 	}
 	
 	
@@ -142,7 +142,8 @@ public class Round implements PhysicsEngine
 	 * Cette méthode affecte un item à un ou plusieurs snakes.
 	 */
 	
-	public void addItemToSnake(int id, Item item) {
+	public void addItemToSnake(int id, Item item)
+	{
 		switch(item)
 		{
 			case USER_SPEED:
@@ -197,7 +198,7 @@ public class Round implements PhysicsEngine
 				}
 				break;
 			case COLLECTIVE_THREE_CIRCLES:
-					itemRate *= 3;
+				itemRate *= 3;
 				break;
 			case COLLECTIVE_TRAVERSE_WALL:
 				for(Snake snake : ourBoard.snakes)
@@ -267,7 +268,7 @@ public class Round implements PhysicsEngine
 
 	
 	/**
-	 * Cette méthode effectue la mise à jour
+	 * Cette méthode effectue la mise à jour des snakes et des items.
 	 */
 	
 	public void update(long elapsedTime, Map<Integer, Direction> commands)
@@ -411,18 +412,18 @@ public class Round implements PhysicsEngine
 	public void fillSnakeHead(Snake snake)
 	{
 		int id  = snake.playerId;
-		int xS  = snake.currentX;
-		int yS  = snake.currentY;
-		int rad = (int) snake.headRadius;
+		int xSnake  = snake.currentX;
+		int ySnake  = snake.currentY;
+		int rayonHeadSnake = (int) snake.headRadius;
 		Position pos = new Position(0,0);
 
 		// On met la tête dans un carré et on ajoute chaque coordonnée dans 
 		// la map si racine_carre((x_point - x_centre)² + (y_centre - y_point)²) < rayonHead
-		for(int i = xS - rad; i < xS + rad ; i++)
+		for(int i = xSnake - rayonHeadSnake; i < xSnake + rayonHeadSnake ; i++)
 		{
-			for(int j = yS - rad; j < yS + rad ; j++)
+			for(int j = ySnake - rayonHeadSnake; j < ySnake + rayonHeadSnake ; j++)
 			{
-				if(Math.sqrt(Math.pow(i - xS, 2) + Math.pow(j - yS, 2)) < rad)
+				if(Math.sqrt(Math.pow(i - xSnake, 2) + Math.pow(j - ySnake, 2)) < rayonHeadSnake)
 				{
 					pos.x = i;
 					pos.y = j;
@@ -470,28 +471,23 @@ public class Round implements PhysicsEngine
 	
 	public void deathVsSnake(Snake snake)
 	{
-
-		Position pos = new Position(snake.currentX,snake.currentY);
+		int hitBox[][] = new int[3][2];
+		hitBox[0][0] = snake.currentX + (int) ((snake.headRadius+1) * Math.cos(Math.toRadians(snake.currentAngle)));
+		hitBox[0][1] = snake.currentY - (int) ((snake.headRadius+1) * Math.sin(Math.toRadians(snake.currentAngle)));
+		hitBox[1][0] = snake.currentX + (int) ((snake.headRadius+2) * Math.cos(Math.toRadians(snake.currentAngle + 90)));
+		hitBox[1][1] = snake.currentY - (int) ((snake.headRadius+2) * Math.sin(Math.toRadians(snake.currentAngle + 90)));
+		hitBox[2][0] = snake.currentX + (int) ((snake.headRadius+2) * Math.cos(Math.toRadians(snake.currentAngle - 90)));
+		hitBox[2][1] = snake.currentY - (int) ((snake.headRadius+2) * Math.sin(Math.toRadians(snake.currentAngle - 90)));
 		
-		try
+		for(int i = 0; i < 3; i++)
 		{
-			Integer snakesPos = ourBoard.snakesMap.get(pos);	// trainées des autres snakes
-			
-			if(snakesPos == null)		// test si un snake a touché une trainée
+			Position posCollision = new Position(hitBox[i][0],hitBox[i][1]);
+			Integer opponent = ourBoard.snakesMap.get(posCollision);
+			if(opponent != null)
 			{
-				ourBoard.snakesMap.put(pos,snake.playerId);  
+				snake.state = false;	
+				System.out.println("Snake " + snake.playerId + " est mort");
 			}
-			else
-			{
-		        if (snakesPos != snake.playerId && snake.collision == true)
-		        {
-			        snake.state = false;
-			        System.out.println("Snake " + snake.playerId + " est mort\nX="+pos.x+"   Y="+pos.y);
-		        }
-			}
-		}catch(NullPointerException e)
-		{
-			System.out.println("Impossible d'obtenir la position !");
 		}
 		
 	}
@@ -509,8 +505,7 @@ public class Round implements PhysicsEngine
 			if(snake.state)
 			{
 				addItemToSnake(snake.playerId, itemRecup);
-				ourBoard.itemsMap.remove(pos);
-				System.out.println("Snake a rencontré un item");
+				ourBoard.itemsMap.remove(pos);		// l'item est pris
 			}
 		}
 	}
@@ -587,9 +582,11 @@ public class Round implements PhysicsEngine
 	 * Cette méthode génère l'apparition d'un item pendant la mise à jour
 	 */
 	
-	private void updateSpawnItem(long elapsedTime) {
+	private void updateSpawnItem(long elapsedTime)
+	{
 		ratioItem += elapsedTime*getItemRate();
-		if(ratioItem >= 1000) {
+		if(ratioItem >= 1000)
+		{
 			itemSpawnPos();
 			ratioItem = 0;
 		}
