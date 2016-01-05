@@ -39,20 +39,22 @@ public class TestClient {
 		
 		
 		
-		c = new Client();
+		
 		for(int i = 0; i<1; i++){
-			c.setIp("10.122.13.24");
+			c = new Client();
+			c.setIp("10.122.39.43");
 			c.setPort(3615);
 			c.launchClient();
+			Board b = c.retrieveBoard();
+			
+			System.out.println(b.height + " " + b.width);
 			
 		}
 		
 		//boolean serverClosed = false;
 		//boolean clientClosed = false;
 			
-		Board b = c.retrieveBoard();
 		
-		System.out.println(b.height + " " + b.width);
 		
 		
 		/*Thread t = new Thread(new Runnable(){
