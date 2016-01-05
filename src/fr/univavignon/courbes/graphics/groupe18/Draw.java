@@ -192,25 +192,9 @@ public class Draw extends JPanel {
 		        	g.setFont(new Font("Arial", Font.PLAIN, 40)); 
 		        	g.drawString("x",entry.getKey().x+9,entry.getKey().y+32);
 					break;	
-					
-					
-
-				
-				default:
-				
-				
-			}
-				
-				
-
-			/*g.setColor(Color.green);
-			g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
-        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
-        	g.setColor(Color.white);
-        	g.setFont(new Font("TimesRoman", Font.PLAIN, 25)); 
-        	g.drawString("↑",entry.getKey().x+2,entry.getKey().y+30);*/
-        	
-		}
-        
+	
+				default:				
+			}      	
+		}       
     }          
 }
