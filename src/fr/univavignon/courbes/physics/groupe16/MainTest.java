@@ -25,6 +25,7 @@ public class MainTest {
 			round.board.snakes[0].movingSpeed /= 3; // diminuer vitesse pour mieux montrer le spawn random des items
 			for(int i = 0; i< 750; i++) {
 				round.update(20, commandesTest);
+				
 			}
 			
 		}
@@ -69,7 +70,7 @@ public class MainTest {
 			round.board.snakes[0].currentY =  100;
 			round.board.snakes[0].currentAngle =  180;
 			
-			Item item = Item.USER_SPEED;
+			Item item = Item.USER_SLOW;
 			item.duration = 3000;
 			round.board.itemsMap.put(new Position(100,100), item );
 			
@@ -86,7 +87,7 @@ public class MainTest {
 			round.board.snakes[0].currentX =  100;
 			round.board.snakes[0].currentY =  150;
 			round.board.snakes[0].currentAngle =  180;
-			round.board.snakes[0].collision =  true;
+			round.board.snakes[0].collision =  false;
 			
 			for(int i = 0; i< 50; i++) {
 				round.update(20, commandesTest);
