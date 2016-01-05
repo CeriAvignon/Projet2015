@@ -17,46 +17,13 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.graphics.groupe03.MyGraphics;
 
 
 public class MainTest {
 
-	/*
+	
 	public static void main(String[] args) {
 		Round round = new Round();
-
-		if(true) {  // TEST MOTEUR GRAPHIQUE
-			int[] idPlayers = {0};
-			round.init(250, 250, idPlayers);
-			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
-			//commandesTest.put(0, Direction.LEFT);
-			round.board.snakes[0].currentX =  100;
-			round.board.snakes[0].currentY =  100;
-			round.board.snakes[0].currentAngle =  45;
-
-			
-			
-			JFrame fenetre= new JFrame();
-			fenetre.setSize(600, 600);
-			fenetre.setLayout(null);
-			JPanel boardPanel = new JPanel();
-			boardPanel.setBounds(126, 11, 314, 267);
-			JPanel scorePanel = new JPanel();
-			scorePanel.setBounds(10, 11, 100, 278);
-			List<Profile> pro = new ArrayList();
-			Profile prof1 =new Profile();
-			prof1.userName="snake";
-			pro.add(prof1);
-			MyGraphics graph =new MyGraphics();
-			graph.init(round.board,0,pro,boardPanel,scorePanel);
-			
-			for(int i=0;i<200;i++)
-			{
-				round.update(20, commandesTest);
-				graph.update();
-			}
-		}
 
 
 		if(false) { // TEST MOUVEMENT NORMAL SNAKE + SPAWN ITEM
@@ -141,5 +108,5 @@ public class MainTest {
 
 
 	}
-*/
+
 }

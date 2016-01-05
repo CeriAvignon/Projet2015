@@ -83,7 +83,7 @@ public class Round implements PhysicsEngine {
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
-		snake.holeRate 	    = 0.2;	
+		snake.holeRate 	    = 0.25;	
 		holeTick.put(snake.playerId , (int)(Math.random() * 100 - snake.holeRate*100));
 		moveCount.put(snake.playerId  , 0);
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
