@@ -1,9 +1,6 @@
 package fr.univavignon.courbes.network.groupe15;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.Socket;
-import java.util.Scanner;
 
 import fr.univavignon.courbes.common.Board;
 
@@ -11,15 +8,18 @@ import fr.univavignon.courbes.common.Board;
 /**
  * @author uapv1504059
  */
-public class main {
+public class TestClient {
 
-	/**
-	 * @param args Arguments de la classe main.
-	 */
-	
+	/** Message à envoyer */
 	public static String message;
+	/** Le client lancé */
 	public static Client c;
 	
+	/**
+	 * @param args Arguments de la classe main
+	 * @throws IOException Gestion des erreurs
+	 * @throws ClassNotFoundException Classe non trouvée
+	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		
 		/*System.out.println("Receiver Start");
