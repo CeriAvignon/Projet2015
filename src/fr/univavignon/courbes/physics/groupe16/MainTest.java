@@ -50,19 +50,19 @@ public class MainTest {
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
 			round.board.snakes[0].currentX =  100;
-			round.board.snakes[0].currentY =  110;
+			round.board.snakes[0].currentY =  350;
 			round.board.snakes[0].currentAngle =  90;
 			round.board.snakes[0].headRadius =  5;
-			round.board.snakes[1].currentX =  95;
-			round.board.snakes[1].currentY =  90;
+			round.board.snakes[1].currentX =  90;
+			round.board.snakes[1].currentY =  20;
 			round.board.snakes[1].currentAngle =  0;
 			
-			for(int i = 0; i< 10; i++) {
-				round.update(20, commandesTest);
+			for(int i = 0; i< 100 ; i++) {
+				round.update(50, commandesTest);
 			}
 		}
 		
-		if(true) { // TEST ITEM COLLISION
+		if(false) { // TEST ITEM COLLISION
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();

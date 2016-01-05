@@ -18,6 +18,7 @@ public class Round implements PhysicsEngine {
 	public Board board;
 	/** Représente les coordonnées aprés la virgule de la position d'un snake **/
 	private double deltaSnake[][]; 
+	/** Sert a retrouver l'id continu de chaque snake par rapport a l'id du profile (ex : 0->30, 1->46,..)**/
 	private Map<Integer, Integer> deltaID;
 	/** Represente la chance qu'un item apparaisse sur le plateau **/
 	private double itemRate = 1;
@@ -31,6 +32,8 @@ public class Round implements PhysicsEngine {
 	private Map<Integer, Integer> holeTick;
 	/** Represente combien de déplacement le snake 'n' a effectué **/
 	private Map<Integer, Integer> moveCount;
+	/** Represente la durée durant laquelle les snakes ne peuvent pas avoir de collisions au début du round (en ms)**/
+	private int invincibleTime = 2000;
 	
 	@Override
 	public Board init(int width, int height, int[] profileIds) {
@@ -90,6 +93,9 @@ public class Round implements PhysicsEngine {
 	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
+		// Mise à jour du temps d'invincibilité de début de round
+		if(invincibleTime > 0)
+			invincibleTime -= elapsedTime;
 		// Mise à jour des coordonnées des snakes
 		majSnakesPositions(elapsedTime);
 		// Mise à jour des directions des snakes
@@ -293,8 +299,6 @@ public class Round implements PhysicsEngine {
 		}
 	}
 
-	
-
 
 	/**
 	 * Génére une position aléatoire sur la plateau, la fonction générera une position qui n'est pas
@@ -436,7 +440,8 @@ public class Round implements PhysicsEngine {
 						System.out.println("Snake " + snake.playerId + " hole");
 					}
 					snakeEncounterBounds(snake);
-					snakeEncounterSnake(snake);
+					if(invincibleTime <= 0)
+						snakeEncounterSnake(snake);
 					snakeEncounterItem(snake);
 					fillSnakeHead(snake);
 				 	if(moveCount.get(snake.playerId) == 100) {
