@@ -21,4 +21,3 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 
 	}
 
-

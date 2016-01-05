@@ -1,4 +1,5 @@
 package fr.univavignon.courbes.inter.groupe12;
+package fr.univavignon.courbes.inter.groupe12;
 
 import java.awt.*;
 import java.awt.event.*;
