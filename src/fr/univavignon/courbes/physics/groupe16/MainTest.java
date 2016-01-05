@@ -17,12 +17,12 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Item;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.graphics.groupe23.MyGraphic;
-import fr.univavignon.courbes.graphics.groupe23.Panel;
+import fr.univavignon.courbes.graphics.groupe03.MyGraphics;
 
 
 public class MainTest {
 
+	/*
 	public static void main(String[] args) {
 		Round round = new Round();
 
@@ -46,13 +46,10 @@ public class MainTest {
 			scorePanel.setBounds(10, 11, 100, 278);
 			List<Profile> pro = new ArrayList();
 			Profile prof1 =new Profile();
-			prof1.userName="omar";
+			prof1.userName="snake";
 			pro.add(prof1);
-			MyGraphic graph =new MyGraphic();
+			MyGraphics graph =new MyGraphics();
 			graph.init(round.board,0,pro,boardPanel,scorePanel);
-			fenetre.add(boardPanel);
-			fenetre.add(scorePanel);
-			fenetre.setVisible(true);
 			
 			for(int i=0;i<200;i++)
 			{
@@ -144,5 +141,5 @@ public class MainTest {
 
 
 	}
-
+*/
 }

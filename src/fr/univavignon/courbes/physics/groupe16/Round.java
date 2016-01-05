@@ -83,7 +83,7 @@ public class Round implements PhysicsEngine {
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
-		snake.holeRate 	    = 0.1;	
+		snake.holeRate 	    = 0.2;	
 		holeTick.put(snake.playerId , (int)(Math.random() * 100 - snake.holeRate*100));
 		moveCount.put(snake.playerId  , 0);
 		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
@@ -432,10 +432,10 @@ public class Round implements PhysicsEngine {
 
 				if(snakeMove) {
 					if (moveCount.get(snake.playerId) <= holeTick.get(snake.playerId)
-					 || moveCount.get(snake.playerId) > holeTick.get(snake.playerId) +10) {
+					 || moveCount.get(snake.playerId) > holeTick.get(snake.playerId) + snake.holeRate*100) {
 						board.snakesMap.put(pos , snake.playerId);
 						System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
-						snakeEncounterItem(snake);
+						fillSnakeHead(snake);
 					}
 					else {
 						System.out.println("Snake " + snake.playerId + " hole");
@@ -443,7 +443,7 @@ public class Round implements PhysicsEngine {
 					snakeEncounterBounds(snake);
 					if(invincibleTime <= 0)
 						snakeEncounterSnake(snake);
-					fillSnakeHead(snake);
+					snakeEncounterItem(snake);
 				 	if(moveCount.get(snake.playerId) == 100) {
 						refreshSnakeHoleTick(snake);
 					}
