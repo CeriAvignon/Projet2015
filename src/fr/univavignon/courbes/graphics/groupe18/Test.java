@@ -12,6 +12,7 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.common.Item;
 
 /**
  * Sert a effectuer les tests de notre composante
@@ -73,7 +74,7 @@ public class Test {
 		joueur5.playerId = 4;
 		joueur5.currentX = 150;
 		joueur5.currentY = 600;
-		joueur5.currentScore = 35;
+		joueur5.currentScore = 40;
 		joueur5.headRadius = 10;
 		joueur5.state = true;
 
@@ -109,6 +110,19 @@ public class Test {
 		board.snakesMap = snakesMap;
 		int pointThreshold = 40;
 		
+		
+		board.itemsMap = new HashMap<Position,Item>();
+		board.itemsMap.put(new Position(200,200),Item.USER_SPEED);
+		board.itemsMap.put(new Position(400,400),Item.USER_SLOW);
+		board.itemsMap.put(new Position(300,300),Item.USER_BIG_HOLE);
+		board.itemsMap.put(new Position(250,250),Item.OTHERS_SPEED);
+		board.itemsMap.put(new Position(50,80),Item.OTHERS_THICK);
+		board.itemsMap.put(new Position(700,100),Item.OTHERS_SLOW);
+		board.itemsMap.put(new Position(600,100),Item.OTHERS_REVERSE);
+		board.itemsMap.put(new Position(400,100),Item.COLLECTIVE_THREE_CIRCLES);
+		board.itemsMap.put(new Position(300,100),Item.COLLECTIVE_TRAVERSE_WALL);
+		board.itemsMap.put(new Position(200,100),Item.COLLECTIVE_ERASER);
+		
 		GraphicDisplayGroupe18 Test = new GraphicDisplayGroupe18();
 		Test.init(board, pointThreshold,players,boardPanel,scorePanel);
 		
@@ -125,7 +139,7 @@ public class Test {
 			}
 			joueur1.currentX = i;
 			Test.update();       
-			fenetreScore.setVisible(true);
+			//fenetreScore.setVisible(true);
 			fenetreBoard.setVisible(true);
 			
 			try {
@@ -145,7 +159,7 @@ public class Test {
 			}
 			joueur2.currentY = i;
 			Test.update();   
-			fenetreScore.setVisible(true);
+			//fenetreScore.setVisible(true);
 			fenetreBoard.setVisible(true);
 			
 			try {
@@ -155,9 +169,9 @@ public class Test {
 	    		Thread.currentThread().interrupt();
 				}
 		}
-		/*Test.end();
-		fenetreScore.setVisible(true);
+		//Test.end();
+		//fenetreScore.setVisible(true);
 		fenetreBoard.setVisible(true);
-		*/
+		
 	}
 }

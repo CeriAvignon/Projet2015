@@ -140,14 +140,14 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	    FlowLayout rightColumn = new FlowLayout(FlowLayout.CENTER);
 	    scorePanel.setLayout(display);
 	    
-    	JPanel panel = new JPanel();
-    	panel.setBackground(Color.black);
-    	panel.setLayout(leftColumn);
+    	JPanel scoreToReach = new JPanel();
+    	scoreToReach.setBackground(Color.black);
+    	scoreToReach.setLayout(leftColumn);
     	String test = "Score à atteindre : ";
 	    JLabel text = new JLabel(test);
 	    text.setFont(new Font("Arial",Font.PLAIN,20));
 	    text.setForeground(Color.white);
-	    panel.add(text)	;
+	    scoreToReach.add(text)	;
 	    
     	JPanel panel2 = new JPanel();
     	panel2.setBackground(Color.black);
@@ -158,7 +158,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	    text2.setForeground(Color.white);
 	    panel2.add(text2);
 	    
-	    scorePanel.add(panel);
+	    scorePanel.add(scoreToReach);
 	    scorePanel.add(panel2);
 	    drawScores(goal, size, board, players, leftColumn, rightColumn, scorePanel);
 
@@ -200,27 +200,27 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		   for(int n = goal; n>0; n--) {
 		    	for(int i=0; i<size;i++) {
 		    		if(board.snakes[i].currentScore == n) {
-			    		JPanel panel3 = new JPanel();
-			    		panel3.setBackground(Color.black);
-			    		panel3.setLayout(leftColumn);
+			    		JPanel playerName = new JPanel();
+			    		playerName.setBackground(Color.black);
+			    		playerName.setLayout(leftColumn);
 			    		String pseudo = (players.get(i)).userName;
 			    		JLabel text3 = new JLabel(pseudo);
 			    		text3.setFont(new Font("Arial",Font.PLAIN,20));
 			    		setColor(text3,board.snakes[i].playerId);
-			    		panel3.add(text3)	;
+			    		playerName.add(text3)	;
 				    
-			    		JPanel panel4 = new JPanel();
-			    		panel4.setBackground(Color.black);
-			    		panel4.setLayout(rightColumn);
+			    		JPanel playerScore = new JPanel();
+			    		playerScore.setBackground(Color.black);
+			    		playerScore.setLayout(rightColumn);
 			    		String Score = String.valueOf(board.snakes[i].currentScore);
 			    		JLabel text4 = new JLabel(Score);
 			    		text4.setFont(new Font("Arial",Font.PLAIN,30));
 			    		setColor(text4,i);
-			    		panel4.add(text4);
+			    		playerScore.add(text4);
 				    
 				    
-			    		gridPanel.add(panel3);
-			    		gridPanel.add(panel4);
+			    		gridPanel.add(playerName);
+			    		gridPanel.add(playerScore);
 		    		}
 		    }
 		   }

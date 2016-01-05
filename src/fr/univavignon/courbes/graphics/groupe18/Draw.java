@@ -1,12 +1,19 @@
 package fr.univavignon.courbes.graphics.groupe18;
 import java.awt.Dimension;
 import java.awt.Color; 
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Map;
 import java.lang.Math;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Position;
+import fr.univavignon.courbes.common.Item;
 
  
 /**
@@ -47,7 +54,7 @@ public class Draw extends JPanel {
      * @return Un objet Color de la couleur associée à ,l'id du joueur
      */
     public static Color getColor(int id) {
-    	Color color = Color.black;
+    	Color color;
         switch (id)
         {
   			case 0:
@@ -74,6 +81,8 @@ public class Draw extends JPanel {
   			case 7:
   				color = Color.white; 
   		    break;
+  		    default:
+  		    	color = Color.black;
   		} 
         return color;
     }
@@ -92,6 +101,115 @@ public class Draw extends JPanel {
 		{
 			g.setColor(getColor(entry.getValue()));
 			g.fillRect(entry.getKey().x, entry.getKey().y, 1, 1);
+		}
+		for (Map.Entry<Position, Item> entry : board.itemsMap.entrySet())
+		{
+			switch(entry.getValue())
+			{
+				case USER_SPEED:
+					g.setColor(Color.green);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 45)); 
+		        	g.drawString("⬆",entry.getKey().x+1,entry.getKey().y+36);
+					break;
+					
+				case USER_SLOW:
+					g.setColor(Color.green);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 45)); 
+		        	g.drawString("⬇",entry.getKey().x+2,entry.getKey().y+36);
+					break;
+					
+				case USER_BIG_HOLE:
+					g.setColor(Color.green);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.BOLD, 35)); 
+		        	g.drawString("H",entry.getKey().x+6,entry.getKey().y+34);
+					break;
+					
+				case OTHERS_SPEED:
+					g.setColor(Color.red);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 45)); 
+		        	g.drawString("⬆",entry.getKey().x+1,entry.getKey().y+36);
+					break;
+					
+				case OTHERS_THICK:
+					g.setColor(Color.red);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Times New Roman", Font.PLAIN, 45)); 
+		        	g.drawString("⬌",entry.getKey().x+1,entry.getKey().y+36);
+					break;
+					
+				case OTHERS_SLOW:
+					g.setColor(Color.red);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 45)); 
+		        	g.drawString("⬇",entry.getKey().x+2,entry.getKey().y+36);
+					break;
+					
+				case OTHERS_REVERSE:
+					g.setColor(Color.red);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 42)); 
+		        	g.drawString("⟲",entry.getKey().x,entry.getKey().y+36);
+					break;
+				case COLLECTIVE_THREE_CIRCLES:
+					g.setColor(Color.blue);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 42)); 
+		        	g.drawString("+",entry.getKey().x+4,entry.getKey().y+34);
+					break;
+				case COLLECTIVE_TRAVERSE_WALL:
+					g.setColor(Color.blue);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 40)); 
+		        	g.drawString("\u2605",entry.getKey().x+3,entry.getKey().y+34);
+					break;
+				case COLLECTIVE_ERASER:
+					g.setColor(Color.blue);
+					g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+		        	g.setColor(Color.white);
+		        	g.setFont(new Font("Arial", Font.PLAIN, 40)); 
+		        	g.drawString("x",entry.getKey().x+9,entry.getKey().y+32);
+					break;	
+					
+					
+
+				
+				default:
+				
+				
+			}
+				
+				
+
+			/*g.setColor(Color.green);
+			g.drawOval(entry.getKey().x,entry.getKey().y,40,40);
+        	g.fillOval(entry.getKey().x,entry.getKey().y,40,40);
+        	g.setColor(Color.white);
+        	g.setFont(new Font("TimesRoman", Font.PLAIN, 25)); 
+        	g.drawString("↑",entry.getKey().x+2,entry.getKey().y+30);*/
+        	
 		}
         
     }          
