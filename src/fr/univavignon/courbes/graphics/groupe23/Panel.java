@@ -2,52 +2,44 @@ package fr.univavignon.courbes.graphics.groupe23;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.List;
 import java.awt.Point;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
-import fr.univavignon.courbes.graphics.groupe23.MyGraphic.Repaint;
-
+import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Position;
+import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.common.Snake;
+/**
+ * @author Omar
+ *Cette classe va nous permettre de redefinir la classe Jpanel
+ *ainsi nous permettre de le redessiner a notre maniere
+ */
 public class Panel extends JPanel{
-	int posX=0;// position X du Snake
-	int posY=0;// position Y du Snake
-	Color color=Color.black; // couleur du snake
-int rayon;// rayon du snake 
-	public synchronized void  paint(Graphics g) // fonction que repaint appelle
+	
+	Color couleur[]={Color.blue,Color.red,Color.orange,Color.green,Color.yellow};
+	Board board;
+public Panel(Board board)
+{
+	this.board=board;
+
+}
+@Override
+	public synchronized void  paint(Graphics g)
+	/* fonction que repaint appelle */
 {
 		super.paintComponent(g);
-		 g.setColor(color);
-		 g.fillOval(posX, posY,rayon,rayon);
-}
+		
+		 for(Map.Entry<Position, Integer> mapentry : board.snakesMap.entrySet())
+		 {
+			g.setColor(couleur[mapentry.getValue()]);
+			g.fillOval(mapentry.getKey().x, mapentry.getKey().y,(int)board.snakes[mapentry.getValue()].headRadius,(int)board.snakes[mapentry.getValue()].headRadius);
+		// System.out.println(mapentry.getValue());
+		 }
+		
+		 }
 
-	
-	public synchronized void repaint(int posX,int posY,int rayon,Color color,Point prec) {
-	
-		this.posX = posX;
-		this.color = color;
-		this.rayon=rayon;
-		this.posY = posY;
-		super.repaint((prec.getX()<posX)?(int)(posX+rayon/2):(int)(posX-rayon/2),(prec.getY()<posY)?(int)(posY+rayon/2):(int)(posY-rayon/2),(int) rayon+5, (int) rayon+5);
-	
-	}
-	
-	public void setPosY(int posY) {
-		this.posY = posY;
-	}
-	public Color getColor() {
-		return color;
-	}
-	public void setColor(Color color) {
-		this.color = color;
-	}	
-public int getRayon()
-{
-	return rayon;
-}
-public void setRayon(int rayon)
-{
-	this.rayon=rayon;
-}
 
 }
