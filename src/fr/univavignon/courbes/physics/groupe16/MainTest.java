@@ -31,7 +31,7 @@ public class MainTest {
 		}
 		
 		if(false) { // TEST CHANGEMENT DIRECTION SNAKE
-			int[] idPlayers = {0};
+			int[] idPlayers = {0,4};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
 			commandesTest.put(0, Direction.LEFT);
@@ -45,8 +45,8 @@ public class MainTest {
 			
 		}
 		
-		if(false) { // TEST SNAKE COLLISION
-			int[] idPlayers = {0,1};
+		if(true) { // TEST SNAKE COLLISION
+			int[] idPlayers = {0,100};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
 			round.board.snakes[0].currentX =  100;
@@ -62,7 +62,7 @@ public class MainTest {
 			}
 		}
 		
-		if(false) { // TEST ITEM COLLISION
+		if(true) { // TEST ITEM COLLISION
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
@@ -79,7 +79,7 @@ public class MainTest {
 			}
 		}
 		
-		if(true) { // TEST BORDURE COLLISION
+		if(false) { // TEST BORDURE COLLISION
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
