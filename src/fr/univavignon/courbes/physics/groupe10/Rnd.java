@@ -37,7 +37,8 @@ public class Rnd implements PhysicsEngine {
 	/**
 	 * Cette variable donne la probabilité d'apparition d'une Item.
 	 */
-	double itemProbability;
+	double itemProbability = 0.3;
+	int residualLengthHole = 0;
 	
 	// |||||||||||||||||||| FONCTIONS DE CLASSES ||||||||||||||||||||
 	
@@ -48,7 +49,6 @@ public class Rnd implements PhysicsEngine {
 	Rnd()
 	{
 		board = new Board();
-		this.itemProbability = 0.3;
 	}
 
 	// ---------- FONCTIONS QUI MANIPULENT BOARD ----------
@@ -236,9 +236,9 @@ public class Rnd implements PhysicsEngine {
 		s.currentX = currentX;
 		s.currentY = currentY;
 		s.currentAngle = 0;
-		s.headRadius = 4;
-		s.movingSpeed = 0.1;
-		s.turningSpeed = 0.003;
+		s.headRadius = Constants.REGULAR_HEAD_RADIUS;
+		s.movingSpeed = Constants.REGULAR_MOVING_SPEED;
+		s.turningSpeed = Constants.REGULAR_TURNING_SPEED;
 		s.state = true;
 		s.collision = true;
 		s.inversion = false;
@@ -296,6 +296,9 @@ public class Rnd implements PhysicsEngine {
 	 * en ligne droite entre son ancienne position et sa nouvelle position
 	 * son ancienne position étant passé en paramètre, sa nouvelle étant les attributs currentX et currentY
 	 * 
+	 * remarque : currentX et currentY sont à la position nouvelle du snake lors de l'appel de la fonction,
+	 * mais à l'interieur de la fonction, currentX et currentY sont égaux a headX et headY
+	 * 
 	 * @param id 	id du snake
 	 * @param headX la coordonnée en abscisse de la tête avant le déplacement.
 	 * @param headY la coordonnée en ordonnée de la tête avant le déplacement.
@@ -334,44 +337,72 @@ public class Rnd implements PhysicsEngine {
 		//on avance sur la ligne droite a dessiner pixels par pixels		
 		for (int i = 0 ; i < (int) distance ; i++)
 		{
-			//Avant de dessiner la nouvelle tete, on test si elle a une distance d'au moin 2 pixels
-			//avec la précédente (si la tete est au même endroit ou a 1 pixel de distance, cela créé des problèmes de collisions)
-			if ( Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2)) >= 2)
+			
+			//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
+			board.snakes[id].currentX = (int) Math.round(headX);
+			board.snakes[id].currentY = (int) Math.round(headY);
+			
+			//si la tete n'est pas dans un trou, on en créé probablement un
+			if (residualLengthHole == 0 && Math.random() <= board.snakes[id].holeRate)
 			{
-				System.out.println(Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2)));
-				//la tete du snake locale a la fonction est appliqué a la tete de l'objet snake de la board
-				board.snakes[id].currentX = (int) Math.round(headX);
-				board.snakes[id].currentY = (int) Math.round(headY);
+				residualLengthHole = 20; //CONSTANTE
+			}
+			
+			// calcule la distance qui séparce la position actuel de la tete avec sa derniere position dessiné
+			double distanceSinceLastIteration = Math.sqrt( Math.pow(headX-lastPixelX, 2) + Math.pow(headY - lastPixelY, 2));
+			
+			//Avant de dessiner la nouvelle tete, on test si cette distance est d'au moin 
+			//(si la tete est au même endroit ou a 1 pixel de distance, cela créé des problèmes de collisions)
+			if (distanceSinceLastIteration >= 2 )
+			{
+				System.out.println(distanceSinceLastIteration);
+
+				// --- TEST COLISION ET LEURS APPLICATION ---
 				
-				//on test si il y a une collision aux abort de la tete du snake
-				//si il y a une colision, ses effets seront automatiquement appliqués
-				vCollision = snakeHeadCollision(id);
+				//on ne test la collision que si la tete n'est pas dans un trou
+				if (residualLengthHole == 0)
+					//on test si il y a une collision aux abort de la tete du snake
+					//si il y a une colision, ses effets seront automatiquement appliqués
+					vCollision = snakeHeadCollision(id);
+				else
+					vCollision = Collision.NONE;
+
+				
 				
 				//AFFICHAGE DEBUG
 				if (vCollision != Collision.NONE)
 					System.out.println("collision du snake " + id + " : " + vCollision);
-			
-				//Si la colision n'est pas mortel, on dessine le corp du tracé
-				if(vCollision == Collision.NONE ||vCollision == Collision.ITEM)	 
-				{	
-					//if(new Random().nextDouble() >= board.snakes[id].holeRate)  
-					snakeDrawHead(id);
-				}
-				//si la colision est mortel, on dessine la tete et on quitte la boucle car le snake est deja mort
-				else if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
+								
+				//si la colision est mortel, on break car le snake est deja mort
+				if (vCollision == Collision.BORDER || vCollision == Collision.SNAKE)
 				{
-					snakeDrawHead(id);
 					break;
 				}
+				
+				// --- DESSIN DE LA TETE ---
+				
+				//si le snake est dans un trou,
+				//on ne dessine pas la tete
+				if (residualLengthHole == 0)
+					snakeDrawHead(id);
+				
 				//on sauvegarde la position de la tete avant de la changer
 				lastPixelX = headX;
 				lastPixelY = headY;
+				
 			}
-			//on incrémente la position de la tete pour la prochaine itération	
+			
+			//on incrémente la position de la tete pour qu'elle soit 1 px plus loin
+			//lors de la prochaine itération
 			headX += stepX;
 			headY += stepY;
+			//Dans le cas d'un trou, on a avancé de 1 px, 
+			//on decremente donc la distance troué a parcourir
+			if (residualLengthHole != 0) residualLengthHole -= 1;
 			
-			//on gere le cas ou le snake est en mode fly est se trouve aux limites du plateau
+			
+			
+			//on gere le cas ou le snake est en mode fly et se trouve aux limites du plateau
 			if(board.snakes[id].fly)
 			{
 				if (headX >= board.width)  headX = 0;
