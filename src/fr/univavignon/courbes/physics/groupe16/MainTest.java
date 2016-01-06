@@ -26,7 +26,7 @@ public class MainTest {
 		Round round = new Round();
 
 
-		if(false) { // TEST MOUVEMENT NORMAL SNAKE + SPAWN ITEM
+		if(true) { // TEST MOUVEMENT NORMAL SNAKE + SPAWN ITEM
 			int[] idPlayers = {0};
 			round.init(400, 400, idPlayers);
 			Map<Integer, Direction> commandesTest = new HashMap<Integer, Direction>();
