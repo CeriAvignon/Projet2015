@@ -12,23 +12,28 @@ public class Constants
 	/** Vitesse de déplacement normale (i.e. sans l'effet d'un item) des serpents, exprimée en pixel par ms */
 	public static final float REGULAR_MOVING_SPEED = 0.1f;
 	/** Vitesse de déplacement rapide des serpents, exprimée en pixel par ms */
-	public static final float FAST_MOVING_SPEED = 0.2f;	//TODO valeur à estimer
+	public static final float FAST_MOVING_SPEED = 0.3f;
 	/** Vitesse de déplacement lente des serpents, exprimée en pixel par ms */
-	public static final float SLOW_MOVING_SPEED = 0.001f; //TODO valeur à estimer
+	public static final float SLOW_MOVING_SPEED = 0.1f; //TODO valeur à estimer
 	
 	/** Vitesse normale à laquelle le snake change de direction, exprimée en radians par ms */
 	public static final float REGULAR_TURNING_SPEED = 0.003f;
 	/** Vitesse élevée à laquelle le snake change de direction, exprimée en radians par ms */
-	public static final float FAST_TURNING_SPEED = 0.006f; //TODO valeur à estimer
+	public static final float FAST_TURNING_SPEED = 0.003f; //TODO valeur à estimer
 	/** Vitesse lente à laquelle le snake change de direction, exprimée en radians par ms */
-	public static final float SLOW_TURNING_SPEED = 0.001f; //TODO valeur à estimer
+	public static final float SLOW_TURNING_SPEED = 0.003f; //TODO valeur à estimer
 	
-	/** Rayon de la tête normale du snake, exprimé en pixels */ 
+	/** Rayon de la tête d'un Snake d'épaisseur normale, exprimé en pixels */ 
 	public static final int REGULAR_HEAD_RADIUS = 4;
-	/** Rayon de la tête agrandie du snake, exprimé en pixels */ 
-	public static final int LARGE_HEAD_RADIUS = 6; //TODO valeur à estimer
+	/** Rayon de la tête d'un Snake plus épais que la normale, exprimé en pixels */ 
+	public static final int LARGE_HEAD_RADIUS = 8;
 
-	//TODO différents taux de création de trous ? (taux normal, taux élevé, seulement des trous, autres ?)
+	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine lors d'une itération donnée */
+	public static final float HOLE_RATE = 0.085f;
+	/** Largeur d'un trou pour un Snake d'épaisseur normale, exprimée en pixels */
+	public static final int REGULAR_HOLE_WIDTH = 20;
+	/** Largeur d'un trou pour un Snake plus épais que la normale, exprimée en pixels */
+	public static final int LARGE_HOLE_WIDTH = 40;
 	
 	// TODO certaines de ces constantes pourraient rendre inutiles des champs de Snake (ex. movingSpeed) dont
 	// la valeur pourrait se déduire de ces constantes et de la nature des items faisant effet sur le Snake au moment considéré.

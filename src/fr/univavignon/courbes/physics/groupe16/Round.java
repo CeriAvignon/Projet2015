@@ -151,10 +151,11 @@ public class Round implements PhysicsEngine {
 	/**
 	 * Ajoute l'item ainsi que l'effet relatif à l'item ramassé aux snakes concernés.
 	 * 
-	 * @param id Id du Snake ayant ramassé l'objet
+	 * @param idProfile Id du Snake ayant ramassé l'objet
 	 * @param item Item ramassé
 	 */
-	public void addSnakeItem(int id, Item item) {
+	public void addSnakeItem(int idProfile, Item item) {
+		int id = deltaID.get(idProfile);
 		switch(item)
 		{
 		case COLLECTIVE_ERASER:
@@ -172,7 +173,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_REVERSE:
 			for(Snake snake : board.snakes) {
-				if (snake.playerId != id) {
+				if (snake.playerId != idProfile) {
 					snake.currentItems.put(item, (long)item.duration);
 					snake.inversion = true;
 				}
@@ -180,7 +181,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_SLOW:
 			for(Snake snake : board.snakes) {
-				if (snake.playerId != id) {
+				if (snake.playerId != idProfile) {
 					snake.currentItems.put(item, (long)item.duration);
 					snake.movingSpeed = Constants.SLOW_MOVING_SPEED;
 					snake.turningSpeed = Constants.FAST_TURNING_SPEED;
@@ -189,7 +190,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_THICK:
 			for(Snake snake : board.snakes) {
-				if (snake.playerId != id) {
+				if (snake.playerId != idProfile) {
 					snake.currentItems.put(item, (long)item.duration);
 					snake.headRadius = Constants.LARGE_HEAD_RADIUS;
 				}
@@ -197,7 +198,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_SPEED:
 			for(Snake snake : board.snakes) {
-				if (snake.playerId != id) {
+				if (snake.playerId != idProfile) {
 					snake.currentItems.put(item, (long)item.duration);
 					snake.movingSpeed = Constants.FAST_MOVING_SPEED;
 					snake.turningSpeed = Constants.SLOW_TURNING_SPEED;
@@ -227,49 +228,51 @@ public class Round implements PhysicsEngine {
 	 * 
 	 * @param id Id du Snake concerné
 	 * @param item Item à enlever du snake
+	 * @param i 
 	 */
-	public void removeSnakeItem(int id, Item item) {
+	public void removeSnakeItem(int idProfile, Item item, Iterator<Entry<Item, Long>> i) {
+		int id = deltaID.get(idProfile);
 		switch(item)
 		{
 		case COLLECTIVE_ERASER:
 			board.snakesMap.clear();
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].collision = true;
 			break;
 		case COLLECTIVE_THREE_CIRCLES:
 			itemRate /= 3;
 			break;
 		case OTHERS_REVERSE:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].inversion = false;
 			break;
 		case OTHERS_SLOW:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
 			break;
 		case OTHERS_THICK:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].headRadius = Constants.REGULAR_HEAD_RADIUS;
 			break;
 		case OTHERS_SPEED:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
 			break;
 		case USER_BIG_HOLE:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].holeRate *= 2;
 			break;
 		case USER_SLOW:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
 			break;
 		case USER_SPEED:
-			board.snakes[id].currentItems.remove(item);
+			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			break;
 		default:
@@ -288,14 +291,15 @@ public class Round implements PhysicsEngine {
 
 		for(Snake snake : board.snakes)
 		{
-			for (Map.Entry<Item, Long> entry : snake.currentItems.entrySet())
-			{
+			for (Iterator<Entry<Item, Long>> i = snake.currentItems.entrySet().iterator(); i.hasNext(); ) {
+
+				Entry<Item, Long> entry = i.next();
 				long remainingTime = entry.getValue();
 				long refreshedTime = remainingTime - elapsedTime;
 
 				// Enlever l'effet et supprimer l'objet de la liste
 				if (refreshedTime <= 0 ) {
-					removeSnakeItem(snake.playerId, entry.getKey());
+					removeSnakeItem(snake.playerId, entry.getKey(), i);
 					System.out.println("Le snake " + snake.playerId + " perd l'effet de l'item");
 				}
 				// Mettre à jour le temps restant pour l'effet de l'Item
@@ -322,8 +326,8 @@ public class Round implements PhysicsEngine {
 		Position posSpawn = new Position(0,0);
 
 		do {
-			posSpawn.x = 75 + (int)(Math.random() * heightBoard - 75); 
-			posSpawn.y = 75 + (int)(Math.random() * widthBoard - 75); 
+			posSpawn.x = 100 + (int)(Math.random() * (heightBoard - 200)); 
+			posSpawn.y = 100 + (int)(Math.random() * (widthBoard - 200)); 
 			flagPos = true;
 
 			for(int i = 0; i < board.snakes.length ; i++)// Teste de la proximité avec un autre snake

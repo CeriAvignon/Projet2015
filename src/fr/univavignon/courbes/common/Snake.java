@@ -1,10 +1,7 @@
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
-
-import fr.univavignon.courbes.common.Position;
 
 /**
  * Cette classe contient les informations et caractéristiques d'un snake.
@@ -14,7 +11,6 @@ import fr.univavignon.courbes.common.Position;
  * avec l'ID du profile, qui est valable pour le jeu globalement, et indépendant
  * de toute partie.
  */
-
 public class Snake implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
@@ -45,8 +41,10 @@ public class Snake implements Serializable
 	/**Inversion des commandes : {@code false} le snake est dirigé normalement, {@code true} ses commandes sont inversées */
 	public boolean inversion;
 	
-	/** Taux de création de trous dans le tracé : pour 0 on n'a aucun trou, pour 1 on n'a aucune traînée (i.e. que des trous) */
+	/** Taux de création de trous dans le tracé : pour 0 on n'a aucun trou, pour 1 on n'a aucune traînée (i.e. que des trous). Ce taux est la probabilité qu'un serpent laisse un trou lors d'une itération donnée. */
 	public double holeRate;
+	/** Taille du trou restant à "effectuer", ou zéro si aucun trou n'est en cours de réalisation, exprimée en pixels */
+	public int remainingHoleWidth;
 	
 	/** Mode avion ({@code true}) ou pas ({@code false}) */
 	public boolean fly;
