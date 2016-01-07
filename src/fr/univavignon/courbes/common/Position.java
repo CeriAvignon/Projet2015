@@ -19,6 +19,7 @@ public class Position implements Serializable, Comparable<Position>
 	 * @param y
 	 * 		Position en ordonnée.
 	 */
+	
 	public Position(int x, int y)
 	{	this.x = x;
 		this.y = y;
@@ -36,7 +37,7 @@ public class Position implements Serializable, Comparable<Position>
 			result = y - position.y;
 		return result;
 	}
-
+	
 	@Override
 	public int hashCode()
 	{	final int prime = 31;
@@ -45,7 +46,7 @@ public class Position implements Serializable, Comparable<Position>
 		result = prime * result + y;
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj)
 	{	boolean result = false;

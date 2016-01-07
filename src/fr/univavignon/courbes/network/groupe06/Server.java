@@ -12,9 +12,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * @author Loïc
@@ -29,58 +30,46 @@ import fr.univavignon.courbes.common.Profile;
  */
 public class Server implements ServerCommunication {
 
-	/**
-	 * Variable qui contient l'adresse ip du serveur
-	 */
+	/** Variable qui contient l'adresse ip du serveur */
 	protected String ip;
-	/**
-	 * Variable qui contient le port du serveur
-	 */
+	/** Variable qui contient le port du serveur */
 	protected int port = 2345;
-	/**
-	 * Variable qui contient permet au serveur d'attendre 
-	 * des connexions clients tant qu'il est ouvert.
-	 */
+	/**Variable qui contient permet au serveur d'attendre des connexions clients tant qu'il est ouvert. */
 	protected boolean isRunning = false;
-	/**
-	 * Variable qui définit le nombre maximum de connexion 
-	 * que le serveur peut accueillir.
-	 */
+	/**Variable qui définit le nombre maximum de connexion que le serveur peut accueillir. */
 	protected static int size = 6;
-	/**
-	 * Variable qui gére le nombre de clients connectés
-	 */
+	/** Variable qui gére le nombre de clients connectés */
 	protected static int nbClients = 0;
-	/**
-	 * Tableau qui contient toute les adresses ip des clients pour l'envoie en UDP
-	 */
-	protected String arrayOfIp[] = new String[size];
-	/**
-	 * Tableau qui contient toute les sockets pour l'envoie en TCP
-	 */
-	protected static Socket socketArray[] = new Socket[size];
-	/**
-	 * Socket du serveur.
-	 */
+	/** Liste qui contient toute les adresses ip des clients pour l'envoie en UDP */
+	protected ArrayList<String> arrayOfIp = new ArrayList<String>();
+	/** Liste qui contient toute les sockets pour l'envoie en TCP  */
+	protected ArrayList<Socket> socketArray = new ArrayList<Socket>();
+	/** Socket du serveur. */
 	private ServerSocket sSocket = null;
+	/**	Buffer pour la liste de profil envoyé par un client */
+	protected List<Profile> profilesClient =  null;
+	/** Buffer pour les commandes d'un client */
+	protected Map<Integer, Direction> commands= null;
+	/** Buffer pour les messages des clients */
+	protected String [] arrayText = null;
+	/** Erreur de profil */
+	protected ServerProfileHandler profileError;
+	/**Envoie d'un message d'erreur a l'IU	 */
+	protected ErrorHandler messageError;
 	
 	@Override
 	public String getIp() {
-		
 		return this.ip;
 	}
 
 	@Override
 	public int getPort() {
-
 		return this.port;
 	}
 
 	@Override
 	public void setPort(int port) {
-		
 		this.port = port;
-		
 	}
 	
 	@Override
@@ -143,9 +132,8 @@ public class Server implements ServerCommunication {
  	    			try {
  	    				//wait client communication
  	    				Socket client = sSocket.accept(); 
- 	    				socketArray[nbClients] = client;
- 	    				arrayOfIp[nbClients] = client.getInetAddress().getHostAddress();
- 	    				//System.out.println(arrayOfIp[nbClients]);
+ 	    				socketArray.add(client);
+ 	    				arrayOfIp.add(client.getInetAddress().getHostAddress());
  	    				nbClients++;
  	    				Thread newClient = new Thread(new ClientProcessor(client));
  	    				newClient.start();
@@ -176,24 +164,7 @@ public class Server implements ServerCommunication {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				Socket sock = null;
-				int i = 0;
-				while(i < nbClients)
-				{
-					sock = socketArray[i];
-					try {
-						PrintWriter writer = new PrintWriter(sock.getOutputStream());
-						writer.write(pointThreshold);
-						writer.flush();
-						writer = null;
-					} catch(SocketException e){
-						//Vire un client, faire une fonction pour ça.
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					i++;
-				}
-				sock = null;
+				sendObject(pointThreshold);
 			}
 		});
 		send.start();
@@ -222,15 +193,14 @@ public class Server implements ServerCommunication {
 						data[3-i] = (byte)((number & (0xff << shift)) >>> shift);
 					}
 					DatagramSocket socket = new DatagramSocket(port);
-					int i=0;
-					while(i < nbClients) { 
-						InetAddress client = InetAddress.getByName(arrayOfIp[i]);
+					
+					for(String adresseIp:arrayOfIp){ 
+						InetAddress client = InetAddress.getByName(adresseIp);
 						DatagramPacket packet = new DatagramPacket(data, 4, client, port+1);
 	        	      	socket.send(packet);
 	        	      	// now send the Board
 	        	      	packet = new DatagramPacket(Buf, Buf.length, client, port+1);
 	        	      	socket.send(packet);
-	        	      	i++;
 					}
 					socket.close();
 				} catch(Exception e) {
@@ -243,8 +213,7 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public Map<Integer, Direction> retrieveCommands() {
-		
-		return null;
+		return this.commands;
 	}
 
 	@Override
@@ -252,35 +221,16 @@ public class Server implements ServerCommunication {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				Socket sock = null;
-				int i = 0;
-				while(i < nbClients)
-				{
-					sock = socketArray[i];
-					try {
-						PrintWriter writer = new PrintWriter(sock.getOutputStream());
-						writer.write(message);
-						writer.flush();
-						writer = null;
-					} catch(SocketException e){
-						//Vire un client, faire une fonction pour ça.
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					i++;
-				}
-				sock = null;
+				sendObject(message);
 			}
 		});
 		send.start();
 		return ;
-		
 	}
 
 	@Override
 	public String[] retrieveText() {
-		
-		return null;
+		return this.arrayText;
 	}
 	
 
@@ -289,53 +239,40 @@ public class Server implements ServerCommunication {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ObjectOutputStream oos = new ObjectOutputStream(baos);
-					oos.writeObject(profiles);
-					oos.flush();
-					// get the byte array of the object
-					byte[] Buf= baos.toByteArray();
-			
-					int number = Buf.length;;
-					byte[] data = new byte[4];
-			
-					// int -> byte[]
-					for (int i = 0; i < 4; ++i) {
-						int shift = i << 3; // i * 8
-						data[3-i] = (byte)((number & (0xff << shift)) >>> shift);
-					}
-					
-					Socket sock = null;
-					int i = 0;
-					while(i < nbClients)
-					{
-						sock = socketArray[i];
-						try {
-							DataOutputStream dos = new DataOutputStream(sock.getOutputStream());
-							dos.write(data, 0, 4);
-							dos.write(Buf, 0, Buf.length);
-						} catch(SocketException e){
-							//Vire un client, faire une fonction pour ça.
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						i++;
-					}
-					sock = null;
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
+				sendObject(profiles);
 			}
 		});
 		send.start();
 		return;
+	}
+	
+	/**
+	 * @param objet
+	 * 		Tout ce qu'on veut envoyer.
+	 */
+	private synchronized void sendObject(Object objet) {
+		try {
+			for(Socket sock:socketArray){
+				ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
+				oos.writeObject(objet);
+				oos.flush();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
+	}
+
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		messageError = errorHandler;
 		
 	}
 
 	@Override
-	public List<Profile> retrieveProfiles() {
-		return null;
-	}   
+	public void setProfileHandler(ServerProfileHandler profileHandler) {
+		profileError = profileHandler;
+		return;
+	}
 	
 }

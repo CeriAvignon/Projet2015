@@ -6,6 +6,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -38,7 +40,7 @@ public interface ServerCommunication
 	
 	/**
      * Renvoie le port utilisé par le serveur pour accepter les connexions
-     * de de la part des clients. (à préciser <i>avant</i> de se connecter, 
+     * de la part des clients. (à préciser <i>avant</i> de se connecter, 
      * bien sûr).
      *
      * @return 
@@ -48,13 +50,37 @@ public interface ServerCommunication
 
 	/**
      * Modifie le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients. Cette valeur est à modifier avant d'utiliser 
-     * {@link #launchServer}.
+     * de la part des clients. 
+     * <br/>
+     * Cette valeur est à modifier avant d'utiliser {@link #launchServer}.
      * 
      * @param port
      * 		Le nouveau port du serveur.
      */
 	public void setPort(int port);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
+	public void setErrorHandler(ErrorHandler errorHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
+     */
+	public void setProfileHandler(ServerProfileHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
@@ -89,22 +115,6 @@ public interface ServerCommunication
 	 * 		Liste des profils des joueurs participant à une partie.
 	 */
 	public void sendProfiles(List<Profile> profiles);
-	
-	/**
-	 * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
-	 * participer à la partie en cours de configuration. Le serveur peut refuser
-	 * certains joueurs, par exemple si la partie est complète (plus de place libre).
-	 * <br/>
-	 * À noter que La liste doit contenir les profils <i>dans l'ordre où ils ont été reçus</i>
-	 * par le Moteur Réseau, afin que l'Interface Utilisateur puisse déterminer lesquels refuser
-	 * le cas échéant. Le moteur réseau doit également garder trace de quel joueur correspond
-	 * à quel client.
-	 * 
-	 * @return
-	 * 		La liste des profils reçus par le Moteur Réseau (peut être vide si aucun n'a été 
-	 * 		reçu depuis la dernière fois que la méthode a été invoquée). 
-	 */
-	public List<Profile> retrieveProfiles();
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,

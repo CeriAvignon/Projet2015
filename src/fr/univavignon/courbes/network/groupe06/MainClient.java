@@ -1,14 +1,40 @@
 package fr.univavignon.courbes.network.groupe06;
 
 
-import fr.univavignon.courbes.physics.groupe04.MyPhysicsEngine;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.univavignon.courbes.common.Profile;
+
 
 
 public class MainClient {
 
 	public static void main(String[] args) {
 		
-		int tab2[]={1,2,3};		// profileIDs
+	/*	Client C = new Client();
+		C.setIp("192.168.0.16");
+		C.setPort(2345);
+		C.launchClient();
+		//C.retrieveSerializable();
+		
+		List<Profile> profiles = new ArrayList<Profile>();
+	
+		while(true) {
+			System.out.println(C.retrieveText());
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			profiles = C.retrieveProfiles();
+		//	for(Profile prof:profiles) {
+				
+				System.out.println("PROUT");
+		//	}	
+		}
+		/* int tab2[]={1,2,3};		// profileIDs
 		MyPhysicsEngine b = new MyPhysicsEngine();
 		b.ourBoard = b.init(800,600,tab2);
 		b.ourBoard.snakes[0].currentAngle = 180;
@@ -16,7 +42,7 @@ public class MainClient {
 		b.ourBoard.snakes[2].currentAngle = 90;
 		
 		Client C = new Client();
-		C.setIp("10.104.23.101");
+		C.setIp("192.168.0.16");
 		C.setPort(2345);
 		C.launchClient();
 		
@@ -27,7 +53,7 @@ public class MainClient {
 		while(true) {
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(0050);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -40,7 +66,7 @@ public class MainClient {
 			}
 			
 			
-		} 
+		} */
 		/*C.sendText("/quit");
 		try {
 			Thread.sleep(1000);
