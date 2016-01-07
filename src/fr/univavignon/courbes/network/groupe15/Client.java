@@ -26,6 +26,8 @@ public class Client implements ClientCommunication {
 	private String ip;
 	/** Connecteur côté client */
 	private Socket socket;
+	/** Plateau de jeu */
+	private Board board;
 
     @Override
 	public String getIp() {
@@ -72,6 +74,7 @@ public class Client implements ClientCommunication {
 
 	/*@Override
 	public String retrieveText() {
+		// TODO be not blocking
 		try {
 			String message = "";
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -85,12 +88,27 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void sendText(String message) {
+		// TODO be not blocking
 		try {
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     		out.println(message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<Profile> retrieveProfiles() {
+		// TODO be non blocking
+		try{
+			System.out.println("YOLOOOOOOOOOO !!!!!");
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			List<Profile> lp = (List<Profile>)ois.readObject();
+			return lp;
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}*/
 
 	@Override
@@ -101,16 +119,23 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public Board retrieveBoard() {
-		// TODO Auto-generated method stub
-		try{
-			System.out.println("YOLOOOOOOOOOO !!!!!");
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			Board b = (Board)ois.readObject();
-			return b;
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
+		// TODO be non blocking
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try{
+					System.out.println("YOLOOOOOOOOOO !!!!!");
+					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+					Board b = (Board)ois.readObject();
+					board = b;
+				} catch(Exception e){
+					board = null;
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
+		return board;
 	}
 
 	@Override
