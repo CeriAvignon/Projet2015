@@ -1,17 +1,15 @@
 package fr.univavignon.courbes.network.groupe15;
 
-import java.net.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.util.List;
+import java.net.Socket;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
 
 /**
@@ -72,7 +70,7 @@ public class Client implements ClientCommunication {
 		}
 	}
 
-	@Override
+	/*@Override
 	public String retrieveText() {
 		try {
 			String message = "";
@@ -93,13 +91,7 @@ public class Client implements ClientCommunication {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public List<Profile> retrieveProfiles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	}*/
 
 	@Override
 	public Integer retrievePointThreshold() {
@@ -123,6 +115,30 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setProfileHandler(ClientProfileHandler profileHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean addProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeProfile(Profile profile) {
 		// TODO Auto-generated method stub
 		
 	}

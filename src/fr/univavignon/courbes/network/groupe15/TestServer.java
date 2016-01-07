@@ -25,15 +25,8 @@ public class TestServer {
 		b.height = 1080;
 		
 		while(s.getSockets().isEmpty());
-
 		s.sendBoard(b);
-		// s.sendText(s.retrieveText()[0]);
-		/*for(int i = 0; i<1; i++){
-			Client c = new Client();
-			//c.setIp("10.122.46.39");
-			c.setPort(3615);
-			c.launchClient();
-		}*/
+		s.closeServer();
 	}
 
 }

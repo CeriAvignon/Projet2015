@@ -1,10 +1,8 @@
 package fr.univavignon.courbes.network.groupe15;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,6 +14,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.ServerCommunication;
 
 /**
@@ -45,6 +45,15 @@ public class Server implements ServerCommunication {
 	String[] messages = { "" };
 	/** Message à envoyer au côté client */
 	String messageSent;
+	
+	/** Liste des profils actuels */
+	List<Profile> currentProfiles;
+	/** Le score à atteindre pour gagner la partie actuelle */
+	int currentPointThreshold;
+	/** Le plateau actuel */
+	Board currentBoard;
+	/** Les directions choisies par chaque joueur*/
+	Map<Integer, Direction> map;
 	
 	/**
 	 * Initialize la liste de sockets.
@@ -122,7 +131,7 @@ public class Server implements ServerCommunication {
 		}
 	}
 
-	@Override
+	/*@Override
 	public void sendText(String message) {
 		messageSent = message;
 		Thread t = new Thread(new Runnable(){
@@ -149,10 +158,33 @@ public class Server implements ServerCommunication {
 				try {
 					int i = 0;
 					for(Socket socket:sockets){
-						BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-						messages[i] = in.readLine();
+						ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+						messages[i] = (String)ois.readObject();
 						System.out.println(messages[i]);
+						ois.reset();
 						i++;
+					}
+				} catch (Exception e) {
+					messages = null;
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
+		return messages;
+	}*/
+
+	@Override
+	public void sendProfiles(List<Profile> profiles) {
+		this.currentProfiles = profiles;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					for(Socket socket:sockets){
+						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+						oos.writeObject(currentProfiles);
+						oos.flush();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -160,40 +192,85 @@ public class Server implements ServerCommunication {
 			}
 		});
 		t.start();
-		return messages;
-	}
-
-	@Override
-	public void sendPlayers(List<Profile> profiles) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void sendPointThreshold(int pointThreshold) {
+		this.currentPointThreshold = pointThreshold;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					for(Socket socket:sockets){
+						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+						oos.writeObject(currentPointThreshold);
+						oos.flush();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
+	}
+
+	@Override
+	public void sendBoard(Board board) {
+		this.currentBoard = board;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					for(Socket socket:sockets){
+						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+						oos.writeObject(currentBoard);
+						oos.flush();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
+	}
+
+	@Override
+	public Map<Integer, Direction> retrieveCommands() {
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					for(Socket socket:sockets){
+						ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+						Object obj = ois.readObject();
+						if(obj instanceof Map) {
+							@SuppressWarnings("unchecked")
+							Map<Integer, Direction> tmpMap = (Map<Integer, Direction>)obj;
+							map.putAll(tmpMap);
+						} else {
+							map = null;
+						}
+					}
+				} catch (Exception e) {
+					map = null;
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
+		return map;
+	}
+
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendBoard(Board board) {
-
-		for(Socket socket:sockets) {
-			try {
-				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject(board);
-				oos.flush();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
-
-	@Override
-	public Map<Integer, Direction> retrieveCommands() {
+	public void setProfileHandler(ServerProfileHandler profileHandler) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

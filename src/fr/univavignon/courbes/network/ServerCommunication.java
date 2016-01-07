@@ -6,6 +6,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -48,13 +50,37 @@ public interface ServerCommunication
 
 	/**
      * Modifie le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients. Cette valeur est à modifier avant d'utiliser 
-     * {@link #launchServer}.
+     * de la part des clients. 
+     * <br/>
+     * Cette valeur est à modifier avant d'utiliser {@link #launchServer}.
      * 
      * @param port
      * 		Le nouveau port du serveur.
      */
 	public void setPort(int port);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
+	public void setErrorHandler(ErrorHandler errorHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
+     */
+	public void setProfileHandler(ServerProfileHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
@@ -88,7 +114,7 @@ public interface ServerCommunication
 	 * @param profiles
 	 * 		Liste des profils des joueurs participant à une partie.
 	 */
-	public void sendPlayers(List<Profile> profiles);
+	public void sendProfiles(List<Profile> profiles);
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
@@ -144,33 +170,33 @@ public interface ServerCommunication
      */
 	public Map<Integer,Direction> retrieveCommands();
 
-	/**
-     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
-     * connectés.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @param message
-     * 		Contient le message destiné aux clients.
-     */
-	public void sendText(String message);
-	
-	/**
-     * Permet au serveur de recevoir des messages textuels provenant de ses clients.
-     * La méthode renvoie un tableau dont chaque valeur correspond à un client. En
-     * l'absence de message envoyé par un client, sa valeur est {@code null}.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @return 
-     * 		Un tableau de chaînes de caractères, chacune envoyée par un client donné.
-     * 		En l'absence de message, la valeur associée à un client est {@code null}.
-     */
-	public String[] retrieveText();
+//	/**
+//     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
+//     * connectés.
+//     * <br/>
+//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//     * parallèle de l'exécution du jeu. 
+//     *
+//     * @param message
+//     * 		Contient le message destiné aux clients.
+//     */
+//	public void sendText(String message);
+//	
+//	/**
+//     * Permet au serveur de recevoir des messages textuels provenant de ses clients.
+//     * La méthode renvoie un tableau dont chaque valeur correspond à un client. En
+//     * l'absence de message envoyé par un client, sa valeur est {@code null}.
+//     * <br/>
+//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//     * parallèle de l'exécution du jeu. 
+//     *
+//     * @return 
+//     * 		Un tableau de chaînes de caractères, chacune envoyée par un client donné.
+//     * 		En l'absence de message, la valeur associée à un client est {@code null}.
+//     */
+//	public String[] retrieveText();
 }
