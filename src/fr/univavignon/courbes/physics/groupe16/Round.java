@@ -14,6 +14,7 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
+
 public class Round implements PhysicsEngine {
 
 	/** Represente le plateau de jeu de la manche courante **/
@@ -689,6 +690,12 @@ public class Round implements PhysicsEngine {
 		this.board.itemsMap = board.itemsMap;
 		this.board.snakes = board.snakes;
 
+	}
+
+	@Override
+	public Board initDemo(int width, int height, int[] profileIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
