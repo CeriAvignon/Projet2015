@@ -20,8 +20,9 @@ import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
- * @author Loïc
+ * @author TORO Loïc
  *
+ * Classe fille de ClientCommunication, elle en implémente toutes les méthodes.
  */
 public class Client implements ClientCommunication {
 
@@ -35,12 +36,10 @@ public class Client implements ClientCommunication {
 	protected Board board = null;
 	/**  Buffer pour le nombre de point a atteindre */
 	protected int pointThreshold = -1;
-	/**	Buffer pour la liste des profiles */
-	protected List<Profile> profiles = null;
 	/** Buffer pour les messages du serveur */
 	protected String messageText = "";
-	/** Erreur de profil */
-	protected ClientProfileHandler profileError;
+	/** Envoie de profil à l'interface utilisateur */
+	protected ClientProfileHandler profileHandler;
 	/**Envoie d'un message d'erreur a l'IU	 */
 	protected ErrorHandler messageError;
 	
@@ -72,8 +71,10 @@ public class Client implements ClientCommunication {
 			this.retrieveSerializable();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
+			messageError.displayError("Impossible de se connecter au serveur.");
 		} catch (IOException e) {
 			e.printStackTrace();
+			messageError.displayError("Impossible de se connecter au serveur.");
 		}
 	}
 
@@ -84,17 +85,22 @@ public class Client implements ClientCommunication {
 			Thread.sleep(0500); //Pour laisser le temps au client d'envoyer le message avant de fermer sa connexion.
 			this.serverConnexion.close();
 			this.serverConnexion = null;
+			messageError.displayError("Vous avez été déconnecté.");
 		} catch (IOException e){
 			e.printStackTrace();
+			this.serverConnexion = null;
+			messageError.displayError("Vous avez été déconnecté.");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			this.serverConnexion = null;
+			messageError.displayError("Vous avez été déconnecté.");
+
 		}
 		
 	}
 
 	@Override
 	public Integer retrievePointThreshold() {
-
 		return this.pointThreshold;
 	}
 
@@ -139,6 +145,13 @@ public class Client implements ClientCommunication {
 				    
 					} catch(Exception e) {
 						e.printStackTrace();
+						try {
+							serverConnexion.close();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						serverConnexion = null;
+						messageError.displayError("Envoie de données impossible. Vous avez été déconnecté du serveur.");
 					}
 				}
 			}
@@ -146,24 +159,25 @@ public class Client implements ClientCommunication {
 		retrieve.start();
 		
 	}
+	
 	@Override
 	public void sendCommands(final Map<Integer, Direction> commands) {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				sendObject(profiles);
+				sendObject(commands);
 			}
 		});
 		send.start();
 		return;
 	}
 
-	@Override
-	public String retrieveText() {
-		return this.messageText;
-	}
-
-	@Override
+	/**
+	 * Permet d'envoyer un message au serveur.
+	 * 
+	 * @param message
+	 * 		Le message a envoyer.
+	 */
 	public void sendText(final String message) {
 		Thread send = new Thread(new Runnable(){
 			@Override
@@ -190,9 +204,22 @@ public class Client implements ClientCommunication {
 						ois = new ObjectInputStream(serverConnexion.getInputStream());
 						Object objet = ois.readObject();
 						if (objet instanceof List<?>) 
-							profiles = (List<Profile>)objet;
-						else if (objet instanceof String) 
+							profileHandler.updateProfiles((List<Profile>)objet);
+						else if (objet instanceof String) {
 							messageText = (String)objet;
+							if(messageText == "/close") {
+								try {
+									serverConnexion.close();
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
+								serverConnexion = null;
+								messageError.displayError("Le serveur a été fermé.");
+								
+							} else if (messageText == "/reject") {
+								messageError.displayError("Profil non accepté, serveur complet.");
+							}
+						}
 						else if (objet instanceof Integer)
 							pointThreshold = (int)objet;
 					} catch (IOException e) {
@@ -220,6 +247,13 @@ public class Client implements ClientCommunication {
 			oos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+			try {
+				serverConnexion.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			serverConnexion = null;
+			messageError.displayError("Envoie de données impossible. Vous avez été déconnecté du serveur.");
 			return false;
 		}
 		return true;
@@ -227,14 +261,13 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		messageError = errorHandler;
+		this.messageError = errorHandler;
 		
 	}
 
 	@Override
 	public void setProfileHandler(ClientProfileHandler profileHandler) {
-		profileError = profileHandler;
-		return;
+		this.profileHandler = profileHandler;
 	}
 
 	@Override
@@ -251,7 +284,6 @@ public class Client implements ClientCommunication {
 			}
 		});
 		send.start();
-		return;
 	}
 }
 

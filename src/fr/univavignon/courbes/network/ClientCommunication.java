@@ -182,32 +182,32 @@ public interface ClientCommunication
      */
 	public void sendCommands(Map<Integer,Direction> commands);
 
-	/**
-     * Permet au client de récupérer un message textuel envoyé par le serveur
-     * auquel il est connecté.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @return
-     * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
-     * 		n'a été envoyé.
-     */
-	public String retrieveText();
-
-	/**
-     * Permet au client d'envoyer un message textuel au serveur auquel il est 
-     * connecté.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @param message 
-     * 		Le message textuel à envoyer au serveur.
-     */
-	public void sendText(String message);
+//	/**
+//  * Permet au client de récupérer un message textuel envoyé par le serveur
+//  * auquel il est connecté.
+//  * <br/>
+//  * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//  * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//  * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//  * parallèle de l'exécution du jeu. 
+//  *
+//  * @return
+//  * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
+//  * 		n'a été envoyé.
+//  */
+//	public String retrieveText();
+//
+//	/**
+//  * Permet au client d'envoyer un message textuel au serveur auquel il est 
+//  * connecté.
+//  * <br/>
+//  * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//  * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//  * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//  * parallèle de l'exécution du jeu. 
+//  *
+//  * @param message 
+//  * 		Le message textuel à envoyer au serveur.
+//  */
+//	public void sendText(String message);
 }

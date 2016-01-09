@@ -25,8 +25,9 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
- * @author Loïc
+ * @author TORO Loïc
  *
+ *Classe fille de ServerCommunication, elle en implémente toutes les méthodes.
  */
 public class Server implements ServerCommunication {
 
@@ -46,14 +47,10 @@ public class Server implements ServerCommunication {
 	protected ArrayList<Socket> socketArray = new ArrayList<Socket>();
 	/** Socket du serveur. */
 	private ServerSocket sSocket = null;
-	/**	Buffer pour la liste de profil envoyé par un client */
-	protected List<Profile> profilesClient =  null;
 	/** Buffer pour les commandes d'un client */
 	protected Map<Integer, Direction> commands= null;
-	/** Buffer pour les messages des clients */
-	protected String [] arrayText = null;
 	/** Erreur de profil */
-	protected ServerProfileHandler profileError;
+	protected ServerProfileHandler profileHandler;
 	/**Envoie d'un message d'erreur a l'IU	 */
 	protected ErrorHandler messageError;
 	
@@ -128,15 +125,17 @@ public class Server implements ServerCommunication {
  	    	@Override
 			public void run(){
  	    		isRunning = true;
- 	    		while(isRunning == true){
+ 	    		while(isRunning){
  	    			try {
  	    				//wait client communication
- 	    				Socket client = sSocket.accept(); 
- 	    				socketArray.add(client);
- 	    				arrayOfIp.add(client.getInetAddress().getHostAddress());
- 	    				nbClients++;
- 	    				Thread newClient = new Thread(new ClientProcessor(client));
- 	    				newClient.start();
+ 	    				if (nbClients < size){
+	 	    				Socket client = sSocket.accept(); 
+	 	    				socketArray.add(client);
+	 	    				arrayOfIp.add(client.getInetAddress().getHostAddress());
+	 	    				nbClients++;
+	 	    				Thread newClient = new Thread(new ClientProcessor(client));
+	 	    				newClient.start();
+ 	    				}
  	    			} catch (IOException e) {
  	    				e.printStackTrace();
  	    			}
@@ -148,15 +147,20 @@ public class Server implements ServerCommunication {
  	    			sSocket = null;
  	    		}
  	    	}
- 	    });
-	      
+ 	    });  
 	   launch.start();
 	}
 
 	@Override
 	public void closeServer() {
 		this.isRunning = false;
-		//envoyer un message a tous les clients.
+		sendText("/close");
+		try {
+			sSocket.close();
+		} catch (IOException e) {
+			sSocket=null;
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -216,7 +220,11 @@ public class Server implements ServerCommunication {
 		return this.commands;
 	}
 
-	@Override
+	/**
+	 * Envoie un message à tous les clients.
+	 * @param message
+	 * 		Un String contenant le message a envoyé.
+	 */
 	public void sendText(final String message) {
 		Thread send = new Thread(new Runnable(){
 			@Override
@@ -227,13 +235,7 @@ public class Server implements ServerCommunication {
 		send.start();
 		return ;
 	}
-
-	@Override
-	public String[] retrieveText() {
-		return this.arrayText;
-	}
 	
-
 	@Override
 	public void sendProfiles(final List<Profile> profiles) {
 		Thread send = new Thread(new Runnable(){
@@ -247,32 +249,43 @@ public class Server implements ServerCommunication {
 	}
 	
 	/**
+	 * 	Permet d'envoyer un objet a tous les clients.
 	 * @param objet
-	 * 		Tout ce qu'on veut envoyer.
+	 * 		Correspond à n'importe quel objet à sérialiser puis à envoyer.
 	 */
 	private synchronized void sendObject(Object objet) {
-		try {
-			for(Socket sock:socketArray){
+		for(Socket sock:socketArray){
+			try {
 				ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
 				oos.writeObject(objet);
 				oos.flush();
+			
+			} catch (IOException e) {
+				nbClients--;
+				socketArray.remove(sock);
+				arrayOfIp.remove(sock.getInetAddress().getHostAddress());
+				messageError.displayError("L'ip "+sock.getInetAddress().getHostAddress()+" a été déconnecté.");
+				try {
+					sock.close();
+				} catch (IOException e1) {
+					sock = null;
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return;
 	}
 
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		messageError = errorHandler;
+		this.messageError = errorHandler;
 		
 	}
 
 	@Override
 	public void setProfileHandler(ServerProfileHandler profileHandler) {
-		profileError = profileHandler;
-		return;
+		this.profileHandler = profileHandler;
 	}
 	
 }

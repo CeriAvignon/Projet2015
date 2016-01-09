@@ -170,33 +170,34 @@ public interface ServerCommunication
      */
 	public Map<Integer,Direction> retrieveCommands();
 
-	/**
-     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
-     * connectés.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @param message
-     * 		Contient le message destiné aux clients.
-     */
-	public void sendText(String message);
+//	/**
+//  * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
+//  * connectés.
+//  * <br/>
+//  * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//  * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//  * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//  * parallèle de l'exécution du jeu. 
+//  *
+//  * @param message
+//  * 		Contient le message destiné aux clients.
+//  */
+//	public void sendText(String message);
+//	
+//	/**
+//  * Permet au serveur de recevoir des messages textuels provenant de ses clients.
+//  * La méthode renvoie un tableau dont chaque valeur correspond à un client. En
+//  * l'absence de message envoyé par un client, sa valeur est {@code null}.
+//  * <br/>
+//  * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
+//  * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
+//  * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//  * parallèle de l'exécution du jeu. 
+//  *
+//  * @return 
+//  * 		Un tableau de chaînes de caractères, chacune envoyée par un client donné.
+//  * 		En l'absence de message, la valeur associée à un client est {@code null}.
+//  */
+//	public String[] retrieveText();
 	
-	/**
-     * Permet au serveur de recevoir des messages textuels provenant de ses clients.
-     * La méthode renvoie un tableau dont chaque valeur correspond à un client. En
-     * l'absence de message envoyé par un client, sa valeur est {@code null}.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-     *
-     * @return 
-     * 		Un tableau de chaînes de caractères, chacune envoyée par un client donné.
-     * 		En l'absence de message, la valeur associée à un client est {@code null}.
-     */
-	public String[] retrieveText();
 }
