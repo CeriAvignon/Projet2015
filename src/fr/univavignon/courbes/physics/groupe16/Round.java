@@ -111,6 +111,8 @@ public class Round implements PhysicsEngine {
 		majSnakesEffects(elapsedTime);
 		// Mise à jour du prochain spawn d'item
 		majSpawnItem(elapsedTime);
+		// Mise à jour des durée des items
+		majItemsDuration(elapsedTime);
 	}
 
 	/**
@@ -309,7 +311,23 @@ public class Round implements PhysicsEngine {
 			}
 		}
 	}
-
+	
+	/**
+	 * Met à jour le temps restant des items sur la map et les supprime
+	 * si leur temps est écoulé.
+	 * 
+	 * @param elapsedTime Temps écoulé depuis la dernière mise à jour de la board (ms)
+	 */
+	public void majItemsDuration(long elaspedTime) {
+		for (Iterator<Entry<Position, Item>> i = board.itemsMap.entrySet().iterator(); i.hasNext(); ) {
+		
+			Entry<Position, Item> entry = i.next();
+			entry.getValue().duration -= elaspedTime;
+			if(entry.getValue().duration <= 0) {
+				i.remove();
+			}
+		}
+	}
 
 	/**
 	 * Génére une position aléatoire sur la plateau, la fonction générera une position qui n'est pas
