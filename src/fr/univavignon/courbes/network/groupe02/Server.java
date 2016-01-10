@@ -22,18 +22,33 @@ import java.net.InetSocketAddress;
 
 /**
  * 
- * 
  * @author Marie et Mary    
  * 
- * On fait la classe serveur
+ * Création de la classe server qui implémente les fonction de l'interface serverCommunication
  *
  */
 public class Server implements ServerCommunication
 {
-	int port = 2345;
-	String ip;
-	ServerSocket server = null;
-	boolean isRunning = false;
+	/**
+	 * 	Variable de type integer contenant le port par défaut du serveur
+	 */
+	protected int port = 2345;
+	
+	/**
+	 *  Variabke de type String contenant l'adresse ip du serveur
+	 */
+	protected String ip;
+
+	/**
+	 *  Variable de type boolean permettant d'attendre une connexion
+	 *  tant qu'elle est à 1
+	 */
+	protected boolean isRunning = false;
+	
+	/**
+	 *  Variable contenant le socket du serveur
+	 */
+	private ServerSocket server = null;
 	
 	@Override
 	public void launchServer() 
@@ -135,14 +150,8 @@ public class Server implements ServerCommunication
 				}
 			}
 		});
-		return;
 	}
 
-	@Override
-	public String[] retrieveText() 
-	{
-		return null;
-	}
 
 	@Override
 	public String getIp() 
@@ -160,6 +169,12 @@ public class Server implements ServerCommunication
 	public void setPort(int port) 
 	{
 		this.port = port;
+	}
+
+	@Override
+	public String[] retrieveText() {
+		
+		return null;
 	}
 	
 }

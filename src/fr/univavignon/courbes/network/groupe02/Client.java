@@ -16,12 +16,14 @@ import java.util.Scanner;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.network.ClientProfileHandler;
 /**
  * 
  * @author Marie et Mary    
  * 
- * On fait la classe Client
+ * Création de la classe client qui implémente les fonction de l'interface clientCommunication
  *
  */
 public class Client implements ClientCommunication
@@ -94,7 +96,6 @@ public class Client implements ClientCommunication
 	@Override
 	public List<Profile> retrieveProfiles() 
 	{
-		
 		return null;
 	}
 
@@ -162,10 +163,11 @@ public class Client implements ClientCommunication
 	     {
 	         e.printStackTrace();
 	     }
+		return null;
 	}
 
 	@Override
-	public void sendText(final String message) 
+	/*public void sendText(final String message) 
 	{
 		final PrintWriter out; // Pour envoyer
 		
@@ -193,6 +195,31 @@ public class Client implements ClientCommunication
 		{
 			e.printStackTrace();
 		}		
+	}*/
+
+	
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	@Override
+	public void setProfileHandler(ClientProfileHandler profileHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean addProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
