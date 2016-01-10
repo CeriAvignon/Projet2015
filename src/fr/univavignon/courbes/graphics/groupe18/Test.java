@@ -1,31 +1,46 @@
 package fr.univavignon.courbes.graphics.groupe18;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.common.Item;
+import fr.univavignon.courbes.physics.groupe04.MyPhysicsEngine;
+import fr.univavignon.courbes.physics.groupe10.Rnd;
 
 /**
  * Sert a effectuer les tests de notre composante
  * @author uapv1504323 Antoine Letourneur
  * @author uapv1402334 Axel Clerici
  */
-public class Test {
+public  class Test {
+	
+	public static Map<Integer, Direction> commandMap;
 	/**
 	 * @param args
 	 * 		parametre par defaut de la fonction main, non utilisé dans notre programme
 	 */
 	public static void main(String[] args){
-		
+		/*
 		JFrame fenetreScore = new JFrame();
 		fenetreScore.setTitle("Démonstration Score Panel");
 		fenetreScore.setSize(380, 800);
@@ -171,7 +186,204 @@ public class Test {
 		}
 		//Test.end();
 		//fenetreScore.setVisible(true);
-		fenetreBoard.setVisible(true);
+		fenetreBoard.setVisible(true);*/
+		mainLoop();
 		
 	}
+	
+	
+	public static void mainLoop() {
+	
+		Profile joueur1Profile = new Profile();
+		joueur1Profile.userName = "Blobfish";
+		joueur1Profile.profileId = 5555;
+		Profile joueur2Profile = new Profile();
+		joueur2Profile.userName = "Giraffe";
+		joueur2Profile.profileId = 42;
+		Profile joueur3Profile = new Profile();
+		joueur3Profile.userName = "Guest 120 Billion";
+		joueur3Profile.profileId = 666;
+		Profile joueur4Profile = new Profile();
+		joueur4Profile.userName = "Lama";
+		joueur4Profile.profileId = 1234;
+		Profile joueur5Profile = new Profile();
+		joueur5Profile.userName = "Pingouin";
+		joueur5Profile.profileId = 3;
+		List<Profile> players = new ArrayList<Profile>();
+		players.add(joueur1Profile);
+		players.add(joueur2Profile);
+		players.add(joueur3Profile);
+		players.add(joueur4Profile);
+		players.add(joueur5Profile);
+		
+		
+		
+		
+		int profileIds[] = new int[5];
+		profileIds[0] = joueur1Profile.profileId;
+		profileIds[1] = joueur2Profile.profileId;
+		profileIds[2] = joueur3Profile.profileId;
+		profileIds[3] = joueur4Profile.profileId;
+		profileIds[4] = joueur5Profile.profileId;
+		
+		Rnd MP = new Rnd();
+		Board board = MP.init(800, 600 , profileIds);
+		for(int i=0; i<board.snakes.length; i++) {
+			board.snakes[i].currentScore = 4;
+		}
+		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
+		
+		JFrame window = new JFrame();
+		window.setTitle("Curve Fever");
+		window.setSize(board.width + 500, board.height + 100);
+		window.setLocationRelativeTo(null);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
+		window.setVisible(true);
+		
+		JPanel boardPanel = new JPanel();
+		JPanel scorePanel = new JPanel();
+		JPanel content = new JPanel();
+		GridBagConstraints gbc = new GridBagConstraints();
+		content.setLayout(new GridBagLayout());
+		content.setPreferredSize(new Dimension(board.width + 400, board.height));
+		boardPanel.setPreferredSize(new Dimension(board.width, board.height));
+		scorePanel.setPreferredSize(new Dimension(400, board.height));
+		int pointThreshold = getPointThreshold(board.snakes);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		content.add(scorePanel, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		content.add(boardPanel, gbc);
+		boolean gameOver = false;
+		commandMap = new HashMap<Integer, Direction>();
+		
+		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+	        .put(KeyStroke.getKeyStroke("D"), "test1");
+		boardPanel.getActionMap().put("test1", new MoveAction(Direction.RIGHT));
+		
+		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("Q"), "test2");
+	boardPanel.getActionMap().put("test2", new MoveAction(Direction.LEFT));
+		
+		while( gameOver == false) {
+			System.out.println("wtf ?");
+			boolean roundOver = false;
+			System.out.println(board.snakes[1].currentScore);
+			board = MP.init(board.width, board.height, profileIds);
+			System.out.println(board.snakes[1].currentScore);
+			MG.init(board, pointThreshold, players, boardPanel, scorePanel);
+			window.repaint();
+			
+			window.add(content);
+			window.setVisible(true);
+			List<Integer> order = new ArrayList<Integer>();
+			while (roundOver == false) {
+				try {
+		    		Thread.sleep(70);
+					} 
+				catch(InterruptedException ex) {
+		    		Thread.currentThread().interrupt();
+					}
+				MP.update(70, commandMap);
+				MG.update();
+				window.setVisible(true);
+				for(int i = 0; i<board.snakes.length; i++) {
+					boolean alreadyDead = false;
+					if(board.snakes[i].state == false) {
+						for(int j =0; j<order.size(); j++) {
+							if(order.get(j) == board.snakes[i].profileId)
+								alreadyDead = true;
+						}
+					}
+					if(!alreadyDead) 
+						order.add(board.snakes[i].playerId);
+					}
+				if(order.size() == board.snakes.length -1) {
+					for(int i = 0; i<board.snakes.length-1; i++) {
+						if(board.snakes[i].state == true) {
+							order.add(board.snakes[i].playerId);
+						}
+					}
+				}
+				roundOver = isRoundOver(board.snakes);
+			}
+			updateScores(order, board.snakes);
+			MG.end();
+			window.setVisible(true);
+			try {
+	    		Thread.sleep(2000);
+				} 
+			catch(InterruptedException ex) {
+	    		Thread.currentThread().interrupt();
+				}
+
+			gameOver = isGameOver(board.snakes, pointThreshold);
+		}
+		MG.end();
+	}
+	
+	
+	public static int getPointThreshold(Snake snakes[]) {
+		int scoreGap = (snakes.length - 1);
+		int pointThreshold = 10 * scoreGap;
+		int compt = 0;
+		for (int i = 0; i < snakes.length; i ++) {
+			if (snakes[i].currentScore > pointThreshold - scoreGap)
+				compt ++;
+		}
+		if (compt >= 2)
+			pointThreshold += scoreGap;
+		
+		return pointThreshold;
+	}
+	
+	public static boolean isGameOver(Snake snakes[], int pointThreshold) {
+		int max = 0;
+		for( int i = 0; i<(snakes.length); i++) {
+			if(snakes[i].currentScore > max) {
+				max = snakes[i].currentScore;
+			}
+		}
+		if(max > pointThreshold)
+			return true;
+		else
+			return false;
+	}
+	
+	public static boolean isRoundOver(Snake snakes[]) {
+		int compt = 0;
+		for(int i = 0 ; i<snakes.length;i++) {
+			if(snakes[i].state == true)
+				compt ++;
+		}
+		if (compt >= 2)
+			return false;
+		else
+			return true;
+	}
+	
+	
+	static class MoveAction extends AbstractAction {
+		Direction direction;
+		MoveAction(Direction direction) {
+			this.direction = direction;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			System.out.println("blob");
+			Test.commandMap.put(1, this.direction);
+		}
+	}
+	
+	public static void updateScores(List<Integer> order, Snake snakes[]) {
+		for(int i = 0; i<order.size(); i++) {
+			snakes[order.get(i)].currentScore += i;
+			System.out.println(snakes[i].currentScore);
+		}
+	}
 }
+

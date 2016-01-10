@@ -3,12 +3,9 @@ import java.awt.Dimension;
 import java.awt.Color; 
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.Map;
 import java.lang.Math;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Board;

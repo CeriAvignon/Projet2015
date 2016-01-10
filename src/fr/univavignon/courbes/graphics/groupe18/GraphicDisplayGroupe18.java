@@ -2,6 +2,7 @@ package fr.univavignon.courbes.graphics.groupe18;
 
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
@@ -62,11 +63,14 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	public void update() {
 		this.boardPanel.removeAll();
 		setBoardPanel(this.board, this.boardPanel);
+		this.scorePanel.removeAll();
+		setScorePanel(board, pointThreshold, players, scorePanel);
 	}
 
 	@Override
 	public void end() {
 		this.boardPanel.removeAll();
+		this.scorePanel.removeAll();
 		int max = 0 ;
 		String winner = "init";
 		int profileId = 0;
@@ -88,9 +92,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		    text.setFont(new Font("Verdana",1,23));
 		    setColor(text,profileId);
 		    this.boardPanel.setBackground(Color.BLACK);
-		    this.boardPanel.add(text,BorderLayout.CENTER);
-
-		    
+		    this.boardPanel.add(text,BorderLayout.CENTER);  
 		}
 		else {
 		    GridLayout display = new GridLayout(board.snakes.length+1,board.snakes.length+1);
@@ -141,7 +143,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	    scorePanel.setLayout(display);
 	    
     	JPanel scoreToReach = new JPanel();
-    	scoreToReach.setBackground(Color.black);
+    	scoreToReach.setBackground(new Color(118, 118, 118));
     	scoreToReach.setLayout(leftColumn);
     	String test = "Score à atteindre : ";
 	    JLabel text = new JLabel(test);
@@ -150,7 +152,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	    scoreToReach.add(text)	;
 	    
     	JPanel panel2 = new JPanel();
-    	panel2.setBackground(Color.black);
+    	panel2.setBackground(new Color(118, 118, 118));
     	panel2.setLayout(rightColumn);
     	String Goal = String.valueOf(goal);
 	    JLabel text2 = new JLabel(Goal);
@@ -197,11 +199,11 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	 * 		C'est le layout du panel, découpe en 2 colonnes et n+1 lignes (la ligne score a atteindre + n joueurs)
 	 */
 	public static void drawScores(int goal, int size, Board board, List<Profile> players, FlowLayout leftColumn, FlowLayout rightColumn, JPanel gridPanel) {
-		   for(int n = goal; n>0; n--) {
-		    	for(int i=0; i<size;i++) {
+		   for(int n = goal; n >= 0; n--) {
+		    	for(int i = 0 ; i < size; i ++) {
 		    		if(board.snakes[i].currentScore == n) {
 			    		JPanel playerName = new JPanel();
-			    		playerName.setBackground(Color.black);
+			    		playerName.setBackground(new Color(118, 118, 118));
 			    		playerName.setLayout(leftColumn);
 			    		String pseudo = (players.get(i)).userName;
 			    		JLabel text3 = new JLabel(pseudo);
@@ -210,7 +212,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 			    		playerName.add(text3)	;
 				    
 			    		JPanel playerScore = new JPanel();
-			    		playerScore.setBackground(Color.black);
+			    		playerScore.setBackground(new Color(118, 118, 118));
 			    		playerScore.setLayout(rightColumn);
 			    		String Score = String.valueOf(board.snakes[i].currentScore);
 			    		JLabel text4 = new JLabel(Score);
