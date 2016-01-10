@@ -16,9 +16,9 @@ import java.util.Scanner;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
-import fr.univavignon.courbes.network.ClientProfileHandler;
 /**
  * 
  * @author Marie et Mary    
@@ -28,10 +28,21 @@ import fr.univavignon.courbes.network.ClientProfileHandler;
  */
 public class Client implements ClientCommunication
 {
-
-	protected Socket socketClient = null;
+	/**
+	 * 	Variable de type integer contenant le port du client
+	 */
 	protected int port = 2345;
+	
+	/**
+	 * 	Variable de type String contenant  contenant l'adresse ip du client
+	 */
 	protected String ip;
+	
+	/**
+	 *  Variable contenant le socket du client
+	 */
+	private Socket socketClient = null;
+	
 	
 	@Override
 	public String getIp() 
@@ -56,7 +67,19 @@ public class Client implements ClientCommunication
 	{
 		this.port = port;
 	}
+	
+	public void setErrorHandler(ErrorHandler errorHandler) 
+	{
+		
+	}
 
+	
+	@Override
+	public void setProfileHandler(ClientProfileHandler profileHandler) 
+	{
+		
+	}
+	
 	@Override
 	public void launchClient() 
 	{
@@ -94,9 +117,16 @@ public class Client implements ClientCommunication
 	}
 
 	@Override
-	public List<Profile> retrieveProfiles() 
+	public boolean addProfile(Profile profile)
 	{
-		return null;
+		
+		return false;
+	}
+
+	@Override
+	public void removeProfile(Profile profile) 
+	{
+		
 	}
 
 	@Override
@@ -119,7 +149,7 @@ public class Client implements ClientCommunication
 		
 	}
 
-	@Override
+	/*@Override
 	public String retrieveText() 
 	{
 		final BufferedReader rec; //Pour recevoir		
@@ -167,7 +197,7 @@ public class Client implements ClientCommunication
 	}
 
 	@Override
-	/*public void sendText(final String message) 
+	public void sendText(final String message) 
 	{
 		final PrintWriter out; // Pour envoyer
 		
@@ -198,28 +228,5 @@ public class Client implements ClientCommunication
 	}*/
 
 	
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	@Override
-	public void setProfileHandler(ClientProfileHandler profileHandler) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean addProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void removeProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

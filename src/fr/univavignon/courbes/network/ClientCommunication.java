@@ -182,6 +182,7 @@ public interface ClientCommunication
      */
 	public void sendCommands(Map<Integer,Direction> commands);
 
+
 //	/**
 //     * Permet au client de récupérer un message textuel envoyé par le serveur
 //     * auquel il est connecté.
