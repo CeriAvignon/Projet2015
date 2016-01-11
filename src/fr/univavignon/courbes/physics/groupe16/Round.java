@@ -14,6 +14,10 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
+/**
+ * @author Groupe 16 : Mickael Beguin, Rachid Azzouzi, Thomas Hernandez
+ *	
+ */
 public class Round implements PhysicsEngine {
 
 	/** Represente le plateau de jeu de la manche courante **/
@@ -41,6 +45,7 @@ public class Round implements PhysicsEngine {
 	/** Est vrai si le snake à dessiné une tête temporaire **/
 	private Map<Integer, Boolean> isTempHead;
 
+	@Override
 	public Board init(int width, int height, int[] profileIds) {
 
 		int playerNbr = profileIds.length;
@@ -98,6 +103,7 @@ public class Round implements PhysicsEngine {
 	}
 
 
+	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
 		// Mise à jour du temps d'invincibilité de début de round
@@ -663,6 +669,7 @@ public class Round implements PhysicsEngine {
 		}
 	}
 
+	@Override
 	public void forceUpdate(Board board) {
 
 		this.board.width = board.width;
@@ -673,6 +680,7 @@ public class Round implements PhysicsEngine {
 
 	}
 
+	@Override
 	public Board initDemo(int width, int height, int[] profileIds) {
 		int playerNbr = 2;
 		if(profileIds.length != 2){
