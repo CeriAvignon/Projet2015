@@ -199,7 +199,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 	 * 		C'est le layout du panel, découpe en 2 colonnes et n+1 lignes (la ligne score a atteindre + n joueurs)
 	 */
 	public static void drawScores(int goal, int size, Board board, List<Profile> players, FlowLayout leftColumn, FlowLayout rightColumn, JPanel gridPanel) {
-		   for(int n = goal; n >= 0; n--) {
+		   for(int n = goal+ board.snakes.length; n >= 0; n--) {
 		    	for(int i = 0 ; i < size; i ++) {
 		    		if(board.snakes[i].currentScore == n) {
 			    		JPanel playerName = new JPanel();

@@ -226,7 +226,7 @@ public  class Test {
 		profileIds[3] = joueur4Profile.profileId;
 		profileIds[4] = joueur5Profile.profileId;
 		
-		Rnd MP = new Rnd();
+		MyPhysicsEngine MP = new MyPhysicsEngine();
 		Board board = MP.init(800, 600 , profileIds);
 		int scores[] = new int[board.snakes.length];
 		for(int i=0; i<board.snakes.length; i++) {
@@ -315,7 +315,10 @@ public  class Test {
 				
 				roundOver = isRoundOver(board.snakes);
 			}
-			updateScores(order, scores);
+			updateScores(order, scores, board.snakes);
+			for(int i=0;i<board.snakes.length;i++) {
+				board.snakes[i].currentScore = scores[i];
+			}
 			MG.end();
 			window.setVisible(true);
 			gameOver = isGameOver(board.snakes, pointThreshold);
@@ -351,10 +354,11 @@ public  class Test {
 	public static boolean isGameOver(Snake snakes[], int pointThreshold) {
 		int max = 0;
 		for( int i = 0; i<(snakes.length); i++) {
-			if(snakes[i].currentScore > max) {
+			if(snakes[i].currentScore >= max) {
 				max = snakes[i].currentScore;
 			}
 		}
+		System.out.println(max);
 		if(max >= pointThreshold)
 			return true;
 		else
@@ -386,9 +390,12 @@ public  class Test {
 		}
 	}
 	
-	public static void updateScores(List<Integer> order, int scores[]) {
+	public static void updateScores(List<Integer> order, int scores[], Snake snakes[]) {
 		for(int i = 0; i<order.size(); i++) {
 			scores[order.get(i)] += i;
+		}
+		for(int i =0; i<snakes.length; i++) {
+			snakes[i].currentScore = scores[i];
 		}
 	}
 }
