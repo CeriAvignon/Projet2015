@@ -14,7 +14,6 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
-
 public class Round implements PhysicsEngine {
 
 	/** Represente le plateau de jeu de la manche courante **/
@@ -112,8 +111,6 @@ public class Round implements PhysicsEngine {
 		majSnakesEffects(elapsedTime);
 		// Mise à jour du prochain spawn d'item
 		majSpawnItem(elapsedTime);
-		// Mise à jour des durée des items
-		majItemsDuration(elapsedTime);
 	}
 
 	/**
@@ -139,8 +136,9 @@ public class Round implements PhysicsEngine {
 
 		boolean flgSpawn = false;
 		do {
-			int itCenterX = radItem + (int)(Math.random() * board.height - radItem); 
-			int itCenterY = radItem + (int)(Math.random() * board.width - radItem); 
+			//(int)( Math.random()*( max - mini + 1 ) ) + mini;
+			int itCenterX = (int)( Math.random()*( (board.height - radItem) - radItem + 1 ) ) + radItem;
+			int itCenterY = (int)( Math.random()*( (board.width - radItem) - radItem + 1 ) ) + radItem;
 			Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
 			if(board.snakesMap.get(posC) == null) {
 				flgSpawn = true;
@@ -163,7 +161,6 @@ public class Round implements PhysicsEngine {
 		{
 		case COLLECTIVE_ERASER:
 			board.snakesMap.clear();
-
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			for(Snake snake : board.snakes) {
@@ -172,7 +169,8 @@ public class Round implements PhysicsEngine {
 			}
 			break;
 		case COLLECTIVE_THREE_CIRCLES:
-			itemRate *= 3;
+			board.snakes[id].currentItems.put(item, (long)item.duration);
+			itemRate = 3;
 			break;
 		case OTHERS_REVERSE:
 			for(Snake snake : board.snakes) {
@@ -210,7 +208,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case USER_BIG_HOLE:
 			board.snakes[id].currentItems.put(item, (long)item.duration);
-			board.snakes[id].holeRate /= 2;
+			board.snakes[id].holeRate *= 2;
 			break;
 		case USER_SLOW:
 			board.snakes[id].currentItems.put(item, (long)item.duration);
@@ -238,14 +236,14 @@ public class Round implements PhysicsEngine {
 		switch(item)
 		{
 		case COLLECTIVE_ERASER:
-			board.snakesMap.clear();
 			break;
 		case COLLECTIVE_TRAVERSE_WALL:
 			i.remove();
 			board.snakes[id].collision = true;
 			break;
 		case COLLECTIVE_THREE_CIRCLES:
-			itemRate /= 3;
+			i.remove();
+			itemRate = 1;
 			break;
 		case OTHERS_REVERSE:
 			i.remove();
@@ -267,7 +265,7 @@ public class Round implements PhysicsEngine {
 			break;
 		case USER_BIG_HOLE:
 			i.remove();
-			board.snakes[id].holeRate *= 2;
+			board.snakes[id].holeRate /= 2;
 			break;
 		case USER_SLOW:
 			i.remove();
@@ -313,22 +311,6 @@ public class Round implements PhysicsEngine {
 		}
 	}
 	
-	/**
-	 * Met à jour le temps restant des items sur la map et les supprime
-	 * si leur temps est écoulé.
-	 * 
-	 * @param elapsedTime Temps écoulé depuis la dernière mise à jour de la board (ms)
-	 */
-	public void majItemsDuration(long elaspedTime) {
-		for (Iterator<Entry<Position, Item>> i = board.itemsMap.entrySet().iterator(); i.hasNext(); ) {
-		
-			Entry<Position, Item> entry = i.next();
-			entry.getValue().duration -= elaspedTime;
-			if(entry.getValue().duration <= 0) {
-				i.remove();
-			}
-		}
-	}
 
 	/**
 	 * Génére une position aléatoire sur la plateau, la fonction générera une position qui n'est pas
@@ -343,10 +325,10 @@ public class Round implements PhysicsEngine {
 
 		Boolean flagPos;
 		Position posSpawn = new Position(0,0);
-
+		
 		do {
-			posSpawn.x = 100 + (int)(Math.random() * (heightBoard - 200)); 
-			posSpawn.y = 100 + (int)(Math.random() * (widthBoard - 200)); 
+			posSpawn.x = (int)( Math.random()*( (board.height - 50) - (50) + 1 ) ) + 50;
+			posSpawn.y = (int)( Math.random()*( (board.width - 50) - (50) + 1 ) ) + 50;
 			flagPos = true;
 
 			for(int i = 0; i < board.snakes.length ; i++)// Teste de la proximité avec un autre snake
@@ -534,12 +516,12 @@ public class Round implements PhysicsEngine {
 	public void snakeEncounterSnake(Snake snake) {
 
 		int hitBox[][] = new int[3][2];
-		hitBox[0][0] = snake.currentX + (int) ((snake.headRadius+1) * Math.cos(Math.toRadians(snake.currentAngle)));
-		hitBox[0][1] = snake.currentY - (int) ((snake.headRadius+1) * Math.sin(Math.toRadians(snake.currentAngle)));
-		hitBox[1][0] = snake.currentX + (int) ((snake.headRadius+2) * Math.cos(Math.toRadians(snake.currentAngle + 75)));
-		hitBox[1][1] = snake.currentY - (int) ((snake.headRadius+2) * Math.sin(Math.toRadians(snake.currentAngle + 75)));
-		hitBox[2][0] = snake.currentX + (int) ((snake.headRadius+2) * Math.cos(Math.toRadians(snake.currentAngle - 75)));
-		hitBox[2][1] = snake.currentY - (int) ((snake.headRadius+2) * Math.sin(Math.toRadians(snake.currentAngle - 75)));
+		hitBox[0][0] = snake.currentX + (int) ((snake.headRadius+3) * Math.cos(Math.toRadians(snake.currentAngle)));
+		hitBox[0][1] = snake.currentY - (int) ((snake.headRadius+3) * Math.sin(Math.toRadians(snake.currentAngle)));
+		hitBox[1][0] = snake.currentX + (int) ((snake.headRadius+3) * Math.cos(Math.toRadians(snake.currentAngle + 75)));
+		hitBox[1][1] = snake.currentY - (int) ((snake.headRadius+3) * Math.sin(Math.toRadians(snake.currentAngle + 75)));
+		hitBox[2][0] = snake.currentX + (int) ((snake.headRadius+3) * Math.cos(Math.toRadians(snake.currentAngle - 75)));
+		hitBox[2][1] = snake.currentY - (int) ((snake.headRadius+3) * Math.sin(Math.toRadians(snake.currentAngle - 75)));
 
 		for(int i = 0; i < 3; i++) {
 			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
@@ -679,7 +661,6 @@ public class Round implements PhysicsEngine {
 				i.remove();
 			}
 		}
-
 	}
 
 	public void forceUpdate(Board board) {
@@ -692,10 +673,51 @@ public class Round implements PhysicsEngine {
 
 	}
 
-	@Override
 	public Board initDemo(int width, int height, int[] profileIds) {
-		// TODO Auto-generated method stub
-		return null;
+		int playerNbr = 2;
+		if(profileIds.length != 2){
+			System.out.println("2 profiles requis");
+			return null;
+		}
+		deltaSnake = new double[playerNbr][2];
+		holeTick = new HashMap<Integer, Integer>();
+		moveCount = new HashMap<Integer, Integer>();
+		deltaID = new HashMap<Integer, Integer>();
+		tempHead = new HashMap<Position, Integer>();
+		isTempHead = new HashMap<Integer, Boolean>();
+		itemTick = 7000 +(int)(Math.random() * 13000);
+		board = new Board();
+		board.width = width;
+		board.height = height;
+		board.snakesMap = new HashMap<Position, Integer>();
+		board.itemsMap = new HashMap<Position, Item>();
+		board.snakes = new Snake[playerNbr];
+		Position posSpawn;
+
+		for (int i = 0; i < playerNbr ; i++) 
+		{
+			posSpawn = generateSnakeSpawnPos(width, height);
+			board.snakes[i] = new Snake();
+			deltaID.put(profileIds[i], i);
+			isTempHead.put(profileIds[i], false);
+			initSnake(board.snakes[i], profileIds[i] , posSpawn);
+			System.out.println("Snake " + Integer.toString(i) + " spawn a la position x:" + Integer.toString(posSpawn.x) + "  y:"+Integer.toString(posSpawn.y));
+		}
+		
+		/** Spawn de tout les items du jeu **/
+		Item[] itemTab = new Item[]{Item.USER_SLOW, Item.USER_SPEED, Item.OTHERS_SPEED, Item.OTHERS_SLOW,
+									Item.OTHERS_REVERSE, Item.OTHERS_THICK, Item.USER_BIG_HOLE, Item.COLLECTIVE_THREE_CIRCLES,
+									Item.COLLECTIVE_ERASER, Item.COLLECTIVE_TRAVERSE_WALL};
+		board.itemsMap.put(new Position(100,100), itemTab[0] );
+		board.itemsMap.put(new Position(200,100), itemTab[1] );
+		board.itemsMap.put(new Position(300,100), itemTab[2] );
+		board.itemsMap.put(new Position(400,100), itemTab[3] );
+		board.itemsMap.put(new Position(100,200), itemTab[4] );
+		board.itemsMap.put(new Position(100,300), itemTab[5] );
+		board.itemsMap.put(new Position(100,400), itemTab[6] );
+		board.itemsMap.put(new Position(200,200), itemTab[7] );
+		board.itemsMap.put(new Position(300,300), itemTab[8] );
+		return board;
 	}
 
 
