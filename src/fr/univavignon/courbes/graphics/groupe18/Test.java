@@ -228,8 +228,9 @@ public  class Test {
 		
 		Rnd MP = new Rnd();
 		Board board = MP.init(800, 600 , profileIds);
+		int scores[] = new int[board.snakes.length];
 		for(int i=0; i<board.snakes.length; i++) {
-			board.snakes[i].currentScore = 4;
+			scores[i] = 0;
 		}
 		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
 		
@@ -269,11 +270,11 @@ public  class Test {
 	boardPanel.getActionMap().put("test2", new MoveAction(Direction.LEFT));
 		
 		while( gameOver == false) {
-			System.out.println("wtf ?");
 			boolean roundOver = false;
-			System.out.println(board.snakes[1].currentScore);
 			board = MP.init(board.width, board.height, profileIds);
-			System.out.println(board.snakes[1].currentScore);
+			for(int i=0;i<board.snakes.length;i++) {
+				board.snakes[i].currentScore = scores[i];
+			}
 			MG.init(board, pointThreshold, players, boardPanel, scorePanel);
 			window.repaint();
 			
@@ -291,38 +292,45 @@ public  class Test {
 				MG.update();
 				window.setVisible(true);
 				for(int i = 0; i<board.snakes.length; i++) {
-					boolean alreadyDead = false;
 					if(board.snakes[i].state == false) {
-						for(int j =0; j<order.size(); j++) {
-							if(order.get(j) == board.snakes[i].profileId)
+						boolean alreadyDead = false;
+						for(int j = 0; j< order.size(); j++) {
+							if(order.get(j)== board.snakes[i].playerId) {
 								alreadyDead = true;
+							}
 						}
-					}
-					if(!alreadyDead) 
-						order.add(board.snakes[i].playerId);
-					}
-				if(order.size() == board.snakes.length -1) {
-					for(int i = 0; i<board.snakes.length-1; i++) {
-						if(board.snakes[i].state == true) {
+						if (alreadyDead == false) {
 							order.add(board.snakes[i].playerId);
 						}
 					}
+					
+					if(order.size() == board.snakes.length-1) {
+						for(int k = 0; k< board.snakes.length; k++) {
+							if(board.snakes[k].state == true) {
+								order.add(board.snakes[k].playerId);
+							}
+						}
+					}
 				}
+				
 				roundOver = isRoundOver(board.snakes);
 			}
-			updateScores(order, board.snakes);
+			updateScores(order, scores);
 			MG.end();
 			window.setVisible(true);
+			gameOver = isGameOver(board.snakes, pointThreshold);
+			if(gameOver == true) {
+				window.remove(scorePanel);
+				window.repaint();
+				window.setVisible(true);
+			}
 			try {
 	    		Thread.sleep(2000);
 				} 
 			catch(InterruptedException ex) {
 	    		Thread.currentThread().interrupt();
 				}
-
-			gameOver = isGameOver(board.snakes, pointThreshold);
 		}
-		MG.end();
 	}
 	
 	
@@ -347,7 +355,7 @@ public  class Test {
 				max = snakes[i].currentScore;
 			}
 		}
-		if(max > pointThreshold)
+		if(max >= pointThreshold)
 			return true;
 		else
 			return false;
@@ -374,15 +382,13 @@ public  class Test {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			System.out.println("blob");
 			Test.commandMap.put(1, this.direction);
 		}
 	}
 	
-	public static void updateScores(List<Integer> order, Snake snakes[]) {
+	public static void updateScores(List<Integer> order, int scores[]) {
 		for(int i = 0; i<order.size(); i++) {
-			snakes[order.get(i)].currentScore += i;
-			System.out.println(snakes[i].currentScore);
+			scores[order.get(i)] += i;
 		}
 	}
 }
