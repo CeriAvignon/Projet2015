@@ -35,6 +35,8 @@ import fr.univavignon.courbes.physics.groupe10.Rnd;
 public  class Test {
 	
 	public static Map<Integer, Direction> commandMap;
+	public static Integer pointThreshold;
+
 	/**
 	 * @param args
 	 * 		parametre par defaut de la fonction main, non utilisé dans notre programme
@@ -193,7 +195,13 @@ public  class Test {
 	
 	
 	public static void mainLoop() {
-	
+		
+		MyPhysicsEngine MP = new MyPhysicsEngine();
+		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
+		List<Profile> players = new ArrayList<Profile>();
+		int profileIds[] = new int[5];
+		JFrame window = new JFrame();
+
 		Profile joueur1Profile = new Profile();
 		joueur1Profile.userName = "Blobfish";
 		joueur1Profile.profileId = 5555;
@@ -209,32 +217,25 @@ public  class Test {
 		Profile joueur5Profile = new Profile();
 		joueur5Profile.userName = "Pingouin";
 		joueur5Profile.profileId = 3;
-		List<Profile> players = new ArrayList<Profile>();
 		players.add(joueur1Profile);
 		players.add(joueur2Profile);
 		players.add(joueur3Profile);
 		players.add(joueur4Profile);
 		players.add(joueur5Profile);
 		
-		
-		
-		
-		int profileIds[] = new int[5];
 		profileIds[0] = joueur1Profile.profileId;
 		profileIds[1] = joueur2Profile.profileId;
 		profileIds[2] = joueur3Profile.profileId;
 		profileIds[3] = joueur4Profile.profileId;
 		profileIds[4] = joueur5Profile.profileId;
 		
-		MyPhysicsEngine MP = new MyPhysicsEngine();
 		Board board = MP.init(800, 600 , profileIds);
+		
 		int scores[] = new int[board.snakes.length];
 		for(int i=0; i<board.snakes.length; i++) {
-			scores[i] = 0;
+			scores[i] = 37;
 		}
-		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
-		
-		JFrame window = new JFrame();
+		pointThreshold = 10 * (board.snakes.length-1);
 		window.setTitle("Curve Fever");
 		window.setSize(board.width + 500, board.height + 100);
 		window.setLocationRelativeTo(null);
@@ -249,7 +250,6 @@ public  class Test {
 		content.setPreferredSize(new Dimension(board.width + 400, board.height));
 		boardPanel.setPreferredSize(new Dimension(board.width, board.height));
 		scorePanel.setPreferredSize(new Dimension(400, board.height));
-		int pointThreshold = getPointThreshold(board.snakes);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -269,6 +269,7 @@ public  class Test {
         .put(KeyStroke.getKeyStroke("Q"), "test2");
 	boardPanel.getActionMap().put("test2", new MoveAction(Direction.LEFT));
 		
+	
 		while( gameOver == false) {
 			boolean roundOver = false;
 			board = MP.init(board.width, board.height, profileIds);
@@ -312,16 +313,17 @@ public  class Test {
 						}
 					}
 				}
-				
 				roundOver = isRoundOver(board.snakes);
 			}
+			
 			updateScores(order, scores, board.snakes);
 			for(int i=0;i<board.snakes.length;i++) {
 				board.snakes[i].currentScore = scores[i];
 			}
+			
 			MG.end();
 			window.setVisible(true);
-			gameOver = isGameOver(board.snakes, pointThreshold);
+			gameOver = isGameOver(board.snakes);
 			if(gameOver == true) {
 				window.remove(scorePanel);
 				window.repaint();
@@ -337,28 +339,24 @@ public  class Test {
 	}
 	
 	
-	public static int getPointThreshold(Snake snakes[]) {
-		int scoreGap = (snakes.length - 1);
-		int pointThreshold = 10 * scoreGap;
+	public static void updatePointThreshold(Snake snakes[]) {
 		int compt = 0;
 		for (int i = 0; i < snakes.length; i ++) {
-			if (snakes[i].currentScore > pointThreshold - scoreGap)
+			if (snakes[i].currentScore >( pointThreshold - (snakes.length -1)))
 				compt ++;
 		}
 		if (compt >= 2)
-			pointThreshold += scoreGap;
-		
-		return pointThreshold;
+			pointThreshold += 2;
+		System.out.println(pointThreshold);
 	}
 	
-	public static boolean isGameOver(Snake snakes[], int pointThreshold) {
+	public static boolean isGameOver(Snake snakes[]) {
 		int max = 0;
 		for( int i = 0; i<(snakes.length); i++) {
 			if(snakes[i].currentScore >= max) {
 				max = snakes[i].currentScore;
 			}
 		}
-		System.out.println(max);
 		if(max >= pointThreshold)
 			return true;
 		else
