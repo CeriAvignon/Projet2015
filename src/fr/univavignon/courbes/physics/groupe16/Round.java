@@ -139,7 +139,6 @@ public class Round implements PhysicsEngine {
 
 		boolean flgSpawn = false;
 		do {
-			//(int)( Math.random()*( max - mini + 1 ) ) + mini;
 			int itCenterX = (int)( Math.random()*( (board.height - radItem) - radItem + 1 ) ) + radItem;
 			int itCenterY = (int)( Math.random()*( (board.width - radItem) - radItem + 1 ) ) + radItem;
 			Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
@@ -720,6 +719,7 @@ public class Round implements PhysicsEngine {
 		board.itemsMap.put(new Position(100,400), itemTab[6] );
 		board.itemsMap.put(new Position(200,200), itemTab[7] );
 		board.itemsMap.put(new Position(300,300), itemTab[8] );
+		board.itemsMap.put(new Position(300,300), itemTab[9] );
 		return board;
 	}
 
