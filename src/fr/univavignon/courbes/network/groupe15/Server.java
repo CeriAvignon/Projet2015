@@ -30,6 +30,10 @@ public class Server implements ServerCommunication {
 	private int port;
 	/** Liste des connecteurs Serveur/Clients */
 	private volatile ArrayList<Socket> sockets;
+	/** Gestion des erreurs de profil */
+	private ServerProfileHandler profileHandler;
+	/** Gestion du message d'erreur */
+	private ErrorHandler errorHandler;
 	
 	/**
 	 * @return Connecteurs Serveur/Clients
@@ -52,11 +56,11 @@ public class Server implements ServerCommunication {
 	int currentPointThreshold;
 	/** Le plateau actuel */
 	Board currentBoard;
-	/** Les directions choisies par chaque joueur*/
+	/** Les directions choisies par chaque joueur */
 	Map<Integer, Direction> map;
 	
 	/**
-	 * Initialize la liste de sockets.
+	 * On initialize la liste de sockets
 	 */
 	public Server() {
 	    this.sockets = new ArrayList<Socket>();
@@ -115,7 +119,6 @@ public class Server implements ServerCommunication {
 			t.start();
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 		}
 	}
 
@@ -137,14 +140,7 @@ public class Server implements ServerCommunication {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					for(Socket socket:sockets){
-						PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-						out.println(messageSent);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				sendObject(message);
 			}
 		});
 		t.start();
@@ -180,15 +176,7 @@ public class Server implements ServerCommunication {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					for(Socket socket:sockets){
-						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-						oos.writeObject(currentProfiles);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				sendObject(currentProfiles);
 			}
 		});
 		t.start();
@@ -200,15 +188,7 @@ public class Server implements ServerCommunication {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					for(Socket socket:sockets){
-						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-						oos.writeObject(currentPointThreshold);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				sendObject(currentPointThreshold);
 			}
 		});
 		t.start();
@@ -220,18 +200,26 @@ public class Server implements ServerCommunication {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					for(Socket socket:sockets){
-						ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-						oos.writeObject(currentBoard);
-						oos.flush();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				sendObject(currentBoard);
 			}
 		});
 		t.start();
+	}
+
+	/**
+	 * Méthode non bloquante permettant d'envoyer un objet à tous les clients du serveur
+	 * @param object Objet à envoyer au(x) client(s)
+	 */
+	private synchronized void sendObject(Object object) {
+		try {
+			for(Socket socket:sockets){
+				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+				oos.writeObject(object);
+				oos.flush();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -239,38 +227,43 @@ public class Server implements ServerCommunication {
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try {
-					for(Socket socket:sockets){
-						ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-						Object obj = ois.readObject();
-						if(obj instanceof Map) {
-							@SuppressWarnings("unchecked")
-							Map<Integer, Direction> tmpMap = (Map<Integer, Direction>)obj;
-							map.putAll(tmpMap);
-						} else {
-							map = null;
-						}
-					}
-				} catch (Exception e) {
-					map = null;
-					e.printStackTrace();
-				}
+				map = retrieveMap();
 			}
 		});
 		t.start();
 		return map;
 	}
 
+	/**
+	 * Méthode non bloquante permettant de récupérer une map
+	 * @return Une map contenant les directions choisies par chaque joueur
+	 */
+	private synchronized Map<Integer, Direction> retrieveMap() {
+		try {
+			map = null;
+			for(Socket socket:sockets){
+				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+				Object obj = ois.readObject();
+				if(obj instanceof Map) {
+					@SuppressWarnings("unchecked")
+					Map<Integer, Direction> tmpMap = (Map<Integer, Direction>)obj;
+					map.putAll(tmpMap);
+				}
+			}
+		} catch (Exception e) {
+			map = null;
+			e.printStackTrace();
+		}
+		return map;
+	}
+
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		// TODO Auto-generated method stub
-		
+		this.errorHandler = errorHandler;
 	}
 
 	@Override
 	public void setProfileHandler(ServerProfileHandler profileHandler) {
-		// TODO Auto-generated method stub
-		
+		this.profileHandler = profileHandler;
 	}
-
 }
