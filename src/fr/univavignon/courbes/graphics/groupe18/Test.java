@@ -196,7 +196,7 @@ public  class Test {
 	
 	public static void mainLoop() {
 		
-		MyPhysicsEngine MP = new MyPhysicsEngine();
+		Rnd MP = new Rnd();
 		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
 		List<Profile> players = new ArrayList<Profile>();
 		int profileIds[] = new int[5];
@@ -233,7 +233,7 @@ public  class Test {
 		
 		int scores[] = new int[board.snakes.length];
 		for(int i=0; i<board.snakes.length; i++) {
-			scores[i] = 37;
+			scores[i] = 0;
 		}
 		pointThreshold = 10 * (board.snakes.length-1);
 		window.setTitle("Curve Fever");
@@ -267,6 +267,12 @@ public  class Test {
 		
 		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke("Q"), "test2");
+		
+		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("released Q"), "release");
+		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("released D"), "release");
+		boardPanel.getActionMap().put("release", new MoveAction(Direction.NONE));
 	boardPanel.getActionMap().put("test2", new MoveAction(Direction.LEFT));
 		
 	
@@ -276,6 +282,7 @@ public  class Test {
 			for(int i=0;i<board.snakes.length;i++) {
 				board.snakes[i].currentScore = scores[i];
 			}
+			updatePointThreshold(board.snakes);
 			MG.init(board, pointThreshold, players, boardPanel, scorePanel);
 			window.repaint();
 			
