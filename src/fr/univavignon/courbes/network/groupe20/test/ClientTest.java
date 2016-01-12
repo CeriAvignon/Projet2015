@@ -45,13 +45,14 @@ public class ClientTest {
 		//Lancement du client
 		c.launchClient();
 		//--------------------------------------Test du profile DEBUT-------------------------------------------------->
+		
+		/*
+		//-------------------Gestion de profile DÉBUT----------------------//
 		//Création des profiles
 		Profile p1 = new Profile();
 		p1.profileId = 6;p1.userName = "test1";
 		Profile p2 = new Profile();
 		p2.profileId = 7;p2.userName = "test2";
-		/*
-		//-------------------Gestion de profile DÉBUT----------------------//
 		//Ajouter un profile
 		boolean b = c.addProfile(p1);
 		if(b == true)
@@ -100,6 +101,7 @@ public class ClientTest {
 			System.out.println("rien reçu");
 			//--------------------------------------Test Réception de l'envoie du boards FIN-------------------------------------------------->
 	*/
+		System.out.println("envoie ds commandes");
 		Map<Integer, Direction> commande = new HashMap<Integer, Direction>();
 		while(true){
 			commande.put(0, Direction.RIGHT);

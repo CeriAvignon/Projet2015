@@ -96,8 +96,10 @@ public class ServerTest {
 		 s1.playerId = 0;s1.profileId = 1;
 		 Snake s2 = new Snake();
 		 s2.playerId = 1;s2.profileId = 2;
+		 Snake s3 = new Snake();
+		 s3.playerId = 2;s3.profileId = 3;//On va toujours avoir NONE parce que le client n'envoie pas les actions de ce joueur
 		 
-		 Snake [] tabSnake = {s1,s2};
+		 Snake [] tabSnake = {s1,s2,s3};
 		 board.snakes = tabSnake;
 		 
 		 board.height = 150;board.width=100;
@@ -105,7 +107,7 @@ public class ServerTest {
 		 s.sendBoard(board);
 		 System.out.println("Envoie du board");
 		 /*
-		  * Pour traiter les commandes reçu , on doit les playerId des joueurs ,
+		  * Pour traiter les commandes reçu , on doit connaitre les playerId des joueurs ,
 		  * et ma classe Server le connait quand on envoie la  : "board" ,
 		  * ça veut dire les joueurs qui participent dans une manche
 		  */
@@ -118,7 +120,7 @@ public class ServerTest {
 					Map<Integer, Direction> map = s.retrieveCommands();
 					for(Iterator i=map.keySet().iterator();i.hasNext();){
 			            Object key=i.next();
-			            if(map.get(key).equals(Direction.RIGHT) || map.get(key).equals(Direction.LEFT))
+			            
 			            	System.out.println(key + "=" + map.get(key));
 			        }
 				}
