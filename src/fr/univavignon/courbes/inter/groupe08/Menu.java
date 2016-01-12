@@ -37,9 +37,11 @@ public class Menu {
 
 	/**
 	 * Launch the application.
+	 * @param args 
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Menu window = new Menu();
@@ -84,6 +86,7 @@ public class Menu {
 		
 		JButton btnConnexion = new JButton("Connexion");
 		btnConnexion.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				BufferedReader in = null;
 				try {
@@ -92,12 +95,13 @@ public class Menu {
 				    while ((read = in.readLine()) != null) {
 				        String[] splited = read.split("\\|");
 				        int positionLogin = 10;
-				        Boolean ok = null;
-				        Boolean ok2 = null;
 				        for (String part : splited) {
 				        	positionLogin = part.indexOf(Login.getText().toString());
 			        		if (positionLogin == 0){
 			        			System.out.println("ok");
+			        			Stats window = new Stats();
+								window.frame.setVisible(true);
+								frame.setVisible(false);
 			        		}
 				        }
 				    }
@@ -108,6 +112,7 @@ public class Menu {
 				    try {
 				        in.close();
 				    } catch (Exception e) {
+				    	e.printStackTrace();
 				    }
 				}
 			}
@@ -147,6 +152,7 @@ public class Menu {
 		
 		JButton btnInscription = new JButton("Inscription");
 		btnInscription.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {  
 				FileWriter fw;
 			    try {
