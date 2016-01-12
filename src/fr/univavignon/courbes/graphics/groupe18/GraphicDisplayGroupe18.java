@@ -72,7 +72,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		this.boardPanel.removeAll();
 		this.scorePanel.removeAll();
 		int max = 0 ;
-		String winner = "init";
+		String winner = this.players.get(0).userName;
 		int profileId = 0;
 		for( int i = 0; i<(this.board.snakes.length); i++) {
 			if(this.board.snakes[i].currentScore > max) {
