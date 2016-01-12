@@ -43,43 +43,55 @@ public class Client implements ClientCommunication
 	 */
 	private Socket socketClient = null;
 	
-	
+	/**
+	 * Fonction permettant de récupérer l'adresse ip du client
+	 * 
+	 * @param null
+	 */
 	@Override
 	public String getIp() 
 	{
 		return this.ip;	//juste pour l'interface utilisateur, pour qu'ils puisssent afficher l'ip.
 	}
-
+	
+	/**
+	 * Fonction permettant de modifier l'adresse ip du client
+	 * 
+	 * @param ip
+	 */
 	@Override
 	public void setIp(String ip) 
 	{
 		this.ip = ip;
 	}
-
+	
+	/**
+	 * Fonction permettant de récupérer le port du client
+	 * 
+	 * @param null
+	 */
 	@Override
 	public int getPort() 
 	{
 		return this.port; //juste pour l'interface utilisateur, pour qu'ils puisssent afficher le port.
 	}
-
+	
+	/**
+	 * Fonction permettant de récupérer modifier le port du client
+	 * 
+	 * @param port
+	 */
 	@Override
 	public void setPort(int port) 
 	{
 		this.port = port;
 	}
 	
-	public void setErrorHandler(ErrorHandler errorHandler) 
-	{
-		
-	}
-
-	
-	@Override
-	public void setProfileHandler(ClientProfileHandler profileHandler) 
-	{
-		
-	}
-	
+	/**
+	 * Fonction permettant de lancer un client
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void launchClient() 
 	{
@@ -98,7 +110,12 @@ public class Client implements ClientCommunication
 	     }
 		
 	}
-
+	
+	/**
+	 * Fonction permettant de fermer un client lorsqu'il se déconnecte du serveur
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void closeClient() 
 	{
@@ -116,6 +133,18 @@ public class Client implements ClientCommunication
 			}
 	}
 
+	
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) 
+	{
+		
+	}
+		
+	@Override
+	public void setProfileHandler(ClientProfileHandler profileHandler) 
+	{
+		
+	} 
 	@Override
 	public boolean addProfile(Profile profile)
 	{
@@ -149,8 +178,7 @@ public class Client implements ClientCommunication
 		
 	}
 
-	/*@Override
-	public String retrieveText() 
+	/*public String retrieveText() 
 	{
 		final BufferedReader rec; //Pour recevoir		
 		try 
@@ -226,7 +254,6 @@ public class Client implements ClientCommunication
 			e.printStackTrace();
 		}		
 	}*/
-
 	
 	
 }

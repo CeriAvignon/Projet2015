@@ -69,28 +69,38 @@ public class Server implements ServerCommunication
 	protected static int nbClients = 0;
 	
 	/**
-	 * Liste qui contient toute les adresses ip des clients 
-	 */
-	protected ArrayList<String> arrayOfIp = new ArrayList<String>();
-	/**
 	 * Liste qui contient toute les sockets des clients
 	 */
 	protected static ArrayList<Socket> arrayOfSocket = new ArrayList<Socket>();
 	
 	
-	
+	/**
+	 * Fonction permettant de récupérer l'adresse ip du serveur
+	 * 
+	 * @param null
+	 */
 	@Override
 	public String getIp() 
 	{
 		return this.ip;
 	}
-
+	
+	/**
+	 * Fonction permettant de récupérer le port du serveur
+	 * 
+	 * @param null
+	 */
 	@Override
 	public int getPort() 
 	{
 		return this.port;
 	}
-
+	
+	/**
+	 * Fonction permettant de modifier le port du serveur
+	 * 
+	 * @param port
+	 */
 	@Override
 	public void setPort(int port) 
 	{
@@ -109,7 +119,12 @@ public class Server implements ServerCommunication
 	{
 	
 	}
-		
+
+	/**
+	 * Fonction permettant lancer un serveur, et donc de creer une partie en local
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void launchServer() 
 	{
@@ -211,10 +226,7 @@ public class Server implements ServerCommunication
 						
 						arrayOfSocket.add(socketClient);
 						// On l'ajoute à la liste de clients
-						
-						arrayOfIp.add(socketClient.getInetAddress().getHostAddress());
-						// On ajoute l'adresse ip du client à liste d'adresse ip
-						
+												
  	    				nbClients++;
  	    				// On augement le compteur de clients au serveur
  	    				
@@ -242,7 +254,12 @@ public class Server implements ServerCommunication
 	// On lance le thread contenant serveur
 			
 	}
-
+	
+	/**
+	 * Fonction permettant fermer un serveur (lors d'une fin de partie)
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void closeServer() 
 	{
@@ -260,6 +277,11 @@ public class Server implements ServerCommunication
 		}
 	}
 	
+	/**
+	 * Fonction permettant d'envoyer les profils en TCP des joueurs connectés au serveur
+	 * 
+	 * @param profiles
+	 */
 	@Override
 	public void sendProfiles(List<Profile> profiles) 
 	{
@@ -278,13 +300,22 @@ public class Server implements ServerCommunication
 	
 	}
 	
-
+	/**
+	 * Fonction permettant d'envoyer la limite des points à atteindre pour gagner la partie
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void sendPointThreshold(int pointThreshold) 
 	{
 		
 	}
-
+	
+	/**
+	 * Fonction permettant d'envoyer un board 
+	 * 
+	 * @param null
+	 */
 	@Override
 	public void sendBoard(Board board) 
 	{
@@ -301,7 +332,8 @@ public class Server implements ServerCommunication
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	@Override
 	public Map<Integer, Direction> retrieveCommands() 
 	{
