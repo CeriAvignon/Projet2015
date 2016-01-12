@@ -22,7 +22,7 @@ public class Client implements ClientCommunication {
 	private String ip;
 	private int port;
 	 List<ProfileReponse> addProfil = new CopyOnWriteArrayList<ProfileReponse>();
-	 Integer point = null;
+	 Integer point = null,pointRetour = null;
 	 Board board = null;
 	 ErrorHandler errorHandler; 
 	 ClientProfileHandler profileHandler;
@@ -86,9 +86,9 @@ public class Client implements ClientCommunication {
 	
 	@Override
 	public Integer retrievePointThreshold() {
-		Integer nbr = point;
-		point = null;
-		return nbr;
+		this.pointRetour = this.point;
+		this.point = null;
+		return pointRetour;
 	}
 	@Override
 	public Board retrieveBoard() {
@@ -100,15 +100,6 @@ public class Client implements ClientCommunication {
 	public void sendCommands(Map<Integer, Direction> commands) {
 		this.sendObject(commands);
     }
-	@Override
-	public String retrieveText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void sendText(String message) {
-		// TODO Auto-generated method stub
-	}
 	
 	private void sendObject(Object o){
 		try {
@@ -149,7 +140,16 @@ public class Client implements ClientCommunication {
 		    dos.flush();
 		    
 		} catch (IOException e) {e.printStackTrace();}
-	}		
+	}
+	public Integer getPoint() {
+		return point;
+	}
+	public void setPoint(Integer point) {
+		this.point = point;
+	}	
+	
+	
+	
 }
 
 

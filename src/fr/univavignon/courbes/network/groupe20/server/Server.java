@@ -134,7 +134,12 @@ public class Server implements ServerCommunication {
 
 	@Override
 	public void closeServer() {
-		
+		try {
+			server.close();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -214,18 +219,6 @@ public class Server implements ServerCommunication {
 					map.put(player, Direction.NONE);
 		return map;
 	}
-
-	@Override
-	public void sendText(String message) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String[] retrieveText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	
 	/**
@@ -256,4 +249,5 @@ public class Server implements ServerCommunication {
 			} catch (IOException e) {e.printStackTrace();}
 		}
 	}
+	
 }
