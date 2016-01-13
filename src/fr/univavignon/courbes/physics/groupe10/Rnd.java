@@ -37,7 +37,7 @@ public class Rnd implements PhysicsEngine {
 	/**
 	 * Cette variable donne la probabilité d'apparition d'une Item.
 	 */
-	double itemProbability = 0.3;
+	double itemProbability = 0.01;
 	int residualLengthHole = 0;
 	
 	// |||||||||||||||||||| FONCTIONS DE CLASSES ||||||||||||||||||||

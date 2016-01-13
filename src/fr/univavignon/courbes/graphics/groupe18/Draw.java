@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.lang.Math;
 
 import javax.swing.JPanel;
@@ -94,12 +95,20 @@ public class Draw extends JPanel {
         	g.fillOval(board.snakes[i].currentX-(x/2), board.snakes[i].currentY-(x/2), x, x);
         	
         }
-		for (Map.Entry<Position, Integer> entry : board.snakesMap.entrySet())
+        
+        Map<Position, Integer> mapSnake = new ConcurrentHashMap<Position,Integer>();
+		mapSnake = board.snakesMap;
+		
+		for (ConcurrentHashMap.Entry<Position, Integer> entry : mapSnake.entrySet())
 		{
 			g.setColor(getColor(entry.getValue()));
 			g.fillRect(entry.getKey().x, entry.getKey().y, 1, 1);
 		}
-		for (Map.Entry<Position, Item> entry : board.itemsMap.entrySet())
+		
+        Map<Position, Item> mapItems = new ConcurrentHashMap<Position,Item>();
+		mapItems = board.itemsMap;
+		
+		for (ConcurrentHashMap.Entry<Position, Item> entry : mapItems.entrySet())
 		{
 			switch(entry.getValue())
 			{

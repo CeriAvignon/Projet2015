@@ -324,10 +324,10 @@ public  class MinimalLoop {
 	 */
 	public static void setBindings(JPanel boardPanel, int nbPlayers) {
 		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("D"), "test1");
+        .put(KeyStroke.getKeyStroke("Q"), "test1");
 		boardPanel.getActionMap().put("test1", new MoveAction(Direction.RIGHT, 0));
 		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-		.put(KeyStroke.getKeyStroke("Q"), "test2");
+		.put(KeyStroke.getKeyStroke("D"), "test2");
 	
 		boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 		.put(KeyStroke.getKeyStroke("released Q"), "release");
@@ -338,10 +338,10 @@ public  class MinimalLoop {
 		
 		if(nbPlayers == 2) {
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-	        .put(KeyStroke.getKeyStroke("M"), "test3");
+	        .put(KeyStroke.getKeyStroke("K"), "test3");
 			boardPanel.getActionMap().put("test3", new MoveAction(Direction.RIGHT, 1));
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-			.put(KeyStroke.getKeyStroke("K"), "test4");
+			.put(KeyStroke.getKeyStroke("M"), "test4");
 		
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 			.put(KeyStroke.getKeyStroke("released K"), "release2");
