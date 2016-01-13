@@ -66,8 +66,9 @@ public class Server implements ServerCommunication {
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
      * 	 	En cas d'erreur,elle renvoit null.
      */
-	ErrorHandler errorHandler;
+	public ErrorHandler errorHandler;
 	ServerProfileHandler profileHandler;
+	Boolean lancer = false;
 	@Override
 	public String getIp() {
 		try {
@@ -121,13 +122,16 @@ public class Server implements ServerCommunication {
 			public void run() {
 				try {
 					server = new ServerSocket(1117);
-					while(true){
+					lancer = true;
+					while(lancer){
 						Socket client = server.accept();
 						System.out.println("Nouveau client");
 						clients.add(client);
 						new ServiceClient(Server.this,client);
 					}
-				} catch (IOException e) {e.printStackTrace();}
+				} catch (IOException e) {
+					errorHandler.displayError("Erreur lors du lancement du serveur");
+				}
 			}
 		}).start();
 	}
@@ -135,6 +139,7 @@ public class Server implements ServerCommunication {
 	@Override
 	public void closeServer() {
 		try {
+			this.lancer = false;
 			server.close();
 		} catch (IOException e) {
 			
@@ -182,6 +187,7 @@ public class Server implements ServerCommunication {
 	 */
 	@Override
 	public void sendBoard(Board board) {
+		directions.clear();
 		player.clear();
 		for(int i=0;i<board.snakes.length;i++){
 			player.add(board.snakes[i].playerId);
@@ -230,24 +236,28 @@ public class Server implements ServerCommunication {
 	 * 			la liste des clients  de type {@link Socket}
 	 */
 	private void sendObject(Object o,List<Socket> clients){
-		for(Socket client : clients){
-			try {
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				ObjectOutputStream oos;
-				oos = new ObjectOutputStream(bos);
-				oos.flush();
-				oos.writeObject(o);
-				oos.flush();
-				oos.close();
-				bos.close();
-				
-				DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
-				byte [] data = bos.toByteArray();
-				dos.writeInt(data.length);
-			    dos.write(data);
-			    dos.flush();
-			} catch (IOException e) {e.printStackTrace();}
-		}
+		if(lancer)
+			for(Socket client : clients){
+				try {
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					ObjectOutputStream oos;
+					oos = new ObjectOutputStream(bos);
+					oos.flush();
+					oos.writeObject(o);
+					oos.flush();
+					oos.close();
+					bos.close();
+					
+					DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
+					byte [] data = bos.toByteArray();
+					dos.writeInt(data.length);
+				    dos.write(data);
+				    dos.flush();
+				    
+				} catch (IOException e) {
+					sendObject(o, clients);
+				}
+			}
 	}
 	
 }

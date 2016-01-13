@@ -63,7 +63,7 @@ public class ServiceClient {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(s.lancer){
 					DataInputStream dis;
 					try {
 						dis = new DataInputStream(client.getInputStream());
@@ -81,7 +81,7 @@ public class ServiceClient {
 						   tabProfile.add(pA);
 					   }
 					}catch (IOException e) {
-						System.out.println("Client déconnecter");
+						s.errorHandler.displayError("Client déconnecter");
 						break;
 					}
 				}
@@ -91,7 +91,7 @@ public class ServiceClient {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(s.lancer){
 					for(ProfileAction pA : tabProfile){
 						ByteArrayInputStream bytesIn = new ByteArrayInputStream(pA.getData());
 					    ObjectInputStream ois;
@@ -101,18 +101,15 @@ public class ServiceClient {
 								Profile p = (Profile)obj;
 								if(pA.getAction() == 1){
 									boolean actionAccept = s.profileHandler.fetchProfile(p);
-									if(actionAccept == true){	
+									if(actionAccept == true)	
 										s.profileClients.add(p);
+									
 										ProfileReponse pR = new ProfileReponse();
 										pR.setProfile(p);
 										pR.setAction(actionAccept);
 										ServiceClient.this.sendObject(pR, pA.getClient());
-									}else{
-										ProfileReponse pR = new ProfileReponse();
-										pR.setProfile(p);
-										pR.setAction(actionAccept);
-										ServiceClient.this.sendObject(pR, pA.getClient());
-									}
+									
+									
 									}else{
 										for(Profile pr : s.profileClients){
 											if(pr.profileId == p.profileId)
@@ -136,7 +133,7 @@ public class ServiceClient {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(s.lancer){
 					for(byte[] b : tabByte){
 						ByteArrayInputStream bytesIn = new ByteArrayInputStream(b);
 					    ObjectInputStream ois;
@@ -175,8 +172,8 @@ public class ServiceClient {
 	 * 			client de type {@link Socket}
 	 */
 	public void sendObject(Object object,Socket client){
+		
 		try {
-			
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos;
 			oos = new ObjectOutputStream(bos);

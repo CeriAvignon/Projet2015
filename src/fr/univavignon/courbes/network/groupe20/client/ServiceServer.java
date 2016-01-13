@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.network.groupe20.client;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -9,19 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
 public class ServiceServer {
 	List<byte[]> tabByte = new CopyOnWriteArrayList<byte[]>();
-
-	
 	public ServiceServer(final Client c){
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(c.lancer){
 					DataInputStream dis;
 					try {
 						dis = new DataInputStream(c.client.getInputStream());
@@ -32,8 +32,8 @@ public class ServiceServer {
 					    tabByte.add(data);
 					   }
 					 } catch (IOException e) {
-						 
-						 e.printStackTrace();
+						c.lancer = false;
+						c.errorHandler.displayError("Serveur déconnécté");
 					}
 				}
 			}
@@ -42,7 +42,7 @@ public class ServiceServer {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
+				while(c.lancer){
 					for(byte[] b : tabByte){
 						ByteArrayInputStream bytesIn = new ByteArrayInputStream(b);
 					    ObjectInputStream ois;
@@ -58,7 +58,7 @@ public class ServiceServer {
 						    	List<Profile> profile = (List<Profile>) obj;
 						    	c.profileHandler.updateProfiles(profile);
 						    }else if(obj instanceof Integer){
-						    	c.point = (Integer) obj;
+						    	c.setPoint((Integer) obj);
 						    }
 							
 						   ois.close();

@@ -1,6 +1,7 @@
 package fr.univavignon.courbes.network.groupe20.client;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -26,6 +27,7 @@ public class Client implements ClientCommunication {
 	 Board board = null;
 	 ErrorHandler errorHandler; 
 	 ClientProfileHandler profileHandler;
+	 Boolean lancer;
 	@Override
 	public String getIp() {
 		return ip;
@@ -55,13 +57,17 @@ public class Client implements ClientCommunication {
 	@Override
 	public void launchClient() {
 		try {
+			lancer = true;
 			client = new Socket(this.ip, this.port);
 			new ServiceServer(this);
-		} catch (IOException e) {e.printStackTrace();}
+		} catch (IOException e) {
+			this.errorHandler.displayError("Aucun serveur avec ces informations");
+		}
 	}
 	@Override
 	public void closeClient() {
-		// TODO Auto-generated method stub
+		lancer = false;
+		this.closeClient();
 	}
 	
 	@Override
@@ -81,7 +87,8 @@ public class Client implements ClientCommunication {
 	}
 	@Override
 	public void removeProfile(Profile profile) {
-		this.sendObject(profile, (byte)2);
+		if(lancer)
+			this.sendObject(profile, (byte)2);
 	}
 	
 	@Override
@@ -98,48 +105,50 @@ public class Client implements ClientCommunication {
 	}
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
-		this.sendObject(commands);
+		if(lancer)
+			this.sendObject(commands);
     }
 	
 	private void sendObject(Object o){
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos;
-			oos = new ObjectOutputStream(bos);
-			oos.writeObject(o);
-			oos.flush();
-			oos.close();
-			bos.close();
-			
-			DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
-			byte [] data = bos.toByteArray();
-			dos.writeInt(data.length);
-			dos.writeByte(0);
-		    dos.write(data);
-		    dos.flush();
-		} catch (IOException e) {e.printStackTrace();}
+		
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos;
+				oos = new ObjectOutputStream(bos);
+				oos.writeObject(o);
+				oos.flush();
+				oos.close();
+				bos.close();
+				
+				DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
+				byte [] data = bos.toByteArray();
+				dos.writeInt(data.length);
+				dos.writeByte(0);
+			    dos.write(data);
+			    dos.flush();
+			} catch (IOException e) {}
 		
 	}
 	
 	private void sendObject(Object o,byte b){
-		try {
-			
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos;
-			oos = new ObjectOutputStream(bos);
-			oos.writeObject(o);
-			oos.flush();
-			oos.close();
-			bos.close();
-			
-			DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
-			byte [] data = bos.toByteArray();
-			dos.writeInt(data.length);
-			dos.writeByte(b);
-		    dos.write(data);
-		    dos.flush();
-		    
-		} catch (IOException e) {e.printStackTrace();}
+
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos;
+				oos = new ObjectOutputStream(bos);
+				oos.writeObject(o);
+				oos.flush();
+				oos.close();
+				bos.close();
+				
+				DataOutputStream dos = new DataOutputStream(client.getOutputStream());  
+				byte [] data = bos.toByteArray();
+				dos.writeInt(data.length);
+				dos.writeByte(b);
+			    dos.write(data);
+			    dos.flush();
+			    
+			} catch (IOException e) {}
 	}
 	public Integer getPoint() {
 		return point;

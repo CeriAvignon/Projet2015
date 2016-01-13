@@ -108,25 +108,25 @@ public class ServerTest {
 		 System.out.println("Envoie du board");
 		 /*
 		  * Pour traiter les commandes reçu , on doit connaitre les playerId des joueurs ,
-		  * et ma classe Server le connait quand on envoie la  : "board" ,
-		  * ça veut dire les joueurs qui participent dans une manche
+		  * et ma classe Server les connait une fois la "board" envoyée ,
+		  * c'est à dire:  les joueurs qui participent dans une manche
 		  */
 		//Réception des commandes envoyer par les joueurs 
 		 new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
 				while(true){
 					Map<Integer, Direction> map = s.retrieveCommands();
 					for(Iterator i=map.keySet().iterator();i.hasNext();){
 			            Object key=i.next();
-			            
+			            if(map.get(key) == Direction.LEFT || map.get(key) == Direction.RIGHT)
 			            	System.out.println(key + "=" + map.get(key));
 			        }
 				}
 				
 			}
 		}).start();
+		 
 		//--------------------------------------Test SendBoard FIN-------------------------------------------------->
 	
 		

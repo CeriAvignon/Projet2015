@@ -85,8 +85,9 @@ public class ClientTest {
 		System.out.println("Point : "+c.retrievePointThreshold());
 		//--------------------------------------Test de récupération des PointThreshold FIN-------------------------------------------------->
 		 */
-		/*
-		//--------------------------------------Test Réception de l'envoie du boards Début-------------------------------------------------->
+		
+		//--------------------------------------Test Réception de l'envoie du boards et directions Début-------------------------------------------------->
+		System.out.println("Attente de 10 seconde , avant l'appel de la méthode retrieveBoard() ");
 		try {Thread.sleep(10000);} catch (InterruptedException e) {e.printStackTrace();}
 		Board board= c.retrieveBoard();
 			if(board != null){
@@ -96,17 +97,15 @@ public class ClientTest {
 			System.out.println("");	
 			System.out.println("Dimension -----> ");	
 			System.out.print("Height : "+board.height+" ");	
-			System.out.println("Width: "+board.width);	
+			System.out.println("Width: "+board.width);
+			System.out.println("envoie commande");
+			//Envoie des commandes
+			Map<Integer, Direction> commande = new HashMap<Integer, Direction>();
+				commande.put(0, Direction.RIGHT);
+				commande.put(1, Direction.LEFT);
+			c.sendCommands(commande);
 		}else
 			System.out.println("rien reçu");
-			//--------------------------------------Test Réception de l'envoie du boards FIN-------------------------------------------------->
-	*/
-		System.out.println("envoie ds commandes");
-		Map<Integer, Direction> commande = new HashMap<Integer, Direction>();
-		while(true){
-			commande.put(0, Direction.RIGHT);
-			commande.put(1, Direction.LEFT);
-			c.sendCommands(commande);
-		}
+			//--------------------------------------Test Réception de l'envoie du boards et directions FIN-------------------------------------------------->
 	}
 }
