@@ -5,6 +5,8 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté client
@@ -36,6 +38,7 @@ public interface ClientCommunication
 
 	/**
      * Modifie l'adresse IP du serveur auquel le client va se connecter.
+     * <br/>
      * Cette valeur est à modifier avant d'utiliser {@link #launchClient}.
      *
      * @param ip
@@ -54,12 +57,36 @@ public interface ClientCommunication
 
 	/**
      * Modifie le port du serveur auquel le client va se connecter.
+     * <br/>
      * Cette valeur est à modifier avant d'utiliser {@link #launchClient}.
      *
      * @param port
      * 		Le nouveau port du serveur.
      */
 	public void setPort(int port);
+
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     *
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
+	public void setErrorHandler(ErrorHandler errorHandler);
+
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     *
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
+     */
+	public void setProfileHandler(ClientProfileHandler profileHandler);
 
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
@@ -155,44 +182,32 @@ public interface ClientCommunication
      */
 	public void sendCommands(Map<Integer,Direction> commands);
 
-	/**
-     * Permet au client de récupérer un message textuel envoyé par le serveur
-     * auquel il est connecté.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
-     *
-     * @return
-     * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
-     * 		n'a été envoyé.
-     */
-	public String retrieveText();
-
-	/**
--	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
-	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
-	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
-	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
-	 * pas accueillir plus de joueurs.
-	 *
-	 * @param profile
-	 * 		Profil du joueur à ajouter à la partie.
-	 */
-	public void sendProfile(Profile profile);
-
-	/**
-     * Permet au client d'envoyer un message textuel au serveur auquel il est
-     * connecté.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
-     *
-     * @param message
-     * 		Le message textuel à envoyer au serveur.
-     */
-	public void sendText(String message);
+//	/**
+//     * Permet au client de récupérer un message textuel envoyé par le serveur
+//     * auquel il est connecté.
+//     * <br/>
+//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
+//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//     * parallèle de l'exécution du jeu.
+//     *
+//     * @return
+//     * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
+//     * 		n'a été envoyé.
+//     */
+//	public String retrieveText();
+//
+//	/**
+//     * Permet au client d'envoyer un message textuel au serveur auquel il est
+//     * connecté.
+//     * <br/>
+//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
+//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
+//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
+//     * parallèle de l'exécution du jeu.
+//     *
+//     * @param message
+//     * 		Le message textuel à envoyer au serveur.
+//     */
+//	public void sendText(String message);
 }
