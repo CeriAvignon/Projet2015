@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
@@ -37,7 +38,6 @@ public class Client implements ClientCommunication {
 	private Profile profileSent;
 	/**	Prend la valeur TRUE si le dernier transfert (réception ou envoi) s'est effectué avec succes et FALSE sinon */
 	private boolean success;
-	
 	/** Gestion des erreurs de profil */
 	private ClientProfileHandler profileHandler;
 	/** Gestion du message d'erreur */
@@ -71,6 +71,17 @@ public class Client implements ClientCommunication {
     			System.out.println("Connexion échouée...");
     		} else {
     			System.out.println("Connexion établie !!");
+    			Thread t = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						while(!socket.isClosed()) {
+							Object o = retrieveObject();
+							if(o instanceof List) {
+								profileHandler.updateProfiles((List<Profile>)o);
+							}
+						}
+					}
+    			});
     		}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -88,9 +99,9 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public Integer retrievePointThreshold() {
-		Thread t = new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable() {
 			@Override
-			public void run(){
+			public void run() {
 				pointThreshold = (Integer)retrieveObject();
 			}
 		});
@@ -100,9 +111,9 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public Board retrieveBoard() {
-		Thread t = new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable() {
 			@Override
-			public void run(){
+			public void run() {
 				board = (Board)retrieveObject();
 			}
 		});
@@ -113,7 +124,7 @@ public class Client implements ClientCommunication {
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
 		this.commandsSent = commands;
-		Thread t = new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				sendObject(commandsSent);
@@ -135,9 +146,9 @@ public class Client implements ClientCommunication {
 	@Override
 	public boolean addProfile(Profile profile) {
 		this.profileSent = profile;
-		Thread t = new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable() {
 			@Override
-			public void run(){
+			public void run() {
 				sendObject(profileSent);
 			}
 		});
@@ -148,9 +159,9 @@ public class Client implements ClientCommunication {
 	@Override
 	public void removeProfile(Profile profile) {
 		this.profileSent = profile;
-		Thread t = new Thread(new Runnable(){
+		Thread t = new Thread(new Runnable() {
 			@Override
-			public void run(){
+			public void run() {
 				sendObject(profileSent);
 			}
 		});
@@ -161,13 +172,13 @@ public class Client implements ClientCommunication {
 	 * Fonction qui permet de récupérer un objet depuis le serveur
 	 * @return Renvois l'objet que le serveur à envoyé
 	 */
-	public synchronized Object retrieveObject(){
+	public synchronized Object retrieveObject() {
 		Object object;
-		try{
+		try {
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			object = ois.readObject();
 			this.success = true;
-		} catch(Exception e){
+		} catch(Exception e) {
 			e.printStackTrace();
 			this.success = false;
 			return null;
@@ -179,13 +190,13 @@ public class Client implements ClientCommunication {
 	 * Fonction qui permet d'envoyer un objet sur le serveur
 	 * @param object Objet à envoyer au serveur
 	 */
-	public synchronized void sendObject(Object object){
-		try{
+	public synchronized void sendObject(Object object) {
+		try {
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(object);
 			oos.flush();
 			this.success = true;
-		}catch(Exception e){
+		} catch(Exception e) {
 			e.printStackTrace();
 			this.success = false;
 		}
