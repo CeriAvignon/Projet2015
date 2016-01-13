@@ -37,7 +37,7 @@ public class Rnd implements PhysicsEngine {
 	/**
 	 * Cette variable donne la probabilité d'apparition d'une Item.
 	 */
-	double itemProbability = 0.3;
+	double itemProbability = 0.01;
 	int residualLengthHole = 0;
 	
 	// |||||||||||||||||||| FONCTIONS DE CLASSES ||||||||||||||||||||
@@ -53,6 +53,12 @@ public class Rnd implements PhysicsEngine {
 
 	// ---------- FONCTIONS QUI MANIPULENT BOARD ----------
 
+	@Override
+	public Board initDemo(int width, int height, int[] profileIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public Board init(int width, int height, int[] profileIds)
 	{
@@ -355,7 +361,6 @@ public class Rnd implements PhysicsEngine {
 			//(si la tete est au même endroit ou a 1 pixel de distance, cela créé des problèmes de collisions)
 			if (distanceSinceLastIteration >= 2 )
 			{
-				System.out.println(distanceSinceLastIteration);
 
 				// --- TEST COLISION ET LEURS APPLICATION ---
 				
@@ -720,5 +725,6 @@ public class Rnd implements PhysicsEngine {
 				snakeDeleteItem(id, item.getKey()); 
 		}
 	}
+
 
 }

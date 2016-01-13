@@ -1,10 +1,10 @@
 package fr.univavignon.courbes.physics;
-import fr.univavignon.courbes.common.*;
+
 import java.util.Map;
 
-import fr.univavignon.courbes.physics.groupe10.*;
-
-
+import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Snake;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
@@ -37,6 +37,27 @@ public interface PhysicsEngine
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
 	public Board init(int width, int height, int[] profileIds);
+	
+	/**
+	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
+	 * l'intégration entre Moteur Graphique et Moteur Physique. Ce plateau
+	 * doit respecter les contraintes suivantes :
+	 * <ul>
+	 * 	<li>Afficher tous les items existants</li>
+	 * 	<li>Seulement deux joueurs : le premier est contrôlé normalement, le second est immobile</li>
+	 * </ul>
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire de jeu, exprimée en pixel.
+	 * @param height
+	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
+	 * @param profileIds
+	 * 		Tableau contenant les numéros de profils des joueurs impliqués dans 
+	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
+	 * @return
+	 * 		Un objet représentant l'aire de jeu de la manche.
+	 */
+	public Board initDemo(int width, int height, int[] profileIds);
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
