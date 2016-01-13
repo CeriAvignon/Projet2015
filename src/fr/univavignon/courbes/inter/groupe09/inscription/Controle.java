@@ -21,7 +21,7 @@ public class Controle {
 	    InputStreamReader isr;
 	    BufferedReader bis;        
 	    try {
-	      fis = new FileInputStream(new File("src/user.txt"));
+	      fis = new FileInputStream(new File("src/txt/user.txt"));
 	      isr = new InputStreamReader(fis);
 	      bis = new BufferedReader(isr);
 	      
@@ -88,7 +88,7 @@ public class Controle {
 	    BufferedReader bis;        
 	    try {
 	      fis = new FileInputStream(
-	    		  new File("src/user.txt"));
+	    		  new File("src/txt/user.txt"));
 	      isr = new InputStreamReader(fis);
 	      bis = new BufferedReader(isr);
 	      
@@ -142,7 +142,7 @@ public class Controle {
 		int count = 0;
 		FileInputStream fis = null;
 		try {
-			fis = new FileInputStream("src/user.txt");
+			fis = new FileInputStream("src/txt/user.txt");
 		} 
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -183,7 +183,7 @@ public class Controle {
 	public void inscriptionDe(String email, String ps, String mdp,String pays, String temps ,int score ) {
 		
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/user.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/txt/user.txt")));
 			StringBuffer sb = new StringBuffer(); 
 		    String line;      
 		    while((line = reader.readLine()) != null) {
@@ -192,7 +192,7 @@ public class Controle {
 		    }
 		    reader.close();
 		    int id = this.idPlayer();
-		    BufferedWriter out = new BufferedWriter( new FileWriter("src/user.txt"));
+		    BufferedWriter out = new BufferedWriter( new FileWriter("src/txt/user.txt"));
 		    out.write(ps+";"+mdp+";"+id+";"+email+";"+pays+";"+temps+";"+score);
 		    out.newLine();
 		    out.write(sb.toString());
