@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Menu {
@@ -29,11 +30,12 @@ public class Menu {
 	JFrame frame;
 	private JTextField textField;
 	private JTextField Login_inscription;
-	private JTextField Login;
+	JTextField Login_Co;
 	private JTextField textField_1;
 	private JTextField Password_inscription;
 	private JTextField Password;
 	private JTextField Email;
+	protected String user;
 
 	/**
 	 * Launch the application.
@@ -76,9 +78,9 @@ public class Menu {
 		tabbedPane.addTab("Connexion", null, Connexion, null);
 		Connexion.setLayout(new GridLayout(6, 2, 10, 10));
 		
-		Login = new JTextField();
-		Connexion.add(Login);
-		Login.setColumns(10);
+		Login_Co = new JTextField();
+		Connexion.add(Login_Co);
+		Login_Co.setColumns(10);
 		
 		Password = new JPasswordField();
 		Connexion.add(Password);
@@ -88,33 +90,43 @@ public class Menu {
 		btnConnexion.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				BufferedReader in = null;
-				try {
-				    in = new BufferedReader(new FileReader("user.txt"));
-				    String read = null;
-				    while ((read = in.readLine()) != null) {
-				        String[] splited = read.split("\\|");
-				        int positionLogin = 10;
-				        for (String part : splited) {
-				        	positionLogin = part.indexOf(Login.getText().toString());
-			        		if (positionLogin == 0){
-			        			System.out.println("ok");
-			        			Stats window = new Stats();
-								window.frame.setVisible(true);
-								frame.setVisible(false);
-			        		}
-				        }
-				    }
-				} catch (IOException e) {
-				    System.out.println("There was a problem: " + e);
-				    e.printStackTrace();
-				} finally {
-				    try {
-				        in.close();
-				    } catch (Exception e) {
-				    	e.printStackTrace();
-				    }
-				}
+				boolean connect = false;
+				String laChainne;
+			    InputStream fis;
+			    InputStreamReader isr;
+			    BufferedReader bis;        
+			    try {
+			      fis = new FileInputStream(new File("user.txt"));
+			      isr = new InputStreamReader(fis);
+			      bis = new BufferedReader(isr);
+			      
+			      try {		
+			    	  while (!connect && (laChainne = bis.readLine()) != null) { 
+			    		  String elem[] = laChainne.split("\\|");
+			    		  if(elem[1].equals(Login_Co.getText().toString())) {
+			    			  if(elem[0].equals(Password.getText().toString())) {
+			    				  connect = true;
+			    			  }
+			    		  }
+			    	  }
+			      }
+			      catch(NumberFormatException e) {
+			    	  e.printStackTrace();
+			      }
+			      bis.close();
+			                
+			    } 
+			    catch (FileNotFoundException e) {
+			      e.printStackTrace();
+			    } 
+			    catch (IOException e) {
+			      e.printStackTrace();
+			    }
+			    if(connect){
+			    	Stats window = new Stats();
+					window.frame.setVisible(true);
+					frame.setVisible(false);
+			    }
 			}
 		});
 		Connexion.add(btnConnexion);
