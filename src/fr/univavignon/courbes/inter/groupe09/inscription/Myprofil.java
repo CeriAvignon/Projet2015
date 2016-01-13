@@ -1,4 +1,7 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.inscription;
+import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.menu.Menu;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
@@ -7,6 +10,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import javax.swing.*;
+
 
 public class Myprofil extends Fenetre implements ActionListener {
 	
@@ -25,10 +29,13 @@ public class Myprofil extends Fenetre implements ActionListener {
 	
 	/**
 	 * @param titre
+	 * Titre de la fenetre
 	 * @param x
+	 * Taille en abscisse de la fenetre 
 	 * @param y
+	 * Taille en ordonné de la fenetre
 	 */
-	Myprofil(String titre , int x, int y) {
+	public Myprofil(String titre , int x, int y) {
 		
 		super(titre , x ,y);
 		contenu.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -102,7 +109,7 @@ public class Myprofil extends Fenetre implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		
-		new Menu("Menu" , 400, 400);
+		new Menu(" Menu ", 400, 400);
 		this.dispose();
 			
 	}

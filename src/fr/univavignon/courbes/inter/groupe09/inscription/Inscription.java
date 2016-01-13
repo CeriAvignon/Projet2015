@@ -1,10 +1,13 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.inscription;
+import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.menu.Bienvenu;
+import fr.univavignon.courbes.inter.groupe09.menu.Menu;
+import fr.univavignon.courbes.common.Profile;
+
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
-import fr.univavignon.courbes.common.Profile;
-
 import java.io.*;
 import java.util.LinkedList;
 import java.util.regex.*;
@@ -74,7 +77,7 @@ public class Inscription extends Fenetre implements ActionListener {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	Inscription (String titre, int x, int y) {
+	public Inscription (String titre, int x, int y) {
 		
 		super(titre, x, y);
 		p1 = new JPanel();

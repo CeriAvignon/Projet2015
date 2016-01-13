@@ -1,4 +1,9 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.menu;
+import fr.univavignon.courbes.inter.groupe09.configPartie.*;
+import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.inscription.Myprofil;
+
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -8,15 +13,15 @@ import javax.swing.*;
  */
 public class Menu extends Fenetre implements ActionListener {
 	/**
-	 * 
+	 * boutton de menu
 	 */
 	private JButton b1,b2,b3,b4;
 	/**
-	 * 
+	 * panel contenant tout le menu ( toute le contenu de la fentre)
 	 */
 	private JPanel j;
 	/**
-	 * 
+	 * label pour ajuster l'affichage des bouttons menu
 	 */
 	private JLabel l,l2;
 
@@ -28,7 +33,7 @@ public class Menu extends Fenetre implements ActionListener {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	Menu(String titre, int x, int y) {
+	public Menu(String titre, int x, int y) {
 		
 		super(titre, x, y);
 		j = new JPanel();
@@ -57,7 +62,7 @@ public class Menu extends Fenetre implements ActionListener {
 		String nom = event.getActionCommand();
 		switch (nom) {
 		case "JOUER": 
-			new Game("Partie", 400, 400);
+			new ConfigPartie("Choix du mode", 300, 300);
 			this.dispose();
 			
 			break;

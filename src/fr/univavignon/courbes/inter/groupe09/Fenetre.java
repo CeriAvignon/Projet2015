@@ -10,7 +10,7 @@ import javax.swing.*;
  * @author groupe09
  * Classe abstraite héritant de la classe JFrame qui nous permet de créer des fenetres  
  */
-abstract class Fenetre extends JFrame {
+ public abstract class Fenetre extends JFrame {
 
 	/**
 	 * 
@@ -36,7 +36,7 @@ abstract class Fenetre extends JFrame {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	Fenetre(String titre, int x, int y) {
+	protected Fenetre(String titre, int x, int y) {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension dimEcran = tk.getScreenSize();
 		int larg = dimEcran.width;

@@ -1,10 +1,15 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.menu;
+import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.inscription.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 
-/**
+	
+
+/**			
  * @author groupe09
  *
  */
@@ -25,10 +30,13 @@ public class Bienvenu extends Fenetre implements ActionListener {
 	
 	/**
 	 * @param titre
+	 * Titre de la fenetre
 	 * @param x
+	 * Taille en abscisse de la fenetre 
 	 * @param y
+	 * Taille en ordonné de la fenetre
 	 */
-	Bienvenu(String titre, int x, int y) 
+	public Bienvenu(String titre, int x, int y) 
 	{
 		super(titre, x, y);
 		j = new JPanel();
@@ -72,7 +80,7 @@ public class Bienvenu extends Fenetre implements ActionListener {
 	public static void main(String[] args) {
 	
 		// teste des menu du jeu
-		Bienvenu m1 = new Bienvenu("Atchung Die Kurv", 700, 500);		
+		Bienvenu m1 = new Bienvenu("Atchung Die Kurv", 300, 250);		
 		}
 
 	

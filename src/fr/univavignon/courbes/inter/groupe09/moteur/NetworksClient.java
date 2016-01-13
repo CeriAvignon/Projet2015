@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.moteur;
 
 import java.util.List;
 import java.util.Map;
@@ -6,14 +6,22 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.ServerCommunication;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.network.ClientCommunication;
 
-public class NetworksServer implements ServerCommunication{
+public class NetworksClient implements ClientCommunication {
 
 	@Override
 	public String getIp() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setIp(String ip) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -29,57 +37,58 @@ public class NetworksServer implements ServerCommunication{
 	}
 
 	@Override
-	public void launchServer() {
+	public void setErrorHandler(ErrorHandler errorHandler) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void closeServer() {
+	public void setProfileHandler(ClientProfileHandler profileHandler) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendProfiles(List<Profile> profiles) {
+	public void launchClient() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<Profile> retrieveProfiles() {
+	public void closeClient() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean addProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer retrievePointThreshold() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void sendPointThreshold(int pointThreshold) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendBoard(Board board) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Map<Integer, Direction> retrieveCommands() {
+	public Board retrieveBoard() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void sendText(String message) {
+	public void sendCommands(Map<Integer, Direction> commands) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public String[] retrieveText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }

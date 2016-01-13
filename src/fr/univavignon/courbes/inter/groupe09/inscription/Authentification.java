@@ -1,7 +1,15 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.inscription;
+import fr.univavignon.courbes.inter.groupe09.Error;
+import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.menu.Bienvenu;
+import fr.univavignon.courbes.inter.groupe09.menu.Menu;
+
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+
 
 /** 
  * @author Groupe09
@@ -16,24 +24,15 @@ public class Authentification extends Fenetre implements ActionListener {
 	/**
 	 * 
 	 */
-	private JTextField txt1;
-	private JTextField txt2;
+	private JTextField txt1, txt2;
 	/**
 	 * 
 	 */
-	private JPanel p1;
+	private JPanel p1, p2;
 	/**
 	 * 
 	 */
-	private JPanel p2;
-	/**
-	 * 
-	 */
-	private JButton b1;
-	/**
-	 * 
-	 */
-	private JButton b2;
+	private JButton b1, b2;
 	/**
 	 * 
 	 */
@@ -47,7 +46,7 @@ public class Authentification extends Fenetre implements ActionListener {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	Authentification(String titre, int x, int y) 
+	public Authentification(String titre, int x, int y) 
 	
 	{
 		super(titre, x, y);
@@ -88,6 +87,7 @@ public class Authentification extends Fenetre implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		String nom = event.getActionCommand();
 		int rep = c.controleConnexion(txt1.getText(), txt2.getText());
+		Error err = new Error();
 		switch (nom) {
 			case "Connexion":
 				switch (rep) {

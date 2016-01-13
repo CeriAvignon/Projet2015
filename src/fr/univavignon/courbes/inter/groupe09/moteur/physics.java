@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.moteur;
 
 import java.util.Map;
 
@@ -15,6 +15,12 @@ public class physics implements PhysicsEngine{
 	}
 
 	@Override
+	public Board initDemo(int width, int height, int[] profileIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 		// TODO Auto-generated method stub
 		
@@ -26,4 +32,5 @@ public class physics implements PhysicsEngine{
 		
 	}
 
+	
 }

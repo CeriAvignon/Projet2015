@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.inscription;
 import java.io.*;
 /**
  * @author groupe09

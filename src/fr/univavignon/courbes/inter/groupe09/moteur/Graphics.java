@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe09;
+package fr.univavignon.courbes.inter.groupe09.moteur;
 import java.util.List;
 
 import javax.swing.JPanel;
