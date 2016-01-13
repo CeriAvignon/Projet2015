@@ -77,18 +77,16 @@ public class Server implements ServerCommunication {
  	    try {
  	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
  	        while (interfaces.hasMoreElements()) {
- 	            NetworkInterface iface = interfaces.nextElement();
+ 	        	NetworkInterface iface = interfaces.nextElement();
  	            // filters out 127.0.0.1 and inactive interfaces
  	            if (iface.isLoopback() || !iface.isUp())
  	                continue;
 
  	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
- 	           // while(addresses.hasMoreElements()) {
- 	                InetAddress addr = addresses.nextElement();
- 	                adressIp = addr.getHostAddress();
- 	                this.ip = adressIp;
- 	                System.out.println(this.ip);
- 	           // }
+ 	            InetAddress addr = addresses.nextElement();
+ 	            adressIp = addr.getHostAddress();
+ 	            this.ip = adressIp;
+ 	            System.out.println(this.ip);
  	        }
  	    } catch (SocketException e) {
  	        throw new RuntimeException(e);
@@ -101,7 +99,7 @@ public class Server implements ServerCommunication {
     	}
  	   
  	    if(this.port == 0) {
- 	    	for(int portTest = 1; portTest <= 3000; portTest++){ // find a free port
+ 	    	for(int portTest = 1; portTest <= 6000; portTest++){ // find a free port
  	    		try {
  	    			this.sSocket = new ServerSocket(portTest);
  	        		this.port = portTest;
@@ -280,7 +278,6 @@ public class Server implements ServerCommunication {
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.messageError = errorHandler;
-		
 	}
 
 	@Override

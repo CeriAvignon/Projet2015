@@ -36,8 +36,6 @@ public class Client implements ClientCommunication {
 	protected Board board = null;
 	/**  Buffer pour le nombre de point a atteindre */
 	protected int pointThreshold = -1;
-	/** Buffer pour les messages du serveur */
-	protected String messageText = "";
 	/** Envoie de profil à l'interface utilisateur */
 	protected ClientProfileHandler profileHandler;
 	/**Envoie d'un message d'erreur a l'IU	 */
@@ -206,7 +204,7 @@ public class Client implements ClientCommunication {
 						if (objet instanceof List<?>) 
 							profileHandler.updateProfiles((List<Profile>)objet);
 						else if (objet instanceof String) {
-							messageText = (String)objet;
+							String messageText = (String)objet;
 							if(messageText == "/close") {
 								try {
 									serverConnexion.close();
