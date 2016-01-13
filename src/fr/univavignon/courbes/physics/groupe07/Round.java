@@ -11,34 +11,89 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
+/**
+ * 
+ * @author Laurent Harkiolakis
+ * @author Rudy Bardout
+ *
+ */
 public class Round implements PhysicsEngine
 {
+	/** Plateau de jeu */
 	public Board ourBoard;
-	private double[][] coordSnake;	// donne les coordonnées de la position d'un snake
+	
+	/** Donne les coordonnées de la position d'un snake */
+	private double[][] coordSnake;
+	
+	/** Chance qu'un item puisse apparaître */
 	private double itemRate = 0.5;
 	
-	private double ratioItem = 0; // permet de gérer le flux de spawn d'objet, si 0 pas de spawn d'objet, si 1, spawn d'objet
+	/** Permet de gérer le flux de spawn d'objet */
+	private double ratioItem = 0;
 	
+	/** Nombre de pixels que le snake peut parcourir **/
+	private double[] nbPix; 
+	
+	/** Retrouve l'id du snake par rapport à l'id du profil */
+	private Map<Integer, Integer> currentId;
+
+	/** Map pour faire spawn un trou **/
+	private Map<Integer, Integer> holeMap;
+	
+	/** Map pour compter les déplacements **/
+	private Map<Integer, Integer> moveMap;
+	
+	/** En début de partie le snake ne peut pas mourir (en ms)**/
+	private int noCollision = 100;
+	
+	
+	/**
+	 * Getter pour ratioItem
+	 * 
+	 * @return double
+	 */
 	public double getRatioItem()
 	{
 		return ratioItem;
 	}
 
+	/**
+	 * Setter pour ratioItem
+	 * 
+	 * @param ratioItem Permet de gérer le flux de spawn d'objet
+	 */
 	public void setRatioItem(double ratioItem)
 	{
 		this.ratioItem = ratioItem;
 	}
 	
+	/**
+	 * Getter pour itemRate
+	 * 
+	 * @return itemRate
+	 */
     public double getItemRate() 
     {
          return itemRate; 
     }
     
+    /**
+	 * Setter pour itemRate
+	 * 
+	 * @param itemRate Chance qu'un item puisse apparaître
+	 */
     public void setItemRate(double itemRate) 
     {  
     	this.itemRate = itemRate; 
     }
     
+    /**
+	 * Cette méthode correspond au constructeur de Round.
+	 * 
+	 * @param width Largeur
+	 * @param height Hauteur
+	 * @param profileIds Nombre de joueurs
+	 */
 	public Round(int width, int height, int[] profileIds)
 	{
 		ourBoard = init(width,height,profileIds);
@@ -51,13 +106,23 @@ public class Round implements PhysicsEngine
 	 * <br/>
 	 * Il faut créer tous les tableaux nécessaires, c'est-à-dire pour
 	 * connaître les positions de tous les snakes et des items.
+	 * 
+	 * 
+	 * @param width Largeur
+	 * @param height Hauteur
+	 * @param profileIds nombre de joueurs
 	 */
 
+	@Override
 	public Board init(int width, int height, int[] profileIds)
 	{
 		Position posSpawn;
 		int playerNbr = profileIds.length;
 		coordSnake = new double[playerNbr][2];
+		nbPix = new double[playerNbr];
+		currentId = new HashMap<Integer, Integer>();
+		holeMap = new HashMap<Integer, Integer>();
+		moveMap = new HashMap<Integer, Integer>();
 	
 		ourBoard = new Board();
 		ourBoard.width = width;
@@ -70,6 +135,7 @@ public class Round implements PhysicsEngine
 		{
 			posSpawn = snakeSpawnPos(width, height);
 			ourBoard.snakes[i] = new Snake();
+			currentId.put(profileIds[i], i);
 			init(ourBoard.snakes[i], profileIds[i] , posSpawn);
 			System.out.println("Snake " + Integer.toString(i) + " spawn a la position (" + Integer.toString(posSpawn.x) + ","+ Integer.toString(posSpawn.y) + ")");
 		}
@@ -82,6 +148,11 @@ public class Round implements PhysicsEngine
 	 * Cette méthode correspond au constructeur de Snake.
 	 * <br/>
 	 * Les valeurs sont pour le moment fixées arbitrairement.
+	 * 
+	 * @return Snake
+	 * @param snake Snake
+	 * @param id Id du Snake
+	 * @param spawnPosition Position où le snake apparaît
 	 */
 
 	public Snake init(Snake snake, int id, Position spawnPosition)
@@ -98,7 +169,9 @@ public class Round implements PhysicsEngine
 		snake.inversion = false;
 		snake.holeRate = 0.05;
 		snake.fly = false;
-		snake.currentItems = new HashMap<Item, Long>() ;
+		snake.currentItems = new HashMap<Item, Long>();
+		holeMap.put(snake.playerId , (int)(Math.random() * 100 - snake.holeRate*100));
+		moveMap.put(snake.playerId  , 0);
 		snake.currentScore = 0;		// à enlever pour l'IU ?
 		
 		return snake;
@@ -110,6 +183,9 @@ public class Round implements PhysicsEngine
 	 * Cette méthode retourne une position aléatoire où un snake va spawn.
 	 * <br/>
 	 * Il faut prévoir une marge pour ne pas spawn sur les bords.
+	 * @return Position
+	 * @param width Largeur
+	 * @param height Hauteur
 	 */
 	
 	public Position snakeSpawnPos(int width, int height)
@@ -140,23 +216,27 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode affecte un item à un ou plusieurs snakes.
+	 * 
+	 * @param id Id
+	 * @param item Item
 	 */
 	
 	public void addItemToSnake(int id, Item item)
 	{
+		int idSnake = currentId.get(id);
 		switch(item)
 		{
 			case USER_SPEED:
-				ourBoard.snakes[id].currentItems.put(item, (long)item.duration);
-				ourBoard.snakes[id].movingSpeed *= 2;
+				ourBoard.snakes[idSnake].currentItems.put(item, (long)item.duration);
+				ourBoard.snakes[idSnake].movingSpeed *= 2;
 				break;
 			case USER_SLOW:
-				ourBoard.snakes[id].currentItems.put(item, (long)item.duration);
-				ourBoard.snakes[id].movingSpeed *= 0.5;
+				ourBoard.snakes[idSnake].currentItems.put(item, (long)item.duration);
+				ourBoard.snakes[idSnake].movingSpeed *= 0.5;
 				break;
 			case USER_BIG_HOLE:
-				ourBoard.snakes[id].currentItems.put(item, (long)item.duration);
-				ourBoard.snakes[id].holeRate *= 0.5;
+				ourBoard.snakes[idSnake].currentItems.put(item, (long)item.duration);
+				ourBoard.snakes[idSnake].holeRate *= 0.5;
 				break;
 			case OTHERS_SPEED:
 				for(Snake snake : ourBoard.snakes)
@@ -220,44 +300,47 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode retire l'effet d'un item à un ou plusieurs snakes.
+	 * 
+	 * @param id Id du profil
+	 * @param item Item
 	 */
 	
 	public void removeItemToSnake(int id, Item item)
 	{
-		
+		int idSnake = currentId.get(id);
 		switch(item)
 		{
 			case USER_SPEED:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].movingSpeed *= 0.5;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].movingSpeed *= 0.5;
 				break;
 			case USER_SLOW:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].movingSpeed *= 2;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].movingSpeed *= 2;
 				break;
 			case USER_BIG_HOLE:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].holeRate *= 2;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].holeRate *= 2;
 				break;
 			case OTHERS_SPEED:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].movingSpeed *= 0.5;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].movingSpeed *= 0.5;
 				break;
 			case OTHERS_THICK:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].headRadius *= 0.5;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].headRadius *= 0.5;
 				break;
 			case OTHERS_SLOW:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].movingSpeed *= 2;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].movingSpeed *= 2;
 				break;
 			case OTHERS_REVERSE:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].inversion = false;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].inversion = false;
 				break;
 			case COLLECTIVE_TRAVERSE_WALL:
-				ourBoard.snakes[id].currentItems.remove(item);
-				ourBoard.snakes[id].fly = false;
+				ourBoard.snakes[idSnake].currentItems.remove(item);
+				ourBoard.snakes[idSnake].fly = false;
 				break;
 			default:
 				System.out.println("Erreur");
@@ -270,9 +353,11 @@ public class Round implements PhysicsEngine
 	/**
 	 * Cette méthode effectue la mise à jour des snakes et des items.
 	 */
-	
+	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands)
 	{
+		if(noCollision > 0)
+			noCollision -= elapsedTime;
 		// Mise à jour des coordonnées des snakes
 		updateSnakesPositions(elapsedTime);
 		// Mise à jour des directions des snakes
@@ -287,117 +372,141 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode effectue la mise à jour de la position du snake.
+	 * @param elapsedTime Temps écoulé
 	 */
 	
 	public void updateSnakesPositions(long elapsedTime) {
 		long elapsed;
-		double pixStep;
 		boolean snakeMove = false;
 		Position pos = new Position(0,0);
 		for(Snake snake : ourBoard.snakes)
 		{
-
+			int id = currentId.get(snake.playerId);
 			elapsed = elapsedTime;
-			pixStep = 0;
 			while (elapsed > 0 && snake.state == true)
 			{
 
 				/** Gestion de la future position du snake en fonction de son angle **/
-				while(pixStep < 1 && elapsed > 0) {
+				while(nbPix[id] < 1 && elapsed > 0) {
 					elapsed--;
-					pixStep += snake.movingSpeed;
-				}
-				coordSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
-				coordSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
-
-				if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] >= 1)
-				{
-					snake.currentY--;
-					snake.currentX++;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]--;
-					coordSnake[snake.playerId][0]--;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] >= 1)
-				{
-					snake.currentY++;
-					snake.currentX++;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]++;
-					coordSnake[snake.playerId][0]--;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] <= -1)
-				{
-					snake.currentY++;
-					snake.currentX--;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]++;
-					coordSnake[snake.playerId][0]++;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] <= -1)
-				{
-					snake.currentY--;
-					snake.currentX--;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]--;
-					coordSnake[snake.playerId][0]++;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][1] >= 1) {
-					snake.currentY--;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]--;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][1] <= -1) {
-					snake.currentY++;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][1]++;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][0] >= 1) {
-					snake.currentX++;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][0]--;
-					snakeMove = true;
-				}
-				else if(coordSnake[snake.playerId][0] <= -1) {
-					snake.currentX--;
-					pos.x = snake.currentX;
-					pos.y = snake.currentY;
-					ourBoard.snakesMap.put(pos , snake.playerId);
-					coordSnake[snake.playerId][0]++;
-					snakeMove = true;
-				}
-
-				pixStep --;
-				System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
-
-				if(snakeMove)
-				{
-					fillSnakeHead(snake);
-					deathVsBounds(snake);
-					deathVsSnake(snake);
-					removeItem(snake,pos);
+					nbPix[id] += snake.movingSpeed;
 				}
 				
+				if(nbPix[id] >= 1) {
+					coordSnake[snake.playerId][0] += Math.cos(Math.toRadians(snake.currentAngle));
+					coordSnake[snake.playerId][1] += Math.sin(Math.toRadians(snake.currentAngle));
+	
+					if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] >= 1)
+					{
+						snake.currentY--;
+						snake.currentX++;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]--;
+						coordSnake[snake.playerId][0]--;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] >= 1)
+					{
+						snake.currentY++;
+						snake.currentX++;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]++;
+						coordSnake[snake.playerId][0]--;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][1] <= -1 && coordSnake[snake.playerId][0] <= -1)
+					{
+						snake.currentY++;
+						snake.currentX--;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]++;
+						coordSnake[snake.playerId][0]++;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][1] >= 1 && coordSnake[snake.playerId][0] <= -1)
+					{
+						snake.currentY--;
+						snake.currentX--;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]--;
+						coordSnake[snake.playerId][0]++;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][1] >= 1) {
+						snake.currentY--;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]--;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][1] <= -1) {
+						snake.currentY++;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][1]++;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][0] >= 1) {
+						snake.currentX++;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][0]--;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+					else if(coordSnake[snake.playerId][0] <= -1) {
+						snake.currentX--;
+						pos.x = snake.currentX;
+						pos.y = snake.currentY;
+						ourBoard.snakesMap.put(pos , snake.playerId);
+						coordSnake[snake.playerId][0]++;
+						moveMap.put(snake.playerId, moveMap.get(snake.playerId)+1);
+						snakeMove = true;
+					}
+	
+					nbPix[id] --;
+					System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
+	
+					if(snakeMove)
+					{
+						/*fillSnakeHead(snake);
+						deathVsBounds(snake);
+						deathVsSnake(snake);
+						removeItem(snake,pos);*/
+						
+						if (moveMap.get(snake.playerId) <= holeMap.get(snake.playerId) || moveMap.get(snake.playerId) > holeMap.get(snake.playerId) + snake.holeRate*100) {
+							ourBoard.snakesMap.put(pos , snake.playerId);
+							System.out.println("Position snake "+ Integer.toString(snake.playerId)+ " x:" + Integer.toString(snake.currentX) + " y:" + Integer.toString(snake.currentY));
+							fillSnakeHead(snake);
+						}
+						else {
+							System.out.println("Snake " + snake.playerId + " hole");
+						}
+						deathVsBounds(snake);
+						if(noCollision <= 0) {
+							deathVsSnake(snake);
+						}
+						removeItem(snake,pos);
+					}
+					
+				}
 			}
 		}
 	}
@@ -407,7 +516,7 @@ public class Round implements PhysicsEngine
 	/**
 	 * Remplit la snakeMap en fonction des coordonnées du snake
 	 * 
-	 * @param snake 
+	 * @param snake Snake
 	 */
 	public void fillSnakeHead(Snake snake)
 	{
@@ -439,6 +548,8 @@ public class Round implements PhysicsEngine
 	 * Cette méthode teste si le snake rentre en contact avec les bords.
 	 * <br/>
 	 * Il faut prévoir le cas où l'item COLLECTIVE_TRAVERSE_WALL a été utilisé.
+	 * 
+	 * @param snake Snake
 	 */
 	
 	public void deathVsBounds(Snake snake)
@@ -467,6 +578,8 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode teste si le snake rentre en contact avec la trainée d'un autre snake.
+	 * 
+	 * @param snake Snake
 	 */
 	
 	public void deathVsSnake(Snake snake)
@@ -496,6 +609,9 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode retire l'item de la map dès qu'il est récupéré.
+	 * 
+	 * @param snake Snake
+	 * @param pos Position
 	 */
 	public void removeItem(Snake snake, Position pos)
 	{
@@ -514,6 +630,9 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode effectue la mise à jour de la direction du snake.
+	 * 
+	 * @param elapsedTime Temps écoulé
+	 * @param commands Commandes rentrés
 	 */
 	
 	public void updateSnakesDirections(long elapsedTime, Map<Integer, Direction> commands)
@@ -551,6 +670,8 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode affecte un item à un snake.
+	 * 
+	 * @param elapsedTime Temps écoulé
 	 */
 	
 	public void updateSnakesEffects(long elapsedTime)
@@ -580,6 +701,8 @@ public class Round implements PhysicsEngine
 	
 	/**
 	 * Cette méthode génère l'apparition d'un item pendant la mise à jour
+	 * 
+	 * @param elapsedTime Temps écoulé
 	 */
 	
 	private void updateSpawnItem(long elapsedTime)
@@ -596,13 +719,77 @@ public class Round implements PhysicsEngine
 
 	/**
 	 * Cette méthode écrase le tableau actuel.
+	 * 
+	 * @param board Board
 	 */
-	
+	@Override
 	public void forceUpdate(Board board)
 	{
 		this.ourBoard = board;
 	}
 	
 	
+	
+	/**
+	 * 
+	 * @param width Largeur
+	 * @param height Hauteur
+	 * @param profileIds Nombre de joueurs
+	 * @return Board
+	 */
+	@Override
+	public Board initDemo(int width, int height, int[] profileIds) {
+		int playerNbr = 2;
+		if(profileIds.length < 1){
+			System.out.println("1 joueur minimum");
+			return null;
+		}
+		coordSnake = new double[playerNbr][2];
+		nbPix = new double[playerNbr];
+		holeMap = new HashMap<Integer, Integer>();
+		moveMap = new HashMap<Integer, Integer>();
+		currentId = new HashMap<Integer, Integer>();
+		ourBoard = new Board();
+		ourBoard.width = width;
+		ourBoard.height = height;
+		ourBoard.snakesMap = new HashMap<Position, Integer>();
+		ourBoard.itemsMap = new HashMap<Position, Item>();
+		ourBoard.snakes = new Snake[playerNbr];
+		Position posSpawn;
+
+		for (int i = 0; i < playerNbr ; i++) 
+		{
+			posSpawn = snakeSpawnPos(width, height);
+			ourBoard.snakes[i] = new Snake();
+			currentId.put(profileIds[i], i);
+			init(ourBoard.snakes[i], profileIds[i] , posSpawn);
+			System.out.println("Snake " + Integer.toString(i) + " spawn a la position x:" + Integer.toString(posSpawn.x) + "  y:"+Integer.toString(posSpawn.y));
+		}
+
+		/** Spawn de tout les items du jeu **/
+		Item[] itemTab = new Item[] {
+				Item.USER_SPEED,
+				Item.USER_SLOW,
+				Item.USER_BIG_HOLE,
+				Item.OTHERS_SPEED,
+				Item.OTHERS_THICK,
+				Item.OTHERS_SLOW,
+				Item.OTHERS_REVERSE,
+				Item.COLLECTIVE_THREE_CIRCLES,
+				Item.COLLECTIVE_TRAVERSE_WALL,
+				Item.COLLECTIVE_ERASER
+		};
+		ourBoard.itemsMap.put(new Position(100,100), itemTab[0] );
+		ourBoard.itemsMap.put(new Position(200,100), itemTab[1] );
+		ourBoard.itemsMap.put(new Position(300,100), itemTab[2] );
+		ourBoard.itemsMap.put(new Position(400,100), itemTab[3] );
+		ourBoard.itemsMap.put(new Position(100,200), itemTab[4] );
+		ourBoard.itemsMap.put(new Position(100,300), itemTab[5] );
+		ourBoard.itemsMap.put(new Position(100,400), itemTab[6] );
+		ourBoard.itemsMap.put(new Position(200,200), itemTab[7] );
+		ourBoard.itemsMap.put(new Position(300,300), itemTab[8] );
+		ourBoard.itemsMap.put(new Position(300,300), itemTab[9] );
+		return ourBoard;
+	}
 	
 }
