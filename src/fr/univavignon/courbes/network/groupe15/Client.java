@@ -161,7 +161,7 @@ public class Client implements ClientCommunication {
 	 * Fonction qui permet de récupérer un objet depuis le serveur
 	 * @return Renvois l'objet que le serveur à envoyé
 	 */
-	public Object retrieveObject(){
+	public synchronized Object retrieveObject(){
 		Object object;
 		try{
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -179,7 +179,7 @@ public class Client implements ClientCommunication {
 	 * Fonction qui permet d'envoyer un objet sur le serveur
 	 * @param object Objet à envoyer au serveur
 	 */
-	public void sendObject(Object object){
+	public synchronized void sendObject(Object object){
 		try{
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(object);
