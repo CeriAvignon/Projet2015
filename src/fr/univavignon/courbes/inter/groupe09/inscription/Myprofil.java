@@ -54,7 +54,7 @@ public class Myprofil extends Fenetre implements ActionListener {
 		if (!v) {
 			
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(new File("src/txt/user.txt")));
+				BufferedReader reader = new BufferedReader(new FileReader(new File("src/fr/univavignon/courbes/inter/groupe09/txt/user.txt")));
 				while((ligne = reader.readLine()) != null) {
 					String el[] = ligne.split(";");
 					if (ligne.contains(user)) {
