@@ -101,7 +101,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		    this.boardPanel.setLayout(display);
 		    
 	    	JPanel panel = new JPanel();
-	    	panel.setBackground(Color.black);
+	    	panel.setBackground((new Color(118, 118, 118)));
 	    	panel.setLayout(leftColumn);
 		    JLabel text = new JLabel("Le gagnant de la partie est :  ");
 		    text.setFont(new Font("Verdana",1,23));
@@ -109,7 +109,7 @@ public class GraphicDisplayGroupe18 implements GraphicDisplay {
 		    panel.add(text)	;
 		    
 	    	JPanel panel2 = new JPanel();
-	    	panel2.setBackground(Color.black);
+	    	panel2.setBackground(new Color(118, 118, 118));
 	    	panel2.setLayout(rightColumn);
 		    JLabel text2 = new JLabel(winner);
 		    text2.setFont(new Font("Verdana",1,27));

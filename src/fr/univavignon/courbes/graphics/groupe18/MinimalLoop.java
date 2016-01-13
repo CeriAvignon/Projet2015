@@ -56,7 +56,7 @@ public  class MinimalLoop {
 		commandMap = new HashMap<Integer, Direction>();
 		List<Profile> players = initPlayers(nbPlayers);
 		int profileIds[] = initProfile(players);
-		Round MP = new Round(800, 600, profileIds);
+		Rnd MP = new Rnd();
 		Board board = MP.init(800, 600 , profileIds);
 		if (nbPlayers == 1)
 			board = MP.initDemo(800, 600, profileIds);
@@ -90,8 +90,8 @@ public  class MinimalLoop {
 			window.setVisible(true);
 			List<Integer> order = new ArrayList<Integer>();
 			while (roundOver == false) {
-				sleep(20);
-				MP.update(10, commandMap);
+				sleep(30);
+				MP.update(30, commandMap);
 				MG.update();
 				window.setVisible(true);
 				getOrder(board.snakes, order);
@@ -336,10 +336,10 @@ public  class MinimalLoop {
 		
 		if(nbPlayers == 2) {
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-	        .put(KeyStroke.getKeyStroke("K"), "test3");
+	        .put(KeyStroke.getKeyStroke("M"), "test3");
 			boardPanel.getActionMap().put("test3", new MoveAction(Direction.RIGHT, 1));
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-			.put(KeyStroke.getKeyStroke("M"), "test4");
+			.put(KeyStroke.getKeyStroke("K"), "test4");
 		
 			boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 			.put(KeyStroke.getKeyStroke("released K"), "release2");
