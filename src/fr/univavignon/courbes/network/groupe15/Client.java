@@ -2,6 +2,7 @@ package fr.univavignon.courbes.network.groupe15;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Map;
 
@@ -28,6 +29,19 @@ public class Client implements ClientCommunication {
 	private Socket socket;
 	/** Plateau de jeu */
 	private Board board;
+	/**	Limite de points de la partie */
+	private Integer pointThreshold;
+	/**	Map des commandes envoyées par le client */
+	private Map<Integer, Direction> commandsSent;
+	/**	Profil envoyé par le client */
+	private Profile profileSent;
+	/**	Prend la valeur TRUE si le dernier transfert (réception ou envoi) s'est effectué avec succes et FALSE sinon */
+	private boolean success;
+	
+	/** Gestion des erreurs de profil */
+	private ClientProfileHandler profileHandler;
+	/** Gestion du message d'erreur */
+	private ErrorHandler errorHandler;
 
     @Override
 	public String getIp() {
@@ -72,100 +86,109 @@ public class Client implements ClientCommunication {
 		}
 	}
 
-	/*@Override
-	public String retrieveText() {
-		// TODO be not blocking
-		try {
-			String message = "";
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			message = in.readLine();
-			return message;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public void sendText(String message) {
-		// TODO be not blocking
-		try {
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    		out.println(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public List<Profile> retrieveProfiles() {
-		// TODO be non blocking
-		try{
-			System.out.println("YOLOOOOOOOOOO !!!!!");
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			List<Profile> lp = (List<Profile>)ois.readObject();
-			return lp;
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}*/
-
 	@Override
 	public Integer retrievePointThreshold() {
-		// TODO Auto-generated method stub
-		return null;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				pointThreshold = (Integer)retrieveObject();
+			}
+		});
+		t.start();
+		return this.pointThreshold;
 	}
 
 	@Override
 	public Board retrieveBoard() {
-		// TODO be non blocking
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try{
-					System.out.println("YOLOOOOOOOOOO !!!!!");
-					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-					Board b = (Board)ois.readObject();
-					board = b;
-				} catch(Exception e){
-					board = null;
-					e.printStackTrace();
-				}
+				board = (Board)retrieveObject();
 			}
 		});
 		t.start();
-		return board;
+		return this.board;
 	}
 
 	@Override
 	public void sendCommands(Map<Integer, Direction> commands) {
-		// TODO Auto-generated method stub
-		
+		this.commandsSent = commands;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run() {
+				sendObject(commandsSent);
+			}
+		});
+		t.start();
 	}
 
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
-		// TODO Auto-generated method stub
-		
+		this.errorHandler = errorHandler;		
 	}
 
 	@Override
 	public void setProfileHandler(ClientProfileHandler profileHandler) {
-		// TODO Auto-generated method stub
-		
+		this.profileHandler = profileHandler;
 	}
 
 	@Override
 	public boolean addProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		return false;
+		this.profileSent = profile;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				sendObject(profileSent);
+			}
+		});
+		t.start();
+		return this.success;
 	}
 
 	@Override
 	public void removeProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		
+		this.profileSent = profile;
+		Thread t = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				sendObject(profileSent);
+			}
+		});
+		t.start();
+	}
+	
+	/**
+	 * Fonction qui permet de récupérer un objet depuis le serveur
+	 * @return Renvois l'objet que le serveur à envoyé
+	 */
+	public Object retrieveObject(){
+		Object object;
+		try{
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			object = ois.readObject();
+			this.success = true;
+		} catch(Exception e){
+			e.printStackTrace();
+			this.success = false;
+			return null;
+		}
+		return object;
+	}
+	
+	/**
+	 * Fonction qui permet d'envoyer un objet sur le serveur
+	 * @param object Objet à envoyer au serveur
+	 */
+	public void sendObject(Object object){
+		try{
+			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject(object);
+			oos.flush();
+			this.success = true;
+		}catch(Exception e){
+			e.printStackTrace();
+			this.success = false;
+		}
 	}
 
 }
