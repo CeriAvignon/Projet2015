@@ -4,9 +4,19 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import fr.univavignon.courbes.inter.ErrorHandler;
+/*
+ * Classe qui implemente l'interface ErrorHandler.
+ */
+public class Error extends JFrame implements ErrorHandler {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-public class Erreur extends JFrame implements ErrorHandler {
-
+	/*
+	 * Affiche une fenêtre d'erreur.
+	 * @param errorMessage Message d'erreur à afficher.
+	 */
 	@Override
 	public void displayError(String errorMessage) {
 		

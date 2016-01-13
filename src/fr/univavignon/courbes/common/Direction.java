@@ -1,4 +1,3 @@
-
 package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
