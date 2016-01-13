@@ -56,6 +56,8 @@ public  class MinimalLoop {
 		commandMap = new HashMap<Integer, Direction>();
 		List<Profile> players = initPlayers(nbPlayers);
 		int profileIds[] = initProfile(players);
+		// Pour chacun des 3 moteurs testés, il existait un bug dut à 
+		// une inversion entre playerId et profileId dans init.
 		Rnd MP = new Rnd();
 		Board board = MP.init(800, 600 , profileIds);
 		if (nbPlayers == 1)
