@@ -278,13 +278,13 @@ public class ClientCom implements ClientCommunication
      */
     @Override
     public void sendCommands(final Map<Integer,Direction> commands) {
-      Thread send = new Thread(new Runnable(){
+      Thread sendCommands = new Thread(new Runnable(){
 			     @Override
 			     public void run(){
 				         sendObject(commands);
 		       }
 		  });
-		  send.start();
+		  sendCommands.start();
 		  return;
     }
 

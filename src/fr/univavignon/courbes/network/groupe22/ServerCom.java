@@ -313,13 +313,13 @@ public class ServerCom implements ServerCommunication
 	 	*/
 		@Override
 		public void sendProfiles(final List<Profile> profiles) {
-			Thread send = new Thread(new Runnable(){
+			Thread sendProfiles = new Thread(new Runnable(){
 		 			@Override
 		 			public void run(){
 			 			sendObject(profiles);
 		 			}
 	 		});
-	 		send.start();
+	 		sendProfiles.start();
 	 		return;
 		}
 
@@ -343,13 +343,13 @@ public class ServerCom implements ServerCommunication
 		
 		@Override
 		public void sendPointThreshold(final int pointThreshold) {
-				Thread send = new Thread(new Runnable(){
+				Thread sendPointThreshold = new Thread(new Runnable(){
 					@Override
 					public void run(){
 							sendObject(pointThreshold);
 					}
 				});
-				send.start();
+				sendPointThreshold.start();
 				return;
 		}
 
@@ -370,13 +370,13 @@ public class ServerCom implements ServerCommunication
     */
 		@Override
 		public void sendBoard(final Board board) {
-			Thread send = new Thread(new Runnable(){
+			Thread sendBoard = new Thread(new Runnable(){
 				@Override
 				public void run(){
 						sendObject(board);
 				}
 			});
-			send.start();
+			sendBoard.start();
 			return;
 		}
 
