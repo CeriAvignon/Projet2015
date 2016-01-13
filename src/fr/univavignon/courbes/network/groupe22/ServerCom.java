@@ -1,20 +1,12 @@
 package fr.univavignon.courbes.network.groupe22;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.net.DatagramSocket;
-
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -226,11 +218,14 @@ public void launchServer()
               tableauSocketClients[nbClient] = client;
               nbClient++;
 
-              Thread tClient = new Thread(new ClientProcessorTCP(client));
+              Thread tClient = new Thread(new ClientProcessor(client));
+              tClient.start();
 
            } catch (IOException e) {
               e.printStackTrace();
            }
+           
+
         }
 
           try {
@@ -391,24 +386,4 @@ public void sendProfiles(List<Profile> profiles) {
 
 }
 
-/**
- * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
- * participer à la partie en cours de configuration. Le serveur peut refuser
- * certains joueurs, par exemple si la partie est complète (plus de place libre).
- * <br/>
- * À noter que La liste doit contenir les profils <i>dans l'ordre où ils ont été reçus</i>
- * par le Moteur Réseau, afin que l'Interface Utilisateur puisse déterminer lesquels refuser
- * le cas échéant. Le moteur réseau doit également garder trace de quel joueur correspond
- * à quel client.
- *
- * @return
- * 		La liste des profils reçus par le Moteur Réseau (peut être vide si aucun n'a été
- * 		reçu depuis la dernière fois que la méthode a été invoquée).
- */
-
-@Override
-public List<Profile> retrieveProfiles() {
-	// TODO Auto-generated method stub
-	return null;
-}
 }

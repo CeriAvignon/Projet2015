@@ -92,22 +92,6 @@ public interface ServerCommunication
 	public void sendProfiles(List<Profile> profiles);
 
 	/**
-	 * Récupère les profils envoyés par les clients, représentant des joueurs qui désirent
-	 * participer à la partie en cours de configuration. Le serveur peut refuser
-	 * certains joueurs, par exemple si la partie est complète (plus de place libre).
-	 * <br/>
-	 * À noter que La liste doit contenir les profils <i>dans l'ordre où ils ont été reçus</i>
-	 * par le Moteur Réseau, afin que l'Interface Utilisateur puisse déterminer lesquels refuser
-	 * le cas échéant. Le moteur réseau doit également garder trace de quel joueur correspond
-	 * à quel client.
-	 *
-	 * @return
-	 * 		La liste des profils reçus par le Moteur Réseau (peut être vide si aucun n'a été
-	 * 		reçu depuis la dernière fois que la méthode a été invoquée).
-	 */
-	public List<Profile> retrieveProfiles();
-
-	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,
 	 * à tous les clients connectés à ce serveur.
 	 * <br/>
