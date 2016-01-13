@@ -103,12 +103,12 @@ public class Game extends Fenetre implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		codeCmd = e.getKeyCode();
 		switch (codeCmd) {
-		// 52 correspend à la touche pavé numérique 4, tourné à gauche
-		case 52 :
+		// Correspend à la touche directionnel gauche, tourné à gauche
+		case KeyEvent.VK_LEFT :
 			commandesTest.put(0, Direction.LEFT);
 			break;
-		// 54 correspend à la touche pavé numérique 6, tourné à droite	
-		case 54 :
+		// Correspend à la touche directionnel droite, tourné à droite	
+		case KeyEvent.VK_RIGHT :
 			commandesTest.put(0, Direction.RIGHT);
 			break;
 		default :
