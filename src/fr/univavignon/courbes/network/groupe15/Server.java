@@ -103,11 +103,11 @@ public class Server implements ServerCommunication {
 		try {
 			this.serverSocket = new ServerSocket(this.port);
 			System.out.println("Lancement du serveur");
-			Thread t = new Thread(new Runnable() {
+			Thread t = new Thread(new Runnable(){
 				@Override
 				public void run() {
 					try {
-						while(true) {
+						while(!serverSocket.isClosed()) {
 							sockets.add(serverSocket.accept());
 							safePrintln("Connexion avec le client : " + sockets.get(sockets.size()-1).getInetAddress());
 						}
@@ -125,7 +125,7 @@ public class Server implements ServerCommunication {
 	@Override
 	public void closeServer() {
 		try {
-			for(Socket socket:sockets){
+			for(Socket socket:sockets) {
 				socket.close();
 			}
 			serverSocket.close();
@@ -133,42 +133,6 @@ public class Server implements ServerCommunication {
 			e.printStackTrace();
 		}
 	}
-
-	/*@Override
-	public void sendText(String message) {
-		messageSent = message;
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				sendObject(message);
-			}
-		});
-		t.start();
-	}
-
-	@Override
-	public String[] retrieveText() {
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				try {
-					int i = 0;
-					for(Socket socket:sockets){
-						ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-						messages[i] = (String)ois.readObject();
-						System.out.println(messages[i]);
-						ois.reset();
-						i++;
-					}
-				} catch (Exception e) {
-					messages = null;
-					e.printStackTrace();
-				}
-			}
-		});
-		t.start();
-		return messages;
-	}*/
 
 	@Override
 	public void sendProfiles(List<Profile> profiles) {
@@ -187,7 +151,7 @@ public class Server implements ServerCommunication {
 		this.currentPointThreshold = pointThreshold;
 		Thread t = new Thread(new Runnable(){
 			@Override
-			public void run(){
+			public void run() {
 				sendObject(currentPointThreshold);
 			}
 		});
@@ -199,7 +163,7 @@ public class Server implements ServerCommunication {
 		this.currentBoard = board;
 		Thread t = new Thread(new Runnable(){
 			@Override
-			public void run(){
+			public void run() {
 				sendObject(currentBoard);
 			}
 		});
@@ -212,7 +176,7 @@ public class Server implements ServerCommunication {
 	 */
 	private synchronized void sendObject(Object object) {
 		try {
-			for(Socket socket:sockets){
+			for(Socket socket:sockets) {
 				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 				oos.writeObject(object);
 				oos.flush();
@@ -226,7 +190,7 @@ public class Server implements ServerCommunication {
 	public Map<Integer, Direction> retrieveCommands() {
 		Thread t = new Thread(new Runnable(){
 			@Override
-			public void run(){
+			public void run() {
 				map = retrieveMap();
 			}
 		});
@@ -241,7 +205,7 @@ public class Server implements ServerCommunication {
 	private synchronized Map<Integer, Direction> retrieveMap() {
 		try {
 			map = null;
-			for(Socket socket:sockets){
+			for(Socket socket:sockets) {
 				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 				Object obj = ois.readObject();
 				if(obj instanceof Map) {
