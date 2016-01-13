@@ -42,7 +42,7 @@ public class Server implements ServerCommunication
 	protected int port = 2345;
 	
 	/**
-	 *  Variabke de type String contenant l'adresse ip du serveur
+	 *  Variable de type String contenant l'adresse ip du serveur
 	 */
 	protected String ip;
 
@@ -75,9 +75,11 @@ public class Server implements ServerCommunication
 	
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant de récupérer l'adresse ip du serveur
 	 * 
 	 * @param null
+	 * @return ip
 	 */
 	@Override
 	public String getIp() 
@@ -86,9 +88,11 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant de récupérer le port du serveur
 	 * 
 	 * @param null
+	 * @return port
 	 */
 	@Override
 	public int getPort() 
@@ -97,9 +101,11 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant de modifier le port du serveur
 	 * 
 	 * @param port
+	 * @return null
 	 */
 	@Override
 	public void setPort(int port) 
@@ -121,9 +127,11 @@ public class Server implements ServerCommunication
 	}
 
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant lancer un serveur, et donc de creer une partie en local
 	 * 
 	 * @param null
+	 * @return null
 	 */
 	@Override
 	public void launchServer() 
@@ -256,9 +264,12 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * 
+	 * @author Marie et Mary
 	 * Fonction permettant fermer un serveur (lors d'une fin de partie)
 	 * 
 	 * @param null
+	 * @return null
 	 */
 	@Override
 	public void closeServer() 
@@ -278,9 +289,11 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant d'envoyer les profils en TCP des joueurs connectés au serveur
 	 * 
 	 * @param profiles
+	 * @return null
 	 */
 	@Override
 	public void sendProfiles(List<Profile> profiles) 
@@ -301,9 +314,11 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant d'envoyer la limite des points à atteindre pour gagner la partie
 	 * 
-	 * @param null
+	 * @param pointThreshold
+	 * @return null
 	 */
 	@Override
 	public void sendPointThreshold(int pointThreshold) 
@@ -312,9 +327,11 @@ public class Server implements ServerCommunication
 	}
 	
 	/**
+	 * @author Marie et Mary
 	 * Fonction permettant d'envoyer un board 
 	 * 
-	 * @param null
+	 * @param board
+	 * @retun null
 	 */
 	@Override
 	public void sendBoard(Board board) 

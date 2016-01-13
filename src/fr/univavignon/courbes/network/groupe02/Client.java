@@ -21,7 +21,7 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
 /**
  * 
- * @author Marie et Mary    
+ * @author Marie V. et Mary  P  
  * 
  * Création de la classe client qui implémente les fonction de l'interface clientCommunication
  *
@@ -33,20 +33,22 @@ public class Client implements ClientCommunication
 	 */
 	protected int port = 2345;
 	
-	/**
+	/** 
 	 * 	Variable de type String contenant  contenant l'adresse ip du client
 	 */
 	protected String ip;
 	
-	/**
+	/** 
 	 *  Variable contenant le socket du client
 	 */
 	private Socket socketClient = null;
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de récupérer l'adresse ip du client
 	 * 
 	 * @param null
+	 * @return ip
 	 */
 	@Override
 	public String getIp() 
@@ -55,6 +57,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de modifier l'adresse ip du client
 	 * 
 	 * @param ip
@@ -66,9 +69,11 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de récupérer le port du client
 	 * 
 	 * @param null
+	 * @return port
 	 */
 	@Override
 	public int getPort() 
@@ -77,6 +82,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de récupérer modifier le port du client
 	 * 
 	 * @param port
@@ -88,8 +94,10 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de lancer un client
 	 * 
+	 * @return null
 	 * @param null
 	 */
 	@Override
@@ -98,7 +106,6 @@ public class Client implements ClientCommunication
 	     try 
 	     {
 	         socketClient = new Socket(this.ip, this.port);
-	       
 	     } 
 	     catch (UnknownHostException e) 
 	     {
@@ -112,9 +119,11 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
+	 * @author Marie V. et Mary  P  
 	 * Fonction permettant de fermer un client lorsqu'il se déconnecte du serveur
 	 * 
 	 * @param null
+	 * @return null
 	 */
 	@Override
 	public void closeClient() 
@@ -133,18 +142,35 @@ public class Client implements ClientCommunication
 			}
 	}
 
-	
+	/**
+	 * @author Marie V. et Mary  P  
+	 * Permet d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     *  
+	 * @param errorHandler
+	 * @return null
+	 */
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) 
 	{
 		
 	}
 		
+	/**
+	 * @author Marie V. et Mary  P  
+	 * Permet d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs
+     *  
+	 * @param profileHandler
+	 * @return null
+	 */
 	@Override
 	public void setProfileHandler(ClientProfileHandler profileHandler) 
 	{
 		
 	} 
+	
+
 	@Override
 	public boolean addProfile(Profile profile)
 	{
