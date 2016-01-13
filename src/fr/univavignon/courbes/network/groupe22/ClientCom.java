@@ -13,14 +13,52 @@ import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * Ensemble de méthodes permettant à l'Interface Utilisateur côté client
+ * de communiquer avec l'Interface Utilisateur côté serveur, via le Moteur
+ * Réseau.
+ * <br/>
+ * Chaque binôme de la composante Moteur Réseau doit définir une classe
+ * implémentant cette interface, qui sera instanciée par l'Interface Utilisateur.
+ * <br/>
+ * La communication réseau doit être non-bloquante pour l'Interface Utilisateur.
+ * Cela signifie que le Moteur Réseau doit mettre en place un système de buffering.
+ * Autrement dit, quand il reçoit des données provenant du serveur, il les garde
+ * en mémoire jusqu'à ce que l'Interface Utilisateur le sollicite via l'une des
+ * méthodes de type {@code retrieveXxxxx} pour obtenir cette information.
+ * Inversement, quand l'Interface Utilisateur invoque une méthode de type {@code sendXxxxx},
+ * l'expédition vers le serveur doit se faire dans un thread dédié, afin de ne
+ * pas bloquer l'exécution du jeu.
+ */
 public class ClientCom implements ClientCommunication
 {
+	/**
+	* L'ip du serveur
+	*/
     private String ipServer;
+    /**
+	* Le port du serveur
+	*/
     private int portServer;
+    /**
+	* Le socket du client connecté au serveur
+	*/
     private Socket connexion=null;
+    /**
+	* Le plateau de jeu
+	*/
     private Board board=null;
+    /**
+	* Le nombre de points à atteindre
+	*/
     private int pointThreshold=0;
+    /**
+	* Erreur de profil
+	*/
     private ClientProfileHandler profileHandler;
+    /**
+	* Erreur à envoyer à l'interface utilisateur
+	*/
     private ErrorHandler errorHandler;
   /**
      * Renvoie l'adresse IP du serveur auquel le client se connecte.
@@ -103,21 +141,13 @@ public class ClientCom implements ClientCommunication
     }
 
     /**
-     * Récupère la liste des profils des joueurs participant à la manche,
-     * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
-     * des joueurs pour cette partie.
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution. 
      * <br/>
-     * Cette méthode est invoquée par l'Interface Utilisateur de manière
-     * à ce que le client obtienne l'identité des joueurs participant à une partie.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
-     *
-     * @return
-     *         Liste des profils participant à la partie, ou {@code null} si aucune
-     *         liste n'a été envoyée.
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
      */
 
       @Override
@@ -125,16 +155,47 @@ public class ClientCom implements ClientCommunication
 		      this.errorHandler = errorHandler;
 	    }
 
+      /**
+       * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+       * à utiliser pour prévenir d'une modification des joueurs lors de la
+       * configuration d'une partie. 
+       * <br/>
+       * Cette méthode doit être invoquée avant le lancement du client.
+       * 
+       * @param profileHandler
+       * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
+       */
 	    @Override
 	    public void setProfileHandler(ClientProfileHandler profileHandler) {
 		        this.profileHandler = profileHandler;
 	    }
 
+	    /**
+	    * Envoie au serveur le profil d'un joueur désirant participer à la partie
+	    * en cours de configuration. Si plusieurs joueurs utilisent le même client,
+	    * alors la méthode doit être appelée plusieurs fois successivement. Chaque
+	    * joueur peut être refusé par le serveur, par exemple si la partie ne peut
+	    * pas accueillir plus de joueurs.
+	    *   
+	    * @param profile
+	    * 		Profil du joueur à ajouter à la partie.
+	    * @return
+	    * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou 
+	    * 		rejeté ({@code false}). 
+	    */
       @Override
       public boolean addProfile(Profile profile) {
         return sendObject(profile);
       }
 
+      /**
+  	 * Envoie au serveur le profil d'un joueur inscrit mais ne désirant plus participer 
+  	 * à la partie en cours de configuration. Si le joueur n'est pas inscrit à la partie,
+  	 * alors rien ne se passe (pas d'erreur).
+  	 *   
+  	 * @param profile
+  	 * 		Profil du joueur à retirer de la partie.
+  	 */
       @Override
       public void removeProfile(final Profile profile) {
         Thread sendProfile = new Thread(new Runnable(){
@@ -211,11 +272,6 @@ public class ClientCom implements ClientCommunication
      * <i>sur le serveur</i>, pour la manche en cours, et la direction correspond à la
      * commande générée par le joueur. Si un joueur n'a pas généré de commande, alors la
      * valeur associée doit être {@link Direction#NONE}.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
      *
      * @param commands
      *         Une liste contenant les directions choisies par chaque joueur local au client.
@@ -233,19 +289,15 @@ public class ClientCom implements ClientCommunication
     }
 
     /**
-     * Permet au client de récupérer un message textuel envoyé par le serveur
-     * auquel il est connecté.
+     * Permet d'envoyer un objet
      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
+     *
+     * @param object
+     * 		   Objet à envoyer.
      *
      * @return
-     *         Contient le message envoyé par le serveur, ou {@code null} si aucun message
-     *         n'a été envoyé.
+     *         booléen retournant true si l'envoi à fonctionner et false sinon.
      */
-
      private synchronized boolean sendObject(Object object) {
 		     try {
 		    	 ObjectOutputStream oos = new ObjectOutputStream(connexion.getOutputStream());

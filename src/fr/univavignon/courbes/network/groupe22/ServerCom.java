@@ -190,11 +190,30 @@ public class ServerCom implements ServerCommunication
 
 		}
 
+		/**
+	     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+	     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+	     * <br/>
+	     * Cette méthode doit être invoquée avant le lancement du serveur.
+	     * 
+	     * @param errorHandler
+	     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+	     */
 		@Override
 		public void setErrorHandler(ErrorHandler errorHandler) {
 			this.errorHandler = errorHandler;
 		}
 
+		/**
+	     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+	     * à utiliser pour prévenir d'une modification des joueurs lors de la
+	     * configuration d'une partie.
+	     * <br/>
+	     * Cette méthode doit être invoquée avant le lancement du serveur.
+	     * 
+	     * @param profileHandler
+	     * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
+	     */
 		@Override
 		public void setProfileHandler(ServerProfileHandler profileHandler) {
 			this.profileHandler = profileHandler;
@@ -383,13 +402,7 @@ public class ServerCom implements ServerCommunication
 	}
 
 	/**
-     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont
-     * connectés.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante :
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu.
+     * Permet au serveur d'envoyer un objet au client.
      *
      * @param object
      * 		Objet à envoyer.
