@@ -1,8 +1,12 @@
 package fr.univavignon.courbes.graphics.groupe18;
 
+/**
+ * La classe qui sert a faire la demonstration, avec un joueur
+ *
+ */
 public class DemoTest {
 	public static void main(String[] args){
 		// Un joueur, Q et D pour diriger.
-		(new MinimalLoop()).mainLoop(1);
+		MinimalLoop.mainLoop(1);
 	}
 }

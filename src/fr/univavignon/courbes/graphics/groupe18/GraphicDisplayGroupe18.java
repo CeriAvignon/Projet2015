@@ -2,7 +2,6 @@ package fr.univavignon.courbes.graphics.groupe18;
 
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
