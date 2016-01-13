@@ -1,20 +1,27 @@
 package fr.univavignon.courbes.network.groupe22;
+import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
 import java.net.*;
+import java.util.*;
 import java.io.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class ClientCom implements ClientCommunication
 {
-    private PrintWriter writer = null;
-    private BufferedInputStream reader = null;
     private String ipServer;
     private int portServer;
-    private Socket connexion = null;
-	String message = null;
-	Board board = null;
+    private Socket connexion=null;
+    private Board board=null;
+    private int pointThreshold=0;
+    private ClientProfileHandler profileHandler;
+    private ErrorHandler errorHandler;
   /**
      * Renvoie l'adresse IP du serveur auquel le client se connecte.
      *
@@ -96,23 +103,6 @@ public class ClientCom implements ClientCommunication
     }
 
     /**
-  	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
-  	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
-  	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
-  	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
-  	 * pas accueillir plus de joueurs.
-  	 *
-  	 * @param profile
-  	 * 		Profil du joueur à ajouter à la partie.
-  	 */
-    
-    @Override
-  	public void sendProfile(Profile profile) {
-    	
-    }
-  
-  	/**
-
      * Récupère la liste des profils des joueurs participant à la manche,
      * envoyée par le serveur. Les profils sont placés dans l'ordre des ID
      * des joueurs pour cette partie.
@@ -129,11 +119,33 @@ public class ClientCom implements ClientCommunication
      *         Liste des profils participant à la partie, ou {@code null} si aucune
      *         liste n'a été envoyée.
      */
-    
-    @Override
-    public List<Profile> retrieveProfiles() {
-    	return null;
-    }
+
+      @Override
+	    public void setErrorHandler(ErrorHandler errorHandler) {
+		      this.errorHandler = errorHandler;
+	    }
+
+	    @Override
+	    public void setProfileHandler(ClientProfileHandler profileHandler) {
+		        this.profileHandler = profileHandler;
+	    }
+
+      @Override
+      public boolean addProfile(Profile profile) {
+        return sendObject(profile);
+      }
+
+      @Override
+      public void removeProfile(final Profile profile) {
+        Thread sendProfile = new Thread(new Runnable(){
+			       @Override
+			       public void run(){
+				              sendObject(profile);
+			       }
+		    });
+		    sendProfile.start();
+     }
+
 
     /**
      * Récupère la limite de points à atteindre pour gagner la partie,
@@ -153,10 +165,9 @@ public class ClientCom implements ClientCommunication
      *         Limite de point courante de la partie, ou {@code null} si aucune
      *         valeur n'a été envoyée.
      */
-    
     @Override
     public Integer retrievePointThreshold() {
-    	return 0;
+      return this.pointThreshold;
     }
 
     /**
@@ -175,40 +186,24 @@ public class ClientCom implements ClientCommunication
      *         Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      *         n'a été envoyée.
      */
-    
-    @Override
-    public Board retrieveBoard() {
-    	
-    	Thread retrieve = new Thread(new Runnable() {
-    	  		@Override
-			     public void run(){
-				         try {
-					            DatagramSocket socket = new DatagramSocket(portServer);
-				                byte[] data = new byte[4];
-				                DatagramPacket packet = new DatagramPacket(data, data.length );
-				                socket.receive(packet);
-				                int leng = 0;
-				                for (int i = 0; i < 4; ++i) {
-				                      leng |= (data[3-i] & 0xff) << (i << 3);
-				                }
-
-				                byte[] buffer = new byte[leng];
-				                packet = new DatagramPacket(buffer, buffer.length );
-				                socket.receive(packet);
-				                ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
-				                ObjectInputStream oos = new ObjectInputStream(baos);
-				                board = (Board)oos.readObject();
-				                socket.close();
-
-				        }
-				        catch(Exception e) {
-				        	e.printStackTrace();
-				        }
-			     }
-		});
-		retrieve.start();
-		return board;
-  }
+      @Override
+      public Board retrieveBoard() {
+    	  Thread retrieveBoard = new Thread(new Runnable(){
+  			@Override
+  			public void run(){
+  				try{
+  					ObjectInputStream ois = new ObjectInputStream(connexion.getInputStream());
+  					Board b = (Board)ois.readObject();
+  					board = b;
+  				} catch(Exception e){
+  					board = null;
+  					e.printStackTrace();
+  				}
+  			}
+  		});
+  		retrieveBoard.start();
+  		return board;
+    }
 
     /**
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
@@ -225,10 +220,16 @@ public class ClientCom implements ClientCommunication
      * @param commands
      *         Une liste contenant les directions choisies par chaque joueur local au client.
      */
-    
     @Override
-    public void sendCommands(Map<Integer,Direction> commands) {
-    	
+    public void sendCommands(final Map<Integer,Direction> commands) {
+      Thread send = new Thread(new Runnable(){
+			     @Override
+			     public void run(){
+				         sendObject(commands);
+		       }
+		  });
+		  send.start();
+		  return;
     }
 
     /**
@@ -244,19 +245,31 @@ public class ClientCom implements ClientCommunication
      *         Contient le message envoyé par le serveur, ou {@code null} si aucun message
      *         n'a été envoyé.
      */
-    
-    @Override
+
+     private synchronized boolean sendObject(Object object) {
+		     try {
+		    	 ObjectOutputStream oos = new ObjectOutputStream(connexion.getOutputStream());
+				 oos.writeObject(object);
+				 oos.flush();
+		     } catch (Exception e) {
+			        e.printStackTrace();
+              return false;
+		     }
+         return true;
+	    }
+
+      /*
     public String retrieveText() {
-    	
-    		try {
-    			BufferedReader in = new BufferedReader(new InputStreamReader(connexion.getInputStream()));
-    			
-    			message = in.readLine();
-    		}
-    		catch (IOException e) {
-    			e.printStackTrace();
-    		}
-    		return message;
+      try {
+			    String message = "";
+			    BufferedReader messageIn = new BufferedReader(new InputStreamReader(connexion.getInputStream()));
+			    message = messageIn.readLine();
+			    return message;
+		  }
+      catch (IOException e) {
+			     e.printStackTrace();
+		  }
+		return null;
     }
 
     /**
@@ -271,22 +284,13 @@ public class ClientCom implements ClientCommunication
      * @param message
      *         Le message textuel à envoyer au serveur.
      */
-    
-    @Override
-    public void sendText(final String message) {
-    	Thread send = new Thread(new Runnable() {
-    		@Override
-    		public void run() {
-    			try {
-    				PrintWriter out = new PrintWriter(connexion.getOutputStream(), true);
-    				out.println(message);
-    			}
-    			catch (IOException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    	});
-    	send.start();
-    }
-    
+    /*public void sendText(String message) {
+      try {
+			    PrintWriter messageOut = new PrintWriter(connexion.getOutputStream(), true);
+    		  messageOut.println(message);
+		  }
+      catch (IOException e) {
+			     e.printStackTrace();
+		  }
+    }*/
 }
