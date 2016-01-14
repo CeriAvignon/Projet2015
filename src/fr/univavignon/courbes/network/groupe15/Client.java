@@ -78,6 +78,10 @@ public class Client implements ClientCommunication {
 							Object o = retrieveObject();
 							if(o instanceof List) {
 								profileHandler.updateProfiles((List<Profile>)o);
+							} else if(o instanceof Board){
+								board = (Board)o;
+							} else if(o instanceof Integer){
+								pointThreshold = (Integer)o;
 							}
 						}
 					}
@@ -99,25 +103,25 @@ public class Client implements ClientCommunication {
 
 	@Override
 	public Integer retrievePointThreshold() {
-		Thread t = new Thread(new Runnable() {
+		/*Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				pointThreshold = (Integer)retrieveObject();
 			}
 		});
-		t.start();
+		t.start();*/
 		return this.pointThreshold;
 	}
 
 	@Override
 	public Board retrieveBoard() {
-		Thread t = new Thread(new Runnable() {
+		/*Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				board = (Board)retrieveObject();
 			}
 		});
-		t.start();
+		t.start();*/
 		return this.board;
 	}
 
