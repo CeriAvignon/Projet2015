@@ -3,6 +3,12 @@ package fr.univavignon.courbes.userInterface;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Classe récupérant les commandes des utilisateurs
+ * @author Florian DEMOL - Alexis MASSIA
+ */
+
+
 public class Command implements KeyListener{
 	public boolean left = false;
 	public boolean right = false;
@@ -24,8 +30,7 @@ public class Command implements KeyListener{
 
 
 	public void getCommand(){
-			if(left == true) System.out.println("gauche");
-			if(right == true) System.out.println("droite");			
+		
 	}
 	
 	public void sendCommand(){
@@ -34,4 +39,3 @@ public class Command implements KeyListener{
 	
 	
 }
-

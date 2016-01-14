@@ -7,6 +7,12 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 
+/**
+ * Classe interceptant les cliques sur les différents boutons de l'application afin de lancer les actions associées
+ * @author Florian DEMOL - Alexis MASSIA
+ */
+
+
 public class BoutonMenu extends JButton implements MouseListener{
 
 	private Menu parent;
@@ -16,16 +22,13 @@ public class BoutonMenu extends JButton implements MouseListener{
 		super(str);
 		this.name = str;
 		parent = menuParent;
-
-		//Des qu'un evenement de la souris sera intercept, il sera averti
 		this.addMouseListener(this);
 	}
 
-	//Methode appele lors du clic de souris
+	
 	public void mouseClicked(MouseEvent event) { 
 
 		BoutonMenu btn = (BoutonMenu) event.getSource();
-		System.out.println(btn.getText());
 
 
 		if(btn.getText() == "S'inscrire")
@@ -56,9 +59,9 @@ public class BoutonMenu extends JButton implements MouseListener{
 		{
 			parent.MenuCreerPartieEnLigne();
 		}
-		else if(btn.getText() == "Lancer une partie en réseau")
+		else if(btn.getText() == "Lancer une partie en local")
 		{
-			parent.MenuCreerPartieEnRéseau();
+			parent.MenuCreerPartieEnLocal();
 		}
 		else if(btn.getText() == "Nevermind")
 		{
@@ -71,6 +74,18 @@ public class BoutonMenu extends JButton implements MouseListener{
 		else if(btn.getText() == "Créer la partie")
 		{
 			parent.ValidationPartieCree();
+		}
+		else if(btn.getText() == "Rejoindre une partie en ligne")
+		{
+			parent.MenuRejoindrePartieEnLigne();
+		}
+		else if(btn.getText() == "Back")
+		{
+			parent.MenuLancerUnePartie();
+		}
+		else if(btn.getText() == "Voir mon profil")
+		{
+			parent.MenuVoirSonProfil();
 		}
 	}
 

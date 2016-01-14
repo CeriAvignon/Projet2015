@@ -8,11 +8,17 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+
+/**
+ * Classe permettant d'initialiser la fenêtre principale ainsi que la classe Menu
+ * 
+ * @author Florian DEMOL - Alexis MASSIA
+ */
+
 public class GUI extends JFrame implements WindowListener{
 
 	static GUI fenetre;
 	Menu menu;
-	//MenuLancerPartie menulancerpartie;
 	
 
 
@@ -46,15 +52,6 @@ public class GUI extends JFrame implements WindowListener{
 		fenetre.repaint();
 	}
 	
-	/*public void initMenuLancerPartie()
-	{
-		fenetre.remove(menu);
-		menulancerpartie = new MenuLancerPartie(this);
-		menulancerpartie.MenuLancerUnePartie();
-		fenetre.add(menulancerpartie,BorderLayout.CENTER);
-		fenetre.revalidate();
-		fenetre.repaint();
-	}*/
 	
 
 
@@ -99,5 +96,6 @@ public class GUI extends JFrame implements WindowListener{
 
 	}
 }
+
 
 
