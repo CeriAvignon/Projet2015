@@ -17,12 +17,8 @@ import javax.swing.KeyStroke;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.common.Item;
-import fr.univavignon.courbes.physics.groupe04.MyPhysicsEngine;
-import fr.univavignon.courbes.physics.groupe07.Round;
 import fr.univavignon.courbes.physics.groupe10.Rnd;
 
 /**
@@ -222,6 +218,7 @@ public  class MinimalLoop {
 	/**
 	 * @param snakes
 	 *        Tableau des snakes de la board
+	 * @param nbPlayers le nombre de joueurs
 	 * @return
 	 *         true si la partie est finie, false sinon
 	 */		  

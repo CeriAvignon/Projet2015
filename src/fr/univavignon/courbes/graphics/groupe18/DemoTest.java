@@ -5,6 +5,9 @@ package fr.univavignon.courbes.graphics.groupe18;
  *
  */
 public class DemoTest {
+	/**
+	 * @param args parametre par defaut du main
+	 */
 	public static void main(String[] args){
 		// Un joueur, Q et D pour diriger.
 		MinimalLoop.mainLoop(1);
