@@ -10,6 +10,7 @@ import fr.univavignon.courbes.physics.groupe07.groupe18.*;
 import fr.univavignon.courbes.physics.groupe07.groupe23.*;
 
 	/**
+	 * Cette classe implémente toutes les méthodes nécessaires au déroulement d'une manche.
 	 * 
 	 * @author Laurent Harkiolakis
 	 * @author Rudy Bardout
