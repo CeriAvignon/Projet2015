@@ -69,7 +69,7 @@ public class Bienvenu extends Fenetre implements ActionListener {
 				this.dispose();
 				break;
 			case "AUTHENTIFICATION": 
-				new Authentification("Authentification", 400, 400);
+				new Authentification("Authentification", 400, 400, true);
 				this.dispose();
 				break;
 			case "QUITTER": 

@@ -3,10 +3,13 @@ import fr.univavignon.courbes.inter.groupe09.Error;
 import fr.univavignon.courbes.inter.groupe09.Fenetre;
 import fr.univavignon.courbes.inter.groupe09.menu.Bienvenu;
 import fr.univavignon.courbes.inter.groupe09.menu.Menu;
+import fr.univavignon.courbes.common.Profile;
 
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 
@@ -38,6 +41,9 @@ public class Authentification extends Fenetre implements ActionListener {
 	 */
 	public static Error err = new Error();
 	Controle c = new Controle();
+	boolean client = false;
+	Myprofil pro = new Myprofil();
+	
 	/**
 	 * @param titre
 	 * Titre de la fenetre
@@ -46,10 +52,11 @@ public class Authentification extends Fenetre implements ActionListener {
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
-	public Authentification(String titre, int x, int y) 
+	public Authentification(String titre, int x, int y, boolean client) 
 	
 	{
 		super(titre, x, y);
+		this.client = client;
 		p1 = new JPanel();
 		p2 = new JPanel();
 		b1 = new JButton("Connexion");
@@ -97,7 +104,16 @@ public class Authentification extends Fenetre implements ActionListener {
 					case 1: 
 						user = txt1.getText();
 						this.dispose();
-						new Menu("JEUX", 500, 500);
+						if(client) {
+							
+							new Menu("JEUX", 500, 500);
+							
+						}
+						else {
+							Profile p = new Profile();
+							p = pro.getProfile(user);
+							clientProfile.add(p);
+						}
 						break;
 					case 2: 
 						err.displayError("Username incorrecte");

@@ -6,6 +6,8 @@ import java.util.LinkedList;
 
 import javax.swing.*;
 
+import fr.univavignon.courbes.common.Profile;
+
 /**
  * @author groupe09
  * Classe abstraite héritant de la classe JFrame qui nous permet de créer des fenetres  
@@ -27,6 +29,10 @@ import javax.swing.*;
 	/**
 	 * 
 	 */
+	public static ArrayList<Profile> clientProfile = new ArrayList<Profile>();
+	/**
+	 * 
+	 */
 	protected Container contenu;
 	/**
 	 * @param titre
@@ -36,6 +42,9 @@ import javax.swing.*;
 	 * @param y
 	 * Taille en ordonné de la fenetre
 	 */
+	protected Fenetre() {
+		
+	}
 	protected Fenetre(String titre, int x, int y) {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension dimEcran = tk.getScreenSize();

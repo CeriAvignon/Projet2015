@@ -2,6 +2,7 @@ package fr.univavignon.courbes.inter.groupe09.configPartie;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.groupe09.Fenetre;
+import fr.univavignon.courbes.inter.groupe09.inscription.*;
 import fr.univavignon.courbes.inter.groupe09.Error;
 import fr.univavignon.courbes.inter.groupe09.menu.Menu;
 import fr.univavignon.courbes.inter.groupe09.moteur.NetworksClient;
@@ -29,6 +30,7 @@ public class ClientGame extends Fenetre implements ClientProfileHandler, ActionL
 	private JPanel p1;
 	NetworksClient clientPartie;
 	Error erreur = new Error();
+	Profile p = new Profile();
 	/**
 	 * @param titre
 	 * Titre de la fenetre
@@ -101,11 +103,57 @@ public class ClientGame extends Fenetre implements ClientProfileHandler, ActionL
 					clientPartie.setIp(ip);
 					clientPartie.setPort(port);
 					clientPartie.launchClient();
+
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							
+							
+							try {
+								for (int i = 0; i < nbPlayers; i++) {
+									new Authentification("Connexion client", 400, 400, false);
+									Thread.sleep(20000);
+								}
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}).start();
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+						
+							while(clientProfile.size() < 1 ){
+								
+							}
+							System.out.println(clientProfile.get(0).userName);
+							
+						}
+					}).start();
 				}
 				else {
 					erreur.displayError("Valeur saisie inccorecte");
 				}
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						while (clientProfile.size() < nbPlayers) {
+							
+						}
+						
+						
+						
+					}
+				}).start();
+				
 				System.out.println("ip : "+ip+" port : "+port+" nombre de joueur : "+nbPlayers);
+				
+						
 				break;
 				
 			case "ANNULER"	:
@@ -115,10 +163,6 @@ public class ClientGame extends Fenetre implements ClientProfileHandler, ActionL
 		}
 		
 	}
-	public static void main(String[] args) {
-		
-		// teste des menu du jeu
-		ClientGame client = new ClientGame("Mode Client", 300, 300);		
-		}
+
 }
 
