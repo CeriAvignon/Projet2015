@@ -1,5 +1,6 @@
 package fr.univavignon.courbes.network.groupe20.server;
 
+import java.awt.Window.Type;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -19,44 +20,50 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
 import fr.univavignon.courbes.network.groupe20.client.Client;
 /**
- * Cette classe  permet de traiter les requettes (coté serveur) envoyer par le client entrer en paramétre.Et aprés le 
- * traitement il enregistre chaque objet reçu dans sa propre place
+ * {@link ServiceClient}  permet de traiter les requettes (coté serveur) envoyées par le client entré en paramètre.
+ * <br/>
+ * Aprés le traitement de la requette, {@link ServiceClient} enregistre chaque objet reçu dans sa propre collection de type tableau de {@link Byte}
  * 
  */
 public class ServiceClient {
    /**
-     *List de type Byte[] dont on sauvegarde tous les Tableaux de Bytes envoyer par le client en paramétre 
+     *List de type tableau de {@link Byte} où l'on sauvegarde tous les Tableaux de Bytes reçu depuis le client défini
+     *dans le constructeur
 	 */
 	List<byte[]> tabByte = new CopyOnWriteArrayList<byte[]>();
 	
 	/**
-     *List de type ProfileAction  dont on sauvegarde tous les Objets de ProfileAction envoyer par le client en paramétre 
+     *List de type {@link ProfileAction} où l'on sauvegarde tous les Objets de ProfileAction reçu depuis le client défini
+     *dans le constructeur
 	 */
 	List<ProfileAction> tabProfile = new CopyOnWriteArrayList<ProfileAction>();
 	
 	/**
-	 * Lors de l'instance de la classe ServiceClient : 
+	 * Lors de l'instance de la classe {@link ServiceClient}: 
 	 * </br> 
-	 *  + le 1er thread permet de traiter toutes les requettes envoyer par le client entrer en paramétre
-	 *   et les sauvegarder dans la liste tabByte si l'action égale à 0 ,si non on crée un objet de type 
-	 *   {@link ProfileAction} et on le sauvegarde dans la List tabProfile
+	 *  + le 1er thread permet de traiter toutes les requettes envoyées par le client entré en paramétre dans le constructeur.
+	 *   , si la variable "action" est égale à 0, le thread les sauvegarde dans la collection "tabByte", si non on crée un objet de type 
+	 *   {@link ProfileAction} et on le sauvegarde dans la collection "tabProfile".
 	 *  </br>
-	 *  + le 2éme thread permet de parcourir la List tabProfile de type {@link ProfileAction} pour désérialiser tous
-	 *  les objets de type {@link Profile} et savoir l'action voulu de l'envoie du profil. Si c'est un nouvel ajout ou une
-	 *  suppression .
-	 *      - Si c'est un nouvel ajout ,on appel la méthode fetchProfile de la classe de type {@link ServerProfileHandler}
-	 *      si la méthode retourne {@code true} : profil va s'ajouter à la liste profileClients de type {@link Profile} dans la classe {@link Server}
-	 *      et il va être envoyer comme quoi il est accépter au {@link Client} entrer en paramétre. Si non ,si  la méthode retourne {@code false}
-	 *      il va être envoyer comme quoi il est rejeter.
+	 *  + le 2éme thread permet de parcourir la collection "tabProfile" de tableau de type {@link Byte}  pour désérialiser tous
+	 *  les objets de type {@link ProfileAction} et savoir l'action, si c'est un ajout ou une suppression :
+	 *      - Si c'est un nouvel ajout ,on appel la méthode fetchProfile qui appartient à la classe de type {@link ServerProfileHandler}
+	 *      	si la méthode retourne {@code true} : le profil va s'ajouter à la collection profileClients de type {@link Profile} dans la classe {@link Server}
+	 *       	et le {@link Client} entré en paramétre va recevoir la reponse "true" s'il est accepté. Si la méthode retourne {@code false}
+	 *    	  	le {@link Client} entré en paramétre va recevoir la reponse "false" s'il est rejeté.
 	 *      </br>
-	 *      - Si c'est une suppression,il va être supprimer de la liste profileClients de type {@link Profile} dans la classe {@link Server}
+	 *      - Si c'est une suppression, le profile envoyé {@link Client} va être supprimé de la collection profileClients de type {@link Profile} dans la classe {@link Server}
 	 *      </br>
 	 *      </br>
 	 * 
 	 * @param s
 	 * 			Instance de la classe Server qui nous permet d'accéder au differente variable de cette classe
 	 * @param client
-	 * 			Instance de la classe Socket qui correspond à un client entrer en paramétre
+	 * 			Instance de la classe Socket qui correspond à un client entré en paramétre
+	 * 	
+	 * +le 3ème thread permet de parcourir la collection "tabByte" de tableau de type {@link Byte} pour désérialiser 
+	 * tous les autres types objets reçu hors le type {@link ProfileAction}  qui seront par la suite sauvegardés dans
+	 * une collection en fonction de leurs types .
 	 */
 	public ServiceClient(final Server s,final Socket client){
 		
@@ -140,11 +147,7 @@ public class ServiceClient {
 						try {
 							ois = new ObjectInputStream(bytesIn);
 							Object obj = ois.readObject();
-							 if(obj instanceof Profile){
-								 Profile profile =null;
-								 profile = (Profile) obj;
-								 s.profileClients.add(profile);
-							}else if(obj instanceof HashMap){
+							if(obj instanceof HashMap){
 								s.directions.add((Map<Integer, Direction>)obj);
 							}
 						} catch (IOException e) {
@@ -163,7 +166,7 @@ public class ServiceClient {
 	}
 	
 	/**
-	 * L'envoie d'un objet(aprés la sérialisation de ce dérnier) entrer en paramétre 
+	 * L'envoie d'un objet(aprés la sérialisation de ce dernier) entré en paramétre 
 	 * vers un client entrer en paramétre
 	 * 
 	 * @param object

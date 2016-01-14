@@ -31,13 +31,12 @@ public class Server implements ServerCommunication {
 	private int port;
 	
 	/**
-	 * le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients.
+	 * Instance de la classe {@link ServerSocket} qui permet d'utiliser la les différentes méthodes de cette classe
 	 */
 	private ServerSocket server;
 	
 	/**
-	 * List de type socket qui contient les clients qui sont connéctés au serveur
+	 * List de type {@link Socket} qui contient les clients qui sont connectés au serveur
 	 */
 	private List<Socket> clients = new CopyOnWriteArrayList<Socket>();
 	
@@ -49,7 +48,7 @@ public class Server implements ServerCommunication {
 	List<Profile> profileClients = new CopyOnWriteArrayList<Profile>();
 	
 	/**
-	 * List des maps contenant les commandes envoyés par les clients.
+	 * List des maps contenant les commandes envoyées par les clients.
 	 */
 	List<Map<Integer,Direction>> directions = new CopyOnWriteArrayList<Map<Integer,Direction>>();
 	
@@ -59,16 +58,29 @@ public class Server implements ServerCommunication {
 	List<Integer> player = new CopyOnWriteArrayList<Integer>();
 	
 	/**
+	 * Instance de la classe de type {@link ErrorHandler} implémenté par IU
+	 */
+	ErrorHandler errorHandler;
+	
+	/**
+	 * Instance de la classe de type {@link ServerProfileHandler} implémenté par IU
+	 */
+	ServerProfileHandler profileHandler;
+	
+	/**
+	 * boolean avec lequel on gére l'état du serveur
+	 */
+	Boolean lancer = false;
+	
+	
+	/**
      * Renvoie l'adresse IP de ce serveur, que les clients doivent
      * utiliser pour se connecter à lui.
      *
      * @return 
      * 		Une chaîne de caractères qui correspond à l'adresse IP du serveur.
-     * 	 	En cas d'erreur,elle renvoit null.
+     * 	 	En cas d'erreur,elle renvoie null.
      */
-	public ErrorHandler errorHandler;
-	ServerProfileHandler profileHandler;
-	Boolean lancer = false;
 	@Override
 	public String getIp() {
 		try {
@@ -81,7 +93,7 @@ public class Server implements ServerCommunication {
 
 	/**
 	 * 
-	 * @return un entier qui correspond au port utiliser par le serveur.
+	 * @return un entier qui correspond au port utilisé par le serveur.
 	 */
 	
 	@Override
@@ -89,7 +101,7 @@ public class Server implements ServerCommunication {
 
 	/**
 	 * Modifie le port utilisé par le serveur pour accepter les connexions
-     * de la part des clients. Cette valeur est à modifier avant d'utiliser 
+     *  des clients. Cette valeur est à modifier avant d'utiliser 
      * {@link #launchServer}.
      * 
      * @param port
@@ -101,15 +113,35 @@ public class Server implements ServerCommunication {
 	@Override
 	public void setPort(int port) {this.port = port;}
 	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une erreur lors de l'exécution.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param errorHandler
+     * 		Un objet implémentant l'interface {@code ErrorHandler}.
+     */
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
-
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie.
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du serveur.
+     * 
+     * @param profileHandler
+     * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
+     */
 	@Override
 	public void setProfileHandler(ServerProfileHandler profileHandler) {
 		this.profileHandler = profileHandler;
 	}
+	
 	/**
      * Permet de lancer un serveur pour que les clients puissent s'y connecter.
      * <br/>
@@ -135,7 +167,13 @@ public class Server implements ServerCommunication {
 			}
 		}).start();
 	}
-
+	
+	/**
+     * Permet de stopper le serveur et ainsi déconnecter tous les clients.
+     * <br/>
+     * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
+     * l'utilisateur décide d'arrêter une partie réseau en cours.
+     */
 	@Override
 	public void closeServer() {
 		try {
@@ -181,6 +219,9 @@ public class Server implements ServerCommunication {
 	 * Permet au serveur d'envoyer des informations sur l'évolution de 
      * la manche en cours, à tous les clients connectés au serveur.
 	 *
+	 *La collection "directions" se vide dés l'appel de cette méthode
+	 *La collection "player" se vide dés l'appel de cette méthode
+	 *
 	 * @param board
 	 * 		board est de type {@link Board}
 	 * 		Etat courant de l'aire de jeu.
@@ -199,6 +240,9 @@ public class Server implements ServerCommunication {
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
      * renvoie une map, associant à l'ID d'un joueur la dernière commande qu'il a
      * envoyée.
+     *<br/>
+     *
+     *La collection "directions" se vide dés l'appel de cette méthode
      *
      * @return 
      * 		Une map contenant les directions choisies par chaque joueur traité par
@@ -228,13 +272,15 @@ public class Server implements ServerCommunication {
 	
 	
 	/**
-	 * L'envoie d'un objet(aprés la sérialisation de ce dérnier) entrer en paramétre 
+	 * L'envoie d'un objet(aprés la sérialisation de ce dernier) entré en paramétre 
 	 * vers les clients connectés au serveur
 	 * @param o 
 	 * 			object de type {@link Object} à envoyer
 	 * @param clients 
 	 * 			la liste des clients  de type {@link Socket}
 	 */
+	
+	
 	private void sendObject(Object o,List<Socket> clients){
 		if(lancer)
 			for(Socket client : clients){

@@ -15,13 +15,33 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.network.groupe20.ProfileReponse;
+import fr.univavignon.courbes.network.groupe20.server.Server;
 public class ServiceServer {
+	/**
+     *List de type tableau de {@link Byte} où l'on sauvegarde tous les Tableaux de Bytes reçu depuis le Serveur défini
+     *dans le constructeur
+	 */
 	List<byte[]> tabByte = new CopyOnWriteArrayList<byte[]>();
+	
+	/**
+	 * le 1er thread permet de traiter toutes les requettes envoyées par le Serveur entré en paramétre dans le constructeur qui seront par la suite 
+	 * sauvegardés dans une collection de tableau de {@link Byte}
+	 * 
+	 * le 2éme thread  permet de parcourir la collection "tabByte" de tableau de type {@link Byte} pour désérialiser les objets reçu ,
+	 *  qui seront par la suite sauvegardés dans les collections  ou des variables  de la classe {@link Server} en fonction de leurs types : 
+	 *  
+	 *   + dans la collection Server.board si l'objet reçu est de type {@link Board}.
+	 *   + dans la collection Server.addProfil si l'objet reçu est de type {@link ProfileReponse}.
+	 *   + dans la variable Server.Point si l'objet reçu est de type {@link Integer}
+	 *   + Appel la méthode profileHandler.updateProfiles(Profiles) si l'objet est de type ArrayList
+	 *  
+	 * 
+	 * */
 	public ServiceServer(final Client c){
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(c.lancer){
+				while(c.etatClient){
 					DataInputStream dis;
 					try {
 						dis = new DataInputStream(c.client.getInputStream());
@@ -32,7 +52,7 @@ public class ServiceServer {
 					    tabByte.add(data);
 					   }
 					 } catch (IOException e) {
-						c.lancer = false;
+						c.etatClient = false;
 						c.errorHandler.displayError("Serveur déconnécté");
 					}
 				}
@@ -42,7 +62,7 @@ public class ServiceServer {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(c.lancer){
+				while(c.etatClient){
 					for(byte[] b : tabByte){
 						ByteArrayInputStream bytesIn = new ByteArrayInputStream(b);
 					    ObjectInputStream ois;
