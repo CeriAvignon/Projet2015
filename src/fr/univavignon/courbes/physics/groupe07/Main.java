@@ -19,8 +19,8 @@ public class Main {
 	public static void main(String[] args) {
 		// Deux Joueurs, Q et D pour diriger le premier,
 		// K et M pour diriger le second
-		/*new MinimalLoop().mainLoop(2);
-		int idPlayers[] = {0,1};
+		new MinimalLoop().mainLoop(2);
+		/*int idPlayers[] = {0,1};
 		Round newRound = new Round(800,600,idPlayers);
 		
 		 while(true)
@@ -36,7 +36,7 @@ public class Main {
 			 }
 
          }*/
-		
+		/*
 		int idPlayers[] = {0,1};
 		Round newRound = new Round(500,500,idPlayers);
 		Map<Integer, Direction> command = new HashMap<Integer, Direction>();
@@ -46,7 +46,7 @@ public class Main {
 		JPanel c = new JPanel();
 		JPanel b = new JPanel();
 		MyGraphic z = new MyGraphic();
-		z.init(newRound.ourBoard, 20, c, b);
+		z.init(newRound.board, 20, c, b);
 
 		JFrame fen = new JFrame();
 
@@ -70,6 +70,6 @@ public class Main {
     		Thread.currentThread().interrupt();
 			}
 
-		}
+		}*/
 	}
 }

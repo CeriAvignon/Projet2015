@@ -4,15 +4,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,12 +17,11 @@ import javax.swing.KeyStroke;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.common.Item;
 import fr.univavignon.courbes.physics.groupe07.Round;
 import fr.univavignon.courbes.physics.groupe07.groupe18.*;
+import fr.univavignon.courbes.physics.groupe07.groupe23.*;
 
 
 public  class MinimalLoop {
@@ -47,14 +43,17 @@ public  class MinimalLoop {
 	
 	public static GraphicDisplayGroupe18 moteur;
 
-public static void mainLoop(int nbPlayers) {
+	/**
+	 * Méthode implémentant la boucle principale
+	 * 
+	 * @param nbPlayers Nombre de joueurs
+	 */
+	public static void mainLoop(int nbPlayers) {
 		
 		GraphicDisplayGroupe18 MG = new GraphicDisplayGroupe18();
 		commandMap = new HashMap<Integer, Direction>();
 		List<Profile> players = initPlayers(nbPlayers);
 		int profileIds[] = initProfile(players);
-		// Pour chacun des 3 moteurs testés, il existait un bug dut à 
-		// une inversion entre playerId et profileId dans init.
 		Round MP = new Round(800,600,profileIds);
 		Board board = MP.init(800, 600 , profileIds);
 		if (nbPlayers == 1)
@@ -111,7 +110,6 @@ public static void mainLoop(int nbPlayers) {
 			}
 			sleep(2000);
 		}
-		moteur = MG;
 	}
 	
 	
@@ -131,7 +129,7 @@ public static void mainLoop(int nbPlayers) {
 	 *        Hauteur de l'aire de jeu
 	 */
 	private static void initPanels(JPanel boardPanel, JPanel scorePanel,
-			JPanel content, int width, int height) {
+		JPanel content, int width, int height) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		content.setLayout(new GridBagLayout());
 		content.setPreferredSize(new Dimension(width + 400, height));
@@ -172,13 +170,13 @@ public static void mainLoop(int nbPlayers) {
 	private static List<Profile> initPlayers(int nbplayers) {
 		List<Profile> players = new ArrayList<Profile>();
 		Profile joueur1Profile = new Profile();
-		joueur1Profile.userName = "Blobfish";
-		joueur1Profile.profileId = 5555;
+		joueur1Profile.userName = "Joueur1";
+		joueur1Profile.profileId = 1;
 		players.add(joueur1Profile);
 		if(nbplayers == 2) {
 			Profile joueur2Profile = new Profile();
-			joueur2Profile.userName = "Giraffe";
-			joueur2Profile.profileId = 42;
+			joueur2Profile.userName = "Joueur2";
+			joueur2Profile.profileId = 2;
 			players.add(joueur2Profile);
 		}		
 		return players;
@@ -223,6 +221,7 @@ public static void mainLoop(int nbPlayers) {
 	/**
 	 * @param snakes
 	 *        Tableau des snakes de la board
+	 * @param nbPlayers le nombre de joueurs
 	 * @return
 	 *         true si la partie est finie, false sinon
 	 */		  
@@ -379,18 +378,18 @@ public static void mainLoop(int nbPlayers) {
 			if(snakes[i].state == false) {
 				boolean alreadyDead = false;
 				for(int j = 0; j< order.size(); j++) {
-					if(order.get(j)== snakes[i].playerId) {
+					if(order.get(j)== snakes[i].profileId) {
 						alreadyDead = true;
 					}
 				}
 				if (alreadyDead == false) {
-					order.add(snakes[i].playerId);
+					order.add(snakes[i].profileId);
 				}
 			}
 			if(order.size() == snakes.length-1) {
 				for(int k = 0; k< snakes.length; k++) {
 					if(snakes[k].state == true) {
-						order.add(snakes[k].playerId);
+						order.add(snakes[k].profileId);
 					}// TODO Auto-generated method stub
 				}
 			}
