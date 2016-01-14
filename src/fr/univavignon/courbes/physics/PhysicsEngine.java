@@ -39,6 +39,7 @@ public interface PhysicsEngine
 	public Board init(int width, int height, int[] profileIds);
 	
 	/**
+<<<<<<< HEAD
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
 	 * l'intégration entre Moteur Graphique et Moteur Physique. Ce plateau
 	 * doit respecter les contraintes suivantes :
@@ -60,6 +61,8 @@ public interface PhysicsEngine
 	public Board initDemo(int width, int height, int[] profileIds);
 	
 	/**
+=======
+>>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * à chaque itération d'une manche.
 	 * <br/>

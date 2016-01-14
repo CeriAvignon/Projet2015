@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Projet2015
 =======
 *Projet d'algorithmique de L3 pour l'année 2015/16*
@@ -20,3 +21,11 @@ Une fois ces tâches réalisées, éditez ce fichier texte de la façon suivante
  1. Supprimez les instructions ci-dessus (mais gardez le début jusqu'au trait horizontal).
  2. Indiquez la composition du binôme avec, pour chaque étudiant : son prénom, son nom et son adresse email.
 
+<<<<<<< HEAD
+=======
+=======
+Binome : 
+Cyril NOVOTNY - Dimitri HUEBER
+Composante : Moteur Physique
+>>>>>>> 6fc71e233ba8531f4b7242edbd7471b7cdf772d3
+>>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81

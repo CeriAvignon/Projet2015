@@ -22,11 +22,20 @@ public class Board implements Serializable
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
 	
+<<<<<<< HEAD
 	/** Trainées des serpents sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
 	public Map<Position, Integer> snakesMap;
 	/** Tableau contenant tous les serpents de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
 	
 	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
+=======
+	/** Trainées des snakes sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
+	public Map<Position, Integer> snakesMap;
+	/** Tableau contentant tous les snakes de la manche, placés dans l'ordre des ID des joueurs correspondants */
+	public Snake snakes[];
+	
+	/** Position des items sur l'aire de jeu: associe la position d'un item à la valeur de cet item */
+>>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 	public Map<Position, Item> itemsMap;
 }
