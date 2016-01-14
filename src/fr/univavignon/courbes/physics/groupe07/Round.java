@@ -6,7 +6,6 @@ import java.util.Random;
 
 import fr.univavignon.courbes.common.*;
 import fr.univavignon.courbes.physics.PhysicsEngine;
-import fr.univavignon.courbes.physics.groupe07.groupe18.*;
 import fr.univavignon.courbes.physics.groupe07.groupe23.*;
 
 	/**
