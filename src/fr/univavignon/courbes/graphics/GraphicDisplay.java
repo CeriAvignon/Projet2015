@@ -2,11 +2,8 @@ package fr.univavignon.courbes.graphics;
 
 import java.util.List;
 
-<<<<<<< HEAD
 import javax.swing.JPanel;
 
-=======
->>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Profile;
 
@@ -38,7 +35,6 @@ public interface GraphicDisplay
 	 * 		Limite de points initiale pour cette manche.
 	 * @param players
 	 * 		Liste des joueurs impliqués dans la manche.
-<<<<<<< HEAD
 	 * @param boardPanel
 	 * 		Panel graphique utilisé comme support pour dessiner l'aire de jeu.
 	 * @param scorePanel
@@ -46,10 +42,6 @@ public interface GraphicDisplay
 	 * 		de la partie en cours.
 	 */
 	public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel);
-=======
-	 */
-	public void init(Board board, int pointThreshold, List<Profile> players);
->>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur

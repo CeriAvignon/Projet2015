@@ -6,7 +6,6 @@ import java.io.Serializable;
  * Cette classe permet de représenter la position d'un
  * pixel dans un repère à deux dimensions.
  */
-<<<<<<< HEAD
 public class Position implements Serializable, Comparable<Position>
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
@@ -25,17 +24,11 @@ public class Position implements Serializable, Comparable<Position>
 	{	this.x = x;
 		this.y = y;
 	}
-=======
-public class Position implements Serializable
-{	/** Numéro de série (pour {@code Serializable}) */
-	private static final long serialVersionUID = 1L;
->>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 	
 	/** Position sur l'axe des abscisses */
 	public int x;
 	/** Position sur l'axe des ordonnées */
 	public int y;
-<<<<<<< HEAD
 	
 	@Override
 	public int compareTo(Position position)
@@ -65,6 +58,4 @@ public class Position implements Serializable
 		}
 		return result;
 	}
-=======
->>>>>>> 005e8598e797176e5596a6d6e9b00f6a7466cf81
 }
