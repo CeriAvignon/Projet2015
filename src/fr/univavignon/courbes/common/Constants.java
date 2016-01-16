@@ -29,7 +29,7 @@ public class Constants
 	public static final int LARGE_HEAD_RADIUS = 8;
 
 	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine lors d'une itération donnée */
-	public static final float HOLE_RATE = 0.085f;
+	public static final float HOLE_RATE = 0.0085f;
 	/** Largeur d'un trou pour un serpent d'épaisseur normale, exprimée en pixels */
 	public static final int REGULAR_HOLE_WIDTH = 20;
 	/** Largeur d'un trou pour un serpent plus épais que la normale, exprimée en pixels */
