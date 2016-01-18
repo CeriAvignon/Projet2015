@@ -26,9 +26,9 @@ public class Graphic extends JFrame implements GraphicDisplay  {
 //	private GraphicDisplay graphic;
 	
 	
-//	public Board board;
-//	public int pointThreshold;
-//	public List<Profile> players;
+	public Board board;
+	public int pointThreshold;
+	public List<Profile> players;
 	
 	 /**
 	 * 
@@ -40,7 +40,7 @@ public class Graphic extends JFrame implements GraphicDisplay  {
         
         
     	
-    //	pnln.add(panelLibelle);
+    	//pnln.add(panelLibelle);
     	//pnln.add(panelScore);
         
      // créer le modèle du jeu
