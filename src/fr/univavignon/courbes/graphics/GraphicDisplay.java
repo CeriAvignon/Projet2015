@@ -2,6 +2,8 @@ package fr.univavignon.courbes.graphics;
 
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Profile;
 
@@ -34,8 +36,8 @@ public interface GraphicDisplay
 	 * @param players
 	 * 		Liste des joueurs impliqués dans la manche.
 	 */
-	public void init(Board board, int pointThreshold, List<Profile> players);
-	
+	//public void init(Board board, int pointThreshold, List<Profile> players);
+	public void init(Board board, int pointThreshold, List<Profile> players, JPanel boardPanel, JPanel scorePanel);
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * à chaque itération d'une manche. Elle raffraichit la représentation
@@ -49,4 +51,5 @@ public interface GraphicDisplay
 	 * il faut plutot afficher le classement final et les scores définitifs.
 	 */
 	public void end();
+	void init(Board board, int pointThreshold, List<Profile> players);
 };
