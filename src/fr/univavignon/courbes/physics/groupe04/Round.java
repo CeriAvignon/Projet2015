@@ -502,16 +502,16 @@ public class Round implements PhysicsEngine {
 		int id = deltaID.get(idProfile);
 		switch(item)
 		{
-		case COLLECTIVE_ERASER:
+		case COLLECTIVE_CLEAN:
 			board.snakesMap.clear();
 			break;
-		case COLLECTIVE_TRAVERSE_WALL:
+		case COLLECTIVE_TRAVERSE:
 			for(Snake snake : board.snakes) {
 				snake.currentItems.put(item, (long)item.duration);
 				snake.fly = true;
 			}
 			break;
-		case COLLECTIVE_THREE_CIRCLES:
+		case COLLECTIVE_WEALTH:
 			board.snakes[id].currentItems.put(item, (long)item.duration);
 			itemRate = 3;
 			break;
@@ -540,7 +540,7 @@ public class Round implements PhysicsEngine {
 				}
 			}
 			break;
-		case OTHERS_SPEED:
+		case OTHERS_FAST:
 			for(Snake snake : board.snakes) {
 				if (snake.playerId != idProfile) {
 					snake.currentItems.put(item, (long)item.duration);
@@ -548,7 +548,7 @@ public class Round implements PhysicsEngine {
 				}
 			}
 			break;
-		case USER_BIG_HOLE:
+		case USER_FLY:
 			board.snakes[id].currentItems.put(item, (long)item.duration);
 			board.snakes[id].holeRate *= 2;
 			break;
@@ -557,7 +557,7 @@ public class Round implements PhysicsEngine {
 			board.snakes[id].movingSpeed = Constants.SLOW_MOVING_SPEED;
 			board.snakes[id].turningSpeed = Constants.FAST_TURNING_SPEED;
 			break;
-		case USER_SPEED:
+		case USER_FAST:
 			board.snakes[id].currentItems.put(item, (long)item.duration);
 			board.snakes[id].movingSpeed = Constants.FAST_MOVING_SPEED;
 			break;
@@ -577,13 +577,13 @@ public class Round implements PhysicsEngine {
 		int id = deltaID.get(idProfile);
 		switch(item)
 		{
-		case COLLECTIVE_ERASER:
+		case COLLECTIVE_CLEAN:
 			break;
-		case COLLECTIVE_TRAVERSE_WALL:
+		case COLLECTIVE_TRAVERSE:
 			i.remove();
 			board.snakes[id].fly = false;
 			break;
-		case COLLECTIVE_THREE_CIRCLES:
+		case COLLECTIVE_WEALTH:
 			i.remove();
 			itemRate = 1;
 			break;
@@ -600,11 +600,11 @@ public class Round implements PhysicsEngine {
 			i.remove();
 			board.snakes[id].headRadius = Constants.REGULAR_HEAD_RADIUS;
 			break;
-		case OTHERS_SPEED:
+		case OTHERS_FAST:
 			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			break;
-		case USER_BIG_HOLE:
+		case USER_FLY:
 			i.remove();
 			board.snakes[id].holeRate /= 2;
 			break;
@@ -613,7 +613,7 @@ public class Round implements PhysicsEngine {
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
 			break;
-		case USER_SPEED:
+		case USER_FAST:
 			i.remove();
 			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
 			break;
@@ -657,9 +657,9 @@ public class Round implements PhysicsEngine {
 		}
 
 		/** Spawn de tout les items du jeu **/
-		Item[] itemTab = new Item[]{Item.USER_SLOW, Item.USER_SPEED, Item.OTHERS_SPEED, Item.OTHERS_SLOW,
-				Item.OTHERS_REVERSE, Item.OTHERS_THICK, Item.USER_BIG_HOLE, Item.COLLECTIVE_THREE_CIRCLES,
-				Item.COLLECTIVE_ERASER, Item.COLLECTIVE_TRAVERSE_WALL};
+		Item[] itemTab = new Item[]{Item.USER_SLOW, Item.USER_FAST, Item.OTHERS_FAST, Item.OTHERS_SLOW,
+				Item.OTHERS_REVERSE, Item.OTHERS_THICK, Item.USER_FLY, Item.COLLECTIVE_WEALTH,
+				Item.COLLECTIVE_CLEAN, Item.COLLECTIVE_TRAVERSE};
 		board.itemsMap.put(new Position(100,100), itemTab[0] );
 		board.itemsMap.put(new Position(200,100), itemTab[1] );
 		board.itemsMap.put(new Position(300,100), itemTab[2] );
