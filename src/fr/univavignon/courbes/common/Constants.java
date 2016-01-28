@@ -1,5 +1,25 @@
 package fr.univavignon.courbes.common;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import java.awt.Color;
+
 /**
  * Cette classe contient uniquement les constantes du jeu, dont les valeurs
  * sont imposées à toutes les implémentations des composantes.
@@ -35,6 +55,21 @@ public class Constants
 	/** Largeur d'un trou pour un serpent plus épais que la normale, exprimée en pixels */
 	public static final int LARGE_HOLE_WIDTH = 40;
 	
+	/** Taille d'un item, exprimée en pixels */
+	public static final int ITEM_SIZE = 40;
+	
+    /** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
+    public static final Color[] PLAYER_COLORS = 
+	{	Color.red,		// joueur 0
+    	Color.blue,		// joueur 1
+    	Color.green,	// joueur 2
+    	Color.cyan,		// joueur 3
+    	Color.orange,	// joueur 4
+    	Color.pink		// joueur 5
+	};
+    /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
+    public static final Color DISCONNECTED_PLAYER = Color.GRAY;
+
 	// TODO certaines de ces constantes pourraient rendre inutiles des champs de Snake (ex. movingSpeed) dont
 	// la valeur pourrait se déduire de ces constantes et de la nature des items faisant effet sur le serpent au moment considéré.
 }

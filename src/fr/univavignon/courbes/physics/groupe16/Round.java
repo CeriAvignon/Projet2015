@@ -1,5 +1,23 @@
 package fr.univavignon.courbes.physics.groupe16;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -89,7 +107,7 @@ public class Round implements PhysicsEngine {
 		snake.headRadius 	= Constants.REGULAR_HEAD_RADIUS;
 		snake.movingSpeed   = Constants.REGULAR_MOVING_SPEED;
 		snake.turningSpeed  = Constants.REGULAR_TURNING_SPEED;
-		snake.state 		= true;
+		snake.alive 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
@@ -361,7 +379,7 @@ public class Round implements PhysicsEngine {
 		{
 			int id = deltaID.get(snake.playerId);
 			elapsed = elapsedTime;
-			while (elapsed > 0 && snake.state == true)
+			while (elapsed > 0 && snake.alive == true)
 			{
 
 				/** Gestion de la future position du snake en fonction de son angle **/
@@ -492,7 +510,7 @@ public class Round implements PhysicsEngine {
 				|| snake.currentY - snake.headRadius <= 0
 				|| snake.currentY + snake.headRadius >= board.height) {
 			if (snake.collision == true) { // Le snake meurt pitoyablement
-				snake.state = false; 
+				snake.alive = false; 
 				System.out.println("Le snake "+snake.playerId+ " est mort contre la bordure du plateau");
 			} else { // Translater position de l'autre coté de la board
 				if(snake.currentX - snake.headRadius <= 0)
@@ -527,7 +545,7 @@ public class Round implements PhysicsEngine {
 			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
 			Integer flg = board.snakesMap.get(posChk);
 			if(flg != null) {
-				snake.state = false;	
+				snake.alive = false;	
 				System.out.println("Le snake " + snake.playerId + " est mort contre le snake " + flg);
 			}
 		}

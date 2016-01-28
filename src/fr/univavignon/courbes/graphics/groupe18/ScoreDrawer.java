@@ -39,7 +39,7 @@ import fr.univavignon.courbes.graphics.GraphicDisplay;
  * @author uapv1504323 Antoine Letourneur
  * @author uapv1402334 Axel Clerici
  */
-public class GraphicDisplayGroupe18 implements GraphicDisplay {
+public class ScoreDrawer implements GraphicDisplay {
 
 	/**
 	 * Aire de jeu

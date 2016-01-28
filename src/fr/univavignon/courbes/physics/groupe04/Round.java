@@ -1,5 +1,22 @@
 package fr.univavignon.courbes.physics.groupe04;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,7 +113,7 @@ public class Round implements PhysicsEngine {
 		snake.headRadius 	= Constants.REGULAR_HEAD_RADIUS;
 		snake.movingSpeed   = Constants.REGULAR_MOVING_SPEED;
 		snake.turningSpeed  = Constants.REGULAR_TURNING_SPEED;
-		snake.state 		= true;
+		snake.alive 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
 		snake.fly   		= false;
@@ -220,7 +237,7 @@ public class Round implements PhysicsEngine {
 		{
 			int id = deltaID.get(snake.playerId);
 			elapsed = elapsedTime;
-			while (elapsed > 0 && snake.state == true)
+			while (elapsed > 0 && snake.alive == true)
 			{
 
 				/** Gestion de la future position du snake en fonction de son angle **/
@@ -345,7 +362,7 @@ public class Round implements PhysicsEngine {
 	public void snakeEncounterBounds(Snake snake) {
 		if(snake.currentX < 1 || snake.currentX > board.width-1 || snake.currentY < 1|| snake.currentY > board.height-1) {
 			if (!snake.fly) { 
-				snake.state = false; 
+				snake.alive = false; 
 				System.out.println(snake.playerId + " n'a pas vu le mur!");
 			} 
 			else { // Envoyer le snake a l'opposé
@@ -378,7 +395,7 @@ public class Round implements PhysicsEngine {
 			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
 			Integer flg = board.snakesMap.get(posChk);
 			if(flg != null) {
-				snake.state = false;	
+				snake.alive = false;	
 				System.out.println("snake " + snake.playerId + " a dit bonjour à " + flg);
 			}
 		}
