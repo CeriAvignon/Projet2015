@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Item;
+import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
@@ -75,7 +75,7 @@ public class Round implements PhysicsEngine {
 		board.width = width;
 		board.height = height;
 		board.snakesMap = new HashMap<Position, Integer>();
-		board.itemsMap = new HashMap<Position, Item>();
+		board.itemsMap = new HashMap<Position, ItemType>();
 		board.snakes = new Snake[playerNbr];
 		Position posSpawn;
 
@@ -99,7 +99,7 @@ public class Round implements PhysicsEngine {
 	 * @param spawnPosition Position ou spawn le snake sur la board
 	 */
 	public void initSnake(Snake snake, int id, Position spawnPosition) {
-		snake.currentItems  = new HashMap<Item, Long>() ;
+		snake.currentItems  = new HashMap<ItemType, Long>() ;
 		snake.playerId 	    = id;
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
@@ -161,7 +161,7 @@ public class Round implements PhysicsEngine {
 			Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
 			if(board.snakesMap.get(posC) == null) {
 				flgSpawn = true;
-				Item randItem = Item.values()[(int) (Math.random() * Item.values().length)];
+				ItemType randItem = ItemType.values()[(int) (Math.random() * ItemType.values().length)];
 				board.itemsMap.put(posC, randItem);
 				System.out.println(randItem.toString() + " ajouté a la pos: " + posC.x + "  " + posC.y);
 			}
@@ -174,7 +174,7 @@ public class Round implements PhysicsEngine {
 	 * @param idProfile Id du Snake ayant ramassé l'objet
 	 * @param item Item ramassé
 	 */
-	public void addSnakeItem(int idProfile, Item item) {
+	public void addSnakeItem(int idProfile, ItemType item) {
 		int id = deltaID.get(idProfile);
 		switch(item)
 		{
@@ -249,7 +249,7 @@ public class Round implements PhysicsEngine {
 	 * @param item Item à enlever du snake
 	 * @param i 
 	 */
-	public void removeSnakeItem(int idProfile, Item item, Iterator<Entry<Item, Long>> i) {
+	public void removeSnakeItem(int idProfile, ItemType item, Iterator<Entry<ItemType, Long>> i) {
 		int id = deltaID.get(idProfile);
 		switch(item)
 		{
@@ -309,9 +309,9 @@ public class Round implements PhysicsEngine {
 
 		for(Snake snake : board.snakes)
 		{
-			for (Iterator<Entry<Item, Long>> i = snake.currentItems.entrySet().iterator(); i.hasNext(); ) {
+			for (Iterator<Entry<ItemType, Long>> i = snake.currentItems.entrySet().iterator(); i.hasNext(); ) {
 
-				Entry<Item, Long> entry = i.next();
+				Entry<ItemType, Long> entry = i.next();
 				long remainingTime = entry.getValue();
 				long refreshedTime = remainingTime - elapsedTime;
 
@@ -560,8 +560,8 @@ public class Round implements PhysicsEngine {
 	 */
 	public void snakeEncounterItem(Snake snake) {
 		Position posItem = new Position(0,0);
-		for (Iterator<Entry<Position, Item>> i = board.itemsMap.entrySet().iterator(); i.hasNext(); ) {
-			Map.Entry<Position,Item> entry = i.next();
+		for (Iterator<Entry<Position, ItemType>> i = board.itemsMap.entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry<Position,ItemType> entry = i.next();
 			posItem = entry.getKey(); 
 			if(Math.sqrt(Math.pow(posItem.x - snake.currentX, 2) + Math.pow(posItem.y - snake.currentY, 2)) < radItem + snake.headRadius)// Detecte si le snake passe dans le rayon de l'objet
 			{
@@ -709,7 +709,7 @@ public class Round implements PhysicsEngine {
 		board.width = width;
 		board.height = height;
 		board.snakesMap = new HashMap<Position, Integer>();
-		board.itemsMap = new HashMap<Position, Item>();
+		board.itemsMap = new HashMap<Position, ItemType>();
 		board.snakes = new Snake[playerNbr];
 		Position posSpawn;
 
@@ -724,9 +724,9 @@ public class Round implements PhysicsEngine {
 		}
 
 		/** Spawn de tout les items du jeu **/
-		Item[] itemTab = new Item[]{Item.USER_SLOW, Item.USER_FAST, Item.OTHERS_FAST, Item.OTHERS_SLOW,
-				Item.OTHERS_REVERSE, Item.OTHERS_THICK, Item.USER_FLY, Item.COLLECTIVE_WEALTH,
-				Item.COLLECTIVE_CLEAN, Item.COLLECTIVE_TRAVERSE};
+		ItemType[] itemTab = new ItemType[]{ItemType.USER_SLOW, ItemType.USER_FAST, ItemType.OTHERS_FAST, ItemType.OTHERS_SLOW,
+				ItemType.OTHERS_REVERSE, ItemType.OTHERS_THICK, ItemType.USER_FLY, ItemType.COLLECTIVE_WEALTH,
+				ItemType.COLLECTIVE_CLEAN, ItemType.COLLECTIVE_TRAVERSE};
 		board.itemsMap.put(new Position(100,100), itemTab[0] );
 		board.itemsMap.put(new Position(200,100), itemTab[1] );
 		board.itemsMap.put(new Position(300,100), itemTab[2] );

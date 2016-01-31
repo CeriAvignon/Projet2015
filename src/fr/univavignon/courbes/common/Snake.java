@@ -19,7 +19,7 @@ package fr.univavignon.courbes.common;
  */
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.Queue;
 
 /**
  * Cette classe contient les informations et caractéristiques d'un serpent.
@@ -45,8 +45,8 @@ public class Snake implements Serializable
 	
 	/** Angle représentant la direction de déplacement courante du serpent, par rapport à l'horizontale */
 	public double currentAngle;
-	/** Rayon de la tête du serpent */
-	public double headRadius;
+	/** Rayon de la tête du serpent, en pixels */
+	public int headRadius;
 	/** Vitesse de déplacement du serpent, exprimée en pixel par ms */
 	public double movingSpeed;
 	/** Vitesse à laquelle le serpent change de direction, exprimée en radians par ms */
@@ -61,7 +61,7 @@ public class Snake implements Serializable
 	public boolean collision;
 	/**Inversion des commandes : {@code false} le serpent est dirigé normalement, {@code true} ses commandes sont inversées */
 	public boolean inversion;
-	/** Mode avion ({@code true}) ou pas ({@code false}) (pour l'item {@link Item#USER_FLY}) */
+	/** Mode avion ({@code true}) ou pas ({@code false}) (pour l'item {@link ItemType#USER_FLY}) */
 	public boolean fly;
 	
 	/** Taux de création de trous dans le tracé : pour 0 on n'a aucun trou, pour 1 on n'a aucune traînée (i.e. que des trous). Ce taux est la probabilité qu'un serpent laisse un trou lors d'une itération donnée. */
@@ -69,10 +69,11 @@ public class Snake implements Serializable
 	/** Taille du trou restant à "effectuer", ou zéro si aucun trou n'est en cours de réalisation, exprimée en pixels */
 	public int remainingHoleWidth;
 	
-	
-	/** Items affectant ce serpent, associés à leur temps d'effet restant (en ms) */
-	public Map<Item, Long> currentItems;
+	/** File contenant les items affectant actuellement ce serpent */
+	public Queue<ItemInstance> currentItems;
 	
 	/** Score courant du joueur associé au serpent dans la partie courante */
 	public int currentScore;
 }
+
+//TODO dans MP, écrire des méthodes pour initiliaser toutes ces classes (même une classe initializer ou builder)

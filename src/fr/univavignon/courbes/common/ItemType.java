@@ -18,6 +18,7 @@ package fr.univavignon.courbes.common;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.Color;
 import java.io.Serializable;
 
 /**
@@ -26,40 +27,46 @@ import java.io.Serializable;
  * champ représentant la durée de sont effet exprimée 
  * en ms.
  */
-public enum Item implements Serializable
+public enum ItemType implements Serializable
 {	/** Le joueur qui ramasse l'item accélère (bonus) */
-	USER_FAST(3000l),
+	USER_FAST(3000l,Color.GREEN),
 	/** Le joueur qui ramasse l'item ralentit (bonus) */
-	USER_SLOW(10000l),
+	USER_SLOW(10000l,Color.GREEN),
 	/** Le joueur qui ramasse l'item vole au dessus des obstacles (bonus) */
-	USER_FLY(6000l),
+	USER_FLY(6000l,Color.GREEN),
 	
 	/** Les autres joueurs accélèrent (malus) */
-	OTHERS_FAST(3000l),
+	OTHERS_FAST(3000l,Color.RED),
 	/** Les autres joueurs laissent des trainées plus épaisses (malus) */
-	OTHERS_THICK(7000l),
+	OTHERS_THICK(7000l,Color.RED),
 	/** Les autres joueurs ralentissent (malus) */
-	OTHERS_SLOW(5000l),
+	OTHERS_SLOW(5000l,Color.RED),
 	/** Les commandes des autres joueurs sont inversées (malus) */
-	OTHERS_REVERSE(5000l),
+	OTHERS_REVERSE(5000l,Color.RED),
 	
 	/** La probabilité d'apparition d'un item augmente */
-	COLLECTIVE_WEALTH(60000l),
+	COLLECTIVE_WEALTH(60000l,Color.BLUE),
 	/** Tous les joueurs peuvent traverser les murs d'enceinte */
-	COLLECTIVE_TRAVERSE(10000l),
+	COLLECTIVE_TRAVERSE(10000l,Color.BLUE),
 	/** L'aire de jeu est réinitialisée (les trainées existantes sont effacées) */
-	COLLECTIVE_CLEAN(1l);
+	COLLECTIVE_CLEAN(1l,Color.BLUE);
 	
 	/**
 	 * Intialise un type d'item avec la durée appropriée.
 	 * 
 	 * @param duration
 	 * 		Durée de l'effet de l'item, en ms.
+	 * @param color
+	 * 		Couleur associée à l'item.
 	 */
-	Item(long duration)
+	ItemType(long duration, Color color)
 	{	this.duration = duration;
+		this.color = color;
 	}
 
 	/** Durée associée à l'effet de l'item, exprimée en ms */
 	public double duration;
+	
+	/** Couleur associée à l'item */ //TODO devraient en fait être pastels
+	public Color color;
 }

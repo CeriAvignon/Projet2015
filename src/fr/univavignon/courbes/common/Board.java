@@ -46,5 +46,5 @@ public class Board implements Serializable
 	public Snake snakes[];
 	
 	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
-	public Map<Position, Item> itemsMap;
+	public Map<Position, ItemType> itemsMap;
 }

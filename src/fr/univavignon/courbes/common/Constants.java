@@ -19,6 +19,8 @@ package fr.univavignon.courbes.common;
  */
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Cette classe contient uniquement les constantes du jeu, dont les valeurs
@@ -57,7 +59,11 @@ public class Constants
 	
 	/** Taille d'un item, exprimée en pixels */
 	public static final int ITEM_SIZE = 40;
+	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
+	public static final long ITEM_DURATION = 6000;
 	
+	/** Nombre maximal de joueurs dans une manche donnée */
+	public static final int MAX_PLAYER_NBR = 6;
     /** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
     public static final Color[] PLAYER_COLORS = 
 	{	Color.red,		// joueur 0
@@ -68,8 +74,25 @@ public class Constants
     	Color.pink		// joueur 5
 	};
     /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
-    public static final Color DISCONNECTED_PLAYER = Color.GRAY;
-
-	// TODO certaines de ces constantes pourraient rendre inutiles des champs de Snake (ex. movingSpeed) dont
-	// la valeur pourrait se déduire de ces constantes et de la nature des items faisant effet sur le serpent au moment considéré.
+    public static final Color DISCONNECTED_PLAYER_COLOR = Color.GRAY;
+    /** Épaisseur des auréoles (en pixels) affichées autour de la tête des serpents pour représenter l'effet des items */
+    public static final int AUREOLA_THICKNESS = 6;
+    /** Espacement entre les auréoles, en pixels */
+    public static final int AUREOLA_SPACE = 2;
+    
+    /** Épaisseur de la bordure de l'aire de jeu (en pixels) */
+    public static final int BORDER_THICKNESS = 5;
+    /** Couleur de la bordure de l'aire de jeu */
+    public static final Color BORDER_COLOR = Color.WHITE;
+    
+    /** Points marqués par les joueurs à l'issue d'une manche, en fonction de leur classement */
+    public static final Map<Integer,Integer> POINTS_FOR_RANK = new HashMap<Integer,Integer>();
+    static
+    {	POINTS_FOR_RANK.put(1,10); //TODO points à confirmer sur le jeu original
+    	POINTS_FOR_RANK.put(2,6);
+    	POINTS_FOR_RANK.put(3,3);
+    	POINTS_FOR_RANK.put(4,2);
+    	POINTS_FOR_RANK.put(5,1);
+    	POINTS_FOR_RANK.put(6,0);
+    }
 }

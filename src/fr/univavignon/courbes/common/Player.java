@@ -21,28 +21,23 @@ package fr.univavignon.courbes.common;
 import java.io.Serializable;
 
 /**
- * Représente un joueur, non pas dans le cadre d'une partie comme {@link Player}, mais dans
- * le cadre plus général du jeu. Autrement dit, il s'agit d'un profil de joueur, qui pourra 
- * ensuite être sélectionné pour jouer dans une partie donnée.
+ * Représente un joueur, non pas dans le cadre général du jeu comme {@link Profile}, 
+ * mais dans celui d'une partie. La classe contient le profil associé au joueur, mais
+ * aussi le score courant du joueur dans la partie.
  */
-public class Profile implements Serializable
+public class Player implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
-	/** Numéro unique du profil dans la BD du jeu */
-	public int profileId;
-	
-	/** Score ELO du profil relativement à toutes les parties qu'il a jouées */
-	public int score;
-	
-	/** Adresse email associée au profil */
-	public String email;
-	/** Nom d'utilisateur associé au profil */
-	public String userName;
-	/** Mot de passe associé au profil */
-	public String password;
-	/** Pays associé au profil */
-	public String country;
-	/** Fuseau horaire associé au profil */
-	public String timeZone;
+	/** Profil du joueur dans le jeu, en général */
+	public Profile profile;
+	/** Numéro unique du joueur dans la partie en cours */
+	public int playerId;
+
+	/** Score total du joueur dans la partie courante, <i>avant</i> la manche courante */
+	public int totalScore;
+	/** Score partiel du joueur pour la manche courante */
+	public int roundScore;
+	/** Classement du joueur dans la partie courante */
+	public int currentRank;
 }

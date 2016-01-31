@@ -21,28 +21,25 @@ package fr.univavignon.courbes.common;
 import java.io.Serializable;
 
 /**
- * Représente un joueur, non pas dans le cadre d'une partie comme {@link Player}, mais dans
- * le cadre plus général du jeu. Autrement dit, il s'agit d'un profil de joueur, qui pourra 
- * ensuite être sélectionné pour jouer dans une partie donnée.
+ * Cette classe permet de représenter une instance d'item,
+ * caractérisée par une position, un type et une durée restante.
+ * Pour un item encore en jeu, cette durée exprimée en ms correspond 
+ * au temps restant avant que l'item ne disparaisse. Pour un item
+ * qui a été ramassé, elle représente le temps restant avant que l'item
+ * ne cesse de faire effet sur le joueur qui l'a ramassé. 
  */
-public class Profile implements Serializable
+public class ItemInstance implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
-	/** Numéro unique du profil dans la BD du jeu */
-	public int profileId;
+	/** Position sur l'axe des abscisses */
+	public int x;
+	/** Position sur l'axe des ordonnées */
+	public int y;
 	
-	/** Score ELO du profil relativement à toutes les parties qu'il a jouées */
-	public int score;
+	/** Type d'item */
+	public ItemType type;
 	
-	/** Adresse email associée au profil */
-	public String email;
-	/** Nom d'utilisateur associé au profil */
-	public String userName;
-	/** Mot de passe associé au profil */
-	public String password;
-	/** Pays associé au profil */
-	public String country;
-	/** Fuseau horaire associé au profil */
-	public String timeZone;
+	/** Durée restante (en ms) : soit d'affichage si l'item est en jeu, soit d'effet si l'item a été ramassé */
+	public long remainingTime;
 }

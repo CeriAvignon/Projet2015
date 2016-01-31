@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.graphics.groupe18;
+package fr.univavignon.courbes.graphics.simpleimpl;
 
 /*
  * Courbes
@@ -28,8 +28,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Item;
+import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
 
 /**
@@ -40,21 +41,21 @@ import fr.univavignon.courbes.common.Position;
  */
 public class ItemDrawer
 {	
-	/** Map contenant les images représentant les items, chargées une seule fois */
-	private static final Map<Item,BufferedImage> IMAGES = new HashMap<Item, BufferedImage>();
-	
 	/**
 	 * Initialise les données nécessaires au tracé des items.
 	 * En particulier, charge les images des items, si pas déjà fait.
 	 * 
+	 * @param board
+	 * 		Aire de jeu de la partie actuelle. 
+	 * 
 	 * @throws IOException 
 	 * 		Problème lors du chargement d'une image.
 	 */
-	public static void initialize() throws IOException
+	public ItemDrawer(Board board) throws IOException
 	{	// on ne charge les images que si nécessaire (i.e. la 1ère fois)
 		if(IMAGES.isEmpty())
 		{	String imageFolder = "res" + File.separator + "images" + File.separator;
-			for(Item item: Item.values())
+			for(ItemType item: ItemType.values())
 			{	String fileName = imageFolder + item.toString();
 				File imageFile = new File(fileName);
 				BufferedImage image = ImageIO.read(imageFile);
@@ -62,6 +63,9 @@ public class ItemDrawer
 			}
 		}
 	}
+	
+	/** Map contenant les images représentant les items, chargées une seule fois */
+	private static final Map<ItemType,BufferedImage> IMAGES = new HashMap<ItemType, BufferedImage>();
 	
 	/**
 	 * Trace l'item spécifié à la position indiquée, sur l'objet
@@ -76,7 +80,7 @@ public class ItemDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
-	private static void drawItem(Item item, int x, int y, Graphics g)
+	private void drawItem(ItemType item, int x, int y, Graphics g)
 	{	BufferedImage image = IMAGES.get(item);
 		g.drawImage(image,x-Constants.ITEM_SIZE/2,y-Constants.ITEM_SIZE/2,null);
 	}
@@ -85,16 +89,20 @@ public class ItemDrawer
 	 * Trace tous les items contenus dans la map spécifiée, sur l'objet
 	 * graphique passé en paramètre.
 	 * 
-	 * @param itemsMap
-	 * 		Map contenant les type des items à tracer, avec leurs positions respectives.
+	 * @param board
+	 * 		Aire de jeu à afficher.
 	 * @param g
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
-	public static void drawItems(Map<Position, Item> itemsMap, Graphics g)
-	{	for(Entry<Position, Item> entry: itemsMap.entrySet())
+	public void drawItems(Board board, Graphics g)
+	{	Map<Position, ItemType> itemsMap = board.itemsMap;
+
+		for(Entry<Position, ItemType> entry: itemsMap.entrySet())
 		{	Position position = entry.getKey();
-			Item item = entry.getValue();
+			ItemType item = entry.getValue();
 			drawItem(item, position.x, position.y, g);
 		}
 	}
+	
+	// TODO reproduire l'animation d'apparition des items
 }
