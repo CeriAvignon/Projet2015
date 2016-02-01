@@ -31,13 +31,13 @@ public class Game extends Window{
 	 * @param width  Largeur de la fenêtre.
 	 * @param height Hauteur de la fenêtre.
 	 */
-	public Game(int width, int height,  Map<Integer,int[]> _commandsPlayer) 
+	public Game(int width, int height) 
 	{
 		super( width, height);
 		tempWidth=width;
 		tempHeight=height;
 		commandsPlayer =  new HashMap<>();
-		commandsPlayer = _commandsPlayer;
+//		commandsPlayer = _commandsPlayer;
 		JPanel game = new JPanel(new GridBagLayout());
 		game.setPreferredSize(new Dimension(100, 100));
 		gameBoard = new JPanel(new GridLayout());
@@ -144,7 +144,7 @@ public class Game extends Window{
 				catch(InterruptedException ex) {Thread.currentThread().interrupt();}
 		 }
 		 setVisible(false);
-		 new Game(tempWidth, tempHeight, commandsPlayer);
+		 new Game(tempWidth, tempHeight);
 	 }
 		
 

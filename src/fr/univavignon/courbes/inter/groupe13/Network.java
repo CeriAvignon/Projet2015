@@ -38,13 +38,13 @@ public class Network extends Window {
 	 * @param join true:menu rejoindre reseau, false: menu creer reseau.
 	 * @param _commandsPlayer la liste des id des joueurs et de leurs touches 
 	 */
-	public Network(int width, int height, boolean join, Map<Integer,int[]> _commandsPlayer) 
+	public Network(int width, int height, boolean join) 
 	{
 		super(width, height);	
 		tempWidth = width;
 		tempHeight = height;
 		commandsPlayer = new HashMap<>();
-		commandsPlayer = _commandsPlayer;
+//		commandsPlayer = _commandsPlayer;
 		start = false;
 		if(join)
 			joinNetwork();
@@ -101,7 +101,7 @@ public class Network extends Window {
 	    			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    			int width = (int)screenSize.getWidth();
 	    			int height= (int)screenSize.getHeight();
-	        		new Game(width, height, commandsPlayer);	
+	        		new Game(width, height);	
 	        	}
 	            Thread.sleep(200);
 	        }catch(InterruptedException e){}
@@ -178,7 +178,7 @@ public class Network extends Window {
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int width = (int)screenSize.getWidth();
 			int height= (int)screenSize.getHeight();
-			new Game(width, height, commandsPlayer);
+			new Game(width, height);
 		}
 	}
 	
