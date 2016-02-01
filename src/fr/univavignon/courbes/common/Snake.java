@@ -71,9 +71,6 @@ public class Snake implements Serializable
 	
 	/** File contenant les items affectant actuellement ce serpent */
 	public Queue<ItemInstance> currentItems;
-	
-	/** Score courant du joueur associé au serpent dans la partie courante */
-	public int currentScore;
 }
 
 //TODO dans MP, écrire des méthodes pour initiliaser toutes ces classes (même une classe initializer ou builder)

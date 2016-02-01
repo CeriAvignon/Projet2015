@@ -36,7 +36,7 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
  * @author Castillo Quentin
  * @author Latif Alexandre
  */
-public class Round implements PhysicsEngine {
+public class Round {
 
 	/** Represente le plateau de jeu de la manche courante **/
 	public Board board;
@@ -65,66 +65,6 @@ public class Round implements PhysicsEngine {
 	/** Est vrai si le snake à dessiné une tête temporaire **/
 	private Map<Integer, Boolean> isTempHead;
 
-	@Override
-	public Board init(int width, int height, int[] profileIds) {
-
-		int playerNbr = profileIds.length;
-		deltaSnake = new double[playerNbr][2];
-		pixStep = new double[playerNbr];
-		holeTick = new HashMap<Integer, Integer>();
-		moveCount = new HashMap<Integer, Integer>();
-		deltaID = new HashMap<Integer, Integer>();
-		tempHead = new HashMap<Position, Integer>();
-		isTempHead = new HashMap<Integer, Boolean>();
-		itemTick = 7000 +(int)(Math.random() * 13000);
-		board = new Board();
-		board.width = width;
-		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
-		board.itemsMap = new HashMap<Position, ItemType>();
-		board.snakes = new Snake[playerNbr];
-		Position posSpawn;
-
-		for (int i = 0; i < playerNbr ; i++) 
-		{
-			posSpawn = snakeSpawnPos(width, height);
-			board.snakes[i] = new Snake();
-			deltaID.put(profileIds[i], i);
-			isTempHead.put(profileIds[i], false);
-			initSnake(board.snakes[i], profileIds[i] , posSpawn);
-			System.out.println("Snake " + Integer.toString(i) + " spawn a la position x:" + Integer.toString(posSpawn.x) + "  y:"+Integer.toString(posSpawn.y));
-		}
-		return board;
-	}
-
-	/**
-	 * Cette fonction initialise les données physiques d'un snake présent sur la board.
-	 * 
-	 * @param snake Snake à initialiser
-	 * @param id Id du Snake
-	 * @param spawnPosition Position ou spawn le snake sur la board
-	 */
-	public void initSnake(Snake snake, int id, Position spawnPosition) {
-		snake.currentItems  = new HashMap<ItemType, Long>() ;
-		snake.playerId 	    = id;
-		snake.currentX      = spawnPosition.x;
-		snake.currentY      = spawnPosition.y;
-		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= Constants.REGULAR_HEAD_RADIUS;
-		snake.movingSpeed   = Constants.REGULAR_MOVING_SPEED;
-		snake.turningSpeed  = Constants.REGULAR_TURNING_SPEED;
-		snake.alive 		= true;
-		snake.collision 	= true;
-		snake.inversion     = false;
-		snake.fly   		= false;
-		snake.holeRate 	    = 0.25;	
-		holeTick.put(snake.playerId , (int)(Math.random() * 100 - snake.holeRate*100));
-		moveCount.put(snake.playerId  , 0);
-		System.out.println("Angle en degré : " + Double.toString(snake.currentAngle));	
-	}
-
-
-	@Override
 	public void update(long elapsedTime, Map<Integer, Direction> commands) {
 
 		// Mise à jour du temps d'invincibilité de début de round
@@ -610,16 +550,16 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_SLOW:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
+			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
 			break;
 		case OTHERS_THICK:
 			i.remove();
-			board.snakes[id].headRadius = Constants.REGULAR_HEAD_RADIUS;
+			board.snakes[id].headRadius = Constants.BASE_HEAD_RADIUS;
 			break;
 		case OTHERS_FAST:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
 			break;
 		case USER_FLY:
 			i.remove();
@@ -627,71 +567,15 @@ public class Round implements PhysicsEngine {
 			break;
 		case USER_SLOW:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
+			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
 			break;
 		case USER_FAST:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
 			break;
 		default:
 			break;
 		}
 	}
-
-	
-	@Override
-	public Board initDemo(int width, int height, int[] profileIds) {
-		int playerNbr = 2;
-		if(profileIds.length != 2){
-			System.out.println("2 profiles requis");
-			return null;
-		}
-		deltaSnake = new double[playerNbr][2];
-		pixStep = new double[playerNbr];
-		holeTick = new HashMap<Integer, Integer>();
-		moveCount = new HashMap<Integer, Integer>();
-		deltaID = new HashMap<Integer, Integer>();
-		tempHead = new HashMap<Position, Integer>();
-		isTempHead = new HashMap<Integer, Boolean>();
-		itemTick = 7000 +(int)(Math.random() * 13000);
-		board = new Board();
-		board.width = width;
-		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
-		board.itemsMap = new HashMap<Position, ItemType>();
-		board.snakes = new Snake[playerNbr];
-		Position posSpawn;
-
-		for (int i = 0; i < playerNbr ; i++) 
-		{
-			posSpawn = snakeSpawnPos(width, height);
-			board.snakes[i] = new Snake();
-			deltaID.put(profileIds[i], i);
-			isTempHead.put(profileIds[i], false);
-			initSnake(board.snakes[i], profileIds[i] , posSpawn);
-			System.out.println("Snake " + Integer.toString(i) + " spawn a la position x:" + Integer.toString(posSpawn.x) + "  y:"+Integer.toString(posSpawn.y));
-		}
-
-		/** Spawn de tout les items du jeu **/
-		ItemType[] itemTab = new ItemType[]{ItemType.USER_SLOW, ItemType.USER_FAST, ItemType.OTHERS_FAST, ItemType.OTHERS_SLOW,
-				ItemType.OTHERS_REVERSE, ItemType.OTHERS_THICK, ItemType.USER_FLY, ItemType.COLLECTIVE_WEALTH,
-				ItemType.COLLECTIVE_CLEAN, ItemType.COLLECTIVE_TRAVERSE};
-		board.itemsMap.put(new Position(100,100), itemTab[0] );
-		board.itemsMap.put(new Position(200,100), itemTab[1] );
-		board.itemsMap.put(new Position(300,100), itemTab[2] );
-		board.itemsMap.put(new Position(400,100), itemTab[3] );
-		board.itemsMap.put(new Position(100,200), itemTab[4] );
-		board.itemsMap.put(new Position(100,300), itemTab[5] );
-		board.itemsMap.put(new Position(100,400), itemTab[6] );
-		board.itemsMap.put(new Position(200,200), itemTab[7] );
-		board.itemsMap.put(new Position(300,300), itemTab[8] );
-		board.itemsMap.put(new Position(300,300), itemTab[9] );
-		return board;
-	}
-
-
 }
-
-
-

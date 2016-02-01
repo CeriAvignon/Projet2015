@@ -76,7 +76,7 @@ public class SnakesDrawer
 			if(snake.connected)
 				playerColor = Constants.PLAYER_COLORS[playerId];
 			else
-				playerColor = Constants.DISCONNECTED_PLAYER_COLOR;
+				playerColor = Constants.DISC_PLAYER_COLOR;
 			g.setColor(playerColor);
 			
 			// on trace le pixel

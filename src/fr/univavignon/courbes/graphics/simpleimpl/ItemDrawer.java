@@ -30,6 +30,7 @@ import javax.imageio.ImageIO;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
 
@@ -95,12 +96,12 @@ public class ItemDrawer
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
 	public void drawItems(Board board, Graphics g)
-	{	Map<Position, ItemType> itemsMap = board.itemsMap;
+	{	Map<Position, ItemInstance> itemsMap = board.itemsMap;
 
-		for(Entry<Position, ItemType> entry: itemsMap.entrySet())
+		for(Entry<Position, ItemInstance> entry: itemsMap.entrySet())
 		{	Position position = entry.getKey();
-			ItemType item = entry.getValue();
-			drawItem(item, position.x, position.y, g);
+			ItemInstance item = entry.getValue();
+			drawItem(item.type, position.x, position.y, g);
 		}
 	}
 	

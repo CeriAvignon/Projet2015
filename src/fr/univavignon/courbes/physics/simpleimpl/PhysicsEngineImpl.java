@@ -36,86 +36,26 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
  * Immplémentation de l'interface {@link PhysicsEngine}, i.e.
- * classe principale du Moteur Physique. 
+ * classe principale du Moteur Physique. L'essentiel du traitement
+ * est délégué à des classes reproduisant la structures des classes
+ * de données communes.
  */
 public class PhysicsEngineImpl implements PhysicsEngine
 {	
+	private MyBoard board;
+	
 	@Override
 	public Board init(int width, int height, Profile[] profiles)
-	{	board = new Board();
-		board.width = width;
-		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
-		
-		board.snakes = new Snake[profiles.length];
-		for(int i=0;i<profiles.length;i++)
-		{	Snake snake = new Snake();
-			initSnake(i,snake,profiles[i]);
-			board.snakes[i] = snake;
-		}
+	{	board = new MyBoard(width,height);
+		board.init(profiles);
 		
 		return board;
 	}
 	
-	private Board board;
-	
-	/**
-	 * Initialise le serpent passé en paramètre.
-	 * 
-	 * @param playerId
-	 * 		Numéro du joueur dans la manche en cours.
-	 * @param snake
-	 * 		Serpent à initialiser.
-	 * @param profile
-	 * 		Profil du joueur contrôlant le serpent.
-	 */
-	private void initSnake(int playerId, Snake snake, Profile profile)
-	{	snake.playerId = playerId;
-		snake.profileId = profile.profileId;
-		
-		snake.currentX = (int)Math.floor(Math.random()*board.width);	// on tire une valeur entre 0 et width-1
-		snake.currentY = (int)Math.floor(Math.random()*board.width);	// pareil entre 0 et height-1
-		
-		snake.currentAngle = Math.random()*Math.PI*2;	// on tire une valeur réelle entre 0 et 2pi
-		snake.headRadius = Constants.REGULAR_HEAD_RADIUS;
-		snake.movingSpeed = Constants.REGULAR_MOVING_SPEED;
-		snake.turningSpeed = Constants.REGULAR_TURNING_SPEED;
-		
-		snake.alive = true;
-		snake.connected = false;
-
-		snake.collision = false;
-		snake.inversion = false;
-		snake.fly = false;
-	
-		snake.holeRate = Constants.HOLE_RATE;
-		snake.remainingHoleWidth = 0;
-	
-		snake.currentItems = new LinkedList<ItemInstance>();
-	
-		snake.currentScore = 0;
-	}
-	
 	@Override
 	public Board initDemo(int width, int height, Profile[] profiles)
-	{	// initialisation à peu près normale
-		{	board = new Board();
-			board.width = width;
-			board.height = height;
-			board.snakesMap = new HashMap<Position, Integer>();
-			
-			board.snakes = new Snake[profiles.length];
-			for(int i=0;i<profiles.length;i++)
-			{	Snake snake = new Snake();
-				initSnake(i,snake,profiles[i]);
-				snake.movingSpeed = 0;
-				board.snakes[i] = snake;
-			}
-			board.snakes[0].movingSpeed = Constants.REGULAR_MOVING_SPEED;
-		}
-		
-		// on rajoute les items
-		// TODO
+	{	board = new MyBoard(width,height);
+		board.initDemo(profiles);
 		
 		return board;
 	}

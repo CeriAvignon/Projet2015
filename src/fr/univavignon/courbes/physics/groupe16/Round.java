@@ -104,9 +104,9 @@ public class Round implements PhysicsEngine {
 		snake.currentX      = spawnPosition.x;
 		snake.currentY      = spawnPosition.y;
 		snake.currentAngle  = (int)(Math.random() * 359); //Génération aléatoire d'un angle entre 0 et 359°
-		snake.headRadius 	= Constants.REGULAR_HEAD_RADIUS;
-		snake.movingSpeed   = Constants.REGULAR_MOVING_SPEED;
-		snake.turningSpeed  = Constants.REGULAR_TURNING_SPEED;
+		snake.headRadius 	= Constants.BASE_HEAD_RADIUS;
+		snake.movingSpeed   = Constants.BASE_MOVING_SPEED;
+		snake.turningSpeed  = Constants.BASE_TURNING_SPEED;
 		snake.alive 		= true;
 		snake.collision 	= true;
 		snake.inversion     = false;
@@ -269,16 +269,16 @@ public class Round implements PhysicsEngine {
 			break;
 		case OTHERS_SLOW:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
+			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
 			break;
 		case OTHERS_THICK:
 			i.remove();
-			board.snakes[id].headRadius = Constants.REGULAR_HEAD_RADIUS;
+			board.snakes[id].headRadius = Constants.BASE_HEAD_RADIUS;
 			break;
 		case OTHERS_FAST:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
 			break;
 		case USER_FLY:
 			i.remove();
@@ -286,12 +286,12 @@ public class Round implements PhysicsEngine {
 			break;
 		case USER_SLOW:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.REGULAR_TURNING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
+			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
 			break;
 		case USER_FAST:
 			i.remove();
-			board.snakes[id].movingSpeed = Constants.REGULAR_MOVING_SPEED;
+			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
 			break;
 		default:
 			break;

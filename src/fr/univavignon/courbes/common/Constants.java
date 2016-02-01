@@ -30,37 +30,41 @@ import java.util.Map;
  * valeurs devraient figurer ici.
  */
 public class Constants
-{	
-	/** Vitesse de déplacement normale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
-	public static final float REGULAR_MOVING_SPEED = 0.1f;
-	/** Vitesse de déplacement rapide des serpents, exprimée en pixels par ms */
-	public static final float FAST_MOVING_SPEED = 0.3f;
-	/** Vitesse de déplacement lente des serpents, exprimée en pixels par ms */
-	public static final float SLOW_MOVING_SPEED = 0.1f; //TODO valeur à estimer
+{	/** Largeur de l'aire de jeu standard */
+	public static final int BOARD_WIDTH = 800;//TODO à confirmer
+	/** Hauteur de l'aire de jeu standard */
+	public static final int BOARD_HEIGHT = 800;//TODO à confirmer
 	
-	/** Vitesse normale à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float REGULAR_TURNING_SPEED = 0.003f;
-	/** Vitesse élevée à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float FAST_TURNING_SPEED = 0.003f; //TODO valeur à estimer
-	/** Vitesse lente à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float SLOW_TURNING_SPEED = 0.003f; //TODO valeur à estimer
+	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
+	public static final float BASE_MOVING_SPEED = 0.1f;
+	/** Coefficient multiplicatif/diviseur appliqué à la vitesse de déplacement pour l'augmenter/la diminuer */
+	public static final float MOVING_SPEED_COEFF = 3f;
 	
-	/** Rayon de la tête d'un serpent d'épaisseur normale, exprimé en pixels */ 
-	public static final int REGULAR_HEAD_RADIUS = 4;
-	/** Rayon de la tête d'un serpent plus épais que la normale, exprimé en pixels */ 
-	public static final int LARGE_HEAD_RADIUS = 8;
+	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
+	public static final float BASE_TURNING_SPEED = 0.003f;
+	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
+	public static final float TURNING_COEFF = 3f;
+	
+	/** Rayon initial de la tête d'un serpent, exprimé en pixels */ 
+	public static final int BASE_HEAD_RADIUS = 4;
+	/** Coefficient multiplicateur appliqué au rayon de la tête d'un serpent pour l'augmenter */
+	public static final float HEAD_RADIUS_COEFF = 2;
 
 	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine lors d'une itération donnée */
 	public static final float HOLE_RATE = 0.0085f;
 	/** Largeur d'un trou pour un serpent d'épaisseur normale, exprimée en pixels */
 	public static final int REGULAR_HOLE_WIDTH = 20;
-	/** Largeur d'un trou pour un serpent plus épais que la normale, exprimée en pixels */
-	public static final int LARGE_HOLE_WIDTH = 40;
+	/** Coefficient multiplicatif/diviseur appliqué à la largeur d'un trou pour l'augmenter */
+	public static final float HOLE_WIDTH_COEFF = 2;
 	
 	/** Taille d'un item, exprimée en pixels */
 	public static final int ITEM_SIZE = 40;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
 	public static final long ITEM_DURATION = 6000;
+	/** Probabilité qu'un item apparaisse à chaque itération */
+	public static final float BASE_ITEM_POPUP_RATE = 0.001f;
+	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
+	public static final float ITEM_POPUP_COEFF = 5f;
 	
 	/** Nombre maximal de joueurs dans une manche donnée */
 	public static final int MAX_PLAYER_NBR = 6;
@@ -74,7 +78,7 @@ public class Constants
     	Color.pink		// joueur 5
 	};
     /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
-    public static final Color DISCONNECTED_PLAYER_COLOR = Color.GRAY;
+    public static final Color DISC_PLAYER_COLOR = Color.GRAY;
     /** Épaisseur des auréoles (en pixels) affichées autour de la tête des serpents pour représenter l'effet des items */
     public static final int AUREOLA_THICKNESS = 6;
     /** Espacement entre les auréoles, en pixels */
