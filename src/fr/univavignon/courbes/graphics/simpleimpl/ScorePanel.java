@@ -135,4 +135,8 @@ public class ScorePanel extends JPanel
 	}
 	
 	// TODO la mise en forme pourrait être grandement améliorée pour coller plus au jeu original
+
+	// TODO en réalité, les valeurs affichées en couleur sont les points marqués une fois que le joueur est éliminé.
+	// mais celles en n&b sont les points avant la manche + nbre minimal de points pour la manche courante (en fonction de qui reste en jeu)
+	// >> ça peut se gérer coté IU
 }

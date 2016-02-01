@@ -22,6 +22,7 @@ import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
 
 /**
@@ -48,13 +49,13 @@ public interface PhysicsEngine
 	 * 		Largeur de l'aire de jeu, exprimée en pixel.
 	 * @param height
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
-	 * @param profileIds
-	 * 		Tableau contenant les numéros de profils des joueurs impliqués dans 
+	 * @param profiles
+	 * 		Tableau contenant les profils des joueurs impliqués dans 
 	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
 	 * @return
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board init(int width, int height, int[] profileIds);
+	public Board init(int width, int height, Profile[] profiles);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -69,13 +70,13 @@ public interface PhysicsEngine
 	 * 		Largeur de l'aire de jeu, exprimée en pixel.
 	 * @param height
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
-	 * @param profileIds
-	 * 		Tableau contenant les numéros de profils des joueurs impliqués dans 
+	 * @param profiles
+	 * 		Tableau contenant les profils des joueurs impliqués dans 
 	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
 	 * @return
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board initDemo(int width, int height, int[] profileIds);
+	public Board initDemo(int width, int height, Profile[] profiles);
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur

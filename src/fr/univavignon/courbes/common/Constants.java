@@ -88,11 +88,13 @@ public class Constants
     /** Points marqués par les joueurs à l'issue d'une manche, en fonction de leur classement */
     public static final Map<Integer,Integer> POINTS_FOR_RANK = new HashMap<Integer,Integer>();
     static
-    {	POINTS_FOR_RANK.put(1,10); //TODO points à confirmer sur le jeu original
-    	POINTS_FOR_RANK.put(2,6);
+    {	POINTS_FOR_RANK.put(1,5); //TODO points à confirmer sur le jeu original
+    	POINTS_FOR_RANK.put(2,4);
     	POINTS_FOR_RANK.put(3,3);
     	POINTS_FOR_RANK.put(4,2);
     	POINTS_FOR_RANK.put(5,1);
     	POINTS_FOR_RANK.put(6,0);
     }
+    
+    // TODO en fait, l'effet des items est cumulatif: par ex, si on prend plusieurs grossisseurs, on grossit plusieurs fois.
 }
