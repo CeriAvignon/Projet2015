@@ -26,6 +26,7 @@ public class DisplayProfileFrame extends JFrame{
 		public PlayerTable(){
 			super();
 			
+			
 			JScrollPane jsp_parent = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jsp_parent.getVerticalScrollBar().setUnitIncrement(10);
 			jsp_parent.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
