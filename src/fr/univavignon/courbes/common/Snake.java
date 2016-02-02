@@ -20,6 +20,7 @@ package fr.univavignon.courbes.common;
 
 import java.io.Serializable;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * Cette classe contient les informations et caractéristiques d'un serpent.
@@ -43,14 +44,17 @@ public class Snake implements Serializable
 	/** Position courante de la tête du serpent en ordonnée */
 	public int currentY;
 	
+	/** Trainées du serpent sur l'aire de jeu */
+	public Set<Position> trail;
+
 	/** Angle représentant la direction de déplacement courante du serpent, par rapport à l'horizontale */
-	public double currentAngle;
+	public float currentAngle;
 	/** Rayon de la tête du serpent, en pixels */
 	public int headRadius;
 	/** Vitesse de déplacement du serpent, exprimée en pixel par ms */
-	public double movingSpeed;
+	public float movingSpeed;
 	/** Vitesse à laquelle le serpent change de direction, exprimée en radians par ms */
-	public double turningSpeed;
+	public float turningSpeed;
 	
 	/** Etat de vie du serpent : {@code false} il est mort, {@code true} il est vivant */
 	public boolean alive;
@@ -73,4 +77,4 @@ public class Snake implements Serializable
 	public Queue<ItemInstance> currentItems;
 }
 
-//TODO dans MP, écrire des méthodes pour initiliaser toutes ces classes (même une classe initializer ou builder)
+//TODO certains de ces champs sont uniquement utilisés par le MP >> à virer d'ici ?

@@ -19,7 +19,7 @@ package fr.univavignon.courbes.common;
  */
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Cette classe correspond à l'ensemble des informations propres à 
@@ -40,11 +40,12 @@ public class Board implements Serializable
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
 	
-	/** Trainées des serpents sur l'aire de jeu: associe la position d'un pixel à un ID de joueur */
-	public Map<Position, Integer> snakesMap;
+	/** Indique si l'aire de jeu contient actuellement une bordure ou si celle-ci est absente */
+	public boolean hasBorder;
+	
 	/** Tableau contenant tous les serpents de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
 	
 	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
-	public Map<Position, ItemInstance> itemsMap;
+	public List<ItemInstance> items;
 }

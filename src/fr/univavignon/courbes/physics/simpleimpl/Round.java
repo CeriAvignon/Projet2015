@@ -105,7 +105,7 @@ public class Round {
 			int itCenterX = (int)( Math.random()*( (board.height - radItem) - radItem + 1 ) ) + radItem;
 			int itCenterY = (int)( Math.random()*( (board.width - radItem) - radItem + 1 ) ) + radItem;
 			Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
-			if(board.snakesMap.get(posC) == null) {
+			if(board.snakesTrail.get(posC) == null) {
 				flgSpawn = true;
 				ItemType randItem = ItemType.values()[(int) (Math.random() * ItemType.values().length)];
 				board.itemsMap.put(posC, randItem);
@@ -265,7 +265,7 @@ public class Round {
 						if ((moveCount.get(snake.playerId) <= holeTick.get(snake.playerId)
 								|| moveCount.get(snake.playerId) > holeTick.get(snake.playerId) + snake.holeRate*100)
 								&& invincibleTime <= 0) {
-							board.snakesMap.put(pos , snake.playerId);
+							board.snakesTrail.put(pos , snake.playerId);
 							System.out.println("Snake "+ snake.playerId+ " X:" + snake.currentX + "  Y:" + snake.currentY);
 							fillSnakeHead(snake);
 						}
@@ -333,7 +333,7 @@ public class Round {
 
 		for(int i = 0; i < 3; i++) {
 			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
-			Integer flg = board.snakesMap.get(posChk);
+			Integer flg = board.snakesTrail.get(posChk);
 			if(flg != null) {
 				snake.alive = false;	
 				System.out.println("snake " + snake.playerId + " a dit bonjour à " + flg);
@@ -403,8 +403,8 @@ public class Round {
 			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius ; j++) {
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos = new Position(i,j);
-					if(board.snakesMap.get(pos) == null) {
-						board.snakesMap.put(pos , snake.playerId);
+					if(board.snakesTrail.get(pos) == null) {
+						board.snakesTrail.put(pos , snake.playerId);
 					}	
 				}
 			}
@@ -420,8 +420,8 @@ public class Round {
 			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius ; j++) {
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos = new Position(i,j);
-					if(board.snakesMap.get(pos) == null) {
-						board.snakesMap.put(pos , snake.playerId);
+					if(board.snakesTrail.get(pos) == null) {
+						board.snakesTrail.put(pos , snake.playerId);
 						tempHead.put(pos, snake.playerId);
 					}
 				}
@@ -438,144 +438,9 @@ public class Round {
 		for (Iterator<Entry<Position, Integer>> i = tempHead.entrySet().iterator(); i.hasNext(); ) {
 			Entry<Position, Integer> entry = i.next();
 			if(entry.getValue() == snake.playerId) {
-				board.snakesMap.remove(entry.getKey());
+				board.snakesTrail.remove(entry.getKey());
 				i.remove();
 			}
-		}
-	}
-
-	@Override
-	public void forceUpdate(Board board) {
-
-		this.board = board;
-
-	}
-
-	/**
-	 * @param idProfile Id du Snake ayant ramassé l'objet
-	 * @param item Item ramassé
-	 */
-	public void addSnakeItem(int idProfile, ItemType item) {
-		int id = deltaID.get(idProfile);
-		switch(item)
-		{
-		case COLLECTIVE_CLEAN:
-			board.snakesMap.clear();
-			break;
-		case COLLECTIVE_TRAVERSE:
-			for(Snake snake : board.snakes) {
-				snake.currentItems.put(item, (long)item.duration);
-				snake.fly = true;
-			}
-			break;
-		case COLLECTIVE_WEALTH:
-			board.snakes[id].currentItems.put(item, (long)item.duration);
-			itemRate = 3;
-			break;
-		case OTHERS_REVERSE:
-			for(Snake snake : board.snakes) {
-				if (snake.playerId != idProfile) {
-					snake.currentItems.put(item, (long)item.duration);
-					snake.inversion = true;
-				}
-			}
-			break;
-		case OTHERS_SLOW:
-			for(Snake snake : board.snakes) {
-				if (snake.playerId != idProfile) {
-					snake.currentItems.put(item, (long)item.duration);
-					snake.movingSpeed = Constants.SLOW_MOVING_SPEED;
-					snake.turningSpeed = Constants.FAST_TURNING_SPEED;
-				}
-			}
-			break;
-		case OTHERS_THICK:
-			for(Snake snake : board.snakes) {
-				if (snake.playerId != idProfile) {
-					snake.currentItems.put(item, (long)item.duration);
-					snake.headRadius = Constants.LARGE_HEAD_RADIUS;
-				}
-			}
-			break;
-		case OTHERS_FAST:
-			for(Snake snake : board.snakes) {
-				if (snake.playerId != idProfile) {
-					snake.currentItems.put(item, (long)item.duration);
-					snake.movingSpeed = Constants.FAST_MOVING_SPEED;
-				}
-			}
-			break;
-		case USER_FLY:
-			board.snakes[id].currentItems.put(item, (long)item.duration);
-			board.snakes[id].holeRate *= 2;
-			break;
-		case USER_SLOW:
-			board.snakes[id].currentItems.put(item, (long)item.duration);
-			board.snakes[id].movingSpeed = Constants.SLOW_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.FAST_TURNING_SPEED;
-			break;
-		case USER_FAST:
-			board.snakes[id].currentItems.put(item, (long)item.duration);
-			board.snakes[id].movingSpeed = Constants.FAST_MOVING_SPEED;
-			break;
-		default:
-			break;
-		}
-	}
-
-	/**
-	 * Supprime l'item ainsi que l'effet relatif à l'item ramassé au snake concerné.
-	 * 
-	 * @param idProfile Id du Snake concerné
-	 * @param item Item à enlever du snake
-	 * @param i test
-	 */ 
-	public void removeSnakeItem(int idProfile, ItemType item, Iterator<Entry<ItemType, Long>> i) {
-		int id = deltaID.get(idProfile);
-		switch(item)
-		{
-		case COLLECTIVE_CLEAN:
-			break;
-		case COLLECTIVE_TRAVERSE:
-			i.remove();
-			board.snakes[id].fly = false;
-			break;
-		case COLLECTIVE_WEALTH:
-			i.remove();
-			itemRate = 1;
-			break;
-		case OTHERS_REVERSE:
-			i.remove();
-			board.snakes[id].inversion = false;
-			break;
-		case OTHERS_SLOW:
-			i.remove();
-			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
-			break;
-		case OTHERS_THICK:
-			i.remove();
-			board.snakes[id].headRadius = Constants.BASE_HEAD_RADIUS;
-			break;
-		case OTHERS_FAST:
-			i.remove();
-			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
-			break;
-		case USER_FLY:
-			i.remove();
-			board.snakes[id].holeRate /= 2;
-			break;
-		case USER_SLOW:
-			i.remove();
-			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
-			board.snakes[id].turningSpeed = Constants.BASE_TURNING_SPEED;
-			break;
-		case USER_FAST:
-			i.remove();
-			board.snakes[id].movingSpeed = Constants.BASE_MOVING_SPEED;
-			break;
-		default:
-			break;
 		}
 	}
 }

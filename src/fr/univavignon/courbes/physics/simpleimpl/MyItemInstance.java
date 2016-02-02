@@ -18,6 +18,8 @@ package fr.univavignon.courbes.physics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Random;
+
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
@@ -29,18 +31,58 @@ import fr.univavignon.courbes.common.ItemType;
 public class MyItemInstance extends ItemInstance
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	/** Générateur aléatoire utilisé lors de l'apparition d'items */
+	private static final Random RANDOM = new Random();
 	
+	/**
+	 * Crée un item placé à la position spécifiée.
+	 * 
+	 * @param type
+	 * 		Type de l'item à créer.
+	 * @param x
+	 * 		Position en abscisse.
+	 * @param y
+	 * 		Position en ordonnée.
+	 */
 	public MyItemInstance(ItemType type, int x, int y)
+	{	init(type,x,y);
+	}
+	
+	/**
+	 * Crée un item placé au hasard sur l'aire de jeu spécifiée.
+	 * 
+	 * @param board
+	 * 		Aire de jeu destinée à contenir l'item.
+	 */
+	public MyItemInstance(MyBoard board)
+	{	// tirage au sort du type d'item
+		int idx = RANDOM.nextInt(ItemType.values().length);
+		ItemType type = ItemType.values()[idx];
+		
+		// tirage a sort de la position de l'item
+		//TODO
+		
+		// on finit l'init
+		init(type,x,y);
+	}
+	
+	/**
+	 * Initialise un item.
+	 * 
+	 * @param type
+	 * 		Type de l'item.
+	 * @param x
+	 * 		Position en abscisse.
+	 * @param y
+	 * 		Position en ordonnée.
+	 */
+	private void init(ItemType type, int x, int y)
 	{	this.type = type;
 		this.x = x;
 		this.y = y;
 		
 		remainingTime = Constants.ITEM_DURATION;
-		inGame = true;
 	}
-	
-	/** Indique si l'item est toujours en jeu ({@code true}) ou bien s'il a déjà été ramassé ({@code false}) */
-	private boolean inGame = true; 
 	
 	/**
 	 * Met à jour un item actuellement en jeu (i.e. pas encore ramassé).
@@ -56,7 +98,17 @@ public class MyItemInstance extends ItemInstance
 		return remove;
 	}
 	
-	// appelée par le serpent concerné
+	/**
+	 * Met à jour l'effet d'un item s'appliquant sur un serpent.
+	 * 
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
+	 * @param snake
+	 * 		Serpent concerné.
+	 * @return
+	 * 		{@code true} ssi l'item a terminé son effet et doit être
+	 * 		retiré de la liste par le serpent appelant cette méthode.
+	 */
 	public boolean updateEffect(long elapsedTime, MySnake snake)
 	{	switch(type)
 		{	case OTHERS_FAST:
@@ -88,14 +140,24 @@ public class MyItemInstance extends ItemInstance
 		return remove;
 	}
 
-	// appelée par le board
+	/**
+	 * Met à jour l'effet d'un item collectif.
+	 * 
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
+	 * @param board
+	 * 		Aire de jeu concernée.
+	 * @return
+	 * 		{@code true} ssi l'item a terminé son effet et doit être
+	 * 		retiré de la liste par la Board appelant cette méthode.
+	 */
 	public boolean updateEffect(long elapsedTime, MyBoard board)
 	{	switch(type)
 		{	case COLLECTIVE_CLEAN:
 				// cet item ne devrait pas être traité ici
 				break;
 			case COLLECTIVE_TRAVERSE:
-				board.border = false;
+				board.hasBorder = false;
 				break;
 			case COLLECTIVE_WEALTH:
 				board.itemPopupRate = board.itemPopupRate*Constants.ITEM_POPUP_COEFF;

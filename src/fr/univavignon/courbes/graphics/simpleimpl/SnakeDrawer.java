@@ -25,8 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Arc2D;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
@@ -40,7 +38,7 @@ import fr.univavignon.courbes.common.Snake;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class SnakesDrawer
+public class SnakeDrawer
 {	
 	/**
 	 * Initialise les données nécessaires au tracé des snakes.
@@ -48,7 +46,7 @@ public class SnakesDrawer
 	 * @param board 
 	 * 		Aire de jeu de la partie en cours.
 	 */
-	public SnakesDrawer(Board board)
+	public SnakeDrawer(Board board)
 	{	
 		// TODO on pourrait, par exemple, rajouter un tirage au sort des couleurs des joueurs.
 	}
@@ -63,14 +61,10 @@ public class SnakesDrawer
 	 */
 	public void drawSnakes(Board board, Graphics g)
 	{	Snake snakes[] = board.snakes;
-		Map<Position, Integer> snakesMap = board.snakesMap;
-
-		// on boucle sur chaque entrée de la map, i.e. chaque pixel
-		for(Entry<Position, Integer> entry: snakesMap.entrySet())
-		{	// on récupère l'id du joueur dans la partie
-			int playerId = entry.getValue();
-			
-			// on récupère la couleur du joueur dans la partie
+		
+		// on boucle sur chaque ensemble du tableau
+		for(int playerId=0;playerId<snakes.length;playerId++)
+		{	// on récupère la couleur du joueur dans la partie
 			Snake snake = snakes[playerId];
 			Color playerColor;
 			if(snake.connected)
@@ -79,9 +73,9 @@ public class SnakesDrawer
 				playerColor = Constants.DISC_PLAYER_COLOR;
 			g.setColor(playerColor);
 			
-			// on trace le pixel
-			Position position = entry.getKey();
-			g.drawLine(position.x, position.y, position.x, position.y);
+			// on boucle sur chaque position, i.e. chaque pixel
+			for(Position position: snake.trail)
+				g.drawLine(position.x, position.y, position.x, position.y);
 		}
 	}
 	

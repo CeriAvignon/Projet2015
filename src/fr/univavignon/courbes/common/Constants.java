@@ -57,12 +57,12 @@ public class Constants
 	/** Coefficient multiplicatif/diviseur appliqué à la largeur d'un trou pour l'augmenter */
 	public static final float HOLE_WIDTH_COEFF = 2;
 	
-	/** Taille d'un item, exprimée en pixels */
-	public static final int ITEM_SIZE = 40;
+	/** Rayon d'un item, exprimé en pixels */
+	public static final int ITEM_RADIUS = 40;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
 	public static final long ITEM_DURATION = 6000;
-	/** Probabilité qu'un item apparaisse à chaque itération */
-	public static final float BASE_ITEM_POPUP_RATE = 0.001f;
+	/** Probabilité qu'un item apparaisse à chaque ms */
+	public static final float BASE_ITEM_POPUP_RATE = 0.00005f;
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
 	public static final float ITEM_POPUP_COEFF = 5f;
 	

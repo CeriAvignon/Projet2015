@@ -41,12 +41,12 @@ public class BoardDrawer
 	 * 		Problème lors de l'initialisation des objets chargés du tracé.
 	 */
 	public BoardDrawer(Board board) throws IOException
-	{	snakesDrawer = new SnakesDrawer(board);
+	{	snakesDrawer = new SnakeDrawer(board);
 		itemDrawer = new ItemDrawer(board);
 	}
 	
 	/** Objet utilisé pour dessiner les serpents et leurs auréoles */
-	private SnakesDrawer snakesDrawer;
+	private SnakeDrawer snakesDrawer;
 	/** Objet utilisé pour dessiner les items présents sur l'aire de jeu */
 	private ItemDrawer itemDrawer;
 	
@@ -62,35 +62,37 @@ public class BoardDrawer
 	 * 		Objet graphique sur lequel on trace la bordure.
 	 */
 	private void drawBorder(Board board, Graphics g)
-	{	g.setColor(Constants.BORDER_COLOR);
-		// haut
-		g.fillRect(
-			0, 
-			0, 
-			board.width, 
-			Constants.BORDER_THICKNESS
-		);
-		// bas
-		g.fillRect(
-			board.height-Constants.BORDER_THICKNESS, 
-			board.height, 
-			board.width, 
-			Constants.BORDER_THICKNESS
-		);
-		// gauche
-		g.fillRect(
-			0, 
-			Constants.BORDER_THICKNESS, 
-			Constants.BORDER_THICKNESS, 
-			board.width-2*Constants.BORDER_THICKNESS
-		);
-		// droite
-		g.fillRect(
-			board.width-Constants.BORDER_THICKNESS, 
-			Constants.BORDER_THICKNESS, 
-			Constants.BORDER_THICKNESS, 
-			board.width-2*Constants.BORDER_THICKNESS
-		);
+	{	if(board.hasBorder)
+		{	g.setColor(Constants.BORDER_COLOR);
+			// haut
+			g.fillRect(
+				0, 
+				0, 
+				board.width, 
+				Constants.BORDER_THICKNESS
+			);
+			// bas
+			g.fillRect(
+				board.height-Constants.BORDER_THICKNESS, 
+				board.height, 
+				board.width, 
+				Constants.BORDER_THICKNESS
+			);
+			// gauche
+			g.fillRect(
+				0, 
+				Constants.BORDER_THICKNESS, 
+				Constants.BORDER_THICKNESS, 
+				board.width-2*Constants.BORDER_THICKNESS
+			);
+			// droite
+			g.fillRect(
+				board.width-Constants.BORDER_THICKNESS, 
+				Constants.BORDER_THICKNESS, 
+				Constants.BORDER_THICKNESS, 
+				board.width-2*Constants.BORDER_THICKNESS
+			);
+		}
 	}
 	
 	/**

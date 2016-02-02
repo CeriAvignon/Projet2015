@@ -65,7 +65,7 @@ public enum ItemType implements Serializable
 	}
 
 	/** Durée associée à l'effet de l'item, exprimée en ms */
-	public double duration;
+	public long duration;
 	
 	/** Couleur associée à l'item */ //TODO devraient en fait être pastels
 	public Color color;

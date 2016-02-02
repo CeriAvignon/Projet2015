@@ -27,11 +27,39 @@ import java.io.Serializable;
  */
 public enum Direction implements Serializable
 {	/** L'utilisateur veut tourner à gauche */
-	LEFT,
+	LEFT(+1),
 	
 	/** L'utilisateur veut tourner à droite */
-	RIGHT,
+	RIGHT(-1),
 	
 	/** L'utilisateur ne change pas de direction */
-	NONE;
+	NONE(0);
+	
+	/**
+	 * Construit une direction.
+	 * 
+	 * @param value
+	 * 		Valeur numérique associée à cette direction.
+	 */
+	private Direction(int value)
+	{	this.value = value;
+	}
+	
+	/** Valeur numérique associée à la direction */
+	public final int value;
+
+	/**
+	 * Renvoie la direction inverse de cette direction.
+	 * 
+	 * @return
+	 * 		Direction inverse de celle-ci.
+	 */
+	public Direction getInverse()
+	{	Direction result = Direction.NONE;
+		if(this==LEFT)
+			result = Direction.RIGHT;
+		else if(this==RIGHT)
+			result = Direction.LEFT;
+		return result;
+	}
 }

@@ -80,7 +80,7 @@ public class Round implements PhysicsEngine {
 		board = new Board();
 		board.width = width;
 		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
+		board.snakesTrail = new HashMap<Position, Integer>();
 		board.itemsMap = new HashMap<Position, ItemType>();
 		board.snakes = new Snake[playerNbr];
 		Position posSpawn;
@@ -165,7 +165,7 @@ public class Round implements PhysicsEngine {
 			int itCenterX = (int)( Math.random()*( (board.height - radItem) - radItem + 1 ) ) + radItem;
 			int itCenterY = (int)( Math.random()*( (board.width - radItem) - radItem + 1 ) ) + radItem;
 			Position posC = new Position(itCenterX, itCenterY); // Coordonnée du centre de l'item
-			if(board.snakesMap.get(posC) == null) {
+			if(board.snakesTrail.get(posC) == null) {
 				flgSpawn = true;
 				ItemType randItem = ItemType.values()[(int) (Math.random() * ItemType.values().length)];
 				board.itemsMap.put(posC, randItem);
@@ -325,7 +325,7 @@ public class Round implements PhysicsEngine {
 						if ((moveCount.get(snake.playerId) <= holeTick.get(snake.playerId)
 								|| moveCount.get(snake.playerId) > holeTick.get(snake.playerId) + snake.holeRate*100)
 								&& invincibleTime <= 0) {
-							board.snakesMap.put(pos , snake.playerId);
+							board.snakesTrail.put(pos , snake.playerId);
 							System.out.println("Snake "+ snake.playerId+ " X:" + snake.currentX + "  Y:" + snake.currentY);
 							fillSnakeHead(snake);
 						}
@@ -393,7 +393,7 @@ public class Round implements PhysicsEngine {
 
 		for(int i = 0; i < 3; i++) {
 			Position posChk = new Position(hitBox[i][0], hitBox[i][1]);
-			Integer flg = board.snakesMap.get(posChk);
+			Integer flg = board.snakesTrail.get(posChk);
 			if(flg != null) {
 				snake.alive = false;	
 				System.out.println("snake " + snake.playerId + " a dit bonjour à " + flg);
@@ -463,8 +463,8 @@ public class Round implements PhysicsEngine {
 			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius ; j++) {
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos = new Position(i,j);
-					if(board.snakesMap.get(pos) == null) {
-						board.snakesMap.put(pos , snake.playerId);
+					if(board.snakesTrail.get(pos) == null) {
+						board.snakesTrail.put(pos , snake.playerId);
 					}	
 				}
 			}
@@ -480,8 +480,8 @@ public class Round implements PhysicsEngine {
 			for(int j = snake.currentY - (int)snake.headRadius; j < snake.currentY + (int)snake.headRadius ; j++) {
 				if(Math.sqrt(Math.pow(i - snake.currentX, 2) + Math.pow(j - snake.currentY, 2)) < (int)snake.headRadius) {
 					pos = new Position(i,j);
-					if(board.snakesMap.get(pos) == null) {
-						board.snakesMap.put(pos , snake.playerId);
+					if(board.snakesTrail.get(pos) == null) {
+						board.snakesTrail.put(pos , snake.playerId);
 						tempHead.put(pos, snake.playerId);
 					}
 				}
@@ -498,7 +498,7 @@ public class Round implements PhysicsEngine {
 		for (Iterator<Entry<Position, Integer>> i = tempHead.entrySet().iterator(); i.hasNext(); ) {
 			Entry<Position, Integer> entry = i.next();
 			if(entry.getValue() == snake.playerId) {
-				board.snakesMap.remove(entry.getKey());
+				board.snakesTrail.remove(entry.getKey());
 				i.remove();
 			}
 		}
@@ -520,7 +520,7 @@ public class Round implements PhysicsEngine {
 		switch(item)
 		{
 		case COLLECTIVE_CLEAN:
-			board.snakesMap.clear();
+			board.snakesTrail.clear();
 			break;
 		case COLLECTIVE_TRAVERSE:
 			for(Snake snake : board.snakes) {
@@ -658,7 +658,7 @@ public class Round implements PhysicsEngine {
 		board = new Board();
 		board.width = width;
 		board.height = height;
-		board.snakesMap = new HashMap<Position, Integer>();
+		board.snakesTrail = new HashMap<Position, Integer>();
 		board.itemsMap = new HashMap<Position, ItemType>();
 		board.snakes = new Snake[playerNbr];
 		Position posSpawn;

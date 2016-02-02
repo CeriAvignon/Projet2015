@@ -22,7 +22,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,7 +31,6 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
-import fr.univavignon.courbes.common.Position;
 
 /**
  * Contient les méthodes permettant de charger les images des items
@@ -83,7 +81,7 @@ public class ItemDrawer
 	 */
 	private void drawItem(ItemType item, int x, int y, Graphics g)
 	{	BufferedImage image = IMAGES.get(item);
-		g.drawImage(image,x-Constants.ITEM_SIZE/2,y-Constants.ITEM_SIZE/2,null);
+		g.drawImage(image,x-Constants.ITEM_RADIUS/2,y-Constants.ITEM_RADIUS/2,null);
 	}
 	
 	/**
@@ -96,13 +94,8 @@ public class ItemDrawer
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
 	public void drawItems(Board board, Graphics g)
-	{	Map<Position, ItemInstance> itemsMap = board.itemsMap;
-
-		for(Entry<Position, ItemInstance> entry: itemsMap.entrySet())
-		{	Position position = entry.getKey();
-			ItemInstance item = entry.getValue();
-			drawItem(item.type, position.x, position.y, g);
-		}
+	{	for(ItemInstance item: board.items)
+			drawItem(item.type, item.x, item.y, g);
 	}
 	
 	// TODO reproduire l'animation d'apparition des items

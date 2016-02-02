@@ -18,20 +18,11 @@ package fr.univavignon.courbes.physics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Random;
 
 import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.ItemInstance;
-import fr.univavignon.courbes.common.ItemType;
-import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
@@ -41,7 +32,7 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
  * de données communes.
  */
 public class PhysicsEngineImpl implements PhysicsEngine
-{	
+{	/** Aire de jeu courante */
 	private MyBoard board;
 	
 	@Override
@@ -62,13 +53,11 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	
 	@Override
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
-	{	
-		// TODO
+	{	board.update(elapsedTime,commands);
 	}
 	
 	@Override
 	public void forceUpdate(Board board)
-	{	
-		// TODO
+	{	board = (MyBoard)board;
 	}
 }
