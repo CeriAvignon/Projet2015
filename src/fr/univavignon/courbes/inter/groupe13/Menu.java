@@ -39,13 +39,13 @@ public class Menu extends Window{
 	 * touches
 	 */
 	public void menuPlayer() {
-		this.setLayout(new GridLayout(6, 1));
+		this.setLayout(new GridLayout(5, 1));
 
 		JButton localGame = new JButton("Partie locale");
 		JButton serverGame = new JButton("Créer une partie réseau");
 		JButton clientGame = new JButton("Rejoindre une partie réseau");
 		JButton profils = new JButton("Profils");
-		JButton stats = new JButton("Statistiques");
+//		JButton stats = new JButton("Statistiques");
 		JButton quit = new JButton("Quitter");
 		
 		localGame.addActionListener(new ActionListener() {
@@ -54,10 +54,13 @@ public class Menu extends Window{
 			public void actionPerformed(ActionEvent e) {
 
 				setVisible(false);
-				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				int width = (int)screenSize.getWidth();
-				int height= (int)screenSize.getHeight();			
-				new Game(width, height);
+				
+				new LocalGame(Menu.this);
+				
+//				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//				int width = (int)screenSize.getWidth();
+//				int height= (int)screenSize.getHeight();			
+//				new Game(width, height);
 			}
 		});
 		
@@ -104,7 +107,6 @@ public class Menu extends Window{
 		this.add(clientGame);
 		this.add(serverGame);
 		this.add(profils);
-		this.add(stats);
 		this.add(quit);
 
 		this.setVisible(true);
