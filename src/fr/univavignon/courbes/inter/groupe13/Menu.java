@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 
 /**
  * @author zach
@@ -89,6 +88,15 @@ public class Menu extends Window{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Menu.this.dispatchEvent(new WindowEvent(Menu.this, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+		
+		profils.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DisplayProfileFrame df = new DisplayProfileFrame(Menu.this);
+				Menu.this.setVisible(false);
 			}
 		});
 
