@@ -117,12 +117,8 @@ public class LocalGame extends JFrame{
 				if(previousNbOfPlayers < newNbOfPlayers){
 					
 					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){
-						LocalProfileSelector lps = new LocalProfileSelector(availableProfiles);
+						LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
 						players.add(lps);
-						
-						playerPanel.add(lps.getJc_playerSelector());
-						playerPanel.add(lps.getLeftButton());
-						playerPanel.add(lps.getRightButton());
 						
 						playerPanel.repaint();
 					}
@@ -130,11 +126,13 @@ public class LocalGame extends JFrame{
 				}
 				else
 					for(int i = previousNbOfPlayers ; i > newNbOfPlayers ; --i){
+						
+						LocalProfileSelector lps = players.get(i);
 						players.remove(i);
 						
-						playerPanel.remove(playerPanel.getComponentCount() - 1);
-						playerPanel.remove(playerPanel.getComponentCount() - 1);
-						playerPanel.remove(playerPanel.getComponentCount() - 1);
+						playerPanel.remove(lps.getJc_playerSelector());
+						playerPanel.remove(lps.getLeftButton());
+						playerPanel.remove(lps.getRightButton());
 						
 						playerPanel.repaint();
 					}
@@ -157,7 +155,7 @@ public class LocalGame extends JFrame{
 			int key1_1 = cp1.getLeft().getKeyCode();
 			int key1_2 = cp1.getRight().getKeyCode();
 			
-			if(key1_1 == key1_2)
+			if(key1_1 == key1_2 || cp1.getProfile() == null)
 				isReady = false;
 			
 			for(int j = i+1 ; j < players.size() ; ++j){
@@ -170,7 +168,9 @@ public class LocalGame extends JFrame{
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
-						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)){
+						|| cp2.getProfile() == null
+						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)
+						){
 					isReady = false;
 					
 				}

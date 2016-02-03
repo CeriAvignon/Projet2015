@@ -97,8 +97,15 @@ public class ProfileFileManager {
 	    			  System.err.println("Error, line only contain " + elem.length + " it should contain 3 elements (line: "+ elem + ")");
 	    		  
 	      }
-	    	
-	      br.close();  
+
+	      br.close(); 
+	      
+		}
+		 catch(IOException ioe){
+		     System.out.print("Erreur : ");
+		     ioe.printStackTrace();
+		 }
+	    	 
 	      
 	      return result;
 	}

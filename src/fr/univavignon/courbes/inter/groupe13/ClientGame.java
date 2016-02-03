@@ -52,11 +52,12 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		remotePlayerPanel.add(new JLabel("Joueurs distants"));
 		remotePlayerPanel.add(new JLabel("Prêt"));
 		
-		localPlayerPanel.setLayout(new GridLayout(6, 4));
+		localPlayerPanel.setLayout(new GridLayout(6, 5));
 		localPlayerPanel.add(new JLabel("Joueurs locaux"));
 		localPlayerPanel.add(new JLabel("Gauche"));
 		localPlayerPanel.add(new JLabel("Droite"));
 		localPlayerPanel.add(new JLabel("Etat / Action"));
+		localPlayerPanel.add(new JLabel(""));
 		
 		JButton jb_back = new JButton("Retour");
 		JButton jb_next = new JButton("Prêt");
@@ -86,11 +87,17 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 			}
 		});
 		
-		LocalProfileSelector lps = new LocalProfileSelector(ProfileFileManager.getProfiles()); 
-		local_players.add(lps);
+		/* Add one profile selector (a new one is added when the profile selected) */
+		addLocalProfileSelector();
 		
-		//TODO afficher les infos de ce profile, avec le bouton état et "Retirer", lorsqu'un profil est sélectionné, ajouter une ligne
-		
+	}
+
+	public Client getC() {
+		return c;
+	}
+
+	public void setC(Client c) {
+		this.c = c;
 	}
 
 	@Override
@@ -102,17 +109,17 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 
 		boolean isReady = true;
 		
-		/* For all couple of profiles */
-		for(int i = 0 ; i < local_players.size() ; ++i){
+		/* For all couple of profiles (except the last one which is empty) */
+		for(int i = 0 ; i < local_players.size() - 1  ; ++i){
 			
 			ControllableProfile cp1 = local_players.get(i).getC_profile();
 			int key1_1 = cp1.getLeft().getKeyCode();
 			int key1_2 = cp1.getRight().getKeyCode();
 			
-			if(key1_1 == key1_2)
+			if(key1_1 == key1_2 || cp1.getProfile() == null)
 				isReady = false;
 			
-			for(int j = i+1 ; j < local_players.size() ; ++j){
+			for(int j = i+1 ; j < local_players.size() - 1 ; ++j){
 				
 				ControllableProfile cp2 = local_players.get(j).getC_profile();
 				int key2_1 = cp2.getLeft().getKeyCode();
@@ -122,6 +129,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
+						|| cp2.getProfile() == null
 						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)){
 					isReady = false;
 					
@@ -130,6 +138,11 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		}
 		
 		return false;
+	}
+	
+	public void addLocalProfileSelector(){
+		local_players.add(new LocalProfileSelector(ProfileFileManager.getProfiles(), this, localPlayerPanel)); 
+		localPlayerPanel.repaint();
 	}
 	
 }
