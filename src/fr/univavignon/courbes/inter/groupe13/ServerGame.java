@@ -7,21 +7,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.groupe06.Client;
 
-public class ClientGame extends JFrame implements ClientProfileHandler{
+public class ServerGame extends JFrame implements ServerProfileHandler{
 
 	private JoinServer js;
 	private Client c;
+	JComboBox<Integer> jcb_nbOfPlayers;
 	
 	List<LocalProfileSelector> local_players;
 	List<RemoteProfile> remote_players;
@@ -31,9 +34,10 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 
 	JButton jb_back = new JButton("Retour");
 	JButton jb_ready = new JButton("Prêt");
+	JButton jb_start = new JButton("Démarrer");
 	
 	
-	public ClientGame(JoinServer js, Client c){
+	public ServerGame(JoinServer js, Client c){
 		
 		super();
 		
@@ -41,18 +45,33 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		this.js = js;
 		this.setSize(new Dimension(800, 600));
 		
-		this.setLayout(new GridLayout(3, 1));
+		this.setLayout(new GridLayout(4, 1));
 		
+		JPanel jp_player_number = new JPanel(new FlowLayout());
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
 		
-		this.add(remotePlayerPanel);
+		this.add(jp_player_number);
 		this.add(localPlayerPanel);
+		this.add(remotePlayerPanel);
 		this.add(jp_previous_next);
 		
-		remotePlayerPanel.setLayout(new GridLayout(6,1));
-//		remotePlayerPanel.setLayout(new GridLayout(6,2));
+		jp_player_number.add(new JLabel("Nombre de joueurs"));
+		jp_player_number.add(jcb_nbOfPlayers);		
+		
+		Vector<Integer> v = new Vector<>();
+		v.add(1);
+		v.add(2);
+		v.add(3);
+		v.add(4);
+		v.add(5);
+		v.add(6);
+		
+		jcb_nbOfPlayers = new JComboBox<>(v);
+		
+		remotePlayerPanel.setLayout(new GridLayout(6,3));
 		remotePlayerPanel.add(new JLabel("Joueurs distants"));
-//		remotePlayerPanel.add(new JLabel("Prêt"));
+		remotePlayerPanel.add(new JLabel("Prêt"));
+		remotePlayerPanel.add(new JLabel(""));
 		
 		localPlayerPanel.setLayout(new GridLayout(6, 5));
 		localPlayerPanel.add(new JLabel("Joueurs locaux"));
@@ -63,15 +82,16 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 
 		jp_previous_next.add(jb_back);
 		jp_previous_next.add(jb_ready);
+		jp_previous_next.add(jb_start);
 		
 		jb_back.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				ClientGame.this.c.closeClient();
-				ClientGame.this.dispatchEvent(new WindowEvent(ClientGame.this, WindowEvent.WINDOW_CLOSING));
-				ClientGame.this.js.setVisible(true);
+				ServerGame.this.c.closeClient();
+				ServerGame.this.dispatchEvent(new WindowEvent(ServerGame.this, WindowEvent.WINDOW_CLOSING));
+				ServerGame.this.js.setVisible(true);
 			}
 		});
 		
@@ -84,7 +104,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 					//TODO dire au serveur qu'on est prêt à démarrer la partie
 				}
 				else{
-					JOptionPane.showMessageDialog(ClientGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
+					JOptionPane.showMessageDialog(ServerGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
 							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
 							"<br>- plusieurs profiles sont identiques (même id) ;" +
 							"<br>- une touche est assignée plusieurs fois.</html>");
@@ -94,6 +114,40 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		
 		/* Add one profile selector (a new one is added when the profile selected) */
 		addLocalProfileSelector();
+		
+
+		jcb_nbOfPlayers.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				int previousNbOfPlayers = players.size();
+				int newNbOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
+				
+				if(previousNbOfPlayers < newNbOfPlayers){
+					
+					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){
+						LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
+						players.add(lps);
+						
+						playerPanel.repaint();
+					}
+					
+				}
+				else
+					for(int i = previousNbOfPlayers ; i > newNbOfPlayers ; --i){
+						
+						LocalProfileSelector lps = players.get(i);
+						players.remove(i);
+						
+						playerPanel.remove(lps.getJc_playerSelector());
+						playerPanel.remove(lps.getLeftButton());
+						playerPanel.remove(lps.getRightButton());
+						
+						playerPanel.repaint();
+					}
+			}
+		});
 		
 	}
 
@@ -105,70 +159,6 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		this.c = c;
 	}
 
-	@Override
-	public void updateProfiles(List<Profile> profiles) {
-		
-		
-		//TODO Comment faire pour avoir les meme ID locaux et remote ?
-		
-		boolean[] remoteProfileRemoved = new boolean[this.remote_players.size()];
-		boolean[] localProfileRemoved = new boolean[this.local_players.size()];
-
-		/* The last local profile selector is always an empty profile to enable the selection of a new local player */
-		localProfileRemoved[localProfileRemoved.length-1] = true;
-		
-		for(int i = 0 ; i < localProfileRemoved.length ; ++i)
-			localProfileRemoved[i] = true;
-		 for(int i = 0 ; i < remoteProfileRemoved.length ; ++i)
-			remoteProfileRemoved[i]= true;
-		 
-		 /* For each profile on the server */
-		 for(Profile p : profiles){
-			 
-			 boolean found = false;
-			 int i = 0;
-			 
-			 /* Check if the profile id appears in the local profiles */ 
-			 while(!found && i < local_players.size() - 1){
-				 
-				 LocalProfileSelector lps = local_players.get(i);
-				 
-				 if(lps.getC_profile().getProfile().profileId == p.profileId){
-					 localProfileRemoved[i] = false;
-					 found = true;
-				 }
-				 
-				 ++i;
-				 
-			 }
-			 
-			 i = 0;
-			 
-			 /* Check if the profile id appears in the remote */
-			 while(!found && i < remote_players.size()){
-				 
-				 Profile p_remote =  remote_players.get(i).getProfile();
-				 
-				 if(p_remote.profileId == p.profileId){
-					 remoteProfileRemoved[i] = false;
-					 found = true;
-				 }
-				 
-				 ++i;
-				 
-			 }
-			 
-		 }
-
-		 for(int i = 0 ; i < remote_players.size() ; ++i)
-			 if(remoteProfileRemoved[i])
-				 removeRemoteProfile(i);
-		 
-		  for(int i = 0 ; i < local_players.size() ; ++i)
-			 if(localProfileRemoved[i])
-				 removeLocalProfile(i);
-			 
-	}
 
 	protected boolean isReadyToStartGame() {
 
@@ -241,6 +231,12 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		remotePlayerPanel.remove(rp.getJl());
 		remotePlayerPanel.repaint();
 		
+	}
+
+	@Override
+	public boolean fetchProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

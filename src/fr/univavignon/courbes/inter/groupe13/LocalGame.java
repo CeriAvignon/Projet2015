@@ -7,14 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
 
@@ -22,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
@@ -88,7 +82,10 @@ public class LocalGame extends JFrame{
 					new Game(width, height);
 				}
 				else{
-					// TODO Pop-up indiquant que les profils ou les touches ne sont pas compatibles
+					JOptionPane.showMessageDialog(LocalGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
+							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
+							"<br>- plusieurs profiles sont identiques (même id) ;" +
+							"<br>- une touche est assignée plusieurs fois.</html>");
 				}
 			}
 		});

@@ -20,7 +20,7 @@ public interface ServerProfileHandler
 	 * a été accepté ({@code true}) ou rejeté ({@code false}).
 	 * 
 	 * @param profile
-	 * 		Le profil du joueur distant que l'on veut rajouter à la partie en cous de configuration.
+	 * 		Le profil du joueur distant que l'on veut rajouter à la partie en cours de configuration.
 	 * @return
 	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou rejeté ({@code false}). 
 	 */

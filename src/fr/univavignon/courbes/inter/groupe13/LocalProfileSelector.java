@@ -68,6 +68,7 @@ public class LocalProfileSelector {
 				jp.remove(rightButton);
 				jp.remove(sendProfileToServer);
 				jp.remove(removeFromServer);
+				jp.repaint();
 			}
 		});
 		
