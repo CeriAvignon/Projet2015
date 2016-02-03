@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -37,6 +38,8 @@ public class LocalGame extends JFrame{
 		
 		this.m = m;
 		this.setSize(new Dimension(800,600));
+		
+		players = new ArrayList<>();
 		
 		this.setLayout(new BorderLayout());
 		
@@ -125,7 +128,7 @@ public class LocalGame extends JFrame{
 					for(int i = previousNbOfPlayers ; i > newNbOfPlayers ; --i){
 						
 						LocalProfileSelector lps = players.get(i);
-						players.remove(i);
+						players.remove(i-1);
 						
 						playerPanel.remove(lps.getJc_playerSelector());
 						playerPanel.remove(lps.getLeftButton());

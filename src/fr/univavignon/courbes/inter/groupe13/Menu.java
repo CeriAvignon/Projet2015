@@ -70,7 +70,8 @@ public class Menu extends Window{
 			public void actionPerformed(ActionEvent e) {
 
 				setVisible(false);
-				new Network(width, height, false);
+				new ServerGame(Menu.this);
+//				new Network(width, height, false);
 				
 			}
 		});
@@ -81,7 +82,8 @@ public class Menu extends Window{
 			public void actionPerformed(ActionEvent e) {
 
 				setVisible(false);
-				new Network(width, height, true);
+				new JoinServer(Menu.this);
+//				new Network(width, height, true);
 				
 			}
 		});

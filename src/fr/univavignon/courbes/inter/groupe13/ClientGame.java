@@ -6,7 +6,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +27,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 	
 	List<LocalProfileSelector> local_players;
 	List<RemoteProfile> remote_players;
+	Vector<Profile> availableProfiles;
 	
 	JPanel localPlayerPanel;
 	JPanel remotePlayerPanel;
@@ -41,8 +44,12 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		this.js = js;
 		this.setSize(new Dimension(800, 600));
 		
-		this.setLayout(new GridLayout(3, 1));
+		local_players = new ArrayList<>();
+		remote_players = new ArrayList<>();
 		
+		this.setLayout(new GridLayout(3, 1));
+
+		availableProfiles = ProfileFileManager.getProfiles();
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
 		
 		this.add(remotePlayerPanel);
@@ -135,6 +142,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 				 
 				 if(lps.getC_profile().getProfile().profileId == p.profileId){
 					 localProfileRemoved[i] = false;
+					 lps.getSendProfileToServer().setText("Enregistré");
 					 found = true;
 				 }
 				 
@@ -157,6 +165,9 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 				 ++i;
 				 
 			 }
+			 
+			 if(!found)
+				 addRemoteProfile(p);
 			 
 		 }
 
@@ -206,7 +217,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 	}
 	
 	public void addLocalProfileSelector(){
-		local_players.add(new LocalProfileSelector(ProfileFileManager.getProfiles(), this, localPlayerPanel)); 
+		local_players.add(new LocalProfileSelector(availableProfiles, this, localPlayerPanel)); 
 		localPlayerPanel.repaint();
 	}
 
@@ -224,7 +235,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		localPlayerPanel.repaint();
 	}
 	
-	public void addLocalProfile(Profile p){
+	public void addRemoteProfile(Profile p){
 		
 		RemoteProfile rp = new RemoteProfile(p);
 		remote_players.add(rp);

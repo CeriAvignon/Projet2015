@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,11 +20,10 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.network.groupe06.Client;
+import fr.univavignon.courbes.network.groupe06.Server;
 
 public class ServerGame extends JFrame implements ServerProfileHandler{
 
-	private JoinServer js;
-	private Client c;
 	JComboBox<Integer> jcb_nbOfPlayers;
 	
 	List<LocalProfileSelector> local_players;
@@ -35,17 +35,28 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 	JButton jb_back = new JButton("Retour");
 	JButton jb_ready = new JButton("Prêt");
 	JButton jb_start = new JButton("Démarrer");
+	Vector<Profile> availableProfiles;
 	
+	int currentNumberOfPlayers = 0;
 	
-	public ServerGame(JoinServer js, Client c){
+	Server server;
+	
+	public ServerGame(final Menu menu){
 		
 		super();
 		
-		this.c = c;
-		this.js = js;
 		this.setSize(new Dimension(800, 600));
 		
+		local_players = new ArrayList<>();
+		remote_players = new ArrayList<>();
+		
+		
 		this.setLayout(new GridLayout(4, 1));
+		
+		availableProfiles = ProfileFileManager.getProfiles();
+		
+		server = new Server();
+		server.launchServer();
 		
 		JPanel jp_player_number = new JPanel(new FlowLayout());
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
@@ -89,9 +100,9 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				ServerGame.this.c.closeClient();
+				ServerGame.this.server.closeServer();
 				ServerGame.this.dispatchEvent(new WindowEvent(ServerGame.this, WindowEvent.WINDOW_CLOSING));
-				ServerGame.this.js.setVisible(true);
+				menu.setVisible(true);
 			}
 		});
 		
@@ -101,7 +112,7 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 			public void actionPerformed(ActionEvent e) {
 				
 				if(isReadyToStartGame()){
-					//TODO dire au serveur qu'on est prêt à démarrer la partie
+					//TODO démarrer la partie
 				}
 				else{
 					JOptionPane.showMessageDialog(ServerGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
@@ -110,58 +121,55 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 							"<br>- une touche est assignée plusieurs fois.</html>");
 				}
 			}
-		});
-		
-		/* Add one profile selector (a new one is added when the profile selected) */
-		addLocalProfileSelector();
-		
+		});		
 
 		jcb_nbOfPlayers.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				int previousNbOfPlayers = players.size();
-				int newNbOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
-				
-				if(previousNbOfPlayers < newNbOfPlayers){
+				int previousNbOfPlayers = currentNumberOfPlayers;
+				currentNumberOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
+								
+				/* If the number of player is fixed for the first time */
+				if(previousNbOfPlayers == 0){
 					
-					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){
-						LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
-						players.add(lps);
-						
-						playerPanel.repaint();
-					}
+					/* Add one selector */
+					addLocalProfileSelector();
 					
 				}
-				else
-					for(int i = previousNbOfPlayers ; i > newNbOfPlayers ; --i){
-						
-						LocalProfileSelector lps = players.get(i);
-						players.remove(i);
-						
-						playerPanel.remove(lps.getJc_playerSelector());
-						playerPanel.remove(lps.getLeftButton());
-						playerPanel.remove(lps.getRightButton());
-						
-						playerPanel.repaint();
-					}
+				/* If the number of player is decreased */
+				else if(previousNbOfPlayers < currentNumberOfPlayers){
+					
+					/* Remove the exceeding remote players */
+					
+					int nbOfLocalPlayers = local_players.size();
+					
+					/* If the last player selector is empty decrease by one the number of local players */
+					if(local_players.get(nbOfLocalPlayers-1).getC_profile().getProfile() == null)
+						nbOfLocalPlayers--;
+					
+					/* Remove the exceeding remote players */
+					for(int i = remote_players.size()-1 ; i+nbOfLocalPlayers+1 > currentNumberOfPlayers ; --i)
+						removeRemoteProfile(i);
+					
+					/* Remove the exceeding local players */
+					for(int i = previousNbOfPlayers ; i > currentNumberOfPlayers ; --i)
+						removeLocalProfile(i-1);
+					
+					
+				}
 			}
 		});
 		
 	}
-
-	public Client getC() {
-		return c;
-	}
-
-	public void setC(Client c) {
-		this.c = c;
-	}
+	
+	//TODO Utiliser UUID pour les profils
 
 
 	protected boolean isReadyToStartGame() {
 
+		//TODO tester que le nombre de joueurs est le bon
 		boolean isReady = true;
 		
 		/* For all couple of profiles (except the last one which is empty) */
@@ -196,7 +204,19 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 	}
 	
 	public void addLocalProfileSelector(){
-		local_players.add(new LocalProfileSelector(ProfileFileManager.getProfiles(), this, localPlayerPanel)); 
+		
+		LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, localPlayerPanel);
+		
+		lps.getJc_playerSelector().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(currentNumberOfPlayers > local_players.size())
+					addLocalProfileSelector();
+			}
+		});
+		
+		local_players.add(lps); 
 		localPlayerPanel.repaint();
 	}
 
@@ -209,12 +229,10 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 		localPlayerPanel.remove(lps.getJc_playerSelector());
 		localPlayerPanel.remove(lps.getLeftButton());
 		localPlayerPanel.remove(lps.getRightButton());
-		localPlayerPanel.remove(lps.getSendProfileToServer());
-		localPlayerPanel.remove(lps.getRemoveFromServer());
 		localPlayerPanel.repaint();
 	}
 	
-	public void addLocalProfile(Profile p){
+	public void addRemoteProfile(Profile p){
 		
 		RemoteProfile rp = new RemoteProfile(p);
 		remote_players.add(rp);
@@ -235,8 +253,48 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 
 	@Override
 	public boolean fetchProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		boolean numberOfPlayerReached = currentNumberOfPlayers == local_players.size() + remote_players.size();
+		
+		/* If the maximal number of players is reached 
+		 * (i.e., the number of players is reached and the last local player is defined) */
+		if(numberOfPlayerReached
+				&& local_players.get(local_players.size()-1).getC_profile().getProfile() != null)
+			
+			/* Don't add the player */
+			return false;
+		
+		else{
+			
+			/* If the maximal number of player is reached with the addition of the profile <profile> */
+			if(numberOfPlayerReached)
+			
+				/* Remove the last undefined local player */
+				removeLocalProfile(local_players.size()-1);
+			
+
+			/* Add this profile to the remote players */
+			addRemoteProfile(profile);
+			
+			return true;
+		}
+			
+	}
+	
+	private List<Profile> getProfileList(){
+		List<Profile> result = new ArrayList<>();
+		
+		for(LocalProfileSelector lps : local_players)
+			result.add(lps.getC_profile().getProfile());
+		
+		for(RemoteProfile rp : remote_players)
+			result.add(rp.getProfile());
+		
+		return result;
+	}
+	
+	public Server getServer(){
+		return server;
 	}
 	
 }

@@ -37,17 +37,25 @@ public class LocalProfileSelector {
 		jp.add(removeFromServer);
 		
 		removeFromServer.setEnabled(false);
-
+		
+		jc_playerSelector.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cg.addLocalProfileSelector();
+			}
+		});
+		
 		sendProfileToServer.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				sendProfileToServer.setText("Validation...");
-				cg.getC().addProfile(c_profile.getProfile());
-				sendProfileToServer.setText("Enregistré");
-				removeFromServer.setEnabled(true);
 				sendProfileToServer.setEnabled(false);
+				sendProfileToServer.setText("Envoie...");
+				cg.getC().addProfile(c_profile.getProfile());
+				sendProfileToServer.setText("Envoyé");
+				removeFromServer.setEnabled(true);
 				jc_playerSelector.setEnabled(false);
 				
 				/* Add a new profile selector */
