@@ -29,6 +29,8 @@ import fr.univavignon.courbes.common.Position;
 /**
  * Ensemble de méthodes communes, permettant de faire différents traitements
  * graphiques susceptibles d'être utilisés un peu n'importe où...
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class GraphicTools
 {	

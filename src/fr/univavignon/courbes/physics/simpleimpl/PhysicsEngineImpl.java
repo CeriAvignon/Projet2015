@@ -30,6 +30,8 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
  * classe principale du Moteur Physique. L'essentiel du traitement
  * est délégué à des classes reproduisant la structures des classes
  * de données communes.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class PhysicsEngineImpl implements PhysicsEngine
 {	/** Aire de jeu courante */

@@ -29,9 +29,8 @@ import fr.univavignon.courbes.common.Snake;
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
  * demander au Moteur Physique d'effectuer différentes sortes de mises 
  * à jour.
- * <br/>
- * Chaque binôme de la composante Moteur Physique doit définir une classe
- * implémentant cette interface, qui sera instanciée par l'Interface Utilisateur. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public interface PhysicsEngine
 {	

@@ -30,6 +30,8 @@ import java.util.List;
  * distinctes. À chaque, chaque joueur marque un certain nombre de points.
  * Un joueur gagne la partie quand son score dépasse une certaine valeur
  * limite. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
@@ -39,6 +41,9 @@ public class Board implements Serializable
 	public int width;
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
+	
+	/** Indique qu'on est en phase d'entrée ({@code true}) ou pas ({@code false}), i.e. la période au début d'une manche où il n'y a pas d collisions */
+	public boolean entrance;
 	
 	/** Indique si l'aire de jeu contient actuellement une bordure ou si celle-ci est absente */
 	public boolean hasBorder;

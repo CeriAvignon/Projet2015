@@ -24,6 +24,8 @@ import java.io.Serializable;
  * Représente un joueur, non pas dans le cadre général du jeu comme {@link Profile}, 
  * mais dans celui d'une partie. La classe contient le profil associé au joueur, mais
  * aussi le score courant du joueur dans la partie.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class Player implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */

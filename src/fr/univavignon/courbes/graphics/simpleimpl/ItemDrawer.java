@@ -81,7 +81,7 @@ public class ItemDrawer
 	 */
 	private void drawItem(ItemType item, int x, int y, Graphics g)
 	{	BufferedImage image = IMAGES.get(item);
-		g.drawImage(image,x-Constants.ITEM_RADIUS/2,y-Constants.ITEM_RADIUS/2,null);
+		g.drawImage(image,x-Constants.ITEM_RADIUS,y-Constants.ITEM_RADIUS,null);
 	}
 	
 	/**
@@ -97,6 +97,4 @@ public class ItemDrawer
 	{	for(ItemInstance item: board.items)
 			drawItem(item.type, item.x, item.y, g);
 	}
-	
-	// TODO reproduire l'animation d'apparition des items
 }

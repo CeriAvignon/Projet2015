@@ -29,6 +29,8 @@ import java.util.Set;
  * exemple, si on a 4 joueurs, alors leurs ID vont de 0 à 3. À ne pas confondre
  * avec l'ID du profile, qui est valable pour le jeu globalement, et indépendant
  * de toute partie.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class Snake implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
@@ -56,22 +58,15 @@ public class Snake implements Serializable
 	/** Vitesse à laquelle le serpent change de direction, exprimée en radians par ms */
 	public float turningSpeed;
 	
-	/** Etat de vie du serpent : {@code false} il est mort, {@code true} il est vivant */
-	public boolean alive;
+	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, {@code i} si collision avec le joueur numéro {@code i} */
+	public Integer eliminatedBy;
 	/** Etat de connexion du serpent : {@code false} il est distant et déconnecté, {@code true} il est distant connecté ou local */
 	public boolean connected;
-
-	/** Mode de collision : {@code false} il est insensible aux collisions, {@code true} il l’est (pour le début de partie) */
-	public boolean collision;
+	
 	/**Inversion des commandes : {@code false} le serpent est dirigé normalement, {@code true} ses commandes sont inversées */
 	public boolean inversion;
-	/** Mode avion ({@code true}) ou pas ({@code false}) (pour l'item {@link ItemType#USER_FLY}) */
+	/** Mode avion ({@code true}) ou pas ({@code false}) (effet de l'item {@link ItemType#USER_FLY}) */
 	public boolean fly;
-	
-	/** Taux de création de trous dans le tracé : pour 0 on n'a aucun trou, pour 1 on n'a aucune traînée (i.e. que des trous). Ce taux est la probabilité qu'un serpent laisse un trou lors d'une itération donnée. */
-	public double holeRate;
-	/** Taille du trou restant à "effectuer", ou zéro si aucun trou n'est en cours de réalisation, exprimée en pixels */
-	public int remainingHoleWidth;
 	
 	/** File contenant les items affectant actuellement ce serpent */
 	public Queue<ItemInstance> currentItems;

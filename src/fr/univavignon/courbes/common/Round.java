@@ -24,6 +24,8 @@ import java.io.Serializable;
  * Cette classe correspond à l'ensemble des informations propres à 
  * une manche en cours de déroulement. Elle comporte l'aire de jeu
  * (classe {@link Board}) et la liste des joueurs participants (classe {@link Player}).
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class Round implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */

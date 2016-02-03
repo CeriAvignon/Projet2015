@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import fr.univavignon.courbes.common.Board;
@@ -38,10 +39,14 @@ import fr.univavignon.courbes.common.Snake;
 /**
  * Classe fille de {@link Board}, permettant d'intégrer
  * des méthodes propres au Moteur Physique. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class MyBoard extends Board
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	/** Générateur aléatoire utilisé lors de l'apparition d'items */
+	private static final Random RANDOM = new Random();
 	
 	/**
 	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
@@ -54,7 +59,10 @@ public class MyBoard extends Board
 	public MyBoard(int width, int height)
 	{	this.width = width;
 		this.height = height;
+		
 		currentItems = new LinkedList<MyItemInstance>();
+		totalTime = 0;
+		mustClean = false;
 		
 		resetCharacs();
 	}
@@ -63,6 +71,10 @@ public class MyBoard extends Board
 	public transient List<MyItemInstance> currentItems;
 	/** Probabilité courante qu'un item apparaisse à chaque ms */
 	public transient float itemPopupRate;
+	/** Temps total écoulé depuis le début de la partie */
+	public transient long totalTime;
+	/** Marqueur indiquant qu'il faut nettoyer l'aire de jeu des traînées */
+	public transient boolean mustClean;
 	
 	/**
 	 * Initialise l'aire de jeu pour une manche.
@@ -98,9 +110,9 @@ public class MyBoard extends Board
 		
 		// on rajoute un bout de trainée au deuxième serpent, pour pouvoir tester les collisions
 		int x1 = snakes[1].currentX;
-		int y0 = snakes[1].currentY - Constants.BASE_HEAD_RADIUS/2;
+		int y0 = snakes[1].currentY - snakes[1].headRadius;
 		for(int x=0;x<x1;x++)
-		{	for(int dy=0;dy<Constants.BASE_HEAD_RADIUS;dy++)
+		{	for(int dy=0;dy<snakes[1].headRadius*2;dy++)
 			{	Position pos = new Position(x,y0+dy);
 				snakes[1].trail.add(pos);
 			}
@@ -137,9 +149,34 @@ public class MyBoard extends Board
 	 * 		Commandes de chaque joueur.
 	 */
 	public void update(long elapsedTime, Map<Integer,Direction> commands)
-	{	resetCharacs();
+	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
+		resetCharacs();
+		
+		// si on est au début de jeu, on met le compteur à jour
+		updateEntrance(elapsedTime);
+		
+		// on met à jour les items (items encore en jeu et items collectifs ramassés)
 		updateItems(elapsedTime);
+		
+		// on met à jour les serpents
 		updateSnakes(elapsedTime,commands);
+		
+		// si nécessaire, on nettoie l'aire de jeu des trainées des serpents 
+		if(mustClean)
+			cleanSnakes();
+	}
+	
+	/**
+	 * Met à jour l'état d'entrée du jeu, i.e. la période
+	 * en début de manche, pendant laquelle les collisions
+	 * sont désactivées.
+	 * 
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
+	 */
+	private void updateEntrance(long elapsedTime)
+	{	totalTime = totalTime + elapsedTime;
+		entrance = totalTime <= Constants.ENTRANCE_DURATION;
 	}
 	
 	/**
@@ -171,10 +208,11 @@ public class MyBoard extends Board
 		}
 		
 		// faut-il faire apparaitre un item?
-		double p = Math.random();
-		if(p<itemPopupRate*elapsedTime)
-		{	MyItemInstance item = new MyItemInstance(this);
-			items.add(item);
+		float p = RANDOM.nextFloat();
+		if(!entrance && p<itemPopupRate*elapsedTime)
+		{	MyItemInstance item = generateItem();
+			if(item!=null)
+				items.add(item);
 		}
 	}
 	
@@ -204,6 +242,69 @@ public class MyBoard extends Board
 		}
 	}
 	
+	/**
+	 * Supprime les trainées de tous les serpents.
+	 */
+	private void cleanSnakes()
+	{	mustClean = false;
+		for(Snake snake: snakes)
+			snake.trail.clear();
+	}
+	
+	/**
+	 * Génère un item de type et de position aléatoires.
+	 * 
+	 * @return
+	 * 		L'item généré, ou {@code null} s'il n'y a pas actuellement la place nécessaire 
+	 * 		sur l'aire de jeu.
+	 */
+	private MyItemInstance generateItem()
+	{	MyItemInstance result = null;
+		
+		// tirage a sort de la position de l'item
+		// pour bien faire, il faudrait tirer au sort parmi toutes les positions disponibles, mais cela serait bien trop long
+		// donc on va au plus rapide : on tire parmi toutes les positions, et on teste si elle est disponible. sinon, on recommence.
+		// on met une limite sur le nombre d'essais, au cas où l'aire de jeu serait encombrée
+		int x,y,i=0;
+		boolean available = false;
+		do
+		{	// on tire la position au sort, hors-bordure
+			x = RANDOM.nextInt(width-Constants.BORDER_THICKNESS*2)+Constants.BORDER_THICKNESS;
+			y = RANDOM.nextInt(height-Constants.BORDER_THICKNESS*2)+Constants.BORDER_THICKNESS;
+			
+			// on récupère un disque représentant l'espace occupé par l'item (plus une marge)
+			Position center = new Position(x,y);
+			int radius = Constants.ITEM_RADIUS+10;
+			Set<Position> itemReach = GraphicTools.processDisk(center, radius);
+			available = true;
+			
+			// on compare aux autres items
+			{	Iterator<ItemInstance> it = items.iterator();
+				while(it.hasNext() && available)
+				{	ItemInstance item = it.next();
+					Position c = new Position(item.x,item.y);
+					Set<Position> ir = GraphicTools.processDisk(c, radius);
+					available = !itemReach.removeAll(ir);
+				}
+			}
+			
+			// on compare aux trainées des serpents
+			{	int s = 0;
+				while(s<snakes.length && available)
+				{	Snake snake = snakes[s];
+					available = !itemReach.removeAll(snake.trail);
+				}
+			}
+			
+			i++;
+		}
+		while(i<10 && !available);
+		
+		if(available)
+			result = new MyItemInstance(x,y);
+		return result;
+	}
+
 	/**
 	 * Normalise la position de manière à tenir compte des limites de l'aire
 	 * de jeu. Autrement dit, si une position sort de l'aire de jeu, on la

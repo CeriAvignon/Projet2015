@@ -24,6 +24,8 @@ import java.io.Serializable;
  * Cette classe représente les commandes possibles qu'un utilisateur
  * peut générer : tourner à gauche, tourner à droite, ou ne rien faire
  * du tout.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public enum Direction implements Serializable
 {	/** L'utilisateur veut tourner à gauche */

@@ -62,7 +62,7 @@ public class SnakeDrawer
 	public void drawSnakes(Board board, Graphics g)
 	{	Snake snakes[] = board.snakes;
 		
-		// on boucle sur chaque ensemble du tableau
+		// on boucle sur chaque joueur
 		for(int playerId=0;playerId<snakes.length;playerId++)
 		{	// on récupère la couleur du joueur dans la partie
 			Snake snake = snakes[playerId];
@@ -76,6 +76,13 @@ public class SnakeDrawer
 			// on boucle sur chaque position, i.e. chaque pixel
 			for(Position position: snake.trail)
 				g.drawLine(position.x, position.y, position.x, position.y);
+			
+			// si le serpent est vivant, on trace sa tête
+			if(snake.eliminatedBy==null)
+			{	Graphics2D g2 = (Graphics2D)g;
+				g2.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius*2,
+					snake.headRadius*2, snake.headRadius*2);
+			}
 		}
 	}
 	

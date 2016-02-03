@@ -27,6 +27,8 @@ import java.io.Serializable;
  * au temps restant avant que l'item ne disparaisse. Pour un item
  * qui a été ramassé, elle représente le temps restant avant que l'item
  * ne cesse de faire effet sur le joueur qui l'a ramassé. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class ItemInstance implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */

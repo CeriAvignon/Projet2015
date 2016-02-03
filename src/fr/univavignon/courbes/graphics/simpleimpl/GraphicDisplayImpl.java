@@ -95,3 +95,8 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		// libérer ressources GUI ? (mais le GC s'en occupe...)
 	}
 }
+
+// TODO reproduire l'animation d'apparition des items
+
+// TODO faut représenter les sens de déplacement/directions possibles juste avant le temps d'entrée
+//      peut être utiliser un autre mode (présentation ?) pour ça

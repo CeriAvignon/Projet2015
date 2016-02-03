@@ -26,6 +26,8 @@ import java.io.Serializable;
  * d'items présents dans le jeu. Chacun possède un
  * champ représentant la durée de sont effet exprimée 
  * en ms.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public enum ItemType implements Serializable
 {	/** Le joueur qui ramasse l'item accélère (bonus) */

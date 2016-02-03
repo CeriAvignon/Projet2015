@@ -23,10 +23,13 @@ import java.util.Random;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
+import fr.univavignon.courbes.common.Snake;
 
 /**
  * Classe fille de {@link ItemInstance}, permettant d'intégrer
  * des méthodes propres au Moteur Physique. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class MyItemInstance extends ItemInstance
 {	/** Numéro de série (pour {@code Serializable}) */
@@ -49,23 +52,36 @@ public class MyItemInstance extends ItemInstance
 	}
 	
 	/**
-	 * Crée un item placé au hasard sur l'aire de jeu spécifiée.
+	 * Crée un item de type aléatoire.
 	 * 
-	 * @param board
-	 * 		Aire de jeu destinée à contenir l'item.
+	 * @param x
+	 * 		Position en abscisse.
+	 * @param y
+	 * 		Position en ordonnée.
 	 */
-	public MyItemInstance(MyBoard board)
+	public MyItemInstance(int x, int y)
 	{	// tirage au sort du type d'item
 		int idx = RANDOM.nextInt(ItemType.values().length);
 		ItemType type = ItemType.values()[idx];
 		
-		// tirage a sort de la position de l'item
-		//TODO
-		
 		// on finit l'init
 		init(type,x,y);
 	}
-	
+
+	/**
+	 * Instancie un nouvel item qui est une copie de celui
+	 * passé en paramètre.
+	 * 
+	 * @param item
+	 * 		L'item à cloner.
+	 */
+	public MyItemInstance(MyItemInstance item)
+	{	this.x = item.x;
+		this.y = item.y;
+		this.type = item.type;
+		this.remainingTime = item.remainingTime;
+	}
+
 	/**
 	 * Initialise un item.
 	 * 
@@ -112,25 +128,28 @@ public class MyItemInstance extends ItemInstance
 	public boolean updateEffect(long elapsedTime, MySnake snake)
 	{	switch(type)
 		{	case OTHERS_FAST:
-				
+				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
+				snake.turningSpeed = snake.turningSpeed/Constants.TURNING_COEFF;
 				break;
 			case OTHERS_REVERSE:
-				
+				snake.inversion = true;
 				break;
 			case OTHERS_THICK:
-				
+				snake.headRadius = (int)(snake.headRadius*Constants.HEAD_RADIUS_COEFF);
+				snake.currentHoleWidth = (int)(snake.currentHoleWidth*Constants.HEAD_RADIUS_COEFF);
 				break;
 			case OTHERS_SLOW:
-				
+				snake.movingSpeed = snake.movingSpeed/Constants.MOVING_SPEED_COEFF;
 				break;
 			case USER_FAST:
-				
+				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
 				break;
 			case USER_FLY:
-				
+				snake.fly = true;
 				break;
 			case USER_SLOW:
-				
+				snake.movingSpeed = snake.movingSpeed/Constants.MOVING_SPEED_COEFF;
+				snake.turningSpeed = snake.turningSpeed*Constants.TURNING_COEFF;
 				break;
 		}
 		
@@ -168,5 +187,44 @@ public class MyItemInstance extends ItemInstance
 		remainingTime = remainingTime - elapsedTime;
 		boolean remove = remainingTime>0;
 		return remove;
+	}
+	
+	/**
+	 * Effectue les actions associées au ramassage de cet item.
+	 * Celles-ci dépendent du type de l'item.
+	 * 
+	 * @param board
+	 * 		Aire de jeu contenant l'item.
+	 * @param snake
+	 * 		Serpent ayant ramassé l'item.
+	 */
+	public void pickUp(MyBoard board, MySnake snake)
+	{	x = -1;
+		y = -1;
+		
+		// item collectif avec effet ponctuel
+		if(type==ItemType.COLLECTIVE_CLEAN)
+			board.mustClean = true;
+	
+		// item collectif avec effet dans la durée
+		else if(type==ItemType.COLLECTIVE_TRAVERSE || type==ItemType.COLLECTIVE_WEALTH)
+		{	remainingTime = type.duration;
+			board.currentItems.add(this);
+		}
+		
+		// item individuel visant le ramasseur
+		else if(type==ItemType.USER_FAST || type==ItemType.USER_FLY || type==ItemType.USER_SLOW)
+		{	remainingTime = type.duration;
+			snake.currentItems.offer(this);
+		}
+		
+		// item individuel visant les joueurs autres que le ramasseur
+		else //if(type==ItemType.OTHERS_FAST || type==ItemType.OTHERS_REVERSE || type==ItemType.OTHERS_SLOW || type==ItemType.OTHERS_THICK)
+		{	remainingTime = type.duration;
+			for(Snake s: board.snakes)
+			{	MyItemInstance item = new MyItemInstance(this);
+				s.currentItems.offer(item);
+			}
+		}
 	}
 }

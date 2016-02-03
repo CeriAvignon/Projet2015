@@ -35,6 +35,8 @@ import fr.univavignon.courbes.common.Snake;
 /**
  * Classe fille de {@link Snake}, permettant d'intégrer
  * des méthodes propres au Moteur Physique. 
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public class MySnake extends Snake
 {	/** Numéro de série (pour {@code Serializable}) */
@@ -67,18 +69,22 @@ public class MySnake extends Snake
 
 		currentAngle = (float)(Math.random()*Math.PI*2);	// on tire une valeur réelle entre 0 et 2pi
 		
-		alive = true;
+		eliminatedBy = null;
 		
-		collision = false;	// TODO ça serait plus efficace de faire un "mode début", plus général plutot que de traiter chaque serpent individuellement
-		
-		holeRate = Constants.HOLE_RATE;
-		remainingHoleWidth = 0;
+		remainingHole = 0;
+		timeSinceLastHole = 0;
 		
 		currentItems = new LinkedList<ItemInstance>();
 	}
 	
-	/** Rayon de la tête du serpent lors de la précédente itération */
+	/** Rayon de la tête du serpent lors de la précédente itération (en pixels) */
 	private transient int previousHeadRadius;
+	/** Nombre de pixels restants pour terminer le trou courant */
+	private transient int remainingHole;
+	/** Temps écoulé depuis la fin du dernier trou (en ms) */
+	private transient long timeSinceLastHole;
+	/** Taille courante d'un trou (en pixels) */
+	public transient int currentHoleWidth;
 	
 	/**
 	 * Réinitialise les caractéristiques du serpent qui sont
@@ -101,6 +107,9 @@ public class MySnake extends Snake
 		
 		// collisions
 		fly = false;
+		
+		// trous
+		currentHoleWidth = Constants.BASE_HOLE_WIDTH;
 	}
 	
 	/**
@@ -113,12 +122,45 @@ public class MySnake extends Snake
 	 */
 	private void updateItemsEffect(long elapsedTime)
 	{	resetCharacs();
+		
 		Iterator<ItemInstance> it = currentItems.iterator();
 		while(it.hasNext())
 		{	MyItemInstance item = (MyItemInstance)it.next();
 			boolean remove = item.updateEffect(elapsedTime,this);
 			if(remove)
 				it.remove();
+		}
+	}
+	
+	/**
+	 * Met à jour les variables relatives à la création de trous
+	 * dans la traînée du serpent.
+	 * 
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
+	 */
+	private void updateHole(long elapsedTime)
+	{	// on est déjà en train de faire un trou, on ne va pas en commencer un autre
+		if(remainingHole>0)
+		{	float dist = movingSpeed*elapsedTime;
+			remainingHole = remainingHole - (int)dist;
+			timeSinceLastHole = 0;
+		}
+		
+		// le délai minimal entre deux trous ne s'est pas encore écoulé  
+		else if(timeSinceLastHole<Constants.MIN_HOLE_DELAY)
+		{	remainingHole = 0;
+			timeSinceLastHole = timeSinceLastHole + elapsedTime;
+		}
+		
+		// le délai minimal est passé et on n'a pas de trou en cours
+		else
+		{	// on tire au sort pour déterminer si on commence un nouveau trou
+			double p = Math.random();
+			if(p<Constants.HOLE_RATE*elapsedTime)
+			{	remainingHole = currentHoleWidth;
+				timeSinceLastHole = 0;
+			}
 		}
 	}
 	
@@ -152,42 +194,43 @@ public class MySnake extends Snake
 	
 	/**
 	 * Cette méthode calcule les pixels nouvellement occupés par le serpent à la suite de
-	 * son dernier déplacement. La méthode utilisée est un peu bourrine, mais assez simple:
-	 * <ol>
-	 * 	<li>On calcule les disques correspondant à l'ancienne position de la tête et à sa nouvelle.</li>
-	 * 	<li>On calcule le rectangle plein reliant ces deux cercles.</li>
-	 * 	<li>On retire le premier disque du rectangle plein.</li>
-	 * 	<li>On prend l'union de la forme obtenue et du second cercle (nouvelle position).</li>
-	 * </ol>
-	 * On obtient l'ensemble des pixels occupés par le serpent suite à son déplacement
-	 * Cet ensemble peut ensuite être testé pour les collisions potentielles.
+	 * son dernier déplacement. Cf. les commentaires dans la méthode pour plus de détails.
 	 * 
 	 * @param board
 	 * 		Aire de jeu.
 	 * @param newPos
 	 * 		Nouvelle position de la tête du serpent.
-	 * @return
-	 * 		Ensemble des pixels nouvellement occupés par le serpent.
+	 * @param graphicalTrail 
+	 * 		Ensemble de pixels représentant la trainée <i>graphique</i>, i.e. qui sera affichée plus tard.
+	 * 		Il faut noter que le Moteur Graphique est supposé dessiner la tête par dessus cette trainée.
+	 * @param physicalTrail 
+	 * 		Ensemble de pixels représentant la trainée <i>physique</i>, qui sera utilisée pour la gestion
+	 * 		des collisions.
 	 */
-	private Set<Position> processTrail(Board board, Position newPos)
+	private void processTrail(Board board, Position newPos, Set<Position> graphicalTrail, Set<Position> physicalTrail)
 	{	Position oldPos = new Position(currentX,currentY);
 		
 		// on calcule le disque associé à l'ancienne position
-		Set<Position> oldCercle = GraphicTools.processDisk(oldPos, previousHeadRadius);
+		Set<Position> oldDisk = GraphicTools.processDisk(oldPos, previousHeadRadius);
 				
 		// on calcule le disque associé à la nouvelle position
-		Set<Position> newCercle = GraphicTools.processDisk(newPos, headRadius);
+		Set<Position> newDisk = GraphicTools.processDisk(newPos, headRadius);
 		
 		// on calcule le rectangle plein reliant les deux cercles
-		Set<Position> result = GraphicTools.processRectangle(oldPos,newPos,headRadius); 
+		Set<Position> rectangle = GraphicTools.processRectangle(oldPos,newPos,headRadius);
 		
-		// on retire le premier disque du rectangle plein pour obtenir une forme intermédiaire
-		result.removeAll(oldCercle);
+		// on soustrait le premier disque du rectangle pour obtenir un rectangle diminué des pixels déjà présent dans le premier disque
+		rectangle.removeAll(oldDisk);
+		// on soustrait la trainée courante du premier disque, pour obtenir un disque diminué de ses pixels déjà présent dans la traine
+		oldDisk.removeAll(trail);
+
+		// on fusionne le rectangle et le disque diminués, pour obtenir la trainée graphique (nouveaux pixels mais sans la nouvelle tête)
+		graphicalTrail.addAll(rectangle);
+		graphicalTrail.removeAll(oldDisk);
 		
-		// on ajoute le second disque, pour compléter cette forme
-		result.addAll(newCercle);
-		
-		return result;	
+		// on ajoute le second disque à cette forme, pour obtenir la trainée physique utilisée ensuite pour les collisions
+		physicalTrail.addAll(graphicalTrail);
+		physicalTrail.addAll(newDisk);
 	}
 	
 	/**
@@ -196,17 +239,12 @@ public class MySnake extends Snake
 	 * 
 	 * @param board
 	 * 		Aire de jeu courante.
-	 * @param newTrail
-	 * 		Nouveaux pixels de la trainée (normalisés).
-	 * @return 
-	 * 		Code entier indiquant l'absence de collision létale ({@code null}),
-	 * 		la collision avec la bordure (valeur négative) ou avec un
-	 * 		joueur (numéro du joueur dans la manche).
+	 * @param physicalTrail 
+	 * 		Ensemble de pixels représentant la trainée <i>physique</i>, qui sera utilisée pour la gestion
+	 * 		des collisions.
 	 */
-	private Integer detectCollisions(Board board, Set<Position> newTrail)
-	{	Integer result = null;
-		
-		// on traite d'abord les items
+	private void detectCollisions(MyBoard board, Set<Position> physicalTrail)
+	{	// on traite d'abord les items
 		// TODO en supposant qu'on ne peut en toucher qu'un seul en une itération
 		{	boolean itemCollided = false;
 			Iterator<ItemInstance> it = board.items.iterator();
@@ -214,7 +252,7 @@ public class MySnake extends Snake
 			while(!itemCollided && it.hasNext())
 			{	MyItemInstance item = (MyItemInstance)it.next();
 				// on traite chaque nouveau pixel de la trainée, en s'arrêtant à la première collision
-				Iterator<Position> it2 = newTrail.iterator();
+				Iterator<Position> it2 = physicalTrail.iterator();
 				while(!itemCollided && it2.hasNext())
 				{	Position pos = it2.next();
 					// on teste juste si le pixel du serpent est dans le rayon de l'item
@@ -224,12 +262,8 @@ public class MySnake extends Snake
 						itemCollided = true;
 						// on le sort de la liste des items encore en jeu
 						it.remove();
-						// on réinitialise l'item
-						item.remainingTime = item.type.duration;
-						item.x = -1;
-						item.y = -1;
-						// on l'ajoute parmi les items actifs du serpent
-						currentItems.offer(item);
+						// on le ramasse
+						item.pickUp(board,this);
 					}
 				}
 			}
@@ -237,7 +271,7 @@ public class MySnake extends Snake
 		
 		// on traite la bordure, si elle existe
 		if(board.hasBorder)
-		{	Iterator<Position> it = newTrail.iterator();
+		{	Iterator<Position> it = physicalTrail.iterator();
 			while(it.hasNext())
 			{	Position pos = it.next();
 				if(pos.y<=Constants.BORDER_THICKNESS
@@ -245,7 +279,7 @@ public class MySnake extends Snake
 					|| pos.x<=Constants.BORDER_THICKNESS
 					|| pos.x>=board.width-Constants.BORDER_THICKNESS)
 				{	// on marque la collision
-					result = -1;
+					eliminatedBy = -1;
 					// on restreint la nouvelle position du serpent
 					it.remove();
 				}
@@ -253,40 +287,49 @@ public class MySnake extends Snake
 		}
 		
 		// on traite les autres joueurs
-		if(result==null)
+		if(eliminatedBy==null && !board.entrance && !fly)
 		{	int i = 0;
-			while(i<board.snakes.length && result==null)
+			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
-				boolean changed = trail.removeAll(snake.trail);
+				boolean changed = physicalTrail.removeAll(snake.trail);
 				if(changed)
-					result = i;
+					eliminatedBy = i;
 				i++;
 			}	
 		}
-		
-		return result;
 	}
 	
 	/**
 	 * Met à jour les nouvelles position, angle et trainée
 	 * du serpent, en fonction des calculs effectués auparavant.
 	 * 
+	 * @param board
+	 * 		Aire de jeu courante.
 	 * @param newPos
 	 * 		Nouvelle position.
-	 * @param newTrail
-	 * 		Pixels à rajouter à la traine.
+	 * @param graphicalTrail 
+	 * 		Ensemble de pixels représentant la trainée <i>graphique</i>, i.e. qui sera affichée plus tard.
+	 * 		Il faut noter que le Moteur Graphique est supposé dessiner la tête par dessus cette trainée.
+	 * @param physicalTrail 
+	 * 		Ensemble de pixels représentant la trainée <i>physique</i>, qui a été utilisée pour la gestion
+	 * 		des collisions.
 	 * @param elapsedTime
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 * @param direction
 	 * 		Commande du joueur pour cette itération.
 	 */
-	private void updateData(Position newPos, Set<Position> newTrail, long elapsedTime, Direction direction)
+	private void updateData(Board board, Position newPos, Set<Position> graphicalTrail, Set<Position> physicalTrail, long elapsedTime, Direction direction)
 	{	// mise à jour de la position
 		currentX = newPos.x;
 		currentY = newPos.y;
 		
 		// mise à jour de la traînée
-		trail.addAll(newTrail);
+		if(!board.entrance && !fly && remainingHole<=0)
+		{	if(eliminatedBy==null)
+				trail.addAll(graphicalTrail);
+			else
+				trail.addAll(physicalTrail);
+		}
 		
 		// mise à jour de l'angle
 		if(inversion)
@@ -304,42 +347,36 @@ public class MySnake extends Snake
 	 * 		Temps écoulé.
 	 * @param direction
 	 * 		Commande du joueur pour cette itération.
-	 * @return
-	 * 		Code entier indiquant l'absence de collision létale ({@code null}),
-	 * 		la collision avec la bordure (valeur négative) ou avec un
-	 * 		joueur (numéro du joueur dans la manche).
 	 */
-	public Integer update(Board board, long elapsedTime, Direction direction)
-	{	Integer result = null;
-		
-		if(alive)
+	public void update(Board board, long elapsedTime, Direction direction)
+	{	if(eliminatedBy==null)
 		{	MyBoard myBoard = (MyBoard)board;
 			
 			// on met à jour l'effet des items déjà ramassés
 			updateItemsEffect(elapsedTime);
 			
+			// on met à jour les variables relatives à la création de trous dans la trainée
+			updateHole(elapsedTime); // pourrait alternativement être placé à la fin de l'update
+			
 			// on calcule la nouvelle position (provisoire) de la tête du serpent
 			Position newPos = processMove(elapsedTime);
 			// on calcule la trainée engendrée par ce déplacement
-			Set<Position> newTrail = processTrail(board,newPos);
+			Set<Position> graphicalTrail = new TreeSet<Position>();
+			Set<Position> physicalTrail = new TreeSet<Position>();
+			processTrail(board,newPos,graphicalTrail,physicalTrail);
 			
-			// on normalise la position et la trainée
+			// on normalise la nouvelle position de la tête et les positions contenues dans les deux trainées
 			myBoard.normalizePosition(newPos);
-			myBoard.normalizePositions(newTrail);
+			myBoard.normalizePositions(graphicalTrail);
+			myBoard.normalizePositions(physicalTrail);
 			
 			// on détecte les collisions éventuelles
-			result = detectCollisions(myBoard,newTrail);
+			detectCollisions(myBoard,physicalTrail);
 			
 			// on met à jour la position et la trainée de ce serpent
-			updateData(newPos, newTrail, elapsedTime, direction);
+			updateData(board, newPos, graphicalTrail, physicalTrail, elapsedTime, direction);
 		}
-		return result;
 	}
 }
 
-// TODO manque les trous !
-// TODO manque la gestion du mode ghost
-// 		- dessin de la tête (pixels temporaires, à effacer)
-// 		- collision avec les items mais pas le reste ?
-//		- collision du reste avec lui?
-// TODO manque la gestion du mode "entrée de jeu"
+// TODO disposition aléatoire des items
