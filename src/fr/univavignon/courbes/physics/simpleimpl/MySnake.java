@@ -29,7 +29,6 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.Position;
-import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
 
 /**
@@ -48,14 +47,11 @@ public class MySnake extends Snake
 	 * 
 	 * @param playerId
 	 * 		Numéro du joueur dans la manche en cours.
-	 * @param profile
-	 * 		Profil associé à ce même joueur.
 	 * @param board
 	 * 		Aire de jeu de la manche en cours.
 	 */
-	public MySnake(int playerId, Profile profile, Board board)
+	public MySnake(int playerId, Board board)
 	{	this.playerId = playerId;
-		this.profileId = profile.profileId;
 		
 		resetCharacs();
 		

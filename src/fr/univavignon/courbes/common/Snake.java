@@ -38,8 +38,6 @@ public class Snake implements Serializable
 	
 	/** Numéro du joueur associé à ce serpent, dans la partie en cours */
 	public int playerId;
-	/** Numéro du profil associé à ce serpent, dans la BD du jeu */
-	public int profileId;
 	
 	/** Position courante de la tête du serpent en abscisse */
 	public int currentX;

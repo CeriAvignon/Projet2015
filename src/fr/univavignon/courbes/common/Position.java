@@ -78,4 +78,10 @@ public class Position implements Serializable, Comparable<Position>
 		}
 		return result;
 	}
+	
+	@Override
+	public String toString()
+	{	String result = "(" + x + ";" + y + ")";
+		return result;
+	}
 }
