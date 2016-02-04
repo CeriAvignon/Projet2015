@@ -20,8 +20,13 @@ package fr.univavignon.courbes.graphics.simpleimpl;
 
 import javax.swing.JPanel;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
+import java.awt.Transparency;
+import java.awt.image.VolatileImage;
 import java.io.IOException;
 
 import fr.univavignon.courbes.common.Board;
@@ -40,8 +45,7 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	public void init(Round round)
 	{	Board board = round.board;
 		
-		cacheImage = new BufferedImage(board.width,board.height,BufferedImage.TYPE_INT_ARGB);
-		currentImage = new BufferedImage(board.width,board.height,BufferedImage.TYPE_INT_ARGB);
+		image = null;
 		try
 		{	boardDrawer = new BoardDrawer(board);
 		}
@@ -55,10 +59,8 @@ public class GraphicDisplayImpl implements GraphicDisplay
 
 	/** Panel utilisé pour afficher l'aire de jeu */
 	private BoardPanel boardPanel;
-	/** Image dans laquelle on dessine l'aire de jeu (i.e. cache écran) */
-	private BufferedImage cacheImage;
-	/** Image actuellement utilisée par le {@link BoardPanel} */
-	private BufferedImage currentImage;
+	/** Image dans laquelle on dessine */
+	private Image image;
 	/** Objet utilisé pour dessiner dans l'image cache */
 	private BoardDrawer boardDrawer;
 	/** Panel utilisé pour afficher le score */
@@ -66,16 +68,34 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	
 	@Override
 	public void update(Round round)
-	{	// mise à jour du score
+	{	if(image==null)
+			initImage();
+		
+		// mise à jour du score
 		scorePanel.updateData(round.pointLimit, round.players);
 		
-		// mise à jour de l'image cache
-		Graphics g = cacheImage.getGraphics();
-		boardDrawer.drawBoard(round.board, g);
-		boardPanel.setImage(cacheImage);
-		BufferedImage temp = currentImage;
-		currentImage = cacheImage;
-		cacheImage = temp;
+		// on réinitialise l'image buffer
+		boolean again;
+		do
+		{	GraphicsConfiguration gc = boardPanel.getGraphicsConfiguration();
+			int valid = ((VolatileImage)image).validate(gc);
+			if(valid == VolatileImage.IMAGE_INCOMPATIBLE)
+				initImage();
+			Graphics g = image.getGraphics();
+			// on dessine le fond
+			g.setColor(Color.BLACK);
+			Dimension dim = boardPanel.getPreferredSize();
+			g.fillRect(0,0,dim.width,dim.height);
+			// on dessine l'aire de jeu
+			boardDrawer.drawBoard(round.board, g);
+			g.dispose();
+			// on recopie sur le panel
+			Graphics gp = boardPanel.getGraphics();
+			gp.drawImage(image, 0, 0, null);
+			gp.dispose();
+			again = ((VolatileImage)image).contentsLost();
+		}
+		while(again);
 	}
 	
 	@Override
@@ -93,6 +113,17 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	{	
 		// TODO rien de spécial à faire pour le moment. 
 		// libérer ressources GUI ? (mais le GC s'en occupe...)
+	}
+	
+	private void initImage()
+	{	int width = boardPanel.getPreferredSize().width;
+		int height = boardPanel.getPreferredSize().height;
+		GraphicsConfiguration gc = boardPanel.getGraphicsConfiguration();
+		VolatileImage temp = gc.createCompatibleVolatileImage(width,height,Transparency.OPAQUE);
+		int valid = temp.validate(gc);
+		if (valid == VolatileImage.IMAGE_INCOMPATIBLE)
+			temp = gc.createCompatibleVolatileImage(width,height,Transparency.OPAQUE);
+		image = temp;
 	}
 }
 

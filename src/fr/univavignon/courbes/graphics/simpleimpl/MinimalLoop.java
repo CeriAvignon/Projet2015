@@ -148,32 +148,43 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		long timer = System.currentTimeMillis();
 
 		while(running)
-		{	long currentTime = System.nanoTime();
-			long elapsedTime = currentTime - initialTime;
-			deltaU += (currentTime - initialTime) / timeU;
-			deltaF += (currentTime - initialTime) / timeF;
-			initialTime = currentTime;
-
-			if (deltaU >= 1)
-			{	Direction[] directions = retrieveDirections();
-				pe.update(elapsedTime/1000, directions);
-				ticks++;
-				deltaU--;
+		{	if(getPause() && !getPassIteration())
+			{	long currentTime = System.nanoTime();
+				initialTime = currentTime;
+				gd.update(round);
 			}
-
-			if (deltaF >= 1)
-			{	gd.update(round);
-				frames++;
-				deltaF--;
-			}
-
-			if (System.currentTimeMillis() - timer > 1000)
-			{	if(SHOW_STATS)
-				{	System.out.println(String.format("UPS: %s, FPS: %s", ticks, frames));
+			else
+			{	long currentTime = System.nanoTime();
+				long elapsedTime = currentTime - initialTime;
+				if(getPassIteration())
+				{	setPassIteration(false);
+					elapsedTime = 250000000;
 				}
-				frames = 0;
-				ticks = 0;
-				timer += 1000;
+				deltaU += (currentTime - initialTime) / timeU;
+				deltaF += (currentTime - initialTime) / timeF;
+				initialTime = currentTime;
+	
+				if (deltaU >= 1)
+				{	Direction[] directions = retrieveDirections();
+					pe.update(elapsedTime/1000000, directions);
+					ticks++;
+					deltaU--;
+				}
+	
+				if (deltaF >= 1)
+				{	gd.update(round);
+					frames++;
+					deltaF--;
+				}
+	
+				if (System.currentTimeMillis() - timer > 1000)
+				{	if(SHOW_STATS)
+					{	System.out.println(String.format("UPS: %s, FPS: %s", ticks, frames));
+					}
+					frames = 0;
+					ticks = 0;
+					timer += 1000;
+				}
 			}
 		}
 	}
@@ -194,6 +205,30 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		return result;
 	}
 	
+	private boolean pause = true;
+	private boolean passIteration = false;
+	
+	boolean keyState[] = new boolean[1000];
+	boolean prevKeyState[] = new boolean[1000];
+	
+	private synchronized void switchPause()
+	{	pause = !pause;
+	}
+	
+	private synchronized boolean getPause()
+	{	boolean result = pause;
+		return result;
+	}
+	
+	private synchronized void setPassIteration(boolean passIteration)
+	{	this.passIteration = passIteration;
+	}
+	
+	private synchronized boolean getPassIteration()
+	{	boolean result = passIteration;
+		return result;
+	}
+
 	@Override
 	public void keyPressed(KeyEvent e)
 	{	int keyCode = e.getKeyCode();
@@ -201,6 +236,19 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 			setDirection(Direction.LEFT);
 		else if(keyCode==KeyEvent.VK_RIGHT)
 			setDirection(Direction.RIGHT);
+		else if(keyCode==KeyEvent.VK_P)
+		{	if(!keyState[KeyEvent.VK_P])
+			{	keyState[KeyEvent.VK_P] = true;
+				switchPause();
+			}
+		}
+		else if(keyCode==KeyEvent.VK_O)
+		{	if(!keyState[KeyEvent.VK_O])
+			{	keyState[KeyEvent.VK_O] = true;
+				setPassIteration(true);
+			}
+		}
+//System.out.println("Input:"+keyCode);
 	}
 
 	@Override
@@ -210,7 +258,11 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 			unsetDirection(Direction.LEFT);
 		else if(keyCode==KeyEvent.VK_RIGHT)
 			unsetDirection(Direction.RIGHT);
-		System.out.println("Input:"+keyCode);
+		else if(keyCode==KeyEvent.VK_P)
+			keyState[KeyEvent.VK_P] = false;
+		else if(keyCode==KeyEvent.VK_O)
+			keyState[KeyEvent.VK_O] = false;
+//System.out.println("Input:"+keyCode);
 	}
 
 	@Override

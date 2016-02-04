@@ -98,7 +98,7 @@ public class MyBoard extends Board
 	 * 		Joueurs participants à la manche.
 	 */
 	public void initDemo(Player[] players)
-	{	// on initialise les serpents
+	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
 		snakes = new Snake[players.length];
 		for(int i=0;i<players.length;i++)
 		{	MySnake snake = new MySnake(i,this);
@@ -107,11 +107,18 @@ public class MyBoard extends Board
 		}
 		// seul le premier joueur a une vitesse de déplacement non-nulle
 		snakes[0].movingSpeed = Constants.BASE_MOVING_SPEED;
+		// on place le premier joueur
+		snakes[0].currentX = width*3/4;
+		snakes[0].currentY = height*3/4;
+		snakes[0].currentAngle = 0;
+		// on centre le second joueur
+		snakes[1].currentX = width/2;
+		snakes[1].currentY = height/2;
 		
 		// on rajoute un bout de trainée au deuxième serpent, pour pouvoir tester les collisions
 		int x1 = snakes[1].currentX;
 		int y0 = snakes[1].currentY - snakes[1].headRadius;
-		for(int x=0;x<x1;x++)
+		for(int x=Constants.BORDER_THICKNESS;x<x1;x++)
 		{	for(int dy=0;dy<snakes[1].headRadius*2;dy++)
 			{	Position pos = new Position(x,y0+dy);
 				snakes[1].trail.add(pos);
@@ -119,11 +126,11 @@ public class MyBoard extends Board
 		}
 		
 		// on rajoute les items
-		int sep = (Constants.ITEM_RADIUS+10)/2;
-		int x = 0;
-		int y = sep;
+		int sep = (int)((width-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
+		int x = Constants.BORDER_THICKNESS;
+		int y = Constants.BORDER_THICKNESS + sep + Constants.ITEM_RADIUS;
 		for(ItemType itemType: ItemType.values())
-		{	x = x + sep;
+		{	x = x + sep + Constants.ITEM_RADIUS;
 			MyItemInstance item = new MyItemInstance(itemType,x,y);
 			x = x + Constants.ITEM_RADIUS;
 			items.add(item);
@@ -239,6 +246,7 @@ public class MyBoard extends Board
 			if(dir==null)
 				dir = Direction.NONE;
 			snake.update(this,elapsedTime,dir);
+System.out.println(i+": "+snake.currentX+";"+snake.currentY);
 		}
 	}
 	

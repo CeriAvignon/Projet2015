@@ -170,7 +170,26 @@ public class GraphicTools
 		List<Position> segment1;
 		List<Position> segment2;
 		
-		if(pos1.x!=pos2.x)
+		// cas particulier : perpendiculaires verticales
+		if(pos1.x==pos2.x)
+		{	// premier segment
+			Position[] temp1 = {new Position(pos1.x,pos1.y-side/2),new Position(pos1.x,pos1.y+side/2)};
+			segment1 = processSegment(temp1[0], temp1[1]);
+			// second segment
+			Position[] temp2 = {new Position(pos2.x,pos2.y-side/2),new Position(pos2.x,pos2.y+side/2)};
+			segment2 = processSegment(temp2[0], temp2[1]);
+		}
+		// cas particulier : perpendiculaires horizontales
+		else if(pos1.y==pos2.y)
+		{	// premier segment
+			Position[] temp1 = {new Position(pos1.x-side/2,pos1.y),new Position(pos1.x+side/2,pos1.y)};
+			segment1 = processSegment(temp1[0], temp1[1]);
+			// second segment
+			Position[] temp2 = {new Position(pos2.x-side/2,pos2.y),new Position(pos2.x+side/2,pos2.y)};
+			segment2 = processSegment(temp2[0], temp2[1]);
+		}
+		// cas général
+		else
 		{	// équation de la droite reliant l'ancienne et la nouvelle positions
 			float a = (pos1.y-pos2.y)/(float)(pos1.x-pos2.x);
 			//float b = pos2.y - a*pos2.x;	// pas utilisé
@@ -189,14 +208,6 @@ public class GraphicTools
 			temp = processCircleLineIntersection(pos1.x, pos1.y, side, c, d2);
 			// segment allant d'un point à l'autre
 			segment2 = processSegment(temp[0], temp[1]);
-		}
-		else	// cas particulier : perpendiculaires verticales
-		{	// premier segment
-			Position[] temp1 = {new Position(pos1.x,pos1.y-side/2),new Position(pos1.x,pos1.y+side/2)};
-			segment1 = processSegment(temp1[0], temp1[1]);
-			// second segment
-			Position[] temp2 = {new Position(pos2.x,pos2.y-side/2),new Position(pos2.x,pos2.y+side/2)};
-			segment2 = processSegment(temp2[0], temp2[1]);
 		}
 		
 		// pour chaque point du premier segment
@@ -234,7 +245,7 @@ public class GraphicTools
 		// on passe en revue tous les pixels dans ce carré, en rejetant ceux qui sont hors du disque
 		Set<Position> result = new TreeSet<Position>();
 		for(int x=left;x<=right;x++)
-		{	for(int y=bottom;x<=top;x++)
+		{	for(int y=top;y<=bottom;y++)
 			{	double dist = Math.sqrt(Math.pow(x-center.x,2) + Math.pow(y-center.y,2));
 				if(dist<=radius)
 				{	Position pos = new Position(x,y);

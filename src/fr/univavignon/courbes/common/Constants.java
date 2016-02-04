@@ -38,7 +38,7 @@ public class Constants
 	public static final int BOARD_HEIGHT = 800;//TODO à confirmer
 	
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
-	public static final long ENTRANCE_DURATION = 5000; //TODO à confirmer
+	public static final long ENTRANCE_DURATION = 0;//5000; //TODO à confirmer
 	
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
 	public static final float BASE_MOVING_SPEED = 0.1f;
@@ -65,7 +65,7 @@ public class Constants
 	public static final long MIN_HOLE_DELAY = 500; //TODO à confirmer
 	
 	/** Rayon d'un item, exprimé en pixels */
-	public static final int ITEM_RADIUS = 40;
+	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
 	public static final long ITEM_DURATION = 6000;
 	/** Probabilité qu'un item apparaisse à chaque ms */

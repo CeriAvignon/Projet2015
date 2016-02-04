@@ -92,7 +92,8 @@ public class MySnake extends Snake
 		headRadius = Constants.BASE_HEAD_RADIUS;
 		
 		// speed
-		movingSpeed = Constants.BASE_MOVING_SPEED;
+		if(movingSpeed!=0) // juste pour le mode démo
+			movingSpeed = Constants.BASE_MOVING_SPEED;
 		turningSpeed = Constants.BASE_TURNING_SPEED;
 
 		// connection
@@ -183,8 +184,8 @@ public class MySnake extends Snake
 		// translation vers les coordonnées réelles de l'aire de jeu
 		int x = currentX + (int)tempX;
 		int y = currentY + (int)tempY;
-		Position result = new Position(x,y);
-
+		Position result = new Position(x,y);		
+		
 		return result;
 	}
 	
@@ -213,7 +214,7 @@ public class MySnake extends Snake
 		Set<Position> newDisk = GraphicTools.processDisk(newPos, headRadius);
 		
 		// on calcule le rectangle plein reliant les deux cercles
-		Set<Position> rectangle = GraphicTools.processRectangle(oldPos,newPos,headRadius);
+		Set<Position> rectangle = GraphicTools.processRectangle(oldPos,newPos,2*headRadius);
 		
 		// on soustrait le premier disque du rectangle pour obtenir un rectangle diminué des pixels déjà présent dans le premier disque
 		rectangle.removeAll(oldDisk);
@@ -222,7 +223,7 @@ public class MySnake extends Snake
 
 		// on fusionne le rectangle et le disque diminués, pour obtenir la trainée graphique (nouveaux pixels mais sans la nouvelle tête)
 		graphicalTrail.addAll(rectangle);
-		graphicalTrail.removeAll(oldDisk);
+		graphicalTrail.addAll(oldDisk);
 		
 		// on ajoute le second disque à cette forme, pour obtenir la trainée physique utilisée ensuite pour les collisions
 		physicalTrail.addAll(graphicalTrail);
@@ -351,26 +352,28 @@ public class MySnake extends Snake
 			// on met à jour l'effet des items déjà ramassés
 			updateItemsEffect(elapsedTime);
 			
-			// on met à jour les variables relatives à la création de trous dans la trainée
-			updateHole(elapsedTime); // pourrait alternativement être placé à la fin de l'update
-			
-			// on calcule la nouvelle position (provisoire) de la tête du serpent
-			Position newPos = processMove(elapsedTime);
-			// on calcule la trainée engendrée par ce déplacement
-			Set<Position> graphicalTrail = new TreeSet<Position>();
-			Set<Position> physicalTrail = new TreeSet<Position>();
-			processTrail(board,newPos,graphicalTrail,physicalTrail);
-			
-			// on normalise la nouvelle position de la tête et les positions contenues dans les deux trainées
-			myBoard.normalizePosition(newPos);
-			myBoard.normalizePositions(graphicalTrail);
-			myBoard.normalizePositions(physicalTrail);
-			
-			// on détecte les collisions éventuelles
-			detectCollisions(myBoard,physicalTrail);
-			
-			// on met à jour la position et la trainée de ce serpent
-			updateData(board, newPos, graphicalTrail, physicalTrail, elapsedTime, direction);
+			if(movingSpeed>0)
+			{	// on met à jour les variables relatives à la création de trous dans la trainée
+				updateHole(elapsedTime); // pourrait alternativement être placé à la fin de l'update
+				
+				// on calcule la nouvelle position (provisoire) de la tête du serpent
+				Position newPos = processMove(elapsedTime);
+				// on calcule la trainée engendrée par ce déplacement
+				Set<Position> graphicalTrail = new TreeSet<Position>();
+				Set<Position> physicalTrail = new TreeSet<Position>();
+				processTrail(board,newPos,graphicalTrail,physicalTrail);
+				
+				// on normalise la nouvelle position de la tête et les positions contenues dans les deux trainées
+				myBoard.normalizePosition(newPos);
+				myBoard.normalizePositions(graphicalTrail);
+				myBoard.normalizePositions(physicalTrail);
+				
+				// on détecte les collisions éventuelles
+				detectCollisions(myBoard,physicalTrail);
+				
+				// on met à jour la position et la trainée de ce serpent
+				updateData(board, newPos, graphicalTrail, physicalTrail, elapsedTime, direction);
+			}
 		}
 	}
 }
