@@ -80,7 +80,7 @@ public class SnakeDrawer
 			// si le serpent est vivant, on trace sa tête
 			if(snake.eliminatedBy==null)
 			{	Graphics2D g2 = (Graphics2D)g;
-				g2.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius*2,
+				g2.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius,
 					snake.headRadius*2, snake.headRadius*2);
 			}
 		}

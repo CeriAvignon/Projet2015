@@ -91,10 +91,10 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		pl1.currentRank = 1;
 		Player pl2 = new Player();
 		pl2.profile = p2;
-		pl2.playerId = 0;
+		pl2.playerId = 1;
 		pl2.totalScore = 0;
 		pl2.roundScore = 0;
-		pl2.currentRank = 1;
+		pl2.currentRank = 2;
 		Player players[] = {pl1,pl2};
 		
 		pe = new PhysicsEngineImpl();
@@ -210,6 +210,7 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 			unsetDirection(Direction.LEFT);
 		else if(keyCode==KeyEvent.VK_RIGHT)
 			unsetDirection(Direction.RIGHT);
+		System.out.println("Input:"+keyCode);
 	}
 
 	@Override
