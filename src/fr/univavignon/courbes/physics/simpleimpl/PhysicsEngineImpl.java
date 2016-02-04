@@ -18,11 +18,9 @@ package fr.univavignon.courbes.physics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Map;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
@@ -38,23 +36,23 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	private MyBoard board;
 	
 	@Override
-	public Board init(int width, int height, Profile[] profiles)
+	public Board init(int width, int height, Player[] players)
 	{	board = new MyBoard(width,height);
-		board.init(profiles);
+		board.init(players);
 		
 		return board;
 	}
 	
 	@Override
-	public Board initDemo(int width, int height, Profile[] profiles)
+	public Board initDemo(int width, int height, Player[] players)
 	{	board = new MyBoard(width,height);
-		board.initDemo(profiles);
+		board.initDemo(players);
 		
 		return board;
 	}
 	
 	@Override
-	public void update(long elapsedTime, Map<Integer,Direction> commands)
+	public void update(long elapsedTime, Direction commands[])
 	{	board.update(elapsedTime,commands);
 	}
 	

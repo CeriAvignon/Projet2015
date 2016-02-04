@@ -55,7 +55,7 @@ public class ItemDrawer
 		if(IMAGES.isEmpty())
 		{	String imageFolder = "res" + File.separator + "images" + File.separator;
 			for(ItemType item: ItemType.values())
-			{	String fileName = imageFolder + item.toString();
+			{	String fileName = imageFolder + item.toString() + ".png";
 				File imageFile = new File(fileName);
 				BufferedImage image = ImageIO.read(imageFile);
 				IMAGES.put(item, image);

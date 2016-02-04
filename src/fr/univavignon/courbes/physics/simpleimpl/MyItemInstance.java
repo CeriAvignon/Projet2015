@@ -110,7 +110,7 @@ public class MyItemInstance extends ItemInstance
 	 */
 	public boolean updateLife(long elapsedTime)
 	{	remainingTime = remainingTime - elapsedTime;
-		boolean remove = remainingTime>0;
+		boolean remove = remainingTime<0;
 		return remove;
 	}
 	

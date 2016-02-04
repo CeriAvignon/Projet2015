@@ -69,6 +69,9 @@ public class ScorePanel extends JPanel
 			panel.add(limitLabel);
 		}
 		// sections affichant chaque joueur
+		roundScoreLabels = new JLabel[players.length];
+		nameLabels = new JLabel[players.length];
+		gameScoreLabels = new JLabel[players.length];
 		for(int i=0;i<players.length;i++)
 		{	// on crée le panel pour la ligne du joueur
 			JPanel panel = new JPanel();
