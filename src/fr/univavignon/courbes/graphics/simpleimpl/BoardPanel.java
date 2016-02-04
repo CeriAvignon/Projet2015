@@ -19,8 +19,6 @@ package fr.univavignon.courbes.graphics.simpleimpl;
  */
 
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -50,45 +48,4 @@ public class BoardPanel extends JPanel
 		setMinimumSize(dim);
 		setMaximumSize(dim);
 	}
-	
-	/** L'image affichée par ce panel */
-	private BufferedImage image = null;
-
-	/**
-	 * Méthode utilisée par le thread de mise à jour de
-	 * l'image, afin de répercuter les dernières modifications dans
-	 * le panel. La méthode doit être synchronisée, car l'image
-	 * accédée est aussi utilisée (en lecture) par un autre thread: le thread
-	 * Swing, qui est chargé de l'affichage du panel.
-	 * 
-	 * @param image
-	 * 		Nouvelle image à afficher dans ce panel.
-	 */
-	public synchronized void setImage(BufferedImage image)
-	{	this.image = image;
-	}
-	
-	/**
-	 * Renvoie l'image à afficher, de façon synchronisée
-	 * afin d'éviter les conflits avec le thread qui fait
-	 * la mise à jour de l'image. En effet, cette méthode
-	 * est utilisée par le thread Swing, qui est distinct.
-	 * 
-	 * @return
-	 * 		L'image à afficher (ou {@code null} si pas encore initialisée).
-	 */
-	private synchronized BufferedImage getImage()
-	{	return image;
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g)
-	{	super.paintComponent(g);
-	
-		// on n'accède pas directement à l'image : on passe par une méthode synchronisée,
-		// afin d'éviter tout conflit avec le thread du Moteur Graphique (on est ici dans le thread Swing)
-		BufferedImage img = getImage();
-		if(img!=null)
-			g.drawImage(image, 0, 0, null);
-    }
 }

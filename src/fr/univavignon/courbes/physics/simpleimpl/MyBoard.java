@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -32,8 +31,8 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Position;
-import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Snake;
 
 /**
@@ -60,6 +59,7 @@ public class MyBoard extends Board
 	{	this.width = width;
 		this.height = height;
 		
+		items = new ArrayList<ItemInstance>();
 		currentItems = new LinkedList<MyItemInstance>();
 		totalTime = 0;
 		mustClean = false;
@@ -79,13 +79,13 @@ public class MyBoard extends Board
 	/**
 	 * Initialise l'aire de jeu pour une manche.
 	 * 
-	 * @param profiles
-	 * 		profils des joueurs participants à la manche.
+	 * @param players
+	 * 		Joueurs participants à la manche.
 	 */
-	public void init(Profile[] profiles)
-	{	snakes = new Snake[profiles.length];
-		for(int i=0;i<profiles.length;i++)
-		{	MySnake snake = new MySnake(i,profiles[i],this);
+	public void init(Player[] players)
+	{	snakes = new Snake[players.length];
+		for(int i=0;i<players.length;i++)
+		{	MySnake snake = new MySnake(i,this);
 			snakes[i] = snake;
 		}
 	}
@@ -94,24 +94,31 @@ public class MyBoard extends Board
 	 * Initialise l'aire de jeu de manière à tester le
 	 * jeu (relativement) facilement.
 	 * 
-	 * @param profiles
-	 * 		profils des joueurs participants à la manche.
+	 * @param players
+	 * 		Joueurs participants à la manche.
 	 */
-	public void initDemo(Profile[] profiles)
-	{	// on initialise les serpents
-		snakes = new Snake[profiles.length];
-		for(int i=0;i<profiles.length;i++)
-		{	MySnake snake = new MySnake(i,profiles[i],this);
+	public void initDemo(Player[] players)
+	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
+		snakes = new Snake[players.length];
+		for(int i=0;i<players.length;i++)
+		{	MySnake snake = new MySnake(i,this);
 			snake.movingSpeed = 0;	// on force leur vitesse à zéro
 			snakes[i] = snake;
 		}
 		// seul le premier joueur a une vitesse de déplacement non-nulle
 		snakes[0].movingSpeed = Constants.BASE_MOVING_SPEED;
+		// on place le premier joueur
+		snakes[0].currentX = width*3/4;
+		snakes[0].currentY = height*3/4;
+		snakes[0].currentAngle = 0;
+		// on centre le second joueur
+		snakes[1].currentX = width/2;
+		snakes[1].currentY = height/2;
 		
 		// on rajoute un bout de trainée au deuxième serpent, pour pouvoir tester les collisions
 		int x1 = snakes[1].currentX;
 		int y0 = snakes[1].currentY - snakes[1].headRadius;
-		for(int x=0;x<x1;x++)
+		for(int x=Constants.BORDER_THICKNESS;x<x1;x++)
 		{	for(int dy=0;dy<snakes[1].headRadius*2;dy++)
 			{	Position pos = new Position(x,y0+dy);
 				snakes[1].trail.add(pos);
@@ -119,11 +126,11 @@ public class MyBoard extends Board
 		}
 		
 		// on rajoute les items
-		int sep = (Constants.ITEM_RADIUS+10)/2;
-		int x = 0;
-		int y = sep;
+		int sep = (int)((width-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
+		int x = Constants.BORDER_THICKNESS;
+		int y = Constants.BORDER_THICKNESS + sep + Constants.ITEM_RADIUS;
 		for(ItemType itemType: ItemType.values())
-		{	x = x + sep;
+		{	x = x + sep + Constants.ITEM_RADIUS;
 			MyItemInstance item = new MyItemInstance(itemType,x,y);
 			x = x + Constants.ITEM_RADIUS;
 			items.add(item);
@@ -148,7 +155,7 @@ public class MyBoard extends Board
 	 * @param commands
 	 * 		Commandes de chaque joueur.
 	 */
-	public void update(long elapsedTime, Map<Integer,Direction> commands)
+	public void update(long elapsedTime, Direction[] commands)
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
 		
@@ -224,7 +231,7 @@ public class MyBoard extends Board
 	 * @param commands
 	 * 		Commandes de chaque joueur.
 	 */
-	private void updateSnakes(long elapsedTime, Map<Integer,Direction> commands)
+	private void updateSnakes(long elapsedTime, Direction[] commands)
 	{	// on évite de traiter les serpents toujours dans le même ordre, par souci d'équité
 		List<Integer> idx = new ArrayList<Integer>();
 		for(int i=0;i<snakes.length;i++)
@@ -235,10 +242,11 @@ public class MyBoard extends Board
 		for(int i: idx)
 		{	Snake s = snakes[i];
 			MySnake snake = (MySnake)s;
-			Direction dir = commands.get(i);
+			Direction dir = commands[i];
 			if(dir==null)
 				dir = Direction.NONE;
 			snake.update(this,elapsedTime,dir);
+System.out.println(i+": "+snake.currentX+";"+snake.currentY);
 		}
 	}
 	
@@ -293,6 +301,7 @@ public class MyBoard extends Board
 				while(s<snakes.length && available)
 				{	Snake snake = snakes[s];
 					available = !itemReach.removeAll(snake.trail);
+					s++;
 				}
 			}
 			

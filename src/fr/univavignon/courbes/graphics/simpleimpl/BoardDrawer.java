@@ -73,8 +73,8 @@ public class BoardDrawer
 			);
 			// bas
 			g.fillRect(
+				0, 
 				board.height-Constants.BORDER_THICKNESS, 
-				board.height, 
 				board.width, 
 				Constants.BORDER_THICKNESS
 			);

@@ -18,12 +18,9 @@ package fr.univavignon.courbes.physics;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Map;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.common.Player;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
@@ -48,13 +45,12 @@ public interface PhysicsEngine
 	 * 		Largeur de l'aire de jeu, exprimée en pixel.
 	 * @param height
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
-	 * @param profiles
-	 * 		Tableau contenant les profils des joueurs impliqués dans 
-	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
+	 * @param players
+	 * 		Joueurs participants à la manche.
 	 * @return
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board init(int width, int height, Profile[] profiles);
+	public Board init(int width, int height, Player[] players);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -69,13 +65,12 @@ public interface PhysicsEngine
 	 * 		Largeur de l'aire de jeu, exprimée en pixel.
 	 * @param height
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
-	 * @param profiles
-	 * 		Tableau contenant les profils des joueurs impliqués dans 
-	 * 		la manche (à utiliser pour initialiser les objets {@link Snake}).
+	 * @param players
+	 * 		Joueurs participants à la manche.
 	 * @return
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board initDemo(int width, int height, Profile[] profiles);
+	public Board initDemo(int width, int height, Player[] players);
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
@@ -93,9 +88,9 @@ public interface PhysicsEngine
 	 * @param elapsedTime
 	 * 		Temps écoulé depuis la dernière mise à jour, exprimé en ms.
 	 * @param commands
-	 * 		Map associant un joueur ID à la dernière commande générée par le joueur correspondant.
+	 * 		Dernière commande générée par le chaque joueur.
 	 */
-	public void update(long elapsedTime, Map<Integer,Direction> commands);
+	public void update(long elapsedTime, Direction commands[]);
 	
 	/**
 	 * Cette méthode est appelée par l'Interface Utilisateur côté client, lors 
