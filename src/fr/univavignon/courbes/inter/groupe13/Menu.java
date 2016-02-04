@@ -29,6 +29,7 @@ public class Menu extends Window{
 	public Menu() {
 		super(250, 190);
 		menuPlayer();
+		System.out.println("test");
 	}
 
 	/*
