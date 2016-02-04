@@ -1,5 +1,6 @@
 package fr.univavignon.courbes.inter.groupe13;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,11 +11,9 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.groupe06.Client;
 
 public class LocalProfileSelector {
 	
@@ -35,7 +34,7 @@ public class LocalProfileSelector {
 		
 		jp.add(sendProfileToServer);
 		jp.add(removeFromServer);
-		
+
 		removeFromServer.setEnabled(false);
 		
 		jc_playerSelector.addActionListener(new ActionListener() {
@@ -90,7 +89,7 @@ public class LocalProfileSelector {
 		
 		jp.add(this.jc_playerSelector);
 		jp.add(this.leftButton);
-		jp.add(this.rightButton);
+		jp.add(this.rightButton, "wrap");
 
 		rightButton.addKeyListener(new KeyListener() {
 			

@@ -66,9 +66,6 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 		this.add(remotePlayerPanel);
 		this.add(jp_previous_next);
 		
-		jp_player_number.add(new JLabel("Nombre de joueurs"));
-		jp_player_number.add(jcb_nbOfPlayers);		
-		
 		Vector<Integer> v = new Vector<>();
 		v.add(1);
 		v.add(2);
@@ -78,6 +75,9 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 		v.add(6);
 		
 		jcb_nbOfPlayers = new JComboBox<>(v);
+		
+		jp_player_number.add(new JLabel("Nombre de joueurs"));
+		jp_player_number.add(jcb_nbOfPlayers);		
 		
 		remotePlayerPanel.setLayout(new GridLayout(6,3));
 		remotePlayerPanel.add(new JLabel("Joueurs distants"));

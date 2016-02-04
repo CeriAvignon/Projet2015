@@ -35,7 +35,7 @@ public class ProfileFileManager {
 	    			  Profile p = new Profile();
 	    			  p.userName = elem[0];
 	    			  p.country = elem[1];
-	    			  p.score = Integer.parseInt(elem[2]);
+	    			  p.score = Integer.parseInt(elem[2].trim());
 	    			  
 	    			  result.add(p);
 	    			  
@@ -62,7 +62,7 @@ public class ProfileFileManager {
 		     FileWriter fw = new   FileWriter(fileName, true);
 		     BufferedWriter output = new BufferedWriter(fw);
 
-		     output.write(pseudo + ", " + country + ", 0");
+		     output.write("\n" + pseudo + ", " + country + ", 0");
 		     output.flush();
 		     output.close();
 		 }

@@ -1,13 +1,12 @@
 package fr.univavignon.courbes.inter.groupe13;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * @author zach
@@ -27,10 +26,8 @@ public class Menu extends Window{
 	 * @param width Largeur de la fenêtre.
 	 * @param height Hauteur de la fenêtre.
 	 */
-	public Menu(int width, int height) {
-		super(width, height);
-		this.width = width;
-		this.height = height;
+	public Menu() {
+		super(250, 190);
 		menuPlayer();
 	}
 
@@ -39,7 +36,7 @@ public class Menu extends Window{
 	 * touches
 	 */
 	public void menuPlayer() {
-		this.setLayout(new GridLayout(5, 1));
+		this.setLayout(new MigLayout("", "[fill]", ""));
 
 		JButton localGame = new JButton("Partie locale");
 		JButton serverGame = new JButton("Créer une partie réseau");
@@ -105,10 +102,10 @@ public class Menu extends Window{
 			}
 		});
 
-		this.add(localGame);
-		this.add(clientGame);
-		this.add(serverGame);
-		this.add(profils);
+		this.add(localGame, "wrap");
+		this.add(clientGame, "wrap");
+		this.add(serverGame, "wrap");
+		this.add(profils, "wrap");
 		this.add(quit);
 
 		this.setVisible(true);

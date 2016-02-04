@@ -15,7 +15,7 @@ public class mainMenu extends JFrame{
 	 */
 	  public static void main(String[] args){
 
-		  	new Menu(500, 500);
+		  	new Menu();
 	  }
 	
 }

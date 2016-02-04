@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import fr.univavignon.courbes.common.Profile;
 
 public class LocalGame extends JFrame{
@@ -30,7 +32,7 @@ public class LocalGame extends JFrame{
 	
 	JButton jb_back = new JButton("Retour");
 	JButton jb_start = new JButton("Démarrer");
-	JPanel playerPanel = new JPanel(new GridLayout(7,3));
+	JPanel playerPanel;
 	
 	public LocalGame(Menu m){
 		
@@ -38,27 +40,54 @@ public class LocalGame extends JFrame{
 		
 		this.m = m;
 		this.setSize(new Dimension(800,600));
-		
 		players = new ArrayList<>();
 		
-		this.setLayout(new BorderLayout());
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 		
 		JPanel jp_numberOfPlayers = new JPanel(new FlowLayout());
 		JPanel jp_previousNext = new JPanel(new FlowLayout());
 		
+
+		playerPanel = new JPanel();
+		playerPanel.setLayout(new MigLayout("fill", "[]0[]0[]", "[]0[]"));
+		
 		this.add(jp_numberOfPlayers, BorderLayout.NORTH);
 		this.add(playerPanel, BorderLayout.CENTER);
 		this.add(jp_previousNext, BorderLayout.SOUTH);
+
+		
+		JLabel jl1 = new JLabel("Joueur");
+		JLabel jl2 = new JLabel("Droite");
+		JLabel jl3 = new JLabel("Gauche");
+		playerPanel.add(jl1);
+		playerPanel.add(jl2);
+		playerPanel.add(jl3, "wrap");
+
+		jl1.setMaximumSize(new Dimension(1600, 30));
+		jl2.setMaximumSize(new Dimension(1600, 30));
+		jl3.setMaximumSize(new Dimension(1600, 30));
+		
+//		playerPanel.setMaximumSize(new Dimension(500, 500));
+		
+		Vector<Integer> v = new Vector<>();
+		v.add(1);
+		v.add(2);
+		v.add(3);
+		v.add(4);
+		v.add(5);
+		v.add(6);
+
+		availableProfiles = ProfileFileManager.getProfiles();
+		jcb_nbOfPlayers = new JComboBox<>(v);
+		jcb_nbOfPlayers.setSelectedIndex(0);
+		addLocalProfile();
+		
 		
 		jp_numberOfPlayers.add(new JLabel("Nombre de joueurs"));
 		jp_numberOfPlayers.add(jcb_nbOfPlayers);
 		
 		jp_previousNext.add(jb_back);
 		jp_previousNext.add(jb_start);
-		
-		playerPanel.add(new JLabel("Joueur"));
-		playerPanel.add(new JLabel("Gauche"));
-		playerPanel.add(new JLabel("Droite"));
 		
 		jb_back.addActionListener(new ActionListener() {
 			
@@ -93,42 +122,30 @@ public class LocalGame extends JFrame{
 			}
 		});
 		
-		
-		availableProfiles = ProfileFileManager.getProfiles();
-		
-		Vector<Integer> v = new Vector<>();
-		v.add(1);
-		v.add(2);
-		v.add(3);
-		v.add(4);
-		v.add(5);
-		v.add(6);
-		
-		jcb_nbOfPlayers = new JComboBox<>(v);
-		
 		jcb_nbOfPlayers.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				System.out.println("Action called");
+				
 				int previousNbOfPlayers = players.size();
 				int newNbOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
 				
+				System.out.println("previous " + previousNbOfPlayers + " new " + newNbOfPlayers);
 				if(previousNbOfPlayers < newNbOfPlayers){
 					
 					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){
-						LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
-						players.add(lps);
 						
-						playerPanel.repaint();
+						addLocalProfile();
 					}
 					
 				}
 				else
-					for(int i = previousNbOfPlayers ; i > newNbOfPlayers ; --i){
+					for(int i = previousNbOfPlayers - 1 ; i >= newNbOfPlayers ; --i){
 						
 						LocalProfileSelector lps = players.get(i);
-						players.remove(i-1);
+						players.remove(i);
 						
 						playerPanel.remove(lps.getJc_playerSelector());
 						playerPanel.remove(lps.getLeftButton());
@@ -139,7 +156,7 @@ public class LocalGame extends JFrame{
 			}
 		});
 		
-		
+		this.setVisible(true);
 		
 		
 	}
@@ -178,6 +195,16 @@ public class LocalGame extends JFrame{
 		}
 		
 		return false;
+	}
+
+	private void addLocalProfile() {
+		
+		LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
+		players.add(lps);
+		
+		playerPanel.validate();
+		playerPanel.repaint();
+		
 	}
 
 
