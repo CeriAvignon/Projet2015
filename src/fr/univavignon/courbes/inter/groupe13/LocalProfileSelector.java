@@ -29,6 +29,12 @@ public class LocalProfileSelector {
 	
 	private ControllableProfile c_profile;
 	
+	/**
+	 * Constructor only used by the client. Call the standard constructor and add 2 buttons (the first one to send a profile to the server, the second one to remove a profile from the server)
+	 * @param players
+	 * @param cg
+	 * @param jp
+	 */
 	public LocalProfileSelector(Vector<PrintableProfile> players, final ClientGame cg, final JPanel jp){
 		this(players, jp);
 		
@@ -41,7 +47,8 @@ public class LocalProfileSelector {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cg.addLocalProfileSelector();
+
+					cg.addLocalProfileSelector();
 			}
 		});
 		
@@ -90,17 +97,36 @@ public class LocalProfileSelector {
 		jp.add(this.jc_playerSelector);
 		jp.add(this.leftButton);
 		jp.add(this.rightButton, "wrap");
+		
+		c_profile = new ControllableProfile();
+		c_profile.setProfile(players.get(0).getProfile());
+		
+		rightButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rightButton.setText("?");
+			}
+		});
+		
+		leftButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				leftButton.setText("?");
+			}
+		});
 
 		rightButton.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-	   		   rightButton.setText(KeyEvent.getKeyText(e.getKeyCode()));
-	   		   c_profile.setRight(e);
 			}
 			
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+				rightButton.setText(KeyEvent.getKeyText(e.getKeyCode()));
+		   		c_profile.setRight(e);}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {}
@@ -110,15 +136,34 @@ public class LocalProfileSelector {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-	   		   leftButton.setText(KeyEvent.getKeyText(e.getKeyCode()));
-	   		   c_profile.setLeft(e);
 			}
 			
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+				leftButton.setText(KeyEvent.getKeyText(e.getKeyCode()));
+	   		   c_profile.setLeft(e);
+	   		}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {}
+		});
+		
+
+		jc_playerSelector.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PrintableProfile pp = (PrintableProfile)jc_playerSelector.getSelectedItem();
+				ControllableProfile previous_profile = c_profile;
+				c_profile = new ControllableProfile();
+				c_profile.setProfile(pp.getProfile());
+				c_profile.setLeft(previous_profile.getLeft());
+				c_profile.setRight(previous_profile.getRight());
+				
+				System.out.println("previous: " + previous_profile.getProfile().userName);
+				System.out.println(c_profile.getProfile().userName);
+				
+			}
 		});
 	}
 

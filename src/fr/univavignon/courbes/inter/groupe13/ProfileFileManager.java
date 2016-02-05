@@ -16,7 +16,7 @@ public class ProfileFileManager {
 	
 
 	private static String fileName = "res/profiles/profiles.txt"; 
-	
+		
 	public static Vector<PrintableProfile> getProfiles() {
 		
 		Vector<PrintableProfile> result = new Vector<>();
@@ -33,8 +33,8 @@ public class ProfileFileManager {
 	    		  if(elem.length >= 3){
 	    		  
 	    			  Profile p = new Profile();
-	    			  p.userName = elem[0];
-	    			  p.country = elem[1];
+	    			  p.userName = elem[0].trim();
+	    			  p.country = elem[1].trim();
 	    			  p.score = Integer.parseInt(elem[2].trim());
 	    			  
 	    			  PrintableProfile pp = new PrintableProfile();

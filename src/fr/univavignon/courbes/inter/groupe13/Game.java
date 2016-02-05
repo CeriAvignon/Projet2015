@@ -1,18 +1,28 @@
 package fr.univavignon.courbes.inter.groupe13;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.List;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JPanel;
 
-import fr.univavignon.courbes.common.*;
-import fr.univavignon.courbes.graphics.*;
-import fr.univavignon.courbes.physics.*;
+import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.physics.PhysicsEngine;
 import fr.univavignon.courbes.physics.groupe16.Round;
 
 public class Game extends Window{
@@ -25,19 +35,36 @@ public class Game extends Window{
 	private int ids[];
 	private Map<Integer, Direction> commands;
 	private Map<Integer,int[]> commandsPlayer;
+	private ArrayList<LocalProfileSelector> players;
 	
 	/**
 	 * Créer une fenêtre contenant le plateau du jeu et les données du jeu.
 	 * @param width  Largeur de la fenêtre.
 	 * @param height Hauteur de la fenêtre.
 	 */
-	public Game(int width, int height) 
+	public Game(int width, int height, ArrayList<LocalProfileSelector> players) 
 	{
 		super( width, height);
 		tempWidth=width;
 		tempHeight=height;
+		this.players = players;
+		
 		commandsPlayer =  new HashMap<>();
+		
+		/* For each player */
+		for(LocalProfileSelector lps : players){
+			
+			/* Set its keys */
+			KeyEvent left = lps.getC_profile().getLeft();
+			KeyEvent right = lps.getC_profile().getLeft();
+			
+			int[] playerKeys = new int[2];
+			playerKeys[0] = left.getKeyCode();
+			playerKeys[1] = right.getKeyCode();
+			
+		}
 //		commandsPlayer = _commandsPlayer;
+		
 		JPanel game = new JPanel(new GridBagLayout());
 		game.setPreferredSize(new Dimension(100, 100));
 		gameBoard = new JPanel(new GridLayout());
@@ -144,7 +171,7 @@ public class Game extends Window{
 				catch(InterruptedException ex) {Thread.currentThread().interrupt();}
 		 }
 		 setVisible(false);
-		 new Game(tempWidth, tempHeight);
+//		 new Game(tempWidth, tempHeight);
 	 }
 		
 

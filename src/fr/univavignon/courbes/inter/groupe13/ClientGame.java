@@ -27,7 +27,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 	
 	List<LocalProfileSelector> local_players;
 	List<RemoteProfile> remote_players;
-	Vector<Profile> availableProfiles;
+	Vector<PrintableProfile> availableProfiles;
 	
 	JPanel localPlayerPanel;
 	JPanel remotePlayerPanel;
@@ -92,15 +92,17 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 				}
 				else{
 					JOptionPane.showMessageDialog(ClientGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
-							"<br>- plusieurs profiles sont identiques (même id) ;" +
-							"<br>- une touche est assignée plusieurs fois.</html>");
+							"<br>- tous les profils sont définis et différents ;" +
+							"<br>- toutes les commandes sont définies et différentes.</html>");
 				}
 			}
 		});
 		
 		/* Add one profile selector (a new one is added when the profile selected) */
 		addLocalProfileSelector();
+		
+		this.setTitle("Partie réseau (client)");
+		this.setVisible(true);
 		
 	}
 
@@ -192,19 +194,21 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 			int key1_1 = cp1.getLeft().getKeyCode();
 			int key1_2 = cp1.getRight().getKeyCode();
 			
-			if(key1_1 == key1_2 || cp1.getProfile() == null)
+			if(key1_1 == key1_2 || cp1.getProfile() == null || key1_1 == -1 || key1_2 == -1)
 				isReady = false;
 			
 			for(int j = i+1 ; j < local_players.size() - 1 ; ++j){
 				
 				ControllableProfile cp2 = local_players.get(j).getC_profile();
-				int key2_1 = cp2.getLeft().getKeyCode();
-				int key2_2 = cp2.getRight().getKeyCode();
+				int key2_1 = cp2.getLeftKeyCode();
+				int key2_2 = cp2.getRightKeyCode();
 				
 				if(key1_1 == key2_1 
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
+						|| key2_1 == -1
+						|| key2_2 == -1
 						|| cp2.getProfile() == null
 						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)){
 					isReady = false;

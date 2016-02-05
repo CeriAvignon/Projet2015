@@ -35,7 +35,7 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 	JButton jb_back = new JButton("Retour");
 	JButton jb_ready = new JButton("Prêt");
 	JButton jb_start = new JButton("Démarrer");
-	Vector<Profile> availableProfiles;
+	Vector<PrintableProfile> availableProfiles;
 	
 	int currentNumberOfPlayers = 0;
 	
@@ -116,9 +116,8 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 				}
 				else{
 					JOptionPane.showMessageDialog(ServerGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
-							"<br>- plusieurs profiles sont identiques (même id) ;" +
-							"<br>- une touche est assignée plusieurs fois.</html>");
+							"<br>- tous les profils sont définis et différents ;" +
+							"<br>- toutes les commandes sont définies et différentes.</html>");
 				}
 			}
 		});		
@@ -162,6 +161,10 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 			}
 		});
 		
+
+		this.setTitle("Partie réseau (seveur)");
+		this.setVisible(true);
+		
 	}
 	
 	//TODO Utiliser UUID pour les profils
@@ -176,22 +179,24 @@ public class ServerGame extends JFrame implements ServerProfileHandler{
 		for(int i = 0 ; i < local_players.size() - 1  ; ++i){
 			
 			ControllableProfile cp1 = local_players.get(i).getC_profile();
-			int key1_1 = cp1.getLeft().getKeyCode();
-			int key1_2 = cp1.getRight().getKeyCode();
+			int key1_1 = cp1.getLeftKeyCode();
+			int key1_2 = cp1.getRightKeyCode();
 			
-			if(key1_1 == key1_2 || cp1.getProfile() == null)
+			if(key1_1 == key1_2 || cp1.getProfile() == null || key1_1 == -1 || key1_2 == -1)
 				isReady = false;
 			
 			for(int j = i+1 ; j < local_players.size() - 1 ; ++j){
 				
 				ControllableProfile cp2 = local_players.get(j).getC_profile();
-				int key2_1 = cp2.getLeft().getKeyCode();
-				int key2_2 = cp2.getRight().getKeyCode();
+				int key2_1 = cp2.getLeftKeyCode();
+				int key2_2 = cp2.getRightKeyCode();
 				
 				if(key1_1 == key2_1 
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
+						|| key2_1 == -1
+						|| key2_2 == -1
 						|| cp2.getProfile() == null
 						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)){
 					isReady = false;

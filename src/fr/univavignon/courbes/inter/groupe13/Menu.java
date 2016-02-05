@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -51,13 +52,14 @@ public class Menu extends Window{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				setVisible(false);
-				
-				new LocalGame(Menu.this);
-				
-//				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//				int width = (int)screenSize.getWidth();
-//				int height= (int)screenSize.getHeight();			
+				if(ProfileFileManager.getProfiles().size() > 1){
+					setVisible(false);
+					new LocalGame(Menu.this);
+				}
+				else
+					JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer une partie locale, vous devez avoir défini au minimum 2 profils." +
+				"<br>(pour définir des profils, cliquez sur \"Profils\")</html>");
+						
 //				new Game(width, height);
 			}
 		});
@@ -67,8 +69,13 @@ public class Menu extends Window{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				setVisible(false);
-				new ServerGame(Menu.this);
+				if(ProfileFileManager.getProfiles().size() > 0){
+					setVisible(false);
+					new ServerGame(Menu.this);
+				}
+				else
+					JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer un serveur, vous devez avoir défini au minimum 1 profil." +
+				"<br>(pour définir des profils, cliquez sur \"Profils\")</html>");
 //				new Network(width, height, false);
 				
 			}
@@ -79,8 +86,12 @@ public class Menu extends Window{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				setVisible(false);
-				new JoinServer(Menu.this);
+				if(ProfileFileManager.getProfiles().size() > 0){
+					setVisible(false);
+					new JoinServer(Menu.this);
+				}
+				JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer un client, vous devez avoir défini au minimum 1 profil." +
+			"<br>(pour définir des profils, cliquez sur \"Profils\")</html>");
 //				new Network(width, height, true);
 				
 			}

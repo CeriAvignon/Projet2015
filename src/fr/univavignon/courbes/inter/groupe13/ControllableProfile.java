@@ -8,6 +8,7 @@ public class ControllableProfile extends PrintableProfile{
 	
 	private KeyEvent left;
 	private KeyEvent right;
+	
 	public KeyEvent getLeft() {
 		return left;
 	}
@@ -19,6 +20,14 @@ public class ControllableProfile extends PrintableProfile{
 	}
 	public void setRight(KeyEvent right) {
 		this.right = right;
+	}
+	
+	public int getLeftKeyCode(){
+		return left == null ? -1 : left.getKeyCode();
+	}
+	
+	public int getRightKeyCode(){
+		return right == null ? -1 : right.getKeyCode();
 	}
 
 }
