@@ -26,19 +26,17 @@ import fr.univavignon.courbes.common.Profile;
 public class LocalGame extends JFrame{
 
 	JComboBox<Integer> jcb_nbOfPlayers;
-	List<LocalProfileSelector> players;
+	ArrayList<LocalProfileSelector> players;
 	Vector<PrintableProfile> availableProfiles;
-	Menu m;
 	
 	JButton jb_back = new JButton("Retour");
 	JButton jb_start = new JButton("Démarrer");
 	JPanel playerPanel;
 	
-	public LocalGame(Menu m){
+	public LocalGame(final Menu m){
 		
 		super();
 		
-		this.m = m;
 		this.setSize(new Dimension(400,380));
 		players = new ArrayList<>();
 		
@@ -95,7 +93,7 @@ public class LocalGame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 
 				LocalGame.this.dispatchEvent(new WindowEvent(LocalGame.this, WindowEvent.WINDOW_CLOSING));
-				LocalGame.this.m.setVisible(true);
+				m.setVisible(true);
 				
 			}
 		});
@@ -111,7 +109,7 @@ public class LocalGame extends JFrame{
 					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 					int width = (int)screenSize.getWidth();
 					int height= (int)screenSize.getHeight();			
-					new Game(width, height);
+					new Game(width, height, players);
 				}
 				else{
 					JOptionPane.showMessageDialog(LocalGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
@@ -129,7 +127,6 @@ public class LocalGame extends JFrame{
 				int previousNbOfPlayers = players.size();
 				int newNbOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
 				
-				System.out.println("previous " + previousNbOfPlayers + " new " + newNbOfPlayers);
 				if(previousNbOfPlayers < newNbOfPlayers){
 					
 					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){

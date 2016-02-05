@@ -22,7 +22,7 @@ public class RemoteProfileSelector {
 	
 	private PrintableProfile profile;
 	
-	public RemoteProfileSelector(final ServerGame sg, final JPanel jp, Profile p){
+	public RemoteProfileSelector(final ServerSelectLocalPlayers sg, final JPanel jp, Profile p){
 
 		profile = new PrintableProfile();
 		profile.setProfile(p);

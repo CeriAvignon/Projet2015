@@ -196,7 +196,7 @@ public class Registration extends Window {
 			bw.newLine();
 			bw.close();
 			setVisible(false);
-			new Menu(tempWidth,tempHeight);
+			new Menu();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -227,7 +227,7 @@ public class Registration extends Window {
 		public void actionPerformed(ActionEvent arg0) 
 		{  
 			setVisible(false);
-			new Menu(tempWidth,tempHeight);
+			new Menu();
 		}
 	}
 }

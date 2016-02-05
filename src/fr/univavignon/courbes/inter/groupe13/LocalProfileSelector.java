@@ -23,7 +23,7 @@ public class LocalProfileSelector {
 	private JButton rightButton = new JButton("Non défini");
 	
 	private JButton sendProfileToServer = new JButton("Envoyer au serveur");
-	private JButton removeFromServer = new JButton("Retirer du serveur");
+	private JButton remove = new JButton("Retirer");
 
 	private JComboBox<PrintableProfile> jc_playerSelector;
 	
@@ -36,12 +36,12 @@ public class LocalProfileSelector {
 	 * @param jp
 	 */
 	public LocalProfileSelector(Vector<PrintableProfile> players, final ClientGame cg, final JPanel jp){
-		this(players, jp);
+		this(players, jp, false);
 		
 		jp.add(sendProfileToServer);
-		jp.add(removeFromServer);
+		jp.add(remove, "wrap");
 
-		removeFromServer.setEnabled(false);
+		remove.setEnabled(false);
 		
 		jc_playerSelector.addActionListener(new ActionListener() {
 			
@@ -61,7 +61,7 @@ public class LocalProfileSelector {
 				sendProfileToServer.setText("Envoie...");
 				cg.getC().addProfile(c_profile.getProfile());
 				sendProfileToServer.setText("Envoyé");
-				removeFromServer.setEnabled(true);
+				remove.setEnabled(true);
 				jc_playerSelector.setEnabled(false);
 				
 				/* Add a new profile selector */
@@ -71,24 +71,54 @@ public class LocalProfileSelector {
 			}
 		});
 		
-		removeFromServer.addActionListener(new ActionListener() {
+		remove.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				removeFromServer.setText("Suppression...");
+				remove.setText("Suppression...");
 				cg.getC().removeProfile(c_profile.getProfile());
 				jp.remove(jc_playerSelector);
 				jp.remove(leftButton);
 				jp.remove(rightButton);
 				jp.remove(sendProfileToServer);
-				jp.remove(removeFromServer);
+				jp.remove(remove);
+				jp.validate();
 				jp.repaint();
 			}
 		});
 		
 	}
+
+	/**
+	 * Constructor used to create a default profile selector (1 combobox for the profile, 2 buttons for the directions)
+	 * @param players
+	 * @param jp
+	 */
+	public LocalProfileSelector(Vector<PrintableProfile> players, final JPanel jp, final ServerSelectLocalPlayers sslp){
+		this(players, jp, false);
+		
+		jp.add(remove, "wrap");
+
+		remove.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sslp.removeLocalProfile(LocalProfileSelector.this);
+			}
+		});
+	}
 	
+	/**
+	 * Constructor used to create a default profile selector (1 combobox for the profile, 2 buttons for the directions)
+	 * @param players
+	 * @param jp
+	 */
 	public LocalProfileSelector(Vector<PrintableProfile> players, JPanel jp){
+		this(players, jp, true);
+	}
+	
+	
+	private LocalProfileSelector(Vector<PrintableProfile> players, JPanel jp, boolean newLayoutLineAfterAdd){
 		
 		c_profile = new ControllableProfile();
 		
@@ -96,7 +126,11 @@ public class LocalProfileSelector {
 		
 		jp.add(this.jc_playerSelector);
 		jp.add(this.leftButton);
-		jp.add(this.rightButton, "wrap");
+		
+		if(newLayoutLineAfterAdd)
+			jp.add(this.rightButton, "wrap");
+		else
+			jp.add(this.rightButton);
 		
 		c_profile = new ControllableProfile();
 		c_profile.setProfile(players.get(0).getProfile());
@@ -160,9 +194,6 @@ public class LocalProfileSelector {
 				c_profile.setLeft(previous_profile.getLeft());
 				c_profile.setRight(previous_profile.getRight());
 				
-				System.out.println("previous: " + previous_profile.getProfile().userName);
-				System.out.println(c_profile.getProfile().userName);
-				
 			}
 		});
 	}
@@ -206,12 +237,12 @@ public class LocalProfileSelector {
 		this.sendProfileToServer = sendProfileToServer;
 	}
 
-	public JButton getRemoveFromServer() {
-		return removeFromServer;
+	public JButton getRemove() {
+		return remove;
 	}
 
-	public void setRemoveFromServer(JButton removeFromServer) {
-		this.removeFromServer = removeFromServer;
+	public void setRemoveFromServer(JButton remove) {
+		this.remove = remove;
 	}
 	
 	

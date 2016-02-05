@@ -29,8 +29,7 @@ public class Menu extends Window{
 	 */
 	public Menu() {
 		super(250, 190);
-		menuPlayer();
-		System.out.println("test");
+		menuPlayer(); 
 	}
 
 	/*
@@ -71,7 +70,7 @@ public class Menu extends Window{
 
 				if(ProfileFileManager.getProfiles().size() > 0){
 					setVisible(false);
-					new ServerGame(Menu.this);
+					new ServerSelectLocalPlayers(Menu.this);
 				}
 				else
 					JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer un serveur, vous devez avoir défini au minimum 1 profil." +
@@ -90,8 +89,9 @@ public class Menu extends Window{
 					setVisible(false);
 					new JoinServer(Menu.this);
 				}
-				JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer un client, vous devez avoir défini au minimum 1 profil." +
-			"<br>(pour définir des profils, cliquez sur \"Profils\")</html>");
+				else
+					JOptionPane.showMessageDialog(Menu.this, "<html>Pour démarrer un client, vous devez avoir défini au minimum 1 profil." +
+				"<br>(pour définir des profils, cliquez sur \"Profils\")</html>");
 //				new Network(width, height, true);
 				
 			}
