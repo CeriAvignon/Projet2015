@@ -17,9 +17,9 @@ public class ProfileFileManager {
 
 	private static String fileName = "res/profiles/profiles.txt"; 
 	
-	public static Vector<Profile> getProfiles() {
+	public static Vector<PrintableProfile> getProfiles() {
 		
-		Vector<Profile> result = new Vector<>();
+		Vector<PrintableProfile> result = new Vector<>();
 		
 		try {
 	      InputStream is = new FileInputStream(new File(fileName));
@@ -37,7 +37,9 @@ public class ProfileFileManager {
 	    			  p.country = elem[1];
 	    			  p.score = Integer.parseInt(elem[2].trim());
 	    			  
-	    			  result.add(p);
+	    			  PrintableProfile pp = new PrintableProfile();
+	    			  pp.setProfile(p);
+	    			  result.add(pp);
 	    			  
 	    		  }
 	    		  else

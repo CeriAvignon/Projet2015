@@ -25,11 +25,11 @@ public class LocalProfileSelector {
 	private JButton sendProfileToServer = new JButton("Envoyer au serveur");
 	private JButton removeFromServer = new JButton("Retirer du serveur");
 
-	private JComboBox<Profile> jc_playerSelector;
+	private JComboBox<PrintableProfile> jc_playerSelector;
 	
 	private ControllableProfile c_profile;
 	
-	public LocalProfileSelector(Vector<Profile> players, final ClientGame cg, final JPanel jp){
+	public LocalProfileSelector(Vector<PrintableProfile> players, final ClientGame cg, final JPanel jp){
 		this(players, jp);
 		
 		jp.add(sendProfileToServer);
@@ -81,7 +81,7 @@ public class LocalProfileSelector {
 		
 	}
 	
-	public LocalProfileSelector(Vector<Profile> players, JPanel jp){
+	public LocalProfileSelector(Vector<PrintableProfile> players, JPanel jp){
 		
 		c_profile = new ControllableProfile();
 		
@@ -146,11 +146,11 @@ public class LocalProfileSelector {
 		this.rightButton = rightButton;
 	}
 
-	public JComboBox<Profile> getJc_playerSelector() {
+	public JComboBox<PrintableProfile> getJc_playerSelector() {
 		return jc_playerSelector;
 	}
 
-	public void setJc_playerSelector(JComboBox<Profile> jc_playerSelector) {
+	public void setJc_playerSelector(JComboBox<PrintableProfile> jc_playerSelector) {
 		this.jc_playerSelector = jc_playerSelector;
 	}
 	public JButton getSendProfileToServer() {

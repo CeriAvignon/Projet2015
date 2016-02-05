@@ -27,7 +27,7 @@ public class LocalGame extends JFrame{
 
 	JComboBox<Integer> jcb_nbOfPlayers;
 	List<LocalProfileSelector> players;
-	Vector<Profile> availableProfiles;
+	Vector<PrintableProfile> availableProfiles;
 	Menu m;
 	
 	JButton jb_back = new JButton("Retour");
