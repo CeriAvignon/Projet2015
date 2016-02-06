@@ -19,7 +19,6 @@ package fr.univavignon.courbes.physics.simpleimpl;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -152,6 +151,32 @@ public class GraphicTools
 	}
 	
 	/**
+	 * Reçoit en paramètre un polygone dont seule la bordure est tracée,
+	 * et un point situé à l'intérieur du polygone, puis remplit récursivement
+	 * l'intérieur du polygone. 
+	 * <br/>
+	 * On appelle cet algorithme le <i>remplissage par frontière</i> ou 
+	 * <a href="https://fr.wikipedia.org/wiki/Algorithme_de_remplissage_par_diffusion">
+	 * par diffusion</a>. À noter que des algorithmes computationnellement plus efficaces 
+	 * (mais plus complexes à implémenter) existent.
+	 * 
+	 * @param result
+	 * 		Ensemble de points représentant le polygone à compléter.
+	 * @param seed
+	 * 		Point situé à l'intérieur du polygone.
+	 */
+	public static void fillPolygon(Set<Position> result, Position seed)
+	{	Position pos = seed;
+		if(!result.contains(pos))
+		{	result.add(pos);
+			fillPolygon(result,new Position(pos.x-1,pos.y));
+			fillPolygon(result,new Position(pos.x+1,pos.y));
+			fillPolygon(result,new Position(pos.x,pos.y-1));
+			fillPolygon(result,new Position(pos.x,pos.y+1));
+		}
+	}
+
+	/**
 	 * Calcule les points constituant un rectangle. Les points {@code pos1} et {@code pos2} correspondent
 	 * aux centres de deux côtés opposés de ce rectangle, tandis que {@code side} est la longueur
 	 * de ces mêmes côtés.
@@ -167,25 +192,30 @@ public class GraphicTools
 	 */
 	public static Set<Position> processRectangle(Position pos1, Position pos2, int side)
 	{	Set<Position> result = new TreeSet<Position>();
-		List<Position> segment1;
-		List<Position> segment2;
+		List<Position> segment1,segment2,segment3,segment4;
+		Position[] temp1 = new Position[2];
+		Position[] temp2 = new Position[2];
 		
 		// cas particulier : perpendiculaires verticales
-		if(pos1.x==pos2.x)
+		if(pos1.y==pos2.y)
 		{	// premier segment
-			Position[] temp1 = {new Position(pos1.x,pos1.y-side/2),new Position(pos1.x,pos1.y+side/2)};
+			temp1[0] = new Position(pos1.x,pos1.y-side/2);
+			temp1[1] = new Position(pos1.x,pos1.y+side/2);
 			segment1 = processSegment(temp1[0], temp1[1]);
 			// second segment
-			Position[] temp2 = {new Position(pos2.x,pos2.y-side/2),new Position(pos2.x,pos2.y+side/2)};
+			temp2[0] = new Position(pos2.x,pos2.y-side/2);
+			temp2[1] = new Position(pos2.x,pos2.y+side/2);
 			segment2 = processSegment(temp2[0], temp2[1]);
 		}
 		// cas particulier : perpendiculaires horizontales
-		else if(pos1.y==pos2.y)
+		else if(pos1.x==pos2.x)
 		{	// premier segment
-			Position[] temp1 = {new Position(pos1.x-side/2,pos1.y),new Position(pos1.x+side/2,pos1.y)};
+			temp1[0] = new Position(pos1.x-side/2,pos1.y);
+			temp1[1] = new Position(pos1.x+side/2,pos1.y);
 			segment1 = processSegment(temp1[0], temp1[1]);
 			// second segment
-			Position[] temp2 = {new Position(pos2.x-side/2,pos2.y),new Position(pos2.x+side/2,pos2.y)};
+			temp2[0] = new Position(pos2.x-side/2,pos2.y);
+			temp2[1] = new Position(pos2.x+side/2,pos2.y);
 			segment2 = processSegment(temp2[0], temp2[1]);
 		}
 		// cas général
@@ -201,29 +231,44 @@ public class GraphicTools
 			float d2 = pos1.y - c*pos1.x;
 		
 			// coordonnées des points à l'intersection entre la première perpendiculaire et le premier cercle
-			Position[] temp = processCircleLineIntersection(pos2.x, pos2.y, side, c, d1);
+			temp1 = processCircleLineIntersection(pos2.x, pos2.y, side/2, c, d1);
 			// segment allant d'un point à l'autre
-			segment1 = processSegment(temp[0], temp[1]);
+			segment1 = processSegment(temp1[0], temp1[1]);
 			// coordonnées des points à l'intersection entre la seconde perpendiculaire et le second cercle
-			temp = processCircleLineIntersection(pos1.x, pos1.y, side, c, d2);
+			temp2 = processCircleLineIntersection(pos1.x, pos1.y, side/2, c, d2);
 			// segment allant d'un point à l'autre
-			segment2 = processSegment(temp[0], temp[1]);
+			segment2 = processSegment(temp2[0], temp2[1]);
 		}
 		
-		// pour chaque point du premier segment
-		Iterator<Position> it2 = segment2.iterator();
-		for(Position p1: segment1)
-		{	// on considère son correspondant dans le second segment
-			Position p2 = it2.next();
-			// on calcule la droite allant de l'un à l'autre
-			List<Position> segment = processSegment(p1,p2);
-			// on l'ajoute au résultat
-			result.addAll(segment);
-		}
+// marche pas si rectangle pas horizontal ou vertical		
+//		// pour chaque point du premier segment
+//		Iterator<Position> it2 = segment2.iterator();
+//		for(Position p1: segment1)
+//		{	// on considère son correspondant dans le second segment
+//			Position p2 = it2.next();
+//			// on calcule la droite allant de l'un à l'autre
+//			List<Position> segment = processSegment(p1,p2);
+//			// on l'ajoute au résultat
+//			result.addAll(segment);
+//		}
+		
+		// on déduit les 2 autres segments 
+		segment3 = processSegment(temp1[0],temp2[0]);
+		segment4 = processSegment(temp1[1],temp2[1]);
+		
+		// on initialise l'ensemble de points avec les 4 côtés du rectangle
+		result.addAll(segment1);
+		result.addAll(segment2);
+		result.addAll(segment3);
+		result.addAll(segment4);
+		
+		// on remplit le polygone obtenu
+		Position pos = new Position((pos1.x + pos2.x)/2, (pos1.y + pos2.y)/2);
+		fillPolygon(result, pos);
 		
 		return result;
 	}
-	
+		
 	/**
 	 * Calcule les pixels formant un disque de centre {@code center}
 	 * et de rayon {@code radius}.

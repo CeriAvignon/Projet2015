@@ -58,7 +58,9 @@ public class MySnake extends Snake
 		Random random = new Random();
 		int marginX = board.width / 10;	// marge de sécurité: un dixième de l'aire de jeu
 		currentX = random.nextInt(board.width-2*marginX) + marginX; // on tire une valeur entre margin et width-1-margin
+		realX = currentX;
 		int marginY = board.height / 10;
+		realY = currentY;
 		currentY = random.nextInt(board.height-2*marginY) + marginY;	// pareil entre margin et height-1-margin
 		
 		trail = new TreeSet<Position>();
@@ -81,6 +83,10 @@ public class MySnake extends Snake
 	private transient long timeSinceLastHole;
 	/** Taille courante d'un trou (en pixels) */
 	public transient int currentHoleWidth;
+	/** Position en abscisse de la tête exprimée avec un réel */
+	private float realX;
+	/** Position en ordonnée de la tête exprimée avec un réel */
+	private float realY;
 	
 	/**
 	 * Réinitialise les caractéristiques du serpent qui sont
@@ -178,6 +184,8 @@ public class MySnake extends Snake
 		float dist = elapsedTime*movingSpeed;
 		
 		// conversion de polaire vers cartésien
+if(currentAngle!=0)
+	System.out.print("");
 		double tempX = dist*Math.cos(currentAngle);
 		double tempY = dist*Math.sin(currentAngle);
 		
@@ -288,9 +296,12 @@ public class MySnake extends Snake
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
-				boolean changed = physicalTrail.removeAll(snake.trail);
-				if(changed)
-					eliminatedBy = i;
+				// que pour les autres serpents, bien entendu
+				if(snake!=this)
+				{	boolean changed = physicalTrail.removeAll(snake.trail);
+					if(changed)
+						eliminatedBy = i;
+				}
 				i++;
 			}	
 		}

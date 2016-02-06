@@ -158,6 +158,7 @@ public class MyBoard extends Board
 	public void update(long elapsedTime, Direction[] commands)
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
+System.out.println("elapsedTime: "+elapsedTime);
 		
 		// si on est au début de jeu, on met le compteur à jour
 		updateEntrance(elapsedTime);
@@ -236,7 +237,7 @@ public class MyBoard extends Board
 		List<Integer> idx = new ArrayList<Integer>();
 		for(int i=0;i<snakes.length;i++)
 			idx.add(i);
-		Collections.shuffle(idx);
+//		Collections.shuffle(idx);
 		
 		// on traite ensuite chaque serpent, dans l'ordre prédéterminé
 		for(int i: idx)
@@ -246,7 +247,8 @@ public class MyBoard extends Board
 			if(dir==null)
 				dir = Direction.NONE;
 			snake.update(this,elapsedTime,dir);
-System.out.println(i+": "+snake.currentX+";"+snake.currentY);
+if(i==0)			
+System.out.println(i+": x="+snake.currentX+" -- y="+snake.currentY+" -- angle="+snake.currentAngle);
 		}
 	}
 	

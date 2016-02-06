@@ -133,57 +133,66 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		System.exit(0);
 	}
 	
+	/** Nombre désiré de mises à jour physiques par seconde */
 	private final static int UPS = 60;
+	/** Nombre désiré de mises à jour graphiques par seconde */
 	private final static int FPS = 60;
+	/** Afficher les stats dans la console, pour le dégugage */
 	private final static boolean SHOW_STATS = true;
+	/** Délai associé à une itération forcée */
+	private final static long FORCED_ITERATION_STEP = 50;
 	
 	@Override
 	public void run()
-	{	
-		long initialTime = System.nanoTime();
-		final double timeU = 1000000000 / UPS;
-		final double timeF = 1000000000 / FPS;
-		double deltaU = 0, deltaF = 0;
-		int frames = 0, ticks = 0;
-		long timer = System.currentTimeMillis();
+	{	final double physDelay = 1000 / UPS;			// délai entre deux màj physiques en ms
+		final double graphDelay = 1000 / FPS;			// délai entre deux màj graphiques en ms
+		int phyUpdateNbr = 0;							// dernier nombre de màj physiques (stats)						
+		int graphUpdateNbr = 0;							// dernier nombre de màj graphiques (stats)
+		long elapsedStatTime = 0;						// temps écoulé depuis le dernier affichage des stats
+		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
+		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
+		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
 
 		while(running)
-		{	if(getPause() && !getPassIteration())
-			{	long currentTime = System.nanoTime();
-				initialTime = currentTime;
-				gd.update(round);
+		{	long currentTime = System.currentTimeMillis();
+			long elapsedTime = currentTime - previousTime;
+			previousTime = currentTime;
+			
+			// si on est en pause, on se contente de dessiner 
+			if(getPause() && !getPassIteration())
+			{	gd.update(round);
 			}
+			
 			else
-			{	long currentTime = System.nanoTime();
-				long elapsedTime = currentTime - initialTime;
+			{	// si on passe simplement une itération
 				if(getPassIteration())
 				{	setPassIteration(false);
-					elapsedTime = 250000000;
+					elapsedTime = FORCED_ITERATION_STEP;	// on fait simplement un pas de FORCED_ITERATION_STEP ms
 				}
-				deltaU += (currentTime - initialTime) / timeU;
-				deltaF += (currentTime - initialTime) / timeF;
-				initialTime = currentTime;
-	
-				if (deltaU >= 1)
+				
+				elapsedPhysTime = elapsedPhysTime + elapsedTime;
+				elapsedGraphTime = elapsedGraphTime + elapsedTime;
+				elapsedStatTime = elapsedStatTime + elapsedTime;
+				
+				if(elapsedPhysTime/physDelay >= 1)
 				{	Direction[] directions = retrieveDirections();
-					pe.update(elapsedTime/1000000, directions);
-					ticks++;
-					deltaU--;
+					pe.update(elapsedPhysTime, directions);
+					phyUpdateNbr++;
+					elapsedPhysTime = 0;
 				}
 	
-				if (deltaF >= 1)
+				if(elapsedGraphTime/graphDelay >= 1)
 				{	gd.update(round);
-					frames++;
-					deltaF--;
+					graphUpdateNbr++;
+					elapsedGraphTime = 0;
 				}
 	
-				if (System.currentTimeMillis() - timer > 1000)
+				if(elapsedStatTime >= 1000)
 				{	if(SHOW_STATS)
-					{	System.out.println(String.format("UPS: %s, FPS: %s", ticks, frames));
-					}
-					frames = 0;
-					ticks = 0;
-					timer += 1000;
+						System.out.println("UPS: "+phyUpdateNbr+" -- FPS: "+graphUpdateNbr);
+					graphUpdateNbr = 0;
+					phyUpdateNbr = 0;
+					elapsedStatTime = 0;
 				}
 			}
 		}
@@ -270,3 +279,9 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 	{	//
 	}
 }
+
+// TODO
+// problèmes :
+//	- pointillés reprennent pas en rectangle (à cause du cercle final dessiné sur l'ancienne position)
+//		>> faudra juste ne pas dessiner l'un des deux disques quand on sort du mode fly ou entrance ou pointillé
+//	- le serpent ne bouge pas quand on sort de pause

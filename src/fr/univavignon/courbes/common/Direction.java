@@ -29,10 +29,10 @@ import java.io.Serializable;
  */
 public enum Direction implements Serializable
 {	/** L'utilisateur veut tourner à gauche */
-	LEFT(+1),
+	LEFT(-1),
 	
 	/** L'utilisateur veut tourner à droite */
-	RIGHT(-1),
+	RIGHT(+1),
 	
 	/** L'utilisateur ne change pas de direction */
 	NONE(0);
