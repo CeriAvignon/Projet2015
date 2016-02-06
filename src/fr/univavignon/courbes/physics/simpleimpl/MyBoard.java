@@ -99,21 +99,15 @@ public class MyBoard extends Board
 	 */
 	public void initDemo(Player[] players)
 	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
-		snakes = new Snake[players.length];
-		for(int i=0;i<players.length;i++)
-		{	MySnake snake = new MySnake(i,this);
-			snake.movingSpeed = 0;	// on force leur vitesse à zéro
-			snakes[i] = snake;
-		}
-		// seul le premier joueur a une vitesse de déplacement non-nulle
-		snakes[0].movingSpeed = Constants.BASE_MOVING_SPEED;
-		// on place le premier joueur
-		snakes[0].currentX = width*3/4;
-		snakes[0].currentY = height*3/4;
-		snakes[0].currentAngle = 0;
-		// on centre le second joueur
-		snakes[1].currentX = width/2;
-		snakes[1].currentY = height/2;
+		snakes = new Snake[2];
+		// premier joueur
+		MySnake snake0 = new MySnake(0,this,width*3/4,height*3/4);
+		snakes[0] = snake0;
+		snake0.currentAngle = 0;
+		// second joueur
+		MySnake snake1 = new MySnake(1,this,width/2,height/2);
+		snakes[1] = snake1;
+		snake1.movingSpeed = 0;	// ce joueur ne doit pas bouger
 		
 		// on rajoute un bout de trainée au deuxième serpent, pour pouvoir tester les collisions
 		int x1 = snakes[1].currentX;
@@ -248,7 +242,7 @@ System.out.println("elapsedTime: "+elapsedTime);
 				dir = Direction.NONE;
 			snake.update(this,elapsedTime,dir);
 if(i==0)			
-System.out.println(i+": x="+snake.currentX+" -- y="+snake.currentY+" -- angle="+snake.currentAngle);
+System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+snake.currentAngle);
 		}
 	}
 	

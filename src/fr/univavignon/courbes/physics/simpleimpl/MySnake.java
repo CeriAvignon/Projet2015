@@ -53,6 +53,7 @@ public class MySnake extends Snake
 	public MySnake(int playerId, Board board)
 	{	this.playerId = playerId;
 		
+		movingSpeed = Constants.BASE_MOVING_SPEED;
 		resetCharacs();
 		
 		Random random = new Random();
@@ -60,13 +61,13 @@ public class MySnake extends Snake
 		currentX = random.nextInt(board.width-2*marginX) + marginX; // on tire une valeur entre margin et width-1-margin
 		realX = currentX;
 		int marginY = board.height / 10;
-		realY = currentY;
 		currentY = random.nextInt(board.height-2*marginY) + marginY;	// pareil entre margin et height-1-margin
+		realY = currentY;
 		
 		trail = new TreeSet<Position>();
 
 		currentAngle = (float)(Math.random()*Math.PI*2);	// on tire une valeur réelle entre 0 et 2pi
-		
+				
 		eliminatedBy = null;
 		
 		remainingHole = 0;
@@ -74,7 +75,30 @@ public class MySnake extends Snake
 		
 		currentItems = new LinkedList<ItemInstance>();
 	}
-	
+
+	/**
+	 * Crée le serpent associé au numéro indiqué, pour le profil
+	 * indiqué, sur l'aire de jeu indiquée,à l'emplacement indiqué
+	 * (méthode utilisée pour le mode démo).
+	 * 
+	 * @param playerId
+	 * 		Numéro du joueur dans la manche en cours.
+	 * @param board
+	 * 		Aire de jeu de la manche en cours.
+	 * @param x
+	 * 		Position en abscisse.
+	 * @param y
+	 * 		Position en ordonnée.
+	 */
+	public MySnake(int playerId, Board board, int x, int y)
+	{	this(playerId,board);
+		
+		currentX = x;
+		realX = currentX;
+		currentY = y;
+		realY = currentY;
+	}
+
 	/** Rayon de la tête du serpent lors de la précédente itération (en pixels) */
 	private transient int previousHeadRadius;
 	/** Nombre de pixels restants pour terminer le trou courant */
@@ -190,9 +214,9 @@ if(currentAngle!=0)
 		double tempY = dist*Math.sin(currentAngle);
 		
 		// translation vers les coordonnées réelles de l'aire de jeu
-		int x = currentX + (int)tempX;
-		int y = currentY + (int)tempY;
-		Position result = new Position(x,y);		
+		realX = realX + (float)tempX;
+		realY = realY + (float)tempY;
+		Position result = new Position((int)Math.round(realX),(int)Math.round(realY));		
 		
 		return result;
 	}
@@ -343,7 +367,7 @@ if(currentAngle!=0)
 		if(inversion)
 			direction = direction.getInverse();
 		float delta = elapsedTime*turningSpeed*direction.value;
-		currentAngle = (float)((currentAngle + delta + 2*Math.PI) % Math.PI);
+		currentAngle = (float)((currentAngle + delta + 2*Math.PI) % (2*Math.PI));
 	}
 
 	/**

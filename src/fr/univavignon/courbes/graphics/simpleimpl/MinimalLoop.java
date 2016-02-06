@@ -284,4 +284,4 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 // problèmes :
 //	- pointillés reprennent pas en rectangle (à cause du cercle final dessiné sur l'ancienne position)
 //		>> faudra juste ne pas dessiner l'un des deux disques quand on sort du mode fly ou entrance ou pointillé
-//	- le serpent ne bouge pas quand on sort de pause
+//	- faudrait simplifier le tracé : ne faire qu'un segment normal au sens de déplacement. 

@@ -46,7 +46,7 @@ public class Constants
 	public static final float MOVING_SPEED_COEFF = 3f;
 	
 	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float BASE_TURNING_SPEED = (float)(0.0002*Math.PI);
+	public static final float BASE_TURNING_SPEED = (float)(0.0005*2*Math.PI);
 	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
 	public static final float TURNING_COEFF = 3f;
 	
