@@ -46,9 +46,9 @@ public class Constants
 	public static final float MOVING_SPEED_COEFF = 3f;
 	
 	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float BASE_TURNING_SPEED = (float)(0.0005*2*Math.PI);
+	public static final float BASE_TURNING_SPEED = (float)(0.0004*2*Math.PI);
 	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
-	public static final float TURNING_COEFF = 3f;
+	public static final float TURNING_COEFF = 1.25f;
 	
 	/** Rayon initial de la tête d'un serpent, exprimé en pixels */ 
 	public static final int BASE_HEAD_RADIUS = 4;
@@ -67,7 +67,7 @@ public class Constants
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
-	public static final long ITEM_DURATION = 6000;
+	public static final long ITEM_DURATION = 70000;
 	/** Probabilité qu'un item apparaisse à chaque ms */
 	public static final float BASE_ITEM_POPUP_RATE = 0.00005f;
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */

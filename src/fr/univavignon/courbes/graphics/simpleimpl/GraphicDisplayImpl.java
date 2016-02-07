@@ -115,6 +115,9 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		// libérer ressources GUI ? (mais le GC s'en occupe...)
 	}
 	
+	/**
+	 * Crée l'image cache dans laquelle on va dessiner.
+	 */
 	private void initImage()
 	{	int width = boardPanel.getPreferredSize().width;
 		int height = boardPanel.getPreferredSize().height;

@@ -104,13 +104,13 @@ public class BoardDrawer
 	 * 		Objet graphique sur lequel on trace les serpents.
 	 */
 	public void drawBoard(Board board, Graphics g)
-    {	// on dessine d'abord la bordure
-		drawBorder(board, g);
-		
-        // puis les serpents
+    {	// on dessine d'abord les serpents
 		snakesDrawer.drawSnakes(board, g);
 		
-		// puis les items
+		// puis la bordure
+		drawBorder(board, g);
+				
+        // puis les items
 		itemDrawer.drawItems(board, g);
 		
 		// puis les auréoles des serpents

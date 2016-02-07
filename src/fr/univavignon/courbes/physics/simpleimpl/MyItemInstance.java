@@ -155,7 +155,7 @@ public class MyItemInstance extends ItemInstance
 		
 		// on met à jour le temps restant
 		remainingTime = remainingTime - elapsedTime;
-		boolean remove = remainingTime>0;
+		boolean remove = remainingTime<=0;
 		return remove;
 	}
 
@@ -185,7 +185,7 @@ public class MyItemInstance extends ItemInstance
 	
 		// on met à jour le temps restant
 		remainingTime = remainingTime - elapsedTime;
-		boolean remove = remainingTime>0;
+		boolean remove = remainingTime<=0;
 		return remove;
 	}
 	

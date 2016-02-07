@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeSet;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
@@ -118,6 +119,9 @@ public class MyBoard extends Board
 				snakes[1].trail.add(pos);
 			}
 		}
+		Position center = new Position(snakes[1].currentX,snakes[1].currentY);
+		Set<Position> disk = GraphicTools.processDisk(center, snakes[1].headRadius);
+		snakes[1].trail.addAll(disk);
 		
 		// on rajoute les items
 		int sep = (int)((width-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
@@ -231,7 +235,7 @@ System.out.println("elapsedTime: "+elapsedTime);
 		List<Integer> idx = new ArrayList<Integer>();
 		for(int i=0;i<snakes.length;i++)
 			idx.add(i);
-//		Collections.shuffle(idx);
+		Collections.shuffle(idx);
 		
 		// on traite ensuite chaque serpent, dans l'ordre prédéterminé
 		for(int i: idx)
@@ -319,10 +323,14 @@ System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+
 	 * 
 	 * @param position
 	 * 		Position à normaliser.
+	 * @return
+	 * 		Une nouvelle position correspondant à la normalisation de l'ancienne. 
 	 */
-	public void normalizePosition(Position position)
-	{	position.x = (position.x + width) % width;
-		position.y = (position.y + height) % height;
+	public Position normalizePosition(Position position)
+	{	int x = (position.x + width) % width;
+		int y = (position.y + height) % height;
+		Position result = new Position(x,y);
+		return result;
 	}
 
 	/**
@@ -331,9 +339,15 @@ System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+
 	 * 
 	 * @param positions
 	 * 		Ensemble de positions à normaliser.
+	 * @return
+	 * 		Un nouvel ensemble contenant les position normalisées. 
 	 */
-	public void normalizePositions(Set<Position> positions)
-	{	for(Position pos: positions)
-			normalizePosition(pos);
+	public Set<Position> normalizePositions(Set<Position> positions)
+	{	Set<Position> result = new TreeSet<Position>();
+		for(Position pos: positions)
+		{	Position copy = normalizePosition(pos);
+			result.add(copy);
+		}
+		return result;
 	}
 }

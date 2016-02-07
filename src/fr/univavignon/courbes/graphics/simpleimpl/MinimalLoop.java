@@ -66,15 +66,24 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		loop.start();
 	}
 	
+	/** Moteur physique */
 	private PhysicsEngine pe;
+	/** Moteur graphique */
 	private GraphicDisplay gd;
+	/** Panel utilisé pour dessiner l'aire de jeu */
 	private JPanel boardPanel;
+	/** Panel utilisé pour afficher le score */
 	private JPanel scorePanel;
-	private Board board;
+	/** Manche en cours */
 	private Round round;
+	/** Processus utilisé pour exécuter le jeu */
 	private Thread loopThread;
+	/** Indique si le jeu est en cours (permet de savoir si la manche est finie) */
 	private boolean running;
 	
+	/**
+	 * Instancie une boucle minimale.
+	 */
 	public MinimalLoop()
 	{	Profile p1 = new Profile();
 		p1.profileId = 1;
@@ -122,12 +131,18 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		addKeyListener(this);
 	}
 	
+	/**
+	 * Démarre la boucle minimale en créant le processus nécessaire.
+	 */
 	public synchronized void start()
 	{	running = true;
 		loopThread = new Thread(this,"Courbes");
 		loopThread.start();
 	}
 	
+	/**
+	 * Arrête la boucle minimale.
+	 */
 	public synchronized void stop()
 	{	running = false;
 		System.exit(0);
@@ -198,41 +213,86 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		}
 	}
 
+	/** Direction courante du seul joueur traité */
 	private Direction currentDirection = Direction.NONE;
 	
+	/**
+	 * Change la direction courante du seul joueur traité.
+	 * 
+	 * @param direction
+	 * 		Nouvelle direction du joueur.
+	 */
 	private synchronized void setDirection(Direction direction)
 	{	currentDirection = direction;
 	}
 	
+	/**
+	 * Retire la direction du joueur traité.
+	 * 
+	 * @param direction
+	 * 		Direction à annuler.
+	 */
 	private synchronized void unsetDirection(Direction direction)
 	{	if(currentDirection == direction)
 			currentDirection = Direction.NONE;
 	}
 	
+	/**
+	 * Renvoie la direction courante du seul joueur traité.
+	 * 
+	 * @return
+	 * 		Direction courante du joueur.
+	 */
 	private synchronized Direction[] retrieveDirections()
 	{	Direction[] result = {currentDirection,Direction.NONE};
 		return result;
 	}
 	
+	/** Indique si le jeu est en pause */
 	private boolean pause = true;
+	/** Indique si le joueur a demandé d'exécuter une seule itération (pendant la pause) */
 	private boolean passIteration = false;
-	
+	/** Enregistrement de l'état des touches (nécessaire pour l'exécution d'une itération) */
 	boolean keyState[] = new boolean[1000];
+	/** Enregistrement de l'état précédent des touches (nécessaire pour l'exécution d'une itération) */
 	boolean prevKeyState[] = new boolean[1000];
 	
+	/**
+	 * Bascule en/sort de pause.
+	 */
 	private synchronized void switchPause()
 	{	pause = !pause;
 	}
 	
+	/**
+	 * Indique si le jeu est en pause ou pas.
+	 * 
+	 * @return
+	 * 		{@code true} ssi le jeu est en pause.
+	 */
 	private synchronized boolean getPause()
 	{	boolean result = pause;
 		return result;
 	}
 	
+	/**
+	 * Modifie le flag indiquant si le joueur veut exécuter
+	 * une seule itération quand il est en mode pause.
+	 * 
+	 * @param passIteration
+	 * 		Nouvelle valeur du flag.
+	 */
 	private synchronized void setPassIteration(boolean passIteration)
 	{	this.passIteration = passIteration;
 	}
 	
+	/**
+	 * Indique si le joueur a demandé de passer une itération
+	 * lorsqu'il est en mode pause.
+	 * 
+	 * @return
+	 * 		{@code true} ssi le joueur veut passer une itération.
+	 */
 	private synchronized boolean getPassIteration()
 	{	boolean result = passIteration;
 		return result;
@@ -282,10 +342,5 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 
 // TODO
 // problèmes :
-//	- pointillés reprennent pas en rectangle (à cause du cercle final dessiné sur l'ancienne position)
-//		>> faudra juste ne pas dessiner l'un des deux disques quand on sort du mode fly ou entrance ou pointillé
-//	- faudrait simplifier le tracé : ne faire qu'un segment normal au sens de déplacement.
-//	- pb de collision : faut considérer seulement le demi-disque antérieur
-//	- pb de tracé : dessiner seulement la part de disque nécessaire lorsqu'on tourne
 //	- pb avec l'effet des item
 // 	- pb avec la disposition alétoire des items (trop près des bords)

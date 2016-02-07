@@ -64,6 +64,7 @@ public class MySnake extends Snake
 		int marginY = board.height / 10;
 		currentY = random.nextInt(board.height-2*marginY) + marginY;	// pareil entre margin et height-1-margin
 		realY = currentY;
+		prevPos = new Position(currentX,currentY);
 		
 		trail = new TreeSet<Position>();
 		prevDisks = new LinkedList<Set<Position>>();
@@ -99,6 +100,7 @@ public class MySnake extends Snake
 		realX = currentX;
 		currentY = y;
 		realY = currentY;
+		prevPos = new Position(currentX,currentY);
 	}
 
 	/** Nombre de pixels restants pour terminer le trou courant */
@@ -115,6 +117,8 @@ public class MySnake extends Snake
 	private LinkedList<Set<Position>> prevDisks;
 	/** Taille maximale de la file {@link #prevDisks} */
 	private final static int PREV_DISK_SIZE = 20;
+	/** Position <i>non-normalisée</i> à l'itération précédente */
+	private Position prevPos;
 	
 	/**
 	 * Réinitialise les caractéristiques du serpent qui sont
@@ -240,12 +244,12 @@ if(currentAngle!=0)
 	 * 		des collisions.
 	 */
 	private void processTrail(Board board, Position newPos, Set<Position> graphTrail, Set<Position> physTrail)
-	{	Position oldPos = new Position(currentX,currentY);
+	{	//Position oldPos = new Position(currentX,currentY);
 		
 		// on identifie la trainée de pixels correspondant au déplacement
-		if(!oldPos.equals(newPos))
+		if(!prevPos.equals(newPos))
 		{	// segment allant de l'ancienne à la nouvelle position
-			List<Position> segment = GraphicTools.processSegment(oldPos, newPos);
+			List<Position> segment = GraphicTools.processSegment(prevPos, newPos);
 			
 			Set<Position> newDisk = null;
 			// on parcourt le segment en traçant les disques correspondants
@@ -328,9 +332,11 @@ if(currentAngle!=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
-				boolean changed = physicalTrail.removeAll(snake.trail);
-				if(changed)
-					eliminatedBy = i;
+				if(snake!=this)
+				{	boolean changed = physicalTrail.removeAll(snake.trail);
+					if(changed)
+						eliminatedBy = i;
+				}
 				i++;
 			}	
 		}
@@ -404,9 +410,10 @@ if(currentAngle!=0)
 				processTrail(board,newPos,graphTrail,physTrail);
 				
 				// on normalise la nouvelle position de la tête et les positions contenues dans les deux trainées
-				myBoard.normalizePosition(newPos);
-				myBoard.normalizePositions(graphTrail);
-				myBoard.normalizePositions(physTrail);
+				prevPos = newPos;
+				newPos = myBoard.normalizePosition(newPos);
+				graphTrail = myBoard.normalizePositions(graphTrail);
+				physTrail = myBoard.normalizePositions(physTrail);
 				
 				// on détecte les collisions éventuelles
 				detectCollisions(myBoard,physTrail);
