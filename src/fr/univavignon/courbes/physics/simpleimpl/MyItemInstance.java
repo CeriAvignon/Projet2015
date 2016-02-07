@@ -129,7 +129,6 @@ public class MyItemInstance extends ItemInstance
 	{	switch(type)
 		{	case OTHERS_FAST:
 				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
-				snake.turningSpeed = snake.turningSpeed/Constants.TURNING_COEFF;
 				break;
 			case OTHERS_REVERSE:
 				snake.inversion = true;
@@ -140,16 +139,18 @@ public class MyItemInstance extends ItemInstance
 				break;
 			case OTHERS_SLOW:
 				snake.movingSpeed = snake.movingSpeed/Constants.MOVING_SPEED_COEFF;
+				snake.turningSpeed = snake.turningSpeed/Constants.MOVING_SPEED_COEFF;
 				break;
 			case USER_FAST:
 				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
+				snake.turningSpeed = snake.turningSpeed*Constants.MOVING_SPEED_COEFF;
 				break;
 			case USER_FLY:
 				snake.fly = true;
 				break;
 			case USER_SLOW:
 				snake.movingSpeed = snake.movingSpeed/Constants.MOVING_SPEED_COEFF;
-				snake.turningSpeed = snake.turningSpeed*Constants.TURNING_COEFF;
+				snake.turningSpeed = snake.turningSpeed/Constants.MOVING_SPEED_COEFF*Constants.TURNING_COEFF;
 				break;
 		}
 		
@@ -222,8 +223,10 @@ public class MyItemInstance extends ItemInstance
 		else //if(type==ItemType.OTHERS_FAST || type==ItemType.OTHERS_REVERSE || type==ItemType.OTHERS_SLOW || type==ItemType.OTHERS_THICK)
 		{	remainingTime = type.duration;
 			for(Snake s: board.snakes)
-			{	MyItemInstance item = new MyItemInstance(this);
-				s.currentItems.offer(item);
+			{	if(s!=snake)
+				{	MyItemInstance item = new MyItemInstance(this);
+					s.currentItems.offer(item);
+				}
 			}
 		}
 	}

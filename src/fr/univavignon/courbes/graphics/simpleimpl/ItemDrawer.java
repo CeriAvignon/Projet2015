@@ -18,7 +18,7 @@ package fr.univavignon.courbes.graphics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class ItemDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
-	private void drawItem(ItemType item, int x, int y, Graphics g)
+	private void drawItem(ItemType item, int x, int y, Graphics2D g)
 	{	BufferedImage image = IMAGES.get(item);
 		g.drawImage(image,x-Constants.ITEM_RADIUS,y-Constants.ITEM_RADIUS,null);
 	}
@@ -93,7 +93,7 @@ public class ItemDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel il faut dessiner.
 	 */
-	public void drawItems(Board board, Graphics g)
+	public void drawItems(Board board, Graphics2D g)
 	{	for(ItemInstance item: board.items)
 			drawItem(item.type, item.x, item.y, g);
 	}

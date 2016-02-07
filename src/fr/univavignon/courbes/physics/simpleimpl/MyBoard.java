@@ -220,6 +220,7 @@ System.out.println("elapsedTime: "+elapsedTime);
 			if(item!=null)
 				items.add(item);
 		}
+//System.out.println("itemPopupRate="+itemPopupRate);		
 	}
 	
 	/**
@@ -268,6 +269,7 @@ System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+
 	 */
 	private MyItemInstance generateItem()
 	{	MyItemInstance result = null;
+		int margin = 10;
 		
 		// tirage a sort de la position de l'item
 		// pour bien faire, il faudrait tirer au sort parmi toutes les positions disponibles, mais cela serait bien trop long
@@ -277,12 +279,12 @@ System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+
 		boolean available = false;
 		do
 		{	// on tire la position au sort, hors-bordure
-			x = RANDOM.nextInt(width-Constants.BORDER_THICKNESS*2)+Constants.BORDER_THICKNESS;
-			y = RANDOM.nextInt(height-Constants.BORDER_THICKNESS*2)+Constants.BORDER_THICKNESS;
+			x = RANDOM.nextInt(width-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
+			y = RANDOM.nextInt(height-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
 			
 			// on récupère un disque représentant l'espace occupé par l'item (plus une marge)
 			Position center = new Position(x,y);
-			int radius = Constants.ITEM_RADIUS+10;
+			int radius = Constants.ITEM_RADIUS+margin;
 			Set<Position> itemReach = GraphicTools.processDisk(center, radius);
 			available = true;
 			

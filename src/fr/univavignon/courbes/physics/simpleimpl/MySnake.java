@@ -104,7 +104,7 @@ public class MySnake extends Snake
 	}
 
 	/** Nombre de pixels restants pour terminer le trou courant */
-	private transient int remainingHole;
+	private transient float remainingHole;
 	/** Temps écoulé depuis la fin du dernier trou (en ms) */
 	private transient long timeSinceLastHole;
 	/** Taille courante d'un trou (en pixels) */
@@ -114,7 +114,7 @@ public class MySnake extends Snake
 	/** Position en ordonnée de la tête exprimée avec un réel */
 	private float realY;
 	/** File contenant les derniers disques tracés pour représenter la trainée du serpent (utilisée pour les collisions) */
-	private LinkedList<Set<Position>> prevDisks;
+	public LinkedList<Set<Position>> prevDisks;
 	/** Taille maximale de la file {@link #prevDisks} */
 	private final static int PREV_DISK_SIZE = 20;
 	/** Position <i>non-normalisée</i> à l'itération précédente */
@@ -177,7 +177,7 @@ public class MySnake extends Snake
 	{	// on est déjà en train de faire un trou, on ne va pas en commencer un autre
 		if(remainingHole>0)
 		{	float dist = movingSpeed*elapsedTime;
-			remainingHole = remainingHole - (int)dist;
+			remainingHole = remainingHole - dist;
 			timeSinceLastHole = 0;
 		}
 		
@@ -328,11 +328,11 @@ if(currentAngle!=0)
 		}
 		
 		// on traite les autres joueurs
-		if(eliminatedBy==null && !board.entrance && !fly)
+		if(eliminatedBy==null && !board.entrance && !fly && remainingHole<=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
-				if(snake!=this)
+//				if(snake!=this)
 				{	boolean changed = physicalTrail.removeAll(snake.trail);
 					if(changed)
 						eliminatedBy = i;

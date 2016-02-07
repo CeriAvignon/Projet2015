@@ -23,8 +23,10 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.VolatileImage;
 import java.io.IOException;
@@ -81,7 +83,9 @@ public class GraphicDisplayImpl implements GraphicDisplay
 			int valid = ((VolatileImage)image).validate(gc);
 			if(valid == VolatileImage.IMAGE_INCOMPATIBLE)
 				initImage();
-			Graphics g = image.getGraphics();
+			Graphics2D g = (Graphics2D)image.getGraphics();
+	        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			
 			// on dessine le fond
 			g.setColor(Color.BLACK);
 			Dimension dim = boardPanel.getPreferredSize();

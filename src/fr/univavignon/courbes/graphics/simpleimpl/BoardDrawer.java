@@ -18,7 +18,7 @@ package fr.univavignon.courbes.graphics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.io.IOException;
 
 import fr.univavignon.courbes.common.Board;
@@ -61,7 +61,7 @@ public class BoardDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel on trace la bordure.
 	 */
-	private void drawBorder(Board board, Graphics g)
+	private void drawBorder(Board board, Graphics2D g)
 	{	if(board.hasBorder)
 		{	g.setColor(Constants.BORDER_COLOR);
 			// haut
@@ -103,7 +103,7 @@ public class BoardDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel on trace les serpents.
 	 */
-	public void drawBoard(Board board, Graphics g)
+	public void drawBoard(Board board, Graphics2D g)
     {	// on dessine d'abord les serpents
 		snakesDrawer.drawSnakes(board, g);
 		

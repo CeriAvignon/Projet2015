@@ -41,12 +41,12 @@ public class Constants
 	public static final long ENTRANCE_DURATION = 0;//5000; //TODO à confirmer
 	
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
-	public static final float BASE_MOVING_SPEED = 0.1f;
+	public static final float BASE_MOVING_SPEED = 0.08f;
 	/** Coefficient multiplicatif/diviseur appliqué à la vitesse de déplacement pour l'augmenter/la diminuer */
-	public static final float MOVING_SPEED_COEFF = 3f;
+	public static final float MOVING_SPEED_COEFF = 2f;
 	
 	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float BASE_TURNING_SPEED = (float)(0.0004*2*Math.PI);
+	public static final float BASE_TURNING_SPEED = (float)(0.0003*2*Math.PI);
 	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
 	public static final float TURNING_COEFF = 1.25f;
 	
@@ -58,7 +58,7 @@ public class Constants
 	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine à chaque ms */
 	public static final float HOLE_RATE = 0.0008f;
 	/** Largeur d'un trou pour un serpent d'épaisseur normale, exprimée en pixels */
-	public static final int BASE_HOLE_WIDTH = 20;
+	public static final int BASE_HOLE_WIDTH = 40;
 	/** Coefficient multiplicatif/diviseur appliqué à la largeur d'un trou pour l'augmenter */
 	public static final float HOLE_WIDTH_COEFF = 2;
 	/** Délai minimal entre deux trous */
@@ -67,9 +67,9 @@ public class Constants
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
-	public static final long ITEM_DURATION = 70000;
+	public static final long ITEM_DURATION = 70000; //TODO 7000
 	/** Probabilité qu'un item apparaisse à chaque ms */
-	public static final float BASE_ITEM_POPUP_RATE = 0.00005f;
+	public static final float BASE_ITEM_POPUP_RATE = 0.00005f; 
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
 	public static final float ITEM_POPUP_COEFF = 5f;
 	
@@ -77,12 +77,12 @@ public class Constants
 	public static final int MAX_PLAYER_NBR = 6;
     /** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
     public static final Color[] PLAYER_COLORS = 
-	{	Color.red,		// joueur 0
-    	Color.blue,		// joueur 1
-    	Color.green,	// joueur 2
-    	Color.cyan,		// joueur 3
-    	Color.orange,	// joueur 4
-    	Color.pink		// joueur 5
+	{	new Color(255, 69, 69),	// rouge
+    	new Color( 68, 68,255),	// bleu
+    	new Color(255,233, 43),	// jaune
+    	new Color(  2,209,192),	// turquoise
+    	new Color(255,136, 52),	// orange
+    	new Color(255,164,186)	// rose
 	};
     /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
     public static final Color DISC_PLAYER_COLOR = Color.GRAY;
@@ -106,6 +106,10 @@ public class Constants
     	POINTS_FOR_RANK.put(5,1);
     	POINTS_FOR_RANK.put(6,0);
     }
-    
-    // TODO en fait, l'effet des items est cumulatif: par ex, si on prend plusieurs grossisseurs, on grossit plusieurs fois.
 }
+
+
+
+//TODO
+//	- peut être baisser la proba d'apparition des items
+//	- rajouter un coup d'anti-aliasing

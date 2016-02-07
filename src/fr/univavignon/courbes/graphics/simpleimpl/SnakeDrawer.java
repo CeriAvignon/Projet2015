@@ -20,9 +20,7 @@ package fr.univavignon.courbes.graphics.simpleimpl;
 
 import java.awt.BasicStroke;
 import java.awt.Color; 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Arc2D;
 
@@ -59,7 +57,7 @@ public class SnakeDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel on trace les serpents.
 	 */
-	public void drawSnakes(Board board, Graphics g)
+	public void drawSnakes(Board board, Graphics2D g)
 	{	Snake snakes[] = board.snakes;
 		
 		// on boucle sur chaque joueur
@@ -77,12 +75,19 @@ public class SnakeDrawer
 			for(Position position: snake.trail)
 				g.drawLine(position.x, position.y, position.x, position.y);
 			
+			// pour debug : affiche en jaune la partie du serpent utilisée pour détecter les collisions
+//			g.setColor(Color.YELLOW);
+//			MySnake s = (MySnake)snake;
+//			for(Set<Position> disk: s.prevDisks)
+//			{	for(Position position: disk)
+//					g.drawLine(position.x, position.y, position.x, position.y);
+//			}
+//			g.setColor(playerColor);
+			
 			// si le serpent est vivant, on trace sa tête
 			if(snake.eliminatedBy==null)
-			{	Graphics2D g2 = (Graphics2D)g;
-				g2.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius,
+				g.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius,
 					snake.headRadius*2, snake.headRadius*2);
-			}
 		}
 	}
 	
@@ -97,14 +102,12 @@ public class SnakeDrawer
 	 * @param g
 	 * 		Objet graphique sur lequel on trace les auréoles.
 	 */
-	public void drawAureolas(Board board, Graphics g)
+	public void drawAureolas(Board board, Graphics2D g)
 	{	Snake snakes[] = board.snakes;
 		
 		// on change l'épaisseur du stylo
-		Graphics2D g2 = (Graphics2D) g;
-		Stroke oldStroke = g2.getStroke();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setStroke(new BasicStroke(Constants.AUREOLA_THICKNESS));
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(Constants.AUREOLA_THICKNESS));
 		
 		// on traite chaque serpent individuellement
 		for(Snake snake: snakes)
@@ -126,10 +129,10 @@ public class SnakeDrawer
 				// on trace un arc de cercle centré sur la tête
 				// sa longueur est proportionnelle au temps d'effet restant à l'item 
 				int radius = offset + Constants.AUREOLA_THICKNESS/2;
-				double startAngle = Math.toDegrees(snake.currentAngle); // angle de déplacement du serpent
+				double startAngle = Math.toDegrees(-snake.currentAngle); // angle de déplacement du serpent
 				double extentAngle = 360*item.remainingTime/(double)type.duration;
 				Arc2D arc = new Arc2D.Double(x-radius, y-radius, 2*radius, 2*radius, startAngle, extentAngle, Arc2D.OPEN);
-				g2.draw(arc);
+				g.draw(arc);
 				
 				// on met à jour l'espace avec l'auréole suivante
 				offset = offset + Constants.AUREOLA_THICKNESS + Constants.AUREOLA_SPACE;
@@ -137,6 +140,6 @@ public class SnakeDrawer
 		}
 		
 		// on rétablit l'épaisseur normale du stylo
-		g2.setStroke(oldStroke);
+		g.setStroke(oldStroke);
 	}
 }

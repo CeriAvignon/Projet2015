@@ -31,27 +31,27 @@ import java.io.Serializable;
  */
 public enum ItemType implements Serializable
 {	/** Le joueur qui ramasse l'item accélère (bonus) */
-	USER_FAST(3000l,Color.GREEN),
+	USER_FAST(3000l,new Color(168,211,117)),
 	/** Le joueur qui ramasse l'item ralentit (bonus) */
-	USER_SLOW(10000l,Color.GREEN),
+	USER_SLOW(10000l,new Color(168,211,117)),
 	/** Le joueur qui ramasse l'item vole au dessus des obstacles (bonus) */
-	USER_FLY(6000l,Color.GREEN),
+	USER_FLY(6000l,new Color(168,211,117)),
 	
 	/** Les autres joueurs accélèrent (malus) */
-	OTHERS_FAST(3000l,Color.RED),
+	OTHERS_FAST(3000l,new Color(227,103,103)),
 	/** Les autres joueurs laissent des trainées plus épaisses (malus) */
-	OTHERS_THICK(7000l,Color.RED),
+	OTHERS_THICK(7000l,new Color(227,103,103)),
 	/** Les autres joueurs ralentissent (malus) */
-	OTHERS_SLOW(5000l,Color.RED),
+	OTHERS_SLOW(5000l,new Color(227,103,103)),
 	/** Les commandes des autres joueurs sont inversées (malus) */
-	OTHERS_REVERSE(5000l,Color.RED),
+	OTHERS_REVERSE(5000l,new Color(227,103,103)),
 	
 	/** La probabilité d'apparition d'un item augmente */
-	COLLECTIVE_WEALTH(60000l,Color.BLUE),
+	COLLECTIVE_WEALTH(60000l,new Color(106,156,207)),
 	/** Tous les joueurs peuvent traverser les murs d'enceinte */
-	COLLECTIVE_TRAVERSE(10000l,Color.BLUE),
+	COLLECTIVE_TRAVERSE(10000l,new Color(106,156,207)),
 	/** L'aire de jeu est réinitialisée (les trainées existantes sont effacées) */
-	COLLECTIVE_CLEAN(1l,Color.BLUE);
+	COLLECTIVE_CLEAN(1l,new Color(106,156,207));
 	
 	/**
 	 * Intialise un type d'item avec la durée appropriée.

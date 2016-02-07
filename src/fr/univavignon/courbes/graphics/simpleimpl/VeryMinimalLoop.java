@@ -41,7 +41,7 @@ import fr.univavignon.courbes.physics.simpleimpl.PhysicsEngineImpl;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class MinimalLoop extends JPanel implements KeyListener, Runnable
+public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 
@@ -56,7 +56,7 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(false);
 		
-		MinimalLoop loop = new MinimalLoop();
+		VeryMinimalLoop loop = new VeryMinimalLoop();
 		window.add(loop);
 		
 		window.pack();
@@ -84,7 +84,7 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 	/**
 	 * Instancie une boucle minimale.
 	 */
-	public MinimalLoop()
+	public VeryMinimalLoop()
 	{	Profile p1 = new Profile();
 		p1.profileId = 1;
 		p1.userName = "Joueur 1";
@@ -317,6 +317,8 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 				setPassIteration(true);
 			}
 		}
+		else if(keyCode==KeyEvent.VK_ESCAPE)
+			stop();
 //System.out.println("Input:"+keyCode);
 	}
 
@@ -339,8 +341,3 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 	{	//
 	}
 }
-
-// TODO
-// problèmes :
-//	- pb avec l'effet des item
-// 	- pb avec la disposition alétoire des items (trop près des bords)
