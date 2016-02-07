@@ -39,7 +39,7 @@ public class DisplayProfileFrame extends JFrame{
 	public DisplayProfileFrame(Menu menu){
 		
 		super();
-		this.setSize(new Dimension(800, 600));
+		this.setSize(new Dimension(500, 580));
 		
 		player_table = new PlayerTable();
 		
@@ -53,15 +53,6 @@ public class DisplayProfileFrame extends JFrame{
 		newName = new JTextField("Pseudonyme");
 		country = new JTextField("Pays");
 		
-		JPanel jp_newPlayer = new JPanel(new MigLayout());
-		jp_newPlayer.add(newName);
-		jp_newPlayer.add(country);
-		
-		
-		JPanel jp_add = new JPanel(new BorderLayout());
-		jp_add.add(jl, BorderLayout.WEST);
-		jp_add.add(jp_newPlayer, BorderLayout.CENTER);
-		jp_add.add(jb_add, BorderLayout.EAST);
 		
 		newName.addFocusListener(new FocusListener() {
 			
@@ -123,8 +114,9 @@ public class DisplayProfileFrame extends JFrame{
 				    	 newData.add(pseudo);
 				    	 newData.add(s_country);
 				    	 newData.add("0");
-				    	 
+				    
 				    	 model.rowdata.add(newData);
+				    	 model.fireTableRowsInserted(model.rowdata.size()-1, model.rowdata.size()-1);
 				    	 
 				    	 newName.setText("Pseudonyme");
 				    	 country.setText("Pays");
@@ -137,10 +129,21 @@ public class DisplayProfileFrame extends JFrame{
 		});
 
 		
-		this.add(player_table, "grow, wrap");
-		this.add(jp_add, "wrap");
-		this.add(jb_back);
+		this.add(player_table.getJSP(), "grow, wrap");
+
 		
+		
+		this.add(jl, "grow,wrap");
+		this.add(newName, "grow, wrap");
+		this.add(country, "grow, wrap");
+		
+		JPanel jp = new JPanel(new MigLayout("fill", "[]push[]", "[]"));
+		jp.add(jb_add);
+		jp.add(jb_back);
+		
+		this.add(jp, "grow, wrap");
+		
+		this.setTitle("Gestion des profils");
 		this.setVisible(true);
 		
 	}
@@ -148,15 +151,22 @@ public class DisplayProfileFrame extends JFrame{
 	
 	public class PlayerTable extends JTable{
 		
+		JScrollPane jsp_parent;
+		
 		public PlayerTable(){
 			super();
-			JScrollPane jsp_parent = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			jsp_parent = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jsp_parent.getVerticalScrollBar().setUnitIncrement(10);
 			jsp_parent.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 			
 			this.setModel(new PlayerTableModel());
 		}
+		
+		public JScrollPane getJSP(){
+		 return jsp_parent;
+		}
+		
 		
 	}
 	
@@ -175,15 +185,15 @@ public class DisplayProfileFrame extends JFrame{
 				  BufferedReader br = new BufferedReader(isr);
 				  String line;
 				  
-				  Vector<Profile> v_profiles = ProfileFileManager.getProfiles();
+				  Vector<PrintableProfile> v_profiles = ProfileFileManager.getProfiles();
 				  
-				  for(Profile p : v_profiles){
+				  for(PrintableProfile pp : v_profiles){
 	  
 	    			  ArrayList<String> row = new ArrayList<String>();
 	    			  
-	    			  row.add(p.userName);
-	    			  row.add(p.country);
-	    			  row.add(((Integer)p.score).toString());
+	    			  row.add(pp.getProfile().userName);
+	    			  row.add(pp.getProfile().country);
+	    			  row.add(((Integer)pp.getProfile().score).toString());
 	    			  rowdata.add(row);
 			    	  
 			      }
@@ -197,8 +207,8 @@ public class DisplayProfileFrame extends JFrame{
 
 	      columnNames = new String[4];
 	      columnNames[0] = "Pseudo";
-	      columnNames[1] = "Nombre de parties gagnées";
-	      columnNames[2] = "Nombre de parties jouées";
+	      columnNames[1] = "Pays";
+	      columnNames[2] = "Score ELO";
 	      
 		}
 

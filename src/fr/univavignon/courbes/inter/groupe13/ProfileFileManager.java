@@ -16,10 +16,10 @@ public class ProfileFileManager {
 	
 
 	private static String fileName = "res/profiles/profiles.txt"; 
-	
-	public static Vector<Profile> getProfiles() {
 		
-		Vector<Profile> result = new Vector<>();
+	public static Vector<PrintableProfile> getProfiles() {
+		
+		Vector<PrintableProfile> result = new Vector<>();
 		
 		try {
 	      InputStream is = new FileInputStream(new File(fileName));
@@ -33,11 +33,13 @@ public class ProfileFileManager {
 	    		  if(elem.length >= 3){
 	    		  
 	    			  Profile p = new Profile();
-	    			  p.userName = elem[0];
-	    			  p.country = elem[1];
+	    			  p.userName = elem[0].trim();
+	    			  p.country = elem[1].trim();
 	    			  p.score = Integer.parseInt(elem[2].trim());
 	    			  
-	    			  result.add(p);
+	    			  PrintableProfile pp = new PrintableProfile();
+	    			  pp.setProfile(p);
+	    			  result.add(pp);
 	    			  
 	    		  }
 	    		  else

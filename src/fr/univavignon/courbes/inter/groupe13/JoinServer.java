@@ -1,7 +1,6 @@
 package fr.univavignon.courbes.inter.groupe13;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -12,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import fr.univavignon.courbes.network.groupe06.Client;
+import net.miginfocom.swing.MigLayout;
 
 public class JoinServer extends JFrame{
 	
@@ -23,18 +23,20 @@ public class JoinServer extends JFrame{
 	public JoinServer(Menu m){
 	
 		super();
-		this.setSize(new Dimension(800, 600));
+		this.setSize(new Dimension(220, 120));
 		this.m = m;
 		
-		this.setLayout(new GridLayout(3, 2));
+		this.setLayout(new MigLayout());
 
 		JButton jb_back = new JButton("Retour");
 		JButton jb_next = new JButton("Continuer");
 		
 		this.add(new JLabel("IP"));
-		this.add(jtf_ip);
+		this.add(jtf_ip, "wrap");
 		this.add(new JLabel("Port"));
-		this.add(jtf_port);
+		this.add(jtf_port, "wrap");
+		this.add(jb_next);
+		this.add(jb_back);
 		
 		jb_back.addActionListener(new ActionListener() {
 			
@@ -58,13 +60,16 @@ public class JoinServer extends JFrame{
 				
 				//TODO Comment savoir si la connexion a bien eu lieu ?
 				c.launchClient();
-				
+
+				cg.display();
 				JoinServer.this.setVisible(false);
 				
 				
 			}
 		});
 		
+		this.setTitle("Choix du serveur");
+		this.setVisible(true);
 
 	}
 }

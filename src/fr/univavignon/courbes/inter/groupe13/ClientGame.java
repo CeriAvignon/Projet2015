@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.rmi.server.RemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -18,16 +19,18 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.groupe06.Client;
+import net.miginfocom.swing.MigLayout;
 
-public class ClientGame extends JFrame implements ClientProfileHandler{
+public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHandler{
 
 	private JoinServer js;
 	private Client c;
 	
-	List<LocalProfileSelector> local_players;
+	ArrayList<LocalProfileSelector> local_players;
 	List<RemoteProfile> remote_players;
-	Vector<Profile> availableProfiles;
+	Vector<PrintableProfile> availableProfiles;
 	
 	JPanel localPlayerPanel;
 	JPanel remotePlayerPanel;
@@ -52,21 +55,22 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		availableProfiles = ProfileFileManager.getProfiles();
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
 		
+		remotePlayerPanel = new JPanel(new MigLayout());
+		remotePlayerPanel.add(new JLabel("Joueurs distants"), "wrap");
+		
+		localPlayerPanel = new JPanel(new MigLayout());
+		
 		this.add(remotePlayerPanel);
 		this.add(localPlayerPanel);
 		this.add(jp_previous_next);
 		
-		remotePlayerPanel.setLayout(new GridLayout(6,1));
 //		remotePlayerPanel.setLayout(new GridLayout(6,2));
-		remotePlayerPanel.add(new JLabel("Joueurs distants"));
 //		remotePlayerPanel.add(new JLabel("Prêt"));
 		
-		localPlayerPanel.setLayout(new GridLayout(6, 5));
 		localPlayerPanel.add(new JLabel("Joueurs locaux"));
 		localPlayerPanel.add(new JLabel("Gauche"));
 		localPlayerPanel.add(new JLabel("Droite"));
-		localPlayerPanel.add(new JLabel("Etat / Action"));
-		localPlayerPanel.add(new JLabel(""));
+		localPlayerPanel.add(new JLabel("Etat / Action"), "wrap");
 
 		jp_previous_next.add(jb_back);
 		jp_previous_next.add(jb_ready);
@@ -92,9 +96,8 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 				}
 				else{
 					JOptionPane.showMessageDialog(ClientGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
-							"<br>- plusieurs profiles sont identiques (même id) ;" +
-							"<br>- une touche est assignée plusieurs fois.</html>");
+							"<br>- tous les profils sont définis et différents ;" +
+							"<br>- toutes les commandes sont définies et différentes.</html>");
 				}
 			}
 		});
@@ -102,6 +105,12 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		/* Add one profile selector (a new one is added when the profile selected) */
 		addLocalProfileSelector();
 		
+		this.setTitle("Partie réseau (client)");
+		
+	}
+	
+	public void display(){
+		this.setVisible(true);
 	}
 
 	public Client getC() {
@@ -192,19 +201,21 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 			int key1_1 = cp1.getLeft().getKeyCode();
 			int key1_2 = cp1.getRight().getKeyCode();
 			
-			if(key1_1 == key1_2 || cp1.getProfile() == null)
+			if(key1_1 == key1_2 || cp1.getProfile() == null || key1_1 == -1 || key1_2 == -1)
 				isReady = false;
 			
 			for(int j = i+1 ; j < local_players.size() - 1 ; ++j){
 				
 				ControllableProfile cp2 = local_players.get(j).getC_profile();
-				int key2_1 = cp2.getLeft().getKeyCode();
-				int key2_2 = cp2.getRight().getKeyCode();
+				int key2_1 = cp2.getLeftKeyCode();
+				int key2_2 = cp2.getRightKeyCode();
 				
 				if(key1_1 == key2_1 
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
+						|| key2_1 == -1
+						|| key2_2 == -1
 						|| cp2.getProfile() == null
 						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)){
 					isReady = false;
@@ -231,7 +242,8 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		localPlayerPanel.remove(lps.getLeftButton());
 		localPlayerPanel.remove(lps.getRightButton());
 		localPlayerPanel.remove(lps.getSendProfileToServer());
-		localPlayerPanel.remove(lps.getRemoveFromServer());
+		localPlayerPanel.remove(lps.getRemove());
+		localPlayerPanel.validate();
 		localPlayerPanel.repaint();
 	}
 	
@@ -239,7 +251,8 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		
 		RemoteProfile rp = new RemoteProfile(p);
 		remote_players.add(rp);
-		remotePlayerPanel.add(rp.getJl());
+		remotePlayerPanel.add(rp.getJl(), "wrap");
+		remotePlayerPanel.validate();
 		remotePlayerPanel.repaint();
 		
 	}
@@ -252,6 +265,17 @@ public class ClientGame extends JFrame implements ClientProfileHandler{
 		remotePlayerPanel.remove(rp.getJl());
 		remotePlayerPanel.repaint();
 		
+	}
+
+	@Override
+	public void displayError(String errorMessage) {
+
+		JOptionPane.showMessageDialog(this, errorMessage);
+
+		/* Close the window and display the JoinServer window */
+		this.c.closeClient();
+		this.dispatchEvent(new WindowEvent(ClientGame.this, WindowEvent.WINDOW_CLOSING));
+		this.js.setVisible(true);
 	}
 	
 }

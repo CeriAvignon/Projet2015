@@ -26,34 +26,32 @@ import fr.univavignon.courbes.common.Profile;
 public class LocalGame extends JFrame{
 
 	JComboBox<Integer> jcb_nbOfPlayers;
-	List<LocalProfileSelector> players;
-	Vector<Profile> availableProfiles;
-	Menu m;
+	ArrayList<LocalProfileSelector> players;
+	Vector<PrintableProfile> availableProfiles;
 	
 	JButton jb_back = new JButton("Retour");
 	JButton jb_start = new JButton("Démarrer");
 	JPanel playerPanel;
 	
-	public LocalGame(Menu m){
+	public LocalGame(final Menu m){
 		
 		super();
 		
-		this.m = m;
-		this.setSize(new Dimension(800,600));
+		this.setSize(new Dimension(400,380));
 		players = new ArrayList<>();
 		
-		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
+		this.setLayout(new MigLayout("fill", "", ""));
 		
 		JPanel jp_numberOfPlayers = new JPanel(new FlowLayout());
 		JPanel jp_previousNext = new JPanel(new FlowLayout());
 		
 
 		playerPanel = new JPanel();
-		playerPanel.setLayout(new MigLayout("fill", "[]0[]0[]", "[]0[]"));
+		playerPanel.setLayout(new MigLayout("fill", "[]10[]10[]", "[]10[]"));
 		
-		this.add(jp_numberOfPlayers, BorderLayout.NORTH);
-		this.add(playerPanel, BorderLayout.CENTER);
-		this.add(jp_previousNext, BorderLayout.SOUTH);
+		this.add(jp_numberOfPlayers, "wrap");
+		this.add(playerPanel, "wrap");
+		this.add(jp_previousNext, "wrap");
 
 		
 		JLabel jl1 = new JLabel("Joueur");
@@ -70,7 +68,6 @@ public class LocalGame extends JFrame{
 //		playerPanel.setMaximumSize(new Dimension(500, 500));
 		
 		Vector<Integer> v = new Vector<>();
-		v.add(1);
 		v.add(2);
 		v.add(3);
 		v.add(4);
@@ -80,6 +77,7 @@ public class LocalGame extends JFrame{
 		availableProfiles = ProfileFileManager.getProfiles();
 		jcb_nbOfPlayers = new JComboBox<>(v);
 		jcb_nbOfPlayers.setSelectedIndex(0);
+		addLocalProfile();
 		addLocalProfile();
 		
 		
@@ -95,7 +93,7 @@ public class LocalGame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 
 				LocalGame.this.dispatchEvent(new WindowEvent(LocalGame.this, WindowEvent.WINDOW_CLOSING));
-				LocalGame.this.m.setVisible(true);
+				m.setVisible(true);
 				
 			}
 		});
@@ -111,13 +109,12 @@ public class LocalGame extends JFrame{
 					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 					int width = (int)screenSize.getWidth();
 					int height= (int)screenSize.getHeight();			
-					new Game(width, height);
+					new Game(width, height, players);
 				}
 				else{
 					JOptionPane.showMessageDialog(LocalGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-							"<br>- le profil d'au moins un joueur n'est pas précisé ;" +
-							"<br>- plusieurs profiles sont identiques (même id) ;" +
-							"<br>- une touche est assignée plusieurs fois.</html>");
+							"<br>- tous les profils sont définis et différents ;" +
+							"<br>- toutes les commandes sont définies et différentes.</html>");
 				}
 			}
 		});
@@ -127,16 +124,12 @@ public class LocalGame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				System.out.println("Action called");
-				
 				int previousNbOfPlayers = players.size();
 				int newNbOfPlayers = (int) jcb_nbOfPlayers.getSelectedItem();
 				
-				System.out.println("previous " + previousNbOfPlayers + " new " + newNbOfPlayers);
 				if(previousNbOfPlayers < newNbOfPlayers){
 					
 					for(int i = previousNbOfPlayers ; i < newNbOfPlayers ; ++i){
-						
 						addLocalProfile();
 					}
 					
@@ -156,6 +149,7 @@ public class LocalGame extends JFrame{
 			}
 		});
 		
+		this.setTitle("Partie locale");
 		this.setVisible(true);
 		
 		
@@ -169,22 +163,28 @@ public class LocalGame extends JFrame{
 		for(int i = 0 ; i < players.size() ; ++i){
 			
 			ControllableProfile cp1 = players.get(i).getC_profile();
-			int key1_1 = cp1.getLeft().getKeyCode();
-			int key1_2 = cp1.getRight().getKeyCode();
+			int key1_1 = cp1.getLeftKeyCode();
+			int key1_2 = cp1.getRightKeyCode();
 			
-			if(key1_1 == key1_2 || cp1.getProfile() == null)
+			if(key1_1 == key1_2 || cp1.getProfile() == null || key1_1 == -1 || key1_2 == -1)
 				isReady = false;
 			
 			for(int j = i+1 ; j < players.size() ; ++j){
 				
 				ControllableProfile cp2 = players.get(j).getC_profile();
-				int key2_1 = cp2.getLeft().getKeyCode();
-				int key2_2 = cp2.getRight().getKeyCode();
+				int key2_1 = cp2.getLeftKeyCode();
+				int key2_2 = cp2.getRightKeyCode();
+				
+				if(cp2.getProfile().userName.equals(cp1.getProfile().userName)){
+					System.out.println("Identique username: " + cp2.getProfile().userName);
+				}
 				
 				if(key1_1 == key2_1 
 						|| key1_1 == key2_2
 						|| key1_2 == key2_1
 						|| key1_2 == key2_2
+						|| key2_1 == -1
+						|| key2_2 == -1
 						|| cp2.getProfile() == null
 						|| cp1.getProfile().userName.equals(cp2.getProfile().userName)
 						){
@@ -194,7 +194,7 @@ public class LocalGame extends JFrame{
 			}
 		}
 		
-		return false;
+		return isReady;
 	}
 
 	private void addLocalProfile() {
@@ -202,9 +202,8 @@ public class LocalGame extends JFrame{
 		LocalProfileSelector lps = new LocalProfileSelector(availableProfiles, playerPanel);
 		players.add(lps);
 		
-		playerPanel.validate();
-		playerPanel.repaint();
-		
+		this.validate();
+		this.repaint();
 	}
 
 

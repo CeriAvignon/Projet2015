@@ -101,7 +101,7 @@ public class Network extends Window {
 	    			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    			int width = (int)screenSize.getWidth();
 	    			int height= (int)screenSize.getHeight();
-	        		new Game(width, height);	
+	        		new Game(width, height,  null);	
 	        	}
 	            Thread.sleep(200);
 	        }catch(InterruptedException e){}
@@ -178,7 +178,7 @@ public class Network extends Window {
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int width = (int)screenSize.getWidth();
 			int height= (int)screenSize.getHeight();
-			new Game(width, height);
+			new Game(width, height, null);
 		}
 	}
 	
@@ -255,7 +255,7 @@ public class Network extends Window {
 			public void actionPerformed(ActionEvent arg0) 
 			{  
 				setVisible(false);
-				new Menu(tempWidth, tempHeight, commandsPlayer);
+				new Menu();
 			}
 		}
 		

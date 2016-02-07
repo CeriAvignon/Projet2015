@@ -16,6 +16,8 @@ public class mainMenu extends JFrame{
 	  public static void main(String[] args){
 
 		  	new Menu();
+//		  new ClientGame(null, null).display();
+		  
 	  }
 	
 }
