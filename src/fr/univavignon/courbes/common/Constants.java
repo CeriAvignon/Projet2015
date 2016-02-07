@@ -56,13 +56,13 @@ public class Constants
 	public static final float HEAD_RADIUS_COEFF = 2;
 
 	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine à chaque ms */
-	public static final float HOLE_RATE = 0.0005f;
+	public static final float HOLE_RATE = 0.0008f;
 	/** Largeur d'un trou pour un serpent d'épaisseur normale, exprimée en pixels */
 	public static final int BASE_HOLE_WIDTH = 20;
 	/** Coefficient multiplicatif/diviseur appliqué à la largeur d'un trou pour l'augmenter */
 	public static final float HOLE_WIDTH_COEFF = 2;
 	/** Délai minimal entre deux trous */
-	public static final long MIN_HOLE_DELAY = 500; //TODO à confirmer
+	public static final long MIN_HOLE_DELAY = 100; //TODO à confirmer
 	
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;

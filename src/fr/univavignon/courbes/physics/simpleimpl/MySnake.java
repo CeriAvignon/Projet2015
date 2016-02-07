@@ -20,6 +20,7 @@ package fr.univavignon.courbes.physics.simpleimpl;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -65,7 +66,8 @@ public class MySnake extends Snake
 		realY = currentY;
 		
 		trail = new TreeSet<Position>();
-
+		prevDisks = new LinkedList<Set<Position>>();
+		
 		currentAngle = (float)(Math.random()*Math.PI*2);	// on tire une valeur réelle entre 0 et 2pi
 				
 		eliminatedBy = null;
@@ -99,8 +101,6 @@ public class MySnake extends Snake
 		realY = currentY;
 	}
 
-	/** Rayon de la tête du serpent lors de la précédente itération (en pixels) */
-	private transient int previousHeadRadius;
 	/** Nombre de pixels restants pour terminer le trou courant */
 	private transient int remainingHole;
 	/** Temps écoulé depuis la fin du dernier trou (en ms) */
@@ -111,6 +111,10 @@ public class MySnake extends Snake
 	private float realX;
 	/** Position en ordonnée de la tête exprimée avec un réel */
 	private float realY;
+	/** File contenant les derniers disques tracés pour représenter la trainée du serpent (utilisée pour les collisions) */
+	private LinkedList<Set<Position>> prevDisks;
+	/** Taille maximale de la file {@link #prevDisks} */
+	private final static int PREV_DISK_SIZE = 20;
 	
 	/**
 	 * Réinitialise les caractéristiques du serpent qui sont
@@ -118,7 +122,6 @@ public class MySnake extends Snake
 	 */
 	private void resetCharacs()
 	{	// radius
-		previousHeadRadius = headRadius;
 		headRadius = Constants.BASE_HEAD_RADIUS;
 		
 		// speed
@@ -229,37 +232,42 @@ if(currentAngle!=0)
 	 * 		Aire de jeu.
 	 * @param newPos
 	 * 		Nouvelle position de la tête du serpent.
-	 * @param graphicalTrail 
+	 * @param graphTrail 
 	 * 		Ensemble de pixels représentant la trainée <i>graphique</i>, i.e. qui sera affichée plus tard.
 	 * 		Il faut noter que le Moteur Graphique est supposé dessiner la tête par dessus cette trainée.
-	 * @param physicalTrail 
+	 * @param physTrail 
 	 * 		Ensemble de pixels représentant la trainée <i>physique</i>, qui sera utilisée pour la gestion
 	 * 		des collisions.
 	 */
-	private void processTrail(Board board, Position newPos, Set<Position> graphicalTrail, Set<Position> physicalTrail)
+	private void processTrail(Board board, Position newPos, Set<Position> graphTrail, Set<Position> physTrail)
 	{	Position oldPos = new Position(currentX,currentY);
 		
-		// on calcule le disque associé à l'ancienne position
-		Set<Position> oldDisk = GraphicTools.processDisk(oldPos, previousHeadRadius);
-				
-		// on calcule le disque associé à la nouvelle position
-		Set<Position> newDisk = GraphicTools.processDisk(newPos, headRadius);
-		
-		// on calcule le rectangle plein reliant les deux cercles
-		Set<Position> rectangle = GraphicTools.processRectangle(oldPos,newPos,2*headRadius);
-		
-		// on soustrait le premier disque du rectangle pour obtenir un rectangle diminué des pixels déjà présent dans le premier disque
-		rectangle.removeAll(oldDisk);
-		// on soustrait la trainée courante du premier disque, pour obtenir un disque diminué de ses pixels déjà présent dans la traine
-		oldDisk.removeAll(trail);
-
-		// on fusionne le rectangle et le disque diminués, pour obtenir la trainée graphique (nouveaux pixels mais sans la nouvelle tête)
-		graphicalTrail.addAll(rectangle);
-		graphicalTrail.addAll(oldDisk);
-		
-		// on ajoute le second disque à cette forme, pour obtenir la trainée physique utilisée ensuite pour les collisions
-		physicalTrail.addAll(graphicalTrail);
-		physicalTrail.addAll(newDisk);
+		// on identifie la trainée de pixels correspondant au déplacement
+		if(!oldPos.equals(newPos))
+		{	// segment allant de l'ancienne à la nouvelle position
+			List<Position> segment = GraphicTools.processSegment(oldPos, newPos);
+			
+			Set<Position> newDisk = null;
+			// on parcourt le segment en traçant les disques correspondants
+			// (pas vraiment optimal comme algo, mais ça suffit ici)
+			for(Position pos: segment)
+			{	// on calcule le disque centré sur la position courante
+				newDisk = GraphicTools.processDisk(pos, headRadius);
+				// on le rajoute à la trainée graphique
+				graphTrail.addAll(newDisk);
+				// on le rajoute à la file des derniers disques
+				prevDisks.offer(newDisk);
+				if(prevDisks.size()>PREV_DISK_SIZE)
+					prevDisks.poll();
+			}
+			
+			// on calcule la trainée physique en retirant du tout dernier disque les disques le précédant
+			physTrail.addAll(newDisk);
+			for(Set<Position> prevDisk: prevDisks)
+			{	if(prevDisk!=newDisk)
+					physTrail.removeAll(prevDisk);
+			}
+		}
 	}
 	
 	/**
@@ -320,12 +328,9 @@ if(currentAngle!=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
-				// que pour les autres serpents, bien entendu
-				if(snake!=this)
-				{	boolean changed = physicalTrail.removeAll(snake.trail);
-					if(changed)
-						eliminatedBy = i;
-				}
+				boolean changed = physicalTrail.removeAll(snake.trail);
+				if(changed)
+					eliminatedBy = i;
 				i++;
 			}	
 		}
@@ -394,23 +399,21 @@ if(currentAngle!=0)
 				// on calcule la nouvelle position (provisoire) de la tête du serpent
 				Position newPos = processMove(elapsedTime);
 				// on calcule la trainée engendrée par ce déplacement
-				Set<Position> graphicalTrail = new TreeSet<Position>();
-				Set<Position> physicalTrail = new TreeSet<Position>();
-				processTrail(board,newPos,graphicalTrail,physicalTrail);
+				Set<Position> graphTrail = new TreeSet<Position>();
+				Set<Position> physTrail = new TreeSet<Position>();
+				processTrail(board,newPos,graphTrail,physTrail);
 				
 				// on normalise la nouvelle position de la tête et les positions contenues dans les deux trainées
 				myBoard.normalizePosition(newPos);
-				myBoard.normalizePositions(graphicalTrail);
-				myBoard.normalizePositions(physicalTrail);
+				myBoard.normalizePositions(graphTrail);
+				myBoard.normalizePositions(physTrail);
 				
 				// on détecte les collisions éventuelles
-				detectCollisions(myBoard,physicalTrail);
+				detectCollisions(myBoard,physTrail);
 				
 				// on met à jour la position et la trainée de ce serpent
-				updateData(board, newPos, graphicalTrail, physicalTrail, elapsedTime, direction);
+				updateData(board, newPos, graphTrail, physTrail, elapsedTime, direction);
 			}
 		}
 	}
 }
-
-// TODO disposition aléatoire des items

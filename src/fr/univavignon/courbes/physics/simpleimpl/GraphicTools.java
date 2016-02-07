@@ -112,6 +112,8 @@ public class GraphicTools
 	 * Calcule les deux points d'intersection entre un cercle et une droite passant par son
 	 * centre. Cela revient à résoudre une équation du second degré, cf. les commentaires dans
 	 * la méthode.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
 	 * 
 	 * @param xc
 	 * 		Abscisse du centre du cercle.
@@ -159,6 +161,8 @@ public class GraphicTools
 	 * <a href="https://fr.wikipedia.org/wiki/Algorithme_de_remplissage_par_diffusion">
 	 * par diffusion</a>. À noter que des algorithmes computationnellement plus efficaces 
 	 * (mais plus complexes à implémenter) existent.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
 	 * 
 	 * @param result
 	 * 		Ensemble de points représentant le polygone à compléter.
@@ -180,6 +184,8 @@ public class GraphicTools
 	 * Calcule les points constituant un rectangle. Les points {@code pos1} et {@code pos2} correspondent
 	 * aux centres de deux côtés opposés de ce rectangle, tandis que {@code side} est la longueur
 	 * de ces mêmes côtés.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
 	 * 
 	 * @param pos1
 	 * 		Centre du premier côté.
@@ -227,30 +233,18 @@ public class GraphicTools
 			// équation des droites perpendiculaires à la première droite
 			// et passant chacune par l'une des deux positions
 			float c = -1/a;
-			float d1 = pos2.y - c*pos2.x;
-			float d2 = pos1.y - c*pos1.x;
+			float d1 = pos1.y - c*pos1.x;
+			float d2 = pos2.y - c*pos2.x;
 		
 			// coordonnées des points à l'intersection entre la première perpendiculaire et le premier cercle
-			temp1 = processCircleLineIntersection(pos2.x, pos2.y, side/2, c, d1);
+			temp1 = processCircleLineIntersection(pos1.x, pos1.y, side/2, c, d1);
 			// segment allant d'un point à l'autre
 			segment1 = processSegment(temp1[0], temp1[1]);
 			// coordonnées des points à l'intersection entre la seconde perpendiculaire et le second cercle
-			temp2 = processCircleLineIntersection(pos1.x, pos1.y, side/2, c, d2);
+			temp2 = processCircleLineIntersection(pos2.x, pos2.y, side/2, c, d2);
 			// segment allant d'un point à l'autre
 			segment2 = processSegment(temp2[0], temp2[1]);
 		}
-		
-// marche pas si rectangle pas horizontal ou vertical		
-//		// pour chaque point du premier segment
-//		Iterator<Position> it2 = segment2.iterator();
-//		for(Position p1: segment1)
-//		{	// on considère son correspondant dans le second segment
-//			Position p2 = it2.next();
-//			// on calcule la droite allant de l'un à l'autre
-//			List<Position> segment = processSegment(p1,p2);
-//			// on l'ajoute au résultat
-//			result.addAll(segment);
-//		}
 		
 		// on déduit les 2 autres segments 
 		segment3 = processSegment(temp1[0],temp2[0]);
@@ -268,7 +262,7 @@ public class GraphicTools
 		
 		return result;
 	}
-		
+	
 	/**
 	 * Calcule les pixels formant un disque de centre {@code center}
 	 * et de rayon {@code radius}.
@@ -297,6 +291,132 @@ public class GraphicTools
 					result.add(pos);
 				}
 			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Trace et remplit un triangle de base horizontale et orienté pointe vers le haut.
+	 * Algorithme pris de <a href="// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html">
+	 * cette page</a>.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
+	 * 
+	 * @param pos1
+	 * 		Premier point du triangle.
+	 * @param pos2
+	 * 		Deuxième point du triangle.
+	 * @param pos3
+	 * 		Troisième point du triangle.
+	 * @return
+	 * 		l'ensemble des positions constituant le triangle.
+	 */
+	public static Set<Position> processBottomFlatTriangle(Position pos1, Position pos2, Position pos3)
+	{	Set<Position> result = new TreeSet<Position>();
+		
+		float invSlope1 = (pos2.x - pos1.x) / (float)(pos2.y - pos1.y);
+		float invSlope2 = (pos3.x - pos1.x) / (float)(pos3.y - pos1.y);
+		float curX1 = pos1.x;
+		float curX2 = pos1.x;
+		
+		for(int scanlineY=pos1.y; scanlineY<=pos2.y; scanlineY++)
+		{	Position p1 = new Position((int)curX1, scanlineY);
+			Position p2 = new Position((int)curX2, scanlineY);
+			List<Position> segment = processSegment(p1, p2);
+			result.addAll(segment);
+			curX1 = curX1 + invSlope1;
+			curX2 = curX2 + invSlope2;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Trace et remplit un triangle de base horizontale et orienté pointe vers le bas.
+	 * Algorithme pris de <a href="// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html">
+	 * cette page</a>.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
+	 * 
+	 * @param pos1
+	 * 		Premier point du triangle.
+	 * @param pos2
+	 * 		Deuxième point du triangle.
+	 * @param pos3
+	 * 		Troisième point du triangle.
+	 * @return
+	 * 		l'ensemble des positions constituant le triangle.
+	 */
+	public static Set<Position> processTopFlatTriangle(Position pos1, Position pos2, Position pos3)
+	{	Set<Position> result = new TreeSet<Position>();
+		
+		float invSlope1 = (pos3.x - pos1.x) / (float)(pos3.y - pos1.y);
+		float invSlope2 = (pos3.x - pos2.x) / (float)(pos3.y - pos2.y);
+		float curX1 = pos3.x;
+		float curX2 = pos3.x;
+
+		for(int scanlineY=pos3.y; scanlineY>pos1.y; scanlineY--)
+		{	curX1 = curX1 - invSlope1;
+			curX2 = curX2 - invSlope2;
+			Position p1 = new Position((int)curX1, scanlineY);
+			Position p2 = new Position((int)curX2, scanlineY);
+			List<Position> segment = processSegment(p1, p2);
+			result.addAll(segment);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Trace et remplit un triangle quelconque. Algorithme pris de 
+	 * <a href="// http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html">
+	 * cette page</a>.
+	 * </br>
+	 * <b>Note :</b> méthode finalement pas utilisée.
+	 * 
+	 * @param pos1
+	 * 		Premier point du triangle.
+	 * @param pos2
+	 * 		Deuxième point du triangle.
+	 * @param pos3
+	 * 		Troisième point du triangle.
+	 * @return
+	 * 		l'ensemble des positions constituant le triangle.
+	 */
+	public static Set<Position> processTriangle(Position pos1, Position pos2, Position pos3)
+	{	// on classe les points par y croissant
+		Position temp;
+		if(pos1.y > pos2.y)
+		{	temp = pos1;
+			pos1 = pos2;
+			pos2 = temp;
+		}
+		if(pos2.y > pos3.y)
+		{	temp = pos2;
+			pos2 = pos3;
+			pos3 = temp;
+			if(pos1.y > pos2.y)
+			{	temp = pos1;
+				pos1 = pos2;
+				pos2 = temp;
+			}
+		}
+		
+		// on calcule les points composant le triangle
+		Set<Position> result;
+		// cas particulier : base horizontale inférieure
+		if (pos2.y == pos3.y)
+			result = processBottomFlatTriangle(pos1, pos2, pos3);
+		// cas particulier : base horizontale supérieure
+		else if(pos1.y == pos2.y)
+			result = processTopFlatTriangle(pos1, pos2, pos3);
+		// cas général : on décompose en deux triangles à base horizontale
+		else
+		{	Position v4 = new Position((int)(pos1.x + ((float)(pos2.y - pos1.y) / (float)(pos3.y - pos1.y)) * (pos3.x - pos1.x)), pos2.y);
+		    result = processBottomFlatTriangle(pos1, pos2, v4);
+		    Set<Position> half = processTopFlatTriangle(pos2, v4, pos3);
+		    result.addAll(half);
 		}
 		
 		return result;

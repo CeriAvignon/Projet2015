@@ -284,4 +284,8 @@ public class MinimalLoop extends JPanel implements KeyListener, Runnable
 // problèmes :
 //	- pointillés reprennent pas en rectangle (à cause du cercle final dessiné sur l'ancienne position)
 //		>> faudra juste ne pas dessiner l'un des deux disques quand on sort du mode fly ou entrance ou pointillé
-//	- faudrait simplifier le tracé : ne faire qu'un segment normal au sens de déplacement. 
+//	- faudrait simplifier le tracé : ne faire qu'un segment normal au sens de déplacement.
+//	- pb de collision : faut considérer seulement le demi-disque antérieur
+//	- pb de tracé : dessiner seulement la part de disque nécessaire lorsqu'on tourne
+//	- pb avec l'effet des item
+// 	- pb avec la disposition alétoire des items (trop près des bords)
