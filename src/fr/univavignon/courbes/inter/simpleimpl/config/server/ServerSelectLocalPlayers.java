@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.communication;
+package fr.univavignon.courbes.inter.simpleimpl.config.server;
 
 /*
  * Courbes
@@ -38,11 +38,11 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
-import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
-import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
-import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
+import fr.univavignon.courbes.inter.simpleimpl.MainMenuPanel;
+import fr.univavignon.courbes.inter.simpleimpl.config.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.config.LocalProfileSelectorOoold;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.network.simpleimpl.Server;
 import net.miginfocom.swing.MigLayout;
 
@@ -55,7 +55,7 @@ public class ServerSelectLocalPlayers extends JFrame{
 
 	JComboBox<Integer> jcb_nbOfPlayers;
 	
-	ArrayList<LocalProfileSelector> local_players;
+	ArrayList<LocalProfileSelectorOoold> local_players;
 	
 	JPanel localPlayerPanel;
 
@@ -65,7 +65,7 @@ public class ServerSelectLocalPlayers extends JFrame{
 	
 	int currentNumberOfPlayers = 2;
 	
-	public ServerSelectLocalPlayers(final Menu menu){
+	public ServerSelectLocalPlayers(final MainMenuPanel menu){
 		
 		super();
 		
@@ -76,7 +76,7 @@ public class ServerSelectLocalPlayers extends JFrame{
 		
 		this.setLayout(new MigLayout("fill", "", "[][]30[]push[]"));
 		
-		availableProfiles = ProfileFileManager.getProfiles();
+		availableProfiles = ProfileManager.getProfiles();
 		
 		JPanel jp_player_number = new JPanel(new FlowLayout());
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
@@ -217,12 +217,12 @@ public class ServerSelectLocalPlayers extends JFrame{
 	
 	public void addLocalProfile(boolean isFirstProfile){
 		
-		LocalProfileSelector lps;
+		LocalProfileSelectorOoold lps;
 		
 		if(isFirstProfile)
-			lps = new LocalProfileSelector(availableProfiles, localPlayerPanel);
+			lps = new LocalProfileSelectorOoold(availableProfiles, localPlayerPanel);
 		else
-			lps = new LocalProfileSelector(availableProfiles, localPlayerPanel, this);
+			lps = new LocalProfileSelectorOoold(availableProfiles, localPlayerPanel, this);
 		
 		local_players.add(lps);
 		
@@ -233,7 +233,7 @@ public class ServerSelectLocalPlayers extends JFrame{
 	
 	public void removeLocalProfile(int i){
 		
-		LocalProfileSelector lps = local_players.get(i);
+		LocalProfileSelectorOoold lps = local_players.get(i);
 		local_players.remove(i);
 		
 		localPlayerPanel.remove(lps.getJc_playerSelector());
@@ -244,14 +244,14 @@ public class ServerSelectLocalPlayers extends JFrame{
 		localPlayerPanel.repaint();
 	}
 
-	public void removeLocalProfile(LocalProfileSelector lps) {
+	public void removeLocalProfile(LocalProfileSelectorOoold lps) {
 		removeLocalProfile(local_players.indexOf(lps));
 	}
 	
 	public ArrayList<ControllableProfile> getControllableProfiles(){
 		ArrayList<ControllableProfile> result = new ArrayList<>();
 		
-		for(LocalProfileSelector lps : local_players)
+		for(LocalProfileSelectorOoold lps : local_players)
 			result.add(lps.getC_profile());
 		
 		return result;

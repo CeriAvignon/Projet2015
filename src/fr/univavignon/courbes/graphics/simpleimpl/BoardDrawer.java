@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Round;
  
 /**
  * Contient les méthodes permettant de dessiner l'aire de jeu.
@@ -98,22 +99,22 @@ public class BoardDrawer
 	/**
 	 * Trace l'aire de jeu.
 	 * 
-	 * @param board
-	 * 		Aire de jeu à afficher.
+	 * @param round
+	 * 		La manche en cours.
 	 * @param g
 	 * 		Objet graphique sur lequel on trace les serpents.
 	 */
-	public void drawBoard(Board board, Graphics2D g)
+	public void drawBoard(Round round, Graphics2D g)
     {	// on dessine d'abord les serpents
-		snakesDrawer.drawSnakes(board, g);
+		snakesDrawer.drawSnakes(round, g);
 		
 		// puis la bordure
-		drawBorder(board, g);
+		drawBorder(round.board, g);
 				
         // puis les items
-		itemDrawer.drawItems(board, g);
+		itemDrawer.drawItems(round.board, g);
 		
 		// puis les auréoles des serpents
-		snakesDrawer.drawAureolas(board, g);
+		snakesDrawer.drawAureolas(round.board, g);
     }
 }

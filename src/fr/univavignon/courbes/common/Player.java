@@ -42,4 +42,9 @@ public class Player implements Serializable
 	public int roundScore;
 	/** Classement du joueur dans la partie courante */
 	public int currentRank;
+	
+	/** Numéro de la touche utilisée par le joueur pour aller à gauche */
+	public int leftKey;
+	/** Numéro de la touche utilisée par le joueur pour aller à droite */
+	public int rightKey;
 }

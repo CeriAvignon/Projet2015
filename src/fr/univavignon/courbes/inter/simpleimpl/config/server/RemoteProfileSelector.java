@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.menus;
+package fr.univavignon.courbes.inter.simpleimpl.config.server;
 
 /*
  * Courbes
@@ -27,15 +27,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectLocalPlayers;
-import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
 
 /**
  * Remote profile displayed for a server.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class RemoteProfileSelector {
+public class RemoteProfileSelector { 
 	
 	private JCheckBox jcb_ready = new JCheckBox();
 	private JButton jb_kick = new JButton("Retirer");

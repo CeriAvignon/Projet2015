@@ -20,15 +20,22 @@ package fr.univavignon.courbes.graphics.simpleimpl;
 
 import java.awt.BasicStroke;
 import java.awt.Color; 
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Board.State;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Position;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.common.Snake;
 
 /**
@@ -52,25 +59,29 @@ public class SnakeDrawer
 	/**
 	 * Trace tous les serpents présents dans l'aire de jeu.
 	 * 
-	 * @param board
-	 * 		Aire de jeu à afficher.
+	 * @param round
+	 * 		La manche en cours.
 	 * @param g
 	 * 		Objet graphique sur lequel on trace les serpents.
 	 */
-	public void drawSnakes(Board board, Graphics2D g)
-	{	Snake snakes[] = board.snakes;
+	public void drawSnakes(Round round, Graphics2D g)
+	{	Board board = round.board;
+		Snake snakes[] = board.snakes;
 		
 		// on boucle sur chaque joueur
 		for(int playerId=0;playerId<snakes.length;playerId++)
 		{	// on récupère la couleur du joueur dans la partie
 			Snake snake = snakes[playerId];
-			Color playerColor;
-			if(snake.connected)
-				playerColor = Constants.PLAYER_COLORS[playerId];
-			else
-				playerColor = Constants.DISC_PLAYER_COLOR;
-			g.setColor(playerColor);
+			Color playerColor = Constants.PLAYER_COLORS[playerId];
 			
+			// si le client est déconnecté, on utilise la couleur spéciale pour tracer la trainée
+			Color color;
+			if(snake.connected)
+				color = playerColor;
+			else
+				color = Constants.DISCO_PLAYER_COLOR;
+			g.setColor(color);
+				
 			// on boucle sur chaque position, i.e. chaque pixel
 			for(Position position: snake.trail)
 				g.drawLine(position.x, position.y, position.x, position.y);
@@ -84,10 +95,51 @@ public class SnakeDrawer
 //			}
 //			g.setColor(playerColor);
 			
-			// si le serpent est vivant, on trace sa tête
+			// si le client est éliminé, la tête doit être tracée en noir
 			if(snake.eliminatedBy==null)
-				g.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius,
-					snake.headRadius*2, snake.headRadius*2);
+				color = playerColor;
+			else
+				color = new Color
+				(	(int)Math.max(0, playerColor.getRed()-100),
+					(int)Math.max(0, playerColor.getGreen()-100),
+					(int)Math.max(0, playerColor.getBlue()-100));
+			g.setColor(color);
+			
+			// on trace la tête du serpent
+			g.fillOval(snake.currentX-snake.headRadius, snake.currentY-snake.headRadius,
+				snake.headRadius*2, snake.headRadius*2);
+			
+			// on trace éventuellement la flèche de présentation
+			if(board.state==State.PRESENTATION)
+			{	g.setColor(playerColor);
+				// flèche montrant la direction
+				{	float dist = snake.headRadius+5;
+					int x1 = (int)(snake.currentX + dist*Math.cos(snake.currentAngle));
+					int y1 = (int)(snake.currentY + dist*Math.sin(snake.currentAngle));
+					float length = 40;
+					int x2 = (int)(snake.currentX + length*Math.cos(snake.currentAngle));
+					int y2 = (int)(snake.currentY + length*Math.sin(snake.currentAngle));
+					drawArrow(g, x1, y1, x2, y2, 10, 4);
+				}
+				// nom du joueur
+				{	Player player = round.players[playerId];
+					Profile profile = player.profile;
+					String name = profile.userName;
+					float dist = snake.headRadius+5;
+					int xc = (int)(snake.currentX + dist*Math.cos(snake.currentAngle+Math.PI));
+					int yc = (int)(snake.currentY + dist*Math.sin(snake.currentAngle+Math.PI));
+					Font font = g.getFont();
+				    FontMetrics metrics = g.getFontMetrics(font);
+				    int textWidth = metrics.stringWidth(name);
+				    int textHeight = metrics.getHeight();
+				    int xt = xc - textWidth/2;
+				    int yt = yc + textHeight/2;
+					AffineTransform orig = g.getTransform();
+					g.rotate(snake.currentAngle+Math.PI/2,xc,yc);
+					g.drawString(name,xt,yt);
+					g.setTransform(orig);
+				}
+			}
 		}
 	}
 	
@@ -142,4 +194,51 @@ public class SnakeDrawer
 		// on rétablit l'épaisseur normale du stylo
 		g.setStroke(oldStroke);
 	}
+	
+	/**
+     * Dessine une flèche reliant les deux points spécifiés.
+     * Méthode prise sur <a href="http://stackoverflow.com/a/27461352/1254730">
+     * StackOverflow</a>, écrite par user2447581.
+     * 
+     * @param g
+     * 		Objet utilisé pour dessiner la flèche.
+     * @param x1 
+     * 		Abscisse du premier point.
+     * @param y1
+     * 		Ordonnée du premier point. 
+     * @param x2
+     * 		Abscisse du second point.
+     * @param y2
+     * 		Ordonnée du second point.
+     * @param width
+     * 		Largeur de la tête de la flèche.
+     * @param height
+     * 		Hauteur de la tête de la flèche.
+     */
+    private void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2, int width, int height)
+    {	int dx = x2 - x1;
+    	int dy = y2 - y1;
+		double D = Math.sqrt(dx*dx + dy*dy);
+		double xm = D - width;
+		double xn = xm;
+		double ym = height;
+		double yn = -height;
+		double x;
+		double sin = dy/D;
+		double cos = dx/D;
+
+		x = xm*cos - ym*sin + x1;
+		ym = xm*sin + ym*cos + y1;
+		xm = x;
+
+		x = xn*cos - yn*sin + x1;
+		yn = xn*sin + yn*cos + y1;
+		xn = x;
+
+		int[] xPoints = {x2, (int) xm, (int) xn};
+		int[] yPoints = {y2, (int) ym, (int) yn};
+
+		g.drawLine(x1, y1, x2, y2);
+		g.fillPolygon(xPoints, yPoints, 3);
+    }
 }

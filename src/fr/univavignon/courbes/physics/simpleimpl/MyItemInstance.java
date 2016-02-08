@@ -223,7 +223,7 @@ public class MyItemInstance extends ItemInstance
 		else //if(type==ItemType.OTHERS_FAST || type==ItemType.OTHERS_REVERSE || type==ItemType.OTHERS_SLOW || type==ItemType.OTHERS_THICK)
 		{	remainingTime = type.duration;
 			for(Snake s: board.snakes)
-			{	if(s!=snake)
+			{	if(s!=snake && s.eliminatedBy==null)
 				{	MyItemInstance item = new MyItemInstance(this);
 					s.currentItems.offer(item);
 				}

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.game;
+package fr.univavignon.courbes.inter.simpleimpl.config;
 
 /*
  * Courbes
@@ -41,7 +41,6 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**

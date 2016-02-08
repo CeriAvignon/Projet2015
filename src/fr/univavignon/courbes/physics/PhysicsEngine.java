@@ -47,10 +47,8 @@ public interface PhysicsEngine
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @param players
 	 * 		Joueurs participants à la manche.
-	 * @return
-	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board init(int width, int height, Player[] players);
+	public void init(int width, int height, Player[] players);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -67,10 +65,17 @@ public interface PhysicsEngine
 	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @param players
 	 * 		Joueurs participants à la manche.
+	 */
+	public void initDemo(int width, int height, Player[] players);
+	
+	/**
+	 * Renvoie l'aire de jeu créée lors de l'initialisation de
+	 * ce Moteur Physique.
+	 *  
 	 * @return
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
-	public Board initDemo(int width, int height, Player[] players);
+	public Board getBoard();
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur

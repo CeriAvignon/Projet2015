@@ -107,7 +107,8 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		Player players[] = {pl1,pl2};
 		
 		pe = new PhysicsEngineImpl();
-		Board board = pe.initDemo(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, players);
+		pe.initDemo(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, players);
+		Board board = pe.getBoard();
 		
 		round = new Round();
 		round.board = board;
@@ -253,9 +254,7 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 	/** Indique si le joueur a demandé d'exécuter une seule itération (pendant la pause) */
 	private boolean passIteration = false;
 	/** Enregistrement de l'état des touches (nécessaire pour l'exécution d'une itération) */
-	boolean keyState[] = new boolean[1000];
-	/** Enregistrement de l'état précédent des touches (nécessaire pour l'exécution d'une itération) */
-	boolean prevKeyState[] = new boolean[1000];
+	private boolean keyState[] = new boolean[1000];
 	
 	/**
 	 * Bascule en/sort de pause.

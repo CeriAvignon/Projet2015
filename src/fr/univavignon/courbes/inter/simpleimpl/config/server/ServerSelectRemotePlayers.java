@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.communication;
+package fr.univavignon.courbes.inter.simpleimpl.config.server;
 
 /*
  * Courbes
@@ -39,10 +39,9 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
-import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
-import fr.univavignon.courbes.inter.simpleimpl.data.RemoteProfile;
-import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.config.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.network.simpleimpl.Server;
 import net.miginfocom.swing.MigLayout;
 
@@ -84,7 +83,7 @@ public class ServerSelectRemotePlayers extends JFrame implements ServerProfileHa
 		
 		this.setLayout(new MigLayout("fill", "", "[][][]push[][]"));
 		
-		availableProfiles = ProfileFileManager.getProfiles();
+		availableProfiles = ProfileManager.getProfiles();
 		
 		server = new Server();
 		server.launchServer();

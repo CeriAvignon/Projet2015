@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Board.State;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
@@ -215,8 +216,6 @@ public class MySnake extends Snake
 		float dist = elapsedTime*movingSpeed;
 		
 		// conversion de polaire vers cartésien
-if(currentAngle!=0)
-	System.out.print("");
 		double tempX = dist*Math.cos(currentAngle);
 		double tempY = dist*Math.sin(currentAngle);
 		
@@ -328,7 +327,7 @@ if(currentAngle!=0)
 		}
 		
 		// on traite les autres joueurs
-		if(eliminatedBy==null && !board.entrance && !fly && remainingHole<=0)
+		if(eliminatedBy==null && board.state==State.REGULAR && !fly && remainingHole<=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
 			{	Snake snake = board.snakes[i];
@@ -367,7 +366,7 @@ if(currentAngle!=0)
 		currentY = newPos.y;
 		
 		// mise à jour de la traînée
-		if(!board.entrance && !fly && remainingHole<=0)
+		if(board.state==State.REGULAR && !fly && remainingHole<=0)
 		{	if(eliminatedBy==null)
 				trail.addAll(graphicalTrail);
 			else
@@ -392,7 +391,7 @@ if(currentAngle!=0)
 	 * 		Commande du joueur pour cette itération.
 	 */
 	public void update(Board board, long elapsedTime, Direction direction)
-	{	if(eliminatedBy==null)
+	{	if(eliminatedBy==null && board.state!=State.PRESENTATION)
 		{	MyBoard myBoard = (MyBoard)board;
 			
 			// on met à jour l'effet des items déjà ramassés

@@ -36,9 +36,18 @@ public class Constants
 	public static final int BOARD_WIDTH = 800;//TODO à confirmer
 	/** Hauteur de l'aire de jeu standard */
 	public static final int BOARD_HEIGHT = 800;//TODO à confirmer
+	/** Largeur du panel de score */
+	public static final int SCORE_WIDTH = 100;//TODO à confirmer
+	
+	/** Largeur de la fenêtre de jeu */
+	public static final int WINDOW_WIDTH = 20+BOARD_WIDTH+25+SCORE_WIDTH;	// marge + largeur de l'aire + séparation + largeur du score
+	/** Hauteur de la fenêtre de jeu */
+	public static final int WINDOW_HEIGHT = BOARD_HEIGHT+2*20;				// hauteur de l'aire + 2 marges
 	
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
-	public static final long ENTRANCE_DURATION = 0;//5000; //TODO à confirmer
+	public static final long ENTRANCE_DURATION = 2000;//5000; 	//TODO à confirmer
+	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
+	public static final long PRESENTATION_DURATION = 3000; 	//TODO à confirmer
 	
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
 	public static final float BASE_MOVING_SPEED = 0.08f;
@@ -69,9 +78,11 @@ public class Constants
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
 	public static final long ITEM_DURATION = 70000; //TODO 7000
 	/** Probabilité qu'un item apparaisse à chaque ms */
-	public static final float BASE_ITEM_POPUP_RATE = 0.00005f; 
+	public static final float BASE_ITEM_POPUP_RATE = 0.0001f; 
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
-	public static final float ITEM_POPUP_COEFF = 5f;
+	public static final float ITEM_POPUP_COEFF = 1.5f;
+	/** Nombre maximal d'items affichés simultanément à l'écran */
+	public static final int MAX_ITEM_NBR = 10;
 	
 	/** Nombre maximal de joueurs dans une manche donnée */
 	public static final int MAX_PLAYER_NBR = 6;
@@ -85,7 +96,9 @@ public class Constants
     	new Color(255,164,186)	// rose
 	};
     /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
-    public static final Color DISC_PLAYER_COLOR = Color.GRAY;
+    public static final Color DISCO_PLAYER_COLOR = Color.GRAY;
+    /** Couleur utilisée pendant une manche pour tracer la tête d'un joueur éliminé */
+    public static final Color ELIM_PLAYER_COLOR = Color.DARK_GRAY;
     /** Épaisseur des auréoles (en pixels) affichées autour de la tête des serpents pour représenter l'effet des items */
     public static final int AUREOLA_THICKNESS = 6;
     /** Espacement entre les auréoles, en pixels */
@@ -106,9 +119,22 @@ public class Constants
     	POINTS_FOR_RANK.put(5,1);
     	POINTS_FOR_RANK.put(6,0);
     }
+    /** Limite de points à atteindre */
+    public static final Map<Integer,Integer> POINT_LIMIT_FOR_PLAYER_NBR = new HashMap<Integer,Integer>();
+    static
+    {	POINT_LIMIT_FOR_PLAYER_NBR.put(2,35);
+	    POINT_LIMIT_FOR_PLAYER_NBR.put(3,35);
+	    POINT_LIMIT_FOR_PLAYER_NBR.put(4,35);
+	    POINT_LIMIT_FOR_PLAYER_NBR.put(5,35);
+	    POINT_LIMIT_FOR_PLAYER_NBR.put(6,35);
+    }
 }
 
-
-
 //TODO
-//	- peut être baisser la proba d'apparition des items
+//	- peut être baisser la proba d'apparition des items >> non : augmenter mais baisser le coef
+//  - implémenter la succession de rounds
+//	- implémenter le calcul des points
+
+// TODO en réalité, les valeurs affichées en couleur sont les points marqués une fois que le joueur est éliminé.
+// mais celles en n&b sont les points avant la manche + nbre minimal de points pour la manche courante (en fonction de qui reste en jeu)
+// >> ça doit être géré coté IU

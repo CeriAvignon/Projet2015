@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.communication;
+package fr.univavignon.courbes.inter.simpleimpl.config.client;
 
 /*
  * Courbes
@@ -38,11 +38,11 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
-import fr.univavignon.courbes.inter.simpleimpl.data.RemoteProfile;
-import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
+import fr.univavignon.courbes.inter.simpleimpl.config.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.config.LocalProfileSelectorOoold;
+import fr.univavignon.courbes.inter.simpleimpl.config.server.RemoteProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.network.simpleimpl.Client;
 import net.miginfocom.swing.MigLayout;
 
@@ -56,7 +56,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 	private JoinServer js;
 	private Client c;
 	
-	ArrayList<LocalProfileSelector> local_players;
+	ArrayList<LocalProfileSelectorOoold> local_players;
 	List<RemoteProfile> remote_players;
 	Vector<PrintableProfile> availableProfiles;
 	
@@ -80,7 +80,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 		
 		this.setLayout(new GridLayout(3, 1));
 
-		availableProfiles = ProfileFileManager.getProfiles();
+		availableProfiles = ProfileManager.getProfiles();
 		JPanel jp_previous_next = new JPanel(new FlowLayout());
 		
 		remotePlayerPanel = new JPanel(new MigLayout());
@@ -175,7 +175,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 			 /* Check if the profile id appears in the local profiles */ 
 			 while(!found && i < local_players.size() - 1){
 				 
-				 LocalProfileSelector lps = local_players.get(i);
+				 LocalProfileSelectorOoold lps = local_players.get(i);
 				 
 				 if(lps.getC_profile().getProfile().profileId == p.profileId){
 					 localProfileRemoved[i] = false;
@@ -256,14 +256,14 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 	}
 	
 	public void addLocalProfileSelector(){
-		local_players.add(new LocalProfileSelector(availableProfiles, this, localPlayerPanel)); 
+		local_players.add(new LocalProfileSelectorOoold(availableProfiles, this, localPlayerPanel)); 
 		localPlayerPanel.repaint();
 	}
 
 	
 	public void removeLocalProfile(int i){
 		
-		LocalProfileSelector lps = local_players.get(i);
+		LocalProfileSelectorOoold lps = local_players.get(i);
 		local_players.remove(i);
 		
 		localPlayerPanel.remove(lps.getJc_playerSelector());

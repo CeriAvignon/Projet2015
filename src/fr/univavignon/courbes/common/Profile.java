@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class Profile implements Serializable
+public class Profile implements Serializable, Comparable<Profile>
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
@@ -45,6 +45,27 @@ public class Profile implements Serializable
 	public String password;
 	/** Pays associé au profil */
 	public String country;
-	/** Fuseau horaire associé au profil */
-	public String timeZone;
+	
+	@Override
+	public int compareTo(Profile profile)
+	{	int result = profileId - profile.profileId;
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{	boolean result = false;
+		if(this==obj)
+			result = true;
+		else if(obj!=null && obj instanceof Profile)
+		{	Profile profile = (Profile) obj;
+			result = compareTo(profile)==0;
+		}
+		return result;
+	}
+	
+	@Override
+	public String toString()
+	{	return userName;
+	}
 }

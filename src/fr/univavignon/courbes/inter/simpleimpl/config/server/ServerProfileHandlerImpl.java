@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.data;
+package fr.univavignon.courbes.inter.simpleimpl.config.server;
 
 /*
  * Courbes
@@ -28,7 +28,7 @@ import fr.univavignon.courbes.network.simpleimpl.Client;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerProfile implements ServerProfileHandler{
+public class ServerProfileHandlerImpl implements ServerProfileHandler{
 	@Override
 	public boolean fetchProfile(Profile profile)
 	{

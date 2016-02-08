@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.data;
+package fr.univavignon.courbes.inter.simpleimpl.config.server;
 
 /*
  * Courbes
@@ -26,7 +26,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectRemotePlayers;
 import fr.univavignon.courbes.network.simpleimpl.Server;
 
 /**

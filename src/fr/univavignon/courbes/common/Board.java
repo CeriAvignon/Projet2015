@@ -42,8 +42,23 @@ public class Board implements Serializable
 	/** Hauteur de l'aire de jeu, en pixels */
 	public int height;
 	
-	/** Indique qu'on est en phase d'entrée ({@code true}) ou pas ({@code false}), i.e. la période au début d'une manche où il n'y a pas d collisions */
-	public boolean entrance;
+	/** Indique la phase du jeu : présentation, entrée ou normal */
+	public State state;
+	
+	/**
+	 * Représente l'état de la partie : présentation des joueurs,
+	 * entrée des joueurs, ou jeu normal.
+	 * 
+	 * @author	L3 Info UAPV 2015-16
+	 */
+	public enum State
+	{	/** Les serpents ne bougent pas, des flèches indiquent leur direction */
+		PRESENTATION,
+		/** Les serpents bougent, mais ne laissent pas de trainée */
+		ENTRANCE,
+		/** Le jeu se déroule normalement */
+		REGULAR;
+	}
 	
 	/** Indique si l'aire de jeu contient actuellement une bordure ou si celle-ci est absente */
 	public boolean hasBorder;

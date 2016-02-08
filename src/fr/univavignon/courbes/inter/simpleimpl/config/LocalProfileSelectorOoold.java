@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.menus;
+package fr.univavignon.courbes.inter.simpleimpl.config;
 
 /*
  * Courbes
@@ -32,18 +32,18 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.communication.ClientGame;
-import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectLocalPlayers;
-import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.config.client.ClientGame;
+import fr.univavignon.courbes.inter.simpleimpl.config.server.ServerSelectLocalPlayers;
 
 /**
- * 
+ *  
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class LocalProfileSelector {
-	
+public class LocalProfileSelectorOoold extends JPanel
+{	/** Numéro de série de la classe */
+	private static final long serialVersionUID = 1L;
+
 	private List<Player> availablePlayers;
 	
 	private JButton leftButton = new JButton("Non défini");
@@ -52,7 +52,7 @@ public class LocalProfileSelector {
 	private JButton sendProfileToServer = new JButton("Envoyer au serveur");
 	private JButton remove = new JButton("Retirer");
 
-	private JComboBox<PrintableProfile> jc_playerSelector;
+	private JComboBox<Profile> jc_playerSelector;
 	
 	private ControllableProfile c_profile;
 	
@@ -62,7 +62,7 @@ public class LocalProfileSelector {
 	 * @param cg
 	 * @param jp
 	 */
-	public LocalProfileSelector(Vector<PrintableProfile> players, final ClientGame cg, final JPanel jp){
+	public LocalProfileSelectorOoold(Vector<Profile> players, final ClientGame cg, final JPanel jp){
 		this(players, jp, false);
 		
 		jp.add(sendProfileToServer);
@@ -121,7 +121,7 @@ public class LocalProfileSelector {
 	 * @param players
 	 * @param jp
 	 */
-	public LocalProfileSelector(Vector<PrintableProfile> players, final JPanel jp, final ServerSelectLocalPlayers sslp){
+	public LocalProfileSelectorOoold(Vector<Profile> players, final JPanel jp, final ServerSelectLocalPlayers sslp){
 		this(players, jp, false);
 		
 		jp.add(remove, "wrap");
@@ -130,7 +130,7 @@ public class LocalProfileSelector {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				sslp.removeLocalProfile(LocalProfileSelector.this);
+				sslp.removeLocalProfile(LocalProfileSelectorOoold.this);
 			}
 		});
 	}
@@ -140,12 +140,12 @@ public class LocalProfileSelector {
 	 * @param players
 	 * @param jp
 	 */
-	public LocalProfileSelector(Vector<PrintableProfile> players, JPanel jp){
+	public LocalProfileSelectorOoold(Vector<Profile> players, JPanel jp){
 		this(players, jp, true);
 	}
 	
 	
-	private LocalProfileSelector(Vector<PrintableProfile> players, JPanel jp, boolean newLayoutLineAfterAdd){
+	private LocalProfileSelectorOoold(Vector<Profile> players, JPanel jp, boolean newLayoutLineAfterAdd){
 		
 		c_profile = new ControllableProfile();
 		
@@ -214,7 +214,7 @@ public class LocalProfileSelector {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PrintableProfile pp = (PrintableProfile)jc_playerSelector.getSelectedItem();
+				Profile pp = (Profile)jc_playerSelector.getSelectedItem();
 				ControllableProfile previous_profile = c_profile;
 				c_profile = new ControllableProfile();
 				c_profile.setProfile(pp.getProfile());
@@ -249,11 +249,11 @@ public class LocalProfileSelector {
 		this.rightButton = rightButton;
 	}
 
-	public JComboBox<PrintableProfile> getJc_playerSelector() {
+	public JComboBox<Profile> getJc_playerSelector() {
 		return jc_playerSelector;
 	}
 
-	public void setJc_playerSelector(JComboBox<PrintableProfile> jc_playerSelector) {
+	public void setJc_playerSelector(JComboBox<Profile> jc_playerSelector) {
 		this.jc_playerSelector = jc_playerSelector;
 	}
 	public JButton getSendProfileToServer() {

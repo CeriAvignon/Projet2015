@@ -156,10 +156,9 @@ public class MyBoard extends Board
 	public void update(long elapsedTime, Direction[] commands)
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
-System.out.println("elapsedTime: "+elapsedTime);
 		
-		// si on est au début de jeu, on met le compteur à jour
-		updateEntrance(elapsedTime);
+		// si on est au début de jeu, on met l'état
+		updateState(elapsedTime);
 		
 		// on met à jour les items (items encore en jeu et items collectifs ramassés)
 		updateItems(elapsedTime);
@@ -180,9 +179,14 @@ System.out.println("elapsedTime: "+elapsedTime);
 	 * @param elapsedTime
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 */
-	private void updateEntrance(long elapsedTime)
+	private void updateState(long elapsedTime)
 	{	totalTime = totalTime + elapsedTime;
-		entrance = totalTime <= Constants.ENTRANCE_DURATION;
+		if(totalTime <= Constants.PRESENTATION_DURATION)
+			state = State.PRESENTATION;
+		else if(totalTime <= Constants.ENTRANCE_DURATION)
+			state = State.ENTRANCE;
+		else
+			state = State.REGULAR;
 	}
 	
 	/**
@@ -215,12 +219,11 @@ System.out.println("elapsedTime: "+elapsedTime);
 		
 		// faut-il faire apparaitre un item?
 		float p = RANDOM.nextFloat();
-		if(!entrance && p<itemPopupRate*elapsedTime)
+		if(items.size()<Constants.MAX_ITEM_NBR && state==State.REGULAR && p<itemPopupRate*elapsedTime)
 		{	MyItemInstance item = generateItem();
 			if(item!=null)
 				items.add(item);
 		}
-//System.out.println("itemPopupRate="+itemPopupRate);		
 	}
 	
 	/**
@@ -246,8 +249,6 @@ System.out.println("elapsedTime: "+elapsedTime);
 			if(dir==null)
 				dir = Direction.NONE;
 			snake.update(this,elapsedTime,dir);
-if(i==0)			
-System.out.println(i+": x="+snake.currentX+"    y="+snake.currentY+"    angle="+snake.currentAngle);
 		}
 	}
 	

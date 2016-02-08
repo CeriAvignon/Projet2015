@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.communication;
+package fr.univavignon.courbes.inter.simpleimpl.config.client;
 
 /*
  * Courbes
@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
+import fr.univavignon.courbes.inter.simpleimpl.MainMenuPanel;
 import fr.univavignon.courbes.network.simpleimpl.Client;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,12 +39,12 @@ import net.miginfocom.swing.MigLayout;
  */
 public class JoinServer extends JFrame{
 	
-	Menu m;
+	MainMenuPanel m;
 	JTextField jtf_ip = new JTextField("192.168.0.1");
 	JTextField jtf_port = new JTextField("453");
 	
 	
-	public JoinServer(Menu m){
+	public JoinServer(MainMenuPanel m){
 	
 		super();
 		this.setSize(new Dimension(220, 120));

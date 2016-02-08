@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.game;
+package fr.univavignon.courbes.inter.simpleimpl.config;
 
 /*
  * Courbes
@@ -41,11 +41,10 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
- * 
+ *  
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -59,7 +58,7 @@ public class Game extends JFrame {
 	private int ids[];
 	private Map<Integer, Direction> commands;
 	private Map<Integer, int[]> commandsPlayer;
-	private ArrayList<LocalProfileSelector> players;
+	private ArrayList<LocalProfileSelectorOoold> players;
 
 	/**
 	 * Créer une fenêtre contenant le plateau du jeu et les données du jeu.
@@ -69,7 +68,7 @@ public class Game extends JFrame {
 	 * @param height
 	 *            Hauteur de la fenêtre.
 	 */
-	public Game(int width, int height, ArrayList<LocalProfileSelector> players) {
+	public Game(int width, int height, ArrayList<LocalProfileSelectorOoold> players) {
 		super();
 
 		tempWidth = width;
@@ -79,7 +78,7 @@ public class Game extends JFrame {
 		commandsPlayer = new HashMap<>();
 
 		/* For each player */
-		for (LocalProfileSelector lps : players) {
+		for (LocalProfileSelectorOoold lps : players) {
 
 			/* Set its keys */
 			KeyEvent left = lps.getC_profile().getLeft();

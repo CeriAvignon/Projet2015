@@ -32,6 +32,7 @@ import java.awt.image.VolatileImage;
 import java.io.IOException;
 
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 
@@ -56,7 +57,7 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		}
 		boardPanel = new BoardPanel(board);
 		
-		scorePanel = new ScorePanel(round.players);
+		scorePanel = new ScorePanel(round.players,Constants.SCORE_WIDTH);
 	}
 
 	/** Panel utilisé pour afficher l'aire de jeu */
@@ -74,7 +75,7 @@ public class GraphicDisplayImpl implements GraphicDisplay
 			initImage();
 		
 		// mise à jour du score
-		scorePanel.updateData(round.pointLimit, round.players);
+		scorePanel.updateData(round);
 		
 		// on réinitialise l'image buffer
 		boolean again;
@@ -91,12 +92,14 @@ public class GraphicDisplayImpl implements GraphicDisplay
 			Dimension dim = boardPanel.getPreferredSize();
 			g.fillRect(0,0,dim.width,dim.height);
 			// on dessine l'aire de jeu
-			boardDrawer.drawBoard(round.board, g);
+			boardDrawer.drawBoard(round, g);
 			g.dispose();
 			// on recopie sur le panel
 			Graphics gp = boardPanel.getGraphics();
-			gp.drawImage(image, 0, 0, null);
-			gp.dispose();
+			if(gp!=null)
+			{	gp.drawImage(image, 0, 0, null);
+				gp.dispose();
+			}
 			again = ((VolatileImage)image).contentsLost();
 		}
 		while(again);

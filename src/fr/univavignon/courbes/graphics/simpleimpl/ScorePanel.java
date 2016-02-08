@@ -19,6 +19,11 @@ package fr.univavignon.courbes.graphics.simpleimpl;
  */
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +32,7 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
+import fr.univavignon.courbes.common.Round;
 
 /**
  * Panel utilisé pour afficher le score de la manche en cours.
@@ -40,36 +46,70 @@ import fr.univavignon.courbes.common.Player;
 public class ScorePanel extends JPanel
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
-
+	/** Largeur du panel */
+	private final static int ROW_HEIGHT = 30;
+	
 	/**
 	 * Crée un panel permettant d'afficher le score en cours de partie.
 	 * 
 	 * @param players
 	 * 		Tableau de joueurs, contenant les informations nécessaires à l'affichage des scores.
 	 * 		Ici, on a surtout besoin de connaitre le nombre de joueurs, pour initialiser les labels.
+	 * @param width
+	 * 		Largeur du panel de score.
 	 */
-	public ScorePanel(Player[] players)
+	public ScorePanel(Player[] players, int width)
 	{	// définition du layout du panel
-		{	BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-			setLayout(layout);
-		}
-		// section affichant la limite de points
-		{	// on crée le panel pour cette ligne
-			JPanel panel = new JPanel();
-			BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
-			panel.setLayout(layout);
-			this.add(panel);
-			// on crée le label contenant le texte (constant)
-			JLabel titleLabel = new JLabel("Premier à");
-			panel.add(titleLabel);
-			// on ajoute un séparateur
-			panel.add(Box.createGlue());
-			// on crée le panel contenant la limite
-			limitLabel = new JLabel("NA");
-			panel.add(limitLabel);
-		}
-		// sections affichant chaque joueur
-		roundScoreLabels = new JLabel[players.length];
+		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+		setLayout(layout);
+		panelWidth = width;
+		
+		initHeader();
+		initRows(players);
+		
+		add(Box.createVerticalGlue());
+	}
+	
+	/** Largeur du panel */
+	private int panelWidth;
+	
+	/**
+	 * Initialisation des composants statiques,
+	 * i.e. qui ne vont pas évoluer au cours du temps.
+	 */
+	private void initHeader()
+	{	// on crée le panel pour cette ligne
+		JPanel panel = new JPanel();
+		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
+		panel.setLayout(layout);
+		Dimension dim = new Dimension(panelWidth,ROW_HEIGHT);
+		panel.setPreferredSize(dim);
+		panel.setMinimumSize(dim);
+		panel.setMaximumSize(dim);
+		add(panel);
+		
+		// on crée le label contenant le texte (constant)
+		JLabel titleLabel = new JLabel("Premier à");
+		panel.add(titleLabel);
+		
+		// on ajoute un séparateur
+		panel.add(Box.createGlue());
+		
+		// on crée le label contenant la limite
+		limitLabel = new JLabel("NA");
+		limitLabel.setOpaque(true);
+		panel.add(limitLabel);
+	}
+	
+	/**
+	 * Initialisation des composants utilisés pour 
+	 * afficher les scores, noms des joueurs, etc.
+	 * 
+	 * @param players
+	 * 		Tableau des joueurs à afficher.
+	 */
+	private void initRows(Player[] players)
+	{	roundScoreLabels = new JLabel[players.length];
 		nameLabels = new JLabel[players.length];
 		gameScoreLabels = new JLabel[players.length];
 		for(int i=0;i<players.length;i++)
@@ -77,9 +117,16 @@ public class ScorePanel extends JPanel
 			JPanel panel = new JPanel();
 			BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
 			panel.setLayout(layout);
-			this.add(panel);
+			Dimension dim = new Dimension(panelWidth,ROW_HEIGHT);
+			panel.setPreferredSize(dim);
+			panel.setMinimumSize(dim);
+			panel.setMaximumSize(dim);
+			add(panel);
 			// on crée le label pour le score de la manche
 			roundScoreLabels[i] = new JLabel("NA");
+			roundScoreLabels[i].setOpaque(true);
+			dim = new Dimension(50,100);
+			roundScoreLabels[i].setMaximumSize(dim);
 			panel.add(roundScoreLabels[i]);
 			// on ajoute un séparateur
 			panel.add(Box.createGlue());
@@ -106,18 +153,18 @@ public class ScorePanel extends JPanel
 	/**
 	 * Méthode utilisée pour mettre à jour le contenu du panel de score.
 	 * 
-	 * @param pointLimit
-	 * 		La nouvelle limite de points.
-	 * @param players
-	 * 		Tableau de joueurs, contenant les informations nécessaires à l'affichage des scores.
+	 * @param round
+	 * 		La manche en cours.
 	 */
-	public synchronized void updateData(int pointLimit, Player[] players)
+	public synchronized void updateData(Round round)
 	{	// labels des joueurs
 		Color firstColor = null;
-		for(int i=0;i<players.length;i++)
-		{	Player player = players[i];
-			Color color = Constants.PLAYER_COLORS[i];
-			int rank = player.currentRank;
+		List<Player> sortedPlayers =Arrays.asList(round.players);
+		Collections.sort(sortedPlayers,PLR_COMP);
+		int rank = 1;
+		for(Player player: sortedPlayers)
+		{	int playerId = player.playerId;
+			Color color = Constants.PLAYER_COLORS[playerId];
 			if(rank==1)
 				firstColor = color;
 			
@@ -130,16 +177,23 @@ public class ScorePanel extends JPanel
 			
 			int gamePoints = player.totalScore + roundPoints;
 			gameScoreLabels[rank-1].setText(Integer.toString(gamePoints));
+			
+			rank++;
 		}
 		
 		// label de la limite de points
-		limitLabel.setText(Integer.toString(pointLimit));
+		limitLabel.setText(Integer.toString(round.pointLimit));
 		limitLabel.setBackground(firstColor);
 	}
 	
+	/** Compare deux joueurs en fonction de leur rang */
+	private final static Comparator<Player> PLR_COMP = new Comparator<Player>()
+	{	@Override
+		public int compare(Player player1, Player player2)
+		{	int result = player1.currentRank - player2.currentRank;
+			return result;
+		}
+	};
+	
 	// TODO la mise en forme pourrait être grandement améliorée pour coller plus au jeu original
-
-	// TODO en réalité, les valeurs affichées en couleur sont les points marqués une fois que le joueur est éliminé.
-	// mais celles en n&b sont les points avant la manche + nbre minimal de points pour la manche courante (en fonction de qui reste en jeu)
-	// >> ça doit être géré coté IU
 }

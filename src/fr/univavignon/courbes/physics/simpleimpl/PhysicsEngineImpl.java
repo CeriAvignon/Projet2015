@@ -36,19 +36,20 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	private MyBoard board;
 	
 	@Override
-	public Board init(int width, int height, Player[] players)
+	public void init(int width, int height, Player[] players)
 	{	board = new MyBoard(width,height);
 		board.init(players);
-		
-		return board;
 	}
 	
 	@Override
-	public Board initDemo(int width, int height, Player[] players)
+	public void initDemo(int width, int height, Player[] players)
 	{	board = new MyBoard(width,height);
 		board.initDemo(players);
-		
-		return board;
+	}
+
+	@Override
+	public Board getBoard()
+	{	return board;
 	}
 	
 	@Override
