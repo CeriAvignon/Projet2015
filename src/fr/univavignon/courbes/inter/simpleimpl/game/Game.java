@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
@@ -17,16 +16,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.Window;
+import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
-public class Game extends Window{
+public class Game extends JFrame{
 	
 	public static final String CONSTANTE_1 = "Round";
 	private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public class Game extends Window{
 	 */
 	public Game(int width, int height, ArrayList<LocalProfileSelector> players) 
 	{
-		super( width, height);
+		super();
 		tempWidth=width;
 		tempHeight=height;
 		this.players = players;
