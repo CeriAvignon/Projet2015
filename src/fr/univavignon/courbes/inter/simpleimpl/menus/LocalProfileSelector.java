@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.menus;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -14,6 +14,10 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.simpleimpl.communication.ClientGame;
+import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectLocalPlayers;
+import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
 
 public class LocalProfileSelector {
 	

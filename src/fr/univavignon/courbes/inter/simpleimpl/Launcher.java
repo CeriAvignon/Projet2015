@@ -1,9 +1,11 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl;
 
 
 import javax.swing.JFrame;
 
-public class mainMenu extends JFrame{
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
+
+public class Launcher extends JFrame{
 
 	/**
 	 * 

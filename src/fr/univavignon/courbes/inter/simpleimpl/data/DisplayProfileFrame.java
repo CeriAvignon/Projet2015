@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.data;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -28,6 +28,7 @@ import javax.swing.table.AbstractTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
 
 public class DisplayProfileFrame extends JFrame{
 	

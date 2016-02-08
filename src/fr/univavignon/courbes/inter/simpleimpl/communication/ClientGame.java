@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.communication;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,7 +20,12 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.network.groupe06.Client;
+import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
+import fr.univavignon.courbes.inter.simpleimpl.data.RemoteProfile;
+import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
+import fr.univavignon.courbes.network.simpleimpl.Client;
 import net.miginfocom.swing.MigLayout;
 
 public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHandler{

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl;
 
 import java.awt.*;
 import javax.swing.*;
@@ -6,7 +6,7 @@ import javax.swing.*;
 /*
  * Classe abstraite permettant d'initialiser les fenètres.
  */
-abstract class Window extends JFrame 
+public abstract class Window extends JFrame 
 {
 	/**
 	 * 
@@ -18,8 +18,8 @@ abstract class Window extends JFrame
 	 * @param width  Largeur de la fenêtre.
 	 * @param height Hauteur de la fenêtre.
 	 */
-	Window(int width, int height) {
-		setTitle("Atchung Die Kurv");
+	public Window(int width, int height) {
+		setTitle("Courbes");
 	    this.setSize(width, height);
 	    this.setLocationRelativeTo(null);
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 

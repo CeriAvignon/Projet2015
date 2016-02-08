@@ -112,4 +112,3 @@ public class Constants
 
 //TODO
 //	- peut être baisser la proba d'apparition des items
-//	- rajouter un coup d'anti-aliasing

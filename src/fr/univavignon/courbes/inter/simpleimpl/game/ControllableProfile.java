@@ -1,8 +1,9 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.game;
 
 import java.awt.event.KeyEvent;
 
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
 
 public class ControllableProfile extends PrintableProfile{
 	

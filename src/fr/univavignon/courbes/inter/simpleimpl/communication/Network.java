@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.communication;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,9 +12,13 @@ import javax.swing.border.EmptyBorder;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.simpleimpl.Error;
+import fr.univavignon.courbes.inter.simpleimpl.Window;
+import fr.univavignon.courbes.inter.simpleimpl.game.Game;
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
 import fr.univavignon.courbes.network.*;
-import fr.univavignon.courbes.network.groupe06.Client;
-import fr.univavignon.courbes.network.groupe06.Server;
+import fr.univavignon.courbes.network.simpleimpl.Client;
+import fr.univavignon.courbes.network.simpleimpl.Server;
 
 public class Network extends Window {
 

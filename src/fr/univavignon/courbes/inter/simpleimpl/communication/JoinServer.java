@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.communication;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -10,7 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import fr.univavignon.courbes.network.groupe06.Client;
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
+import fr.univavignon.courbes.network.simpleimpl.Client;
 import net.miginfocom.swing.MigLayout;
 
 public class JoinServer extends JFrame{

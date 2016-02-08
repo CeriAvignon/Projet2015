@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.data;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,6 +6,10 @@ import java.io.*;
 import java.util.regex.*;
 
 import javax.swing.*;
+
+import fr.univavignon.courbes.inter.simpleimpl.Error;
+import fr.univavignon.courbes.inter.simpleimpl.Window;
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
 
 public class Registration extends Window {
 	/**

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.communication;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,7 +21,11 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
-import fr.univavignon.courbes.network.groupe06.Server;
+import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
+import fr.univavignon.courbes.inter.simpleimpl.data.RemoteProfile;
+import fr.univavignon.courbes.inter.simpleimpl.game.ControllableProfile;
+import fr.univavignon.courbes.network.simpleimpl.Server;
 import net.miginfocom.swing.MigLayout;
 
 public class ServerSelectRemotePlayers extends JFrame implements ServerProfileHandler{

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +7,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import fr.univavignon.courbes.inter.simpleimpl.Window;
+import fr.univavignon.courbes.inter.simpleimpl.communication.JoinServer;
+import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectLocalPlayers;
+import fr.univavignon.courbes.inter.simpleimpl.data.DisplayProfileFrame;
+import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
+import fr.univavignon.courbes.inter.simpleimpl.game.LocalGame;
 import net.miginfocom.swing.MigLayout;
 
 /**

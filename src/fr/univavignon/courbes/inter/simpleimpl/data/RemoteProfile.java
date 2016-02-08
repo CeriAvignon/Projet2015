@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.data;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +8,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.groupe06.Server;
+import fr.univavignon.courbes.inter.simpleimpl.communication.ServerSelectRemotePlayers;
+import fr.univavignon.courbes.network.simpleimpl.Server;
 
 /**
  * Remote profile displayed for a client

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.groupe06;
+package fr.univavignon.courbes.network.simpleimpl;
 
 import fr.univavignon.courbes.network.ClientCommunication;
 

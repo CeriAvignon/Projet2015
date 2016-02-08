@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.game;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,6 +22,10 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.simpleimpl.data.PrintableProfile;
+import fr.univavignon.courbes.inter.simpleimpl.data.ProfileFileManager;
+import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
+import fr.univavignon.courbes.inter.simpleimpl.menus.Menu;
 
 public class LocalGame extends JFrame{
 

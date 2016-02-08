@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.data;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

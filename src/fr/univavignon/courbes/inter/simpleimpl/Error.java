@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

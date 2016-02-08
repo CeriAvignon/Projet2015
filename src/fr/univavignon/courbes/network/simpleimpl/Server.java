@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.groupe06;
+package fr.univavignon.courbes.network.simpleimpl;
 
 import fr.univavignon.courbes.network.ServerCommunication;
 
@@ -29,8 +29,8 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
  *
  *Classe fille de ServerCommunication, elle en implémente toutes les méthodes.
  */
-public class Server implements ServerCommunication {
-
+public class Server implements ServerCommunication
+{
 	/** Variable qui contient l'adresse ip du serveur */
 	protected String ip;
 	/** Variable qui contient le port du serveur */

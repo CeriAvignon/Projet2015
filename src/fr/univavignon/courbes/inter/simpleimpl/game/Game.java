@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.groupe13;
+package fr.univavignon.courbes.inter.simpleimpl.game;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -22,8 +22,9 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.inter.simpleimpl.Window;
+import fr.univavignon.courbes.inter.simpleimpl.menus.LocalProfileSelector;
 import fr.univavignon.courbes.physics.PhysicsEngine;
-import fr.univavignon.courbes.physics.groupe16.Round;
 
 public class Game extends Window{
 	
@@ -119,7 +120,7 @@ public class Game extends Window{
       }
 	        
 	/**
-	 * Lance une partie local.
+	 * Lance une partie locale.
 	 */	
 	 public void run()
 	 {	
