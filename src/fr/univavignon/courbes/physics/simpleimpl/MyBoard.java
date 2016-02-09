@@ -50,17 +50,9 @@ public class MyBoard extends Board
 	
 	/**
 	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
-	 * 
-	 * @param width
-	 * 		Largeur en pixels.
-	 * @param height
-	 * 		hauteur en pixels.
 	 */
-	public MyBoard(int width, int height)
-	{	this.width = width;
-		this.height = height;
-		
-		items = new ArrayList<ItemInstance>();
+	public MyBoard()
+	{	items = new ArrayList<ItemInstance>();
 		currentItems = new LinkedList<MyItemInstance>();
 		totalTime = 0;
 		mustClean = false;
@@ -102,11 +94,11 @@ public class MyBoard extends Board
 	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
 		snakes = new Snake[2];
 		// premier joueur
-		MySnake snake0 = new MySnake(0,this,width*3/4,height*3/4);
+		MySnake snake0 = new MySnake(0,this,Constants.BOARD_WIDTH*3/4,Constants.BOARD_HEIGHT*3/4);
 		snakes[0] = snake0;
 		snake0.currentAngle = 0;
 		// second joueur
-		MySnake snake1 = new MySnake(1,this,width/2,height/2);
+		MySnake snake1 = new MySnake(1,this,Constants.BOARD_WIDTH/2,Constants.BOARD_HEIGHT/2);
 		snakes[1] = snake1;
 		snake1.movingSpeed = 0;	// ce joueur ne doit pas bouger
 		
@@ -124,7 +116,7 @@ public class MyBoard extends Board
 		snakes[1].trail.addAll(disk);
 		
 		// on rajoute les items
-		int sep = (int)((width-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
+		int sep = (int)((Constants.BOARD_WIDTH-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
 		int x = Constants.BORDER_THICKNESS;
 		int y = Constants.BORDER_THICKNESS + sep + Constants.ITEM_RADIUS;
 		for(ItemType itemType: ItemType.values())
@@ -152,8 +144,10 @@ public class MyBoard extends Board
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 * @param commands
 	 * 		Commandes de chaque joueur.
+	 * @return
+	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
 	 */
-	public void update(long elapsedTime, Direction[] commands)
+	public List<Integer> update(long elapsedTime, Direction[] commands)
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
 		
@@ -164,11 +158,13 @@ public class MyBoard extends Board
 		updateItems(elapsedTime);
 		
 		// on met à jour les serpents
-		updateSnakes(elapsedTime,commands);
+		List<Integer> result = updateSnakes(elapsedTime,commands);
 		
 		// si nécessaire, on nettoie l'aire de jeu des trainées des serpents 
 		if(mustClean)
 			cleanSnakes();
+		
+		return result;
 	}
 	
 	/**
@@ -233,9 +229,13 @@ public class MyBoard extends Board
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 * @param commands
 	 * 		Commandes de chaque joueur.
+	 * @return
+	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
 	 */
-	private void updateSnakes(long elapsedTime, Direction[] commands)
-	{	// on évite de traiter les serpents toujours dans le même ordre, par souci d'équité
+	private List<Integer> updateSnakes(long elapsedTime, Direction[] commands)
+	{	List<Integer> result = new ArrayList<Integer>();
+		
+		// on évite de traiter les serpents toujours dans le même ordre, par souci d'équité
 		List<Integer> idx = new ArrayList<Integer>();
 		for(int i=0;i<snakes.length;i++)
 			idx.add(i);
@@ -248,8 +248,12 @@ public class MyBoard extends Board
 			Direction dir = commands[i];
 			if(dir==null)
 				dir = Direction.NONE;
-			snake.update(this,elapsedTime,dir);
+			boolean eliminated = snake.update(this,elapsedTime,dir);
+			if(eliminated)
+				result.add(i);
 		}
+		
+		return result;
 	}
 	
 	/**
@@ -280,8 +284,8 @@ public class MyBoard extends Board
 		boolean available = false;
 		do
 		{	// on tire la position au sort, hors-bordure
-			x = RANDOM.nextInt(width-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
-			y = RANDOM.nextInt(height-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
+			x = RANDOM.nextInt(Constants.BOARD_WIDTH-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
+			y = RANDOM.nextInt(Constants.BOARD_HEIGHT-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
 			
 			// on récupère un disque représentant l'espace occupé par l'item (plus une marge)
 			Position center = new Position(x,y);
@@ -330,8 +334,8 @@ public class MyBoard extends Board
 	 * 		Une nouvelle position correspondant à la normalisation de l'ancienne. 
 	 */
 	public Position normalizePosition(Position position)
-	{	int x = (position.x + width) % width;
-		int y = (position.y + height) % height;
+	{	int x = (position.x + Constants.BOARD_WIDTH) % Constants.BOARD_WIDTH;
+		int y = (position.y + Constants.BOARD_HEIGHT) % Constants.BOARD_HEIGHT;
 		Position result = new Position(x,y);
 		return result;
 	}

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.server;
+package fr.univavignon.courbes.inter.simpleimpl.server;
 
 /*
  * Courbes
@@ -24,73 +24,54 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.simpleimpl.Server;
+import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
 
 /**
- * Remote profile displayed for a client.
+ * Remote profile displayed for a server.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class RemoteProfile {
-
-	Profile profile;
-	JLabel jl;
-	JCheckBox isReady;
-	JButton jb_kick;
+public class RemoteProfileSelector { 
 	
-	public RemoteProfile(Profile profile){
-		this.profile = profile;
-		jl = new JLabel(profile.userName);		
-		
-	}
+	private JCheckBox jcb_ready = new JCheckBox();
+	private JButton jb_kick = new JButton("Retirer");
 	
-	public RemoteProfile(Profile profile, final Server server, final ServerSelectRemotePlayers ssrp){
-		
-		this(profile);
+	private PrintableProfile profile;
+	
+	public RemoteProfileSelector(final ServerSelectLocalPlayers sg, final JPanel jp, Profile p){
 
-		isReady = new JCheckBox();
-		isReady.setSelected(false);
+		profile = new PrintableProfile();
+		profile.setProfile(p);
 		
-		jb_kick = new JButton("Retirer");
+		jp.add(new JLabel(p.userName));
+		jp.add(jcb_ready);
+		jp.add(jb_kick);
 		
-		jb_kick.addActionListener(new ActionListener() {
+		jcb_ready.setEnabled(false);
+		
+		jb_kick.addActionListener(new ActionListener(){
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				ssrp.removeRemoteProfile(RemoteProfile.this);
+			public void actionPerformed(ActionEvent e){
+				//TODO faire l'action de kick
+//				sg. ...
 			}
 		});
 		
-		
-	}
-	
-	public JCheckBox getIsReady() {
-		return isReady;
+				
 	}
 
-	public void setIsReady(JCheckBox isReady) {
-		this.isReady = isReady;
+	public PrintableProfile getProfile() {
+		return profile;
 	}
 
 	public JButton getJb_kick() {
 		return jb_kick;
 	}
-
-	public void setJb_kick(JButton jb_kick) {
-		this.jb_kick = jb_kick;
-	}
-
-	public void setJl(JLabel jl) {
-		this.jl = jl;
-	}
-
-	public Profile getProfile(){
-		return profile;
-	}
 	
-	public JLabel getJl(){
-		return jl;
-	}
+	
+
 }

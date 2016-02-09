@@ -69,14 +69,14 @@ public class BoardDrawer
 			g.fillRect(
 				0, 
 				0, 
-				board.width, 
+				Constants.BOARD_WIDTH, 
 				Constants.BORDER_THICKNESS
 			);
 			// bas
 			g.fillRect(
 				0, 
-				board.height-Constants.BORDER_THICKNESS, 
-				board.width, 
+				Constants.BOARD_HEIGHT-Constants.BORDER_THICKNESS, 
+				Constants.BOARD_WIDTH, 
 				Constants.BORDER_THICKNESS
 			);
 			// gauche
@@ -84,14 +84,14 @@ public class BoardDrawer
 				0, 
 				Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
-				board.width-2*Constants.BORDER_THICKNESS
+				Constants.BOARD_HEIGHT-2*Constants.BORDER_THICKNESS
 			);
 			// droite
 			g.fillRect(
-				board.width-Constants.BORDER_THICKNESS, 
+				Constants.BOARD_WIDTH-Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
-				board.width-2*Constants.BORDER_THICKNESS
+				Constants.BOARD_HEIGHT-2*Constants.BORDER_THICKNESS
 			);
 		}
 	}

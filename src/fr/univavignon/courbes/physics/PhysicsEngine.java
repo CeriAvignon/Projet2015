@@ -18,6 +18,8 @@ package fr.univavignon.courbes.physics;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.List;
+
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
@@ -41,14 +43,10 @@ public interface PhysicsEngine
 	 * valeurs passées en paramètres, puis renvoyer cet objet pour 
 	 * que l'Interface Utilisateur puisse l'utiliser à son tour.
 	 * 
-	 * @param width
-	 * 		Largeur de l'aire de jeu, exprimée en pixel.
-	 * @param height
-	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @param players
 	 * 		Joueurs participants à la manche.
 	 */
-	public void init(int width, int height, Player[] players);
+	public void init(Player[] players);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -59,14 +57,10 @@ public interface PhysicsEngine
 	 * 	<li>Seulement deux joueurs : le premier est contrôlé normalement, le second est immobile</li>
 	 * </ul>
 	 * 
-	 * @param width
-	 * 		Largeur de l'aire de jeu, exprimée en pixel.
-	 * @param height
-	 * 		Hauteur de l'aire de jeu, exprimée en pixel.
 	 * @param players
 	 * 		Joueurs participants à la manche.
 	 */
-	public void initDemo(int width, int height, Player[] players);
+	public void initDemo(Player[] players);
 	
 	/**
 	 * Renvoie l'aire de jeu créée lors de l'initialisation de
@@ -94,8 +88,10 @@ public interface PhysicsEngine
 	 * 		Temps écoulé depuis la dernière mise à jour, exprimé en ms.
 	 * @param commands
 	 * 		Dernière commande générée par le chaque joueur.
+	 * @return
+	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
 	 */
-	public void update(long elapsedTime, Direction commands[]);
+	public List<Integer> update(long elapsedTime, Direction commands[]);
 	
 	/**
 	 * Cette méthode est appelée par l'Interface Utilisateur côté client, lors 

@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config;
+package fr.univavignon.courbes.inter.simpleimpl;
 
 /*
  * Courbes
@@ -32,8 +32,8 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.config.client.ClientGame;
-import fr.univavignon.courbes.inter.simpleimpl.config.server.ServerSelectLocalPlayers;
+import fr.univavignon.courbes.inter.simpleimpl.client.ClientGame;
+import fr.univavignon.courbes.inter.simpleimpl.server.ServerSelectLocalPlayers;
 
 /**
  *  

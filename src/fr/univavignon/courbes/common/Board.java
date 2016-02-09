@@ -37,11 +37,6 @@ public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
-	/** Largeur de l'aire de jeu, en pixels */
-	public int width;
-	/** Hauteur de l'aire de jeu, en pixels */
-	public int height;
-	
 	/** Indique la phase du jeu : présentation, entrée ou normal */
 	public State state;
 	

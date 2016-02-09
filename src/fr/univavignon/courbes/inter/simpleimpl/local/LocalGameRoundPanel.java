@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.local;
+package fr.univavignon.courbes.inter.simpleimpl.local;
 
 /*
  * Courbes
@@ -18,18 +18,24 @@ package fr.univavignon.courbes.inter.simpleimpl.config.local;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
+import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 import fr.univavignon.courbes.graphics.simpleimpl.GraphicDisplayImpl;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
+import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 import fr.univavignon.courbes.physics.simpleimpl.PhysicsEngineImpl;
 
@@ -71,12 +77,8 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 	private MainWindow mainWindow;
 	/** Objet représentant la manche courante */
 	private Round round;
-	/** Tableaux des joueurs participant à la partie */
-	private Player[] players;
 	/** Moteur Physique */
 	private PhysicsEngine physicsEngine;
-	/** Aire de jeu */
-	private Board board;
 	/** Moteur Graphique */
 	private GraphicDisplay graphicDisplay;
 	/** Panel affichant l'aire de jeu */
@@ -91,18 +93,18 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 	private boolean running;
 	/** Afficher les stats dans la console, pour le dégugage */
 	private boolean showStats = false;
+	/** Score total de chaque joueur */
+	private int[] totalPoints;
 	
 	/**
 	 * Initialise le panel et les objets qu'il utilise.
 	 */
 	private void init()
 	{	round = mainWindow.currentRound;
-		players = round.players;
 	
 		physicsEngine = new PhysicsEngineImpl();
-		physicsEngine.init(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, players);
-		board = physicsEngine.getBoard();
-		round.board = board;
+		physicsEngine.init(round.players);
+		round.board = physicsEngine.getBoard();
 		
 		graphicDisplay = new GraphicDisplayImpl();
 		graphicDisplay.init(round);
@@ -111,25 +113,98 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 		
 		BoxLayout layout = new BoxLayout(this,BoxLayout.LINE_AXIS);
 		setLayout(layout);
+
+		add(Box.createHorizontalGlue());
 		add(scorePanel);
 		add(Box.createHorizontalGlue());
 		add(boardPanel);
+		add(Box.createHorizontalGlue());
 		
-		keyManager = new KeyManager(players);
+		keyManager = new KeyManager(round.players);
 		mainWindow.setFocusable(true);
 		mainWindow.requestFocusInWindow();
 		mainWindow.addKeyListener(keyManager);
 	}
 	
+	/**
+	 * Réinitialise partiellement l'objet représentant
+	 * la partie, pour pouvoir enchaîner une autre manche.
+	 */
+	private void resetRound()
+	{	physicsEngine.init(round.players);
+		round.board = physicsEngine.getBoard();
+		for(Player player: round.players)
+			player.roundScore = 0;
+		running = true;
+	}
+	
 	@Override
 	public void run()
+	{	boolean matchOver = false;
+		Player[] players = round.players;
+		totalPoints = new int[players.length];
+		Arrays.fill(totalPoints, 0);
+
+		do
+		{	// on joue le round
+			playRound();
+			
+			// on met à jour les score totaux
+			for(int i=0;i<players.length;i++)
+				totalPoints[i] = players[i].totalScore;
+
+			// on compare le score le plus élevé et la limite
+			int maxIdx = 0;
+			for(int i=0;i<totalPoints.length;i++)
+			{	if(totalPoints[i]>totalPoints[maxIdx])
+					maxIdx = i;
+			}
+			matchOver = totalPoints[maxIdx]>=Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(totalPoints.length);
+			
+			// on affiche éventuellement le vainqueur de la rencontre
+			if(matchOver)
+			{	Profile profile = players[maxIdx].profile;
+				String name = profile.userName;
+				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+"a gagné la rencontre !");
+			}
+			
+			// ou bien celui de la manche, et on recommence
+			else
+			{	int maxIdx2 = 0;
+				for(int i=0;i<players.length;i++)
+				{	if(players[i].roundScore>players[maxIdx2].roundScore)
+					maxIdx2 = i;
+				}
+				Profile profile = players[maxIdx2].profile;
+				String name = profile.userName;
+				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+" a gagné la manche !");
+				
+				resetRound();
+			}
+		}
+		while(!matchOver);
+		
+		// mise à jour des stats
+		// TODO
+		
+		// on repart au menu principal
+		mainWindow.displayPanel(PanelName.MAIN_MENU);
+	}
+	
+	/**
+	 * Effectue une manche du jeu.
+	 */
+	public void playRound()
 	{	int phyUpdateNbr = 0;							// dernier nombre de màj physiques (stats)						
 		int graphUpdateNbr = 0;							// dernier nombre de màj graphiques (stats)
 		long elapsedStatTime = 0;						// temps écoulé depuis le dernier affichage des stats
 		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
-	
+		long finalCount = 0;							// décompte pour la toute fin de partie
+		
+		List<Integer> prevEliminated = new ArrayList<Integer>();
+		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
 			long elapsedTime = currentTime - previousTime;
@@ -153,7 +228,10 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 				
 				if(elapsedPhysTime/PHYS_DELAY >= 1)
 				{	Direction[] directions = keyManager.retrieveDirections();
-					physicsEngine.update(elapsedPhysTime, directions);
+					List<Integer> lastEliminated = physicsEngine.update(elapsedPhysTime, directions);
+					boolean finished = updatePoints(prevEliminated,lastEliminated);
+					if(finished)
+						finalCount = 1;
 					phyUpdateNbr++;
 					elapsedPhysTime = 0;
 				}
@@ -163,7 +241,13 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 					graphUpdateNbr++;
 					elapsedGraphTime = 0;
 				}
-	
+
+				if(finalCount>0)
+				{	finalCount = finalCount + elapsedTime;
+					if(finalCount>=Constants.END_DURATION)
+						running = false;
+				}
+				
 				if(elapsedStatTime >= 1000)
 				{	if(showStats)
 						System.out.println("UPS: "+phyUpdateNbr+" -- FPS: "+graphUpdateNbr);
@@ -173,6 +257,51 @@ public class LocalGameRoundPanel extends JPanel implements Runnable
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Recalcule les points des joueurs en fonction des éliminations
+	 * qui se sont produites lors de la dernière itération. La fonction
+	 * renvoie aussi un booléen indiquant si la partie est finie ou pas.
+	 * 
+	 * @param prevEliminated
+	 * 		Liste des numéros des joueurs éliminés lors des itérations précédentes.
+	 * @param lastEliminated
+	 * 		Liste des numéros des joueurs éliminés lors de l'itération en cours.
+	 * @return
+	 * 		{@code true} ssi la partie doit se terminer.
+	 */
+	private boolean updatePoints(List<Integer> prevEliminated, List<Integer> lastEliminated)
+	{	boolean result = false;
+		
+		if(!lastEliminated.isEmpty())
+		{	prevEliminated.addAll(lastEliminated);
+			Player[] players = round.players;
+			
+			// points de ceux qui ont déjà été éliminés
+			int rank = players.length;
+			for(int i=0;i<prevEliminated.size();i++)
+			{	int playerId = prevEliminated.get(i);
+				Player player = players[playerId];
+				player.roundScore = Constants.POINTS_FOR_RANK.get(rank);
+				player.totalScore = totalPoints[playerId] + player.roundScore;
+				rank--;
+			}
+			
+			// estimation pessimiste de ceux qui n'ont pas encore été éliminés
+			for(Player player: players)
+			{	int playerId = player.playerId;
+				if(!prevEliminated.contains(playerId))
+				{	player.roundScore = Constants.POINTS_FOR_RANK.get(rank);
+					player.totalScore = totalPoints[playerId] + player.roundScore;
+				}
+			}
+			
+			// on teste la fin de la manche
+			result = prevEliminated.size()>=players.length-1;
+		}
+		
+		return result;
 	}
 	
 	/**

@@ -33,8 +33,8 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.simpleimpl.config.local.LocalGameConfigPanel;
-import fr.univavignon.courbes.inter.simpleimpl.config.local.LocalGameRoundPanel;
+import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameConfigPanel;
+import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
 
 /**

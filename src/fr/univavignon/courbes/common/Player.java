@@ -40,8 +40,6 @@ public class Player implements Serializable
 	public int totalScore;
 	/** Score partiel du joueur pour la manche courante */
 	public int roundScore;
-	/** Classement du joueur dans la partie courante */
-	public int currentRank;
 	
 	/** Numéro de la touche utilisée par le joueur pour aller à gauche */
 	public int leftKey;

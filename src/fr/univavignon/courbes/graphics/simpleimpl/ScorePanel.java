@@ -20,15 +20,20 @@ package fr.univavignon.courbes.graphics.simpleimpl;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
@@ -46,7 +51,7 @@ import fr.univavignon.courbes.common.Round;
 public class ScorePanel extends JPanel
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
-	/** Largeur du panel */
+	/** Hauteur d'une ligne dans ce panel */
 	private final static int ROW_HEIGHT = 30;
 	
 	/**
@@ -55,23 +60,20 @@ public class ScorePanel extends JPanel
 	 * @param players
 	 * 		Tableau de joueurs, contenant les informations nécessaires à l'affichage des scores.
 	 * 		Ici, on a surtout besoin de connaitre le nombre de joueurs, pour initialiser les labels.
-	 * @param width
-	 * 		Largeur du panel de score.
 	 */
-	public ScorePanel(Player[] players, int width)
+	public ScorePanel(Player[] players)
 	{	// définition du layout du panel
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);
-		panelWidth = width;
+		
+		Dimension dim = new Dimension(Constants.SCORE_WIDTH,Constants.BOARD_HEIGHT);
+		setPreferredSize(dim);
+		setMinimumSize(dim);
+		setMaximumSize(dim);
 		
 		initHeader();
 		initRows(players);
-		
-		add(Box.createVerticalGlue());
 	}
-	
-	/** Largeur du panel */
-	private int panelWidth;
 	
 	/**
 	 * Initialisation des composants statiques,
@@ -82,14 +84,22 @@ public class ScorePanel extends JPanel
 		JPanel panel = new JPanel();
 		BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
 		panel.setLayout(layout);
-		Dimension dim = new Dimension(panelWidth,ROW_HEIGHT);
+		Dimension dim = new Dimension(Constants.SCORE_WIDTH,ROW_HEIGHT);
 		panel.setPreferredSize(dim);
 		panel.setMinimumSize(dim);
 		panel.setMaximumSize(dim);
 		add(panel);
-		
+
+		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+
 		// on crée le label contenant le texte (constant)
 		JLabel titleLabel = new JLabel("Premier à");
+		titleLabel.setBorder(border);
+		titleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		dim = new Dimension((int)(Constants.SCORE_WIDTH*0.7),ROW_HEIGHT);
+		titleLabel.setPreferredSize(dim);
+		titleLabel.setMaximumSize(dim);
+		titleLabel.setMinimumSize(dim);
 		panel.add(titleLabel);
 		
 		// on ajoute un séparateur
@@ -98,6 +108,12 @@ public class ScorePanel extends JPanel
 		// on crée le label contenant la limite
 		limitLabel = new JLabel("NA");
 		limitLabel.setOpaque(true);
+		limitLabel.setBorder(border);
+		limitLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		dim = new Dimension((int)(Constants.SCORE_WIDTH*0.3),ROW_HEIGHT);
+		limitLabel.setPreferredSize(dim);
+		limitLabel.setMaximumSize(dim);
+		limitLabel.setMinimumSize(dim);
 		panel.add(limitLabel);
 	}
 	
@@ -109,7 +125,9 @@ public class ScorePanel extends JPanel
 	 * 		Tableau des joueurs à afficher.
 	 */
 	private void initRows(Player[] players)
-	{	roundScoreLabels = new JLabel[players.length];
+	{	Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		
+		roundScoreLabels = new JLabel[players.length];
 		nameLabels = new JLabel[players.length];
 		gameScoreLabels = new JLabel[players.length];
 		for(int i=0;i<players.length;i++)
@@ -117,26 +135,47 @@ public class ScorePanel extends JPanel
 			JPanel panel = new JPanel();
 			BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);
 			panel.setLayout(layout);
-			Dimension dim = new Dimension(panelWidth,ROW_HEIGHT);
+			Dimension dim = new Dimension(Constants.SCORE_WIDTH,ROW_HEIGHT);
 			panel.setPreferredSize(dim);
 			panel.setMinimumSize(dim);
 			panel.setMaximumSize(dim);
 			add(panel);
+			
 			// on crée le label pour le score de la manche
 			roundScoreLabels[i] = new JLabel("NA");
 			roundScoreLabels[i].setOpaque(true);
-			dim = new Dimension(50,100);
+			roundScoreLabels[i].setBorder(border);
+			roundScoreLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
+			dim = new Dimension((int)(Constants.SCORE_WIDTH*0.15),ROW_HEIGHT);
+			roundScoreLabels[i].setPreferredSize(dim);
 			roundScoreLabels[i].setMaximumSize(dim);
+			roundScoreLabels[i].setMinimumSize(dim);
 			panel.add(roundScoreLabels[i]);
+			
 			// on ajoute un séparateur
-			panel.add(Box.createGlue());
+//			panel.add(Box.createGlue());
+			
 			// on ajoute le label pour le nom du joueur
 			nameLabels[i] = new JLabel("NA");
+			nameLabels[i].setBorder(border);
+			nameLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
+			dim = new Dimension((int)(Constants.SCORE_WIDTH*0.55),ROW_HEIGHT);
+			nameLabels[i].setPreferredSize(dim);
+			nameLabels[i].setMaximumSize(dim);
+			nameLabels[i].setMinimumSize(dim);
 			panel.add(nameLabels[i]);
+			
 			// on ajoute un séparateur
-			panel.add(Box.createGlue());
+//			panel.add(Box.createGlue());
+			
 			// on crée le label pour le score total du joueur
 			gameScoreLabels[i] = new JLabel("NA");
+			gameScoreLabels[i].setBorder(border);
+			gameScoreLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
+			dim = new Dimension((int)(Constants.SCORE_WIDTH*0.3),ROW_HEIGHT);
+			gameScoreLabels[i].setPreferredSize(dim);
+			gameScoreLabels[i].setMaximumSize(dim);
+			gameScoreLabels[i].setMinimumSize(dim);
 			panel.add(gameScoreLabels[i]);
 		}
 	}
@@ -159,11 +198,12 @@ public class ScorePanel extends JPanel
 	public synchronized void updateData(Round round)
 	{	// labels des joueurs
 		Color firstColor = null;
-		List<Player> sortedPlayers =Arrays.asList(round.players);
+		List<Player> sortedPlayers = new ArrayList<Player>(Arrays.asList(round.players));
 		Collections.sort(sortedPlayers,PLR_COMP);
 		int rank = 1;
 		for(Player player: sortedPlayers)
 		{	int playerId = player.playerId;
+			boolean alive = round.board.snakes[playerId].eliminatedBy==null;
 			Color color = Constants.PLAYER_COLORS[playerId];
 			if(rank==1)
 				firstColor = color;
@@ -171,12 +211,15 @@ public class ScorePanel extends JPanel
 			int roundPoints = player.roundScore;
 			roundScoreLabels[rank-1].setText("+"+roundPoints);
 			roundScoreLabels[rank-1].setBackground(color);
+//			roundScoreLabels[rank-1].setEnabled(alive);
 			
 			String name = player.profile.userName;
 			nameLabels[rank-1].setText(name);
+			nameLabels[rank-1].setEnabled(alive);
 			
-			int gamePoints = player.totalScore + roundPoints;
+			int gamePoints = player.totalScore;
 			gameScoreLabels[rank-1].setText(Integer.toString(gamePoints));
+//			gameScoreLabels[rank-1].setEnabled(alive);
 			
 			rank++;
 		}
@@ -190,7 +233,9 @@ public class ScorePanel extends JPanel
 	private final static Comparator<Player> PLR_COMP = new Comparator<Player>()
 	{	@Override
 		public int compare(Player player1, Player player2)
-		{	int result = player1.currentRank - player2.currentRank;
+		{	int result = player2.totalScore - player1.totalScore;
+			if(result==0)
+				result = player2.playerId - player1.playerId;
 			return result;
 		}
 	};

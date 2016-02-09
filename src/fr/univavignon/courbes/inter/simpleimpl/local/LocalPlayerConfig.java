@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.local;
+package fr.univavignon.courbes.inter.simpleimpl.local;
 
 /*
  * Courbes
@@ -133,15 +133,14 @@ public class LocalPlayerConfig extends JPanel implements ActionListener, KeyList
 	 */
 	private void initPlayer()
 	{	player = new Player();
-	
+		
 		availableProfiles = new Vector<Profile>(ProfileManager.getProfiles());
 		int index = configPanel.selectedProfiles.size();
 		player.profile = availableProfiles.get(Math.min(index,availableProfiles.size()-1));
 		player.playerId = index;
-
+		
 		player.totalScore = 0;
 		player.roundScore = 0;
-		player.currentRank = 1;
 		
 		player.leftKey = PREDEFINED_KEYS[index][0];
 		player.rightKey = PREDEFINED_KEYS[index][1];

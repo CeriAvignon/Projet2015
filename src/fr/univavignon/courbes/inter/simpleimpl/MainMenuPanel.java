@@ -33,9 +33,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
-import fr.univavignon.courbes.inter.simpleimpl.config.client.JoinServer;
-import fr.univavignon.courbes.inter.simpleimpl.config.server.ServerSelectLocalPlayers;
+import fr.univavignon.courbes.inter.simpleimpl.client.JoinServer;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
+import fr.univavignon.courbes.inter.simpleimpl.server.ServerSelectLocalPlayers;
 
 /**
  * Panel contenant le menu principal du jeu.

@@ -59,11 +59,11 @@ public class MySnake extends Snake
 		resetCharacs();
 		
 		Random random = new Random();
-		int marginX = board.width / 10;	// marge de sécurité: un dixième de l'aire de jeu
-		currentX = random.nextInt(board.width-2*marginX) + marginX; // on tire une valeur entre margin et width-1-margin
+		int marginX = Constants.BOARD_WIDTH / 10;	// marge de sécurité: un dixième de l'aire de jeu
+		currentX = random.nextInt(Constants.BOARD_WIDTH-2*marginX) + marginX; // on tire une valeur entre margin et width-1-margin
 		realX = currentX;
-		int marginY = board.height / 10;
-		currentY = random.nextInt(board.height-2*marginY) + marginY;	// pareil entre margin et height-1-margin
+		int marginY = Constants.BOARD_HEIGHT / 10;
+		currentY = random.nextInt(Constants.BOARD_HEIGHT-2*marginY) + marginY;	// pareil entre margin et height-1-margin
 		realY = currentY;
 		prevPos = new Position(currentX,currentY);
 		
@@ -282,9 +282,13 @@ public class MySnake extends Snake
 	 * @param physicalTrail 
 	 * 		Ensemble de pixels représentant la trainée <i>physique</i>, qui sera utilisée pour la gestion
 	 * 		des collisions.
+	 * @return
+	 * 		{@code true} ssi une collision létale a été détectée.
 	 */
-	private void detectCollisions(MyBoard board, Set<Position> physicalTrail)
-	{	// on traite d'abord les items
+	private boolean detectCollisions(MyBoard board, Set<Position> physicalTrail)
+	{	boolean result = false;
+		
+		// on traite d'abord les items
 		// TODO en supposant qu'on ne peut en toucher qu'un seul en une itération
 		{	boolean itemCollided = false;
 			Iterator<ItemInstance> it = board.items.iterator();
@@ -315,11 +319,12 @@ public class MySnake extends Snake
 			while(it.hasNext())
 			{	Position pos = it.next();
 				if(pos.y<=Constants.BORDER_THICKNESS
-					|| pos.y>=board.height-Constants.BORDER_THICKNESS
+					|| pos.y>=Constants.BOARD_HEIGHT-Constants.BORDER_THICKNESS
 					|| pos.x<=Constants.BORDER_THICKNESS
-					|| pos.x>=board.width-Constants.BORDER_THICKNESS)
+					|| pos.x>=Constants.BOARD_WIDTH-Constants.BORDER_THICKNESS)
 				{	// on marque la collision
 					eliminatedBy = -1;
+					result = true;
 					// on restreint la nouvelle position du serpent
 					it.remove();
 				}
@@ -334,11 +339,15 @@ public class MySnake extends Snake
 //				if(snake!=this)
 				{	boolean changed = physicalTrail.removeAll(snake.trail);
 					if(changed)
-						eliminatedBy = i;
+					{	eliminatedBy = i;
+						result = true;
+					}
 				}
 				i++;
 			}	
 		}
+		
+		return result;
 	}
 	
 	/**
@@ -389,9 +398,13 @@ public class MySnake extends Snake
 	 * 		Temps écoulé.
 	 * @param direction
 	 * 		Commande du joueur pour cette itération.
+	 * @return
+	 * 		{@code true} ssi le serpent a été éliminé à cette itération.
 	 */
-	public void update(Board board, long elapsedTime, Direction direction)
-	{	if(eliminatedBy==null && board.state!=State.PRESENTATION)
+	public boolean update(Board board, long elapsedTime, Direction direction)
+	{	boolean result = false;
+		
+		if(eliminatedBy==null && board.state!=State.PRESENTATION)
 		{	MyBoard myBoard = (MyBoard)board;
 			
 			// on met à jour l'effet des items déjà ramassés
@@ -415,11 +428,13 @@ public class MySnake extends Snake
 				physTrail = myBoard.normalizePositions(physTrail);
 				
 				// on détecte les collisions éventuelles
-				detectCollisions(myBoard,physTrail);
+				result = detectCollisions(myBoard,physTrail);
 				
 				// on met à jour la position et la trainée de ce serpent
 				updateData(board, newPos, graphTrail, physTrail, elapsedTime, direction);
 			}
 		}
+	
+		return result;
 	}
 }

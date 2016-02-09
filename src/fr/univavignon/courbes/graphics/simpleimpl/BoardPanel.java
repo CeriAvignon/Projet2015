@@ -22,7 +22,7 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Constants;
 
 /**
  * Panel utilisé pour afficher l'aire de jeu. Il se contente d'afficher une image,
@@ -37,13 +37,10 @@ public class BoardPanel extends JPanel
 	/**
 	 * Crée un panel permettant d'afficher l'aire de jeu
 	 * en cours de partie.
-	 * 
-	 * @param board
-	 * 		L'aire de jeu à afficher.
 	 */
-	public BoardPanel(Board board)
+	public BoardPanel()
 	{	// on fixe les dimensions du panel
-		Dimension dim = new Dimension(board.width, board.height);
+		Dimension dim = new Dimension(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);

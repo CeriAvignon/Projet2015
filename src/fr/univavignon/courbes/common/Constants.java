@@ -37,17 +37,19 @@ public class Constants
 	/** Hauteur de l'aire de jeu standard */
 	public static final int BOARD_HEIGHT = 800;//TODO à confirmer
 	/** Largeur du panel de score */
-	public static final int SCORE_WIDTH = 100;//TODO à confirmer
+	public static final int SCORE_WIDTH = 200;//TODO à confirmer
 	
 	/** Largeur de la fenêtre de jeu */
-	public static final int WINDOW_WIDTH = 20+BOARD_WIDTH+25+SCORE_WIDTH;	// marge + largeur de l'aire + séparation + largeur du score
+	public static final int WINDOW_WIDTH = 20+BOARD_WIDTH+20+SCORE_WIDTH+20;
 	/** Hauteur de la fenêtre de jeu */
-	public static final int WINDOW_HEIGHT = BOARD_HEIGHT+2*20;				// hauteur de l'aire + 2 marges
+	public static final int WINDOW_HEIGHT = 20+BOARD_HEIGHT+20;
 	
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
 	public static final long ENTRANCE_DURATION = 2000;//5000; 	//TODO à confirmer
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
 	public static final long PRESENTATION_DURATION = 3000; 	//TODO à confirmer
+	/** Durée de la période, à la fin d'une manche, pendant laquelle il ne reste qu'un seul joueur en lice */
+	public static final long END_DURATION = 3000; 	//TODO à confirmer
 	
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
 	public static final float BASE_MOVING_SPEED = 0.08f;
@@ -76,11 +78,11 @@ public class Constants
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
-	public static final long ITEM_DURATION = 70000; //TODO 7000
+	public static final long ITEM_DURATION = 7000;	// TODO à confirmer
 	/** Probabilité qu'un item apparaisse à chaque ms */
 	public static final float BASE_ITEM_POPUP_RATE = 0.0001f; 
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
-	public static final float ITEM_POPUP_COEFF = 1.5f;
+	public static final float ITEM_POPUP_COEFF = 1.5f; //TODO faut régler ça et/ou le popup rate
 	/** Nombre maximal d'items affichés simultanément à l'écran */
 	public static final int MAX_ITEM_NBR = 10;
 	
@@ -129,12 +131,3 @@ public class Constants
 	    POINT_LIMIT_FOR_PLAYER_NBR.put(6,35);
     }
 }
-
-//TODO
-//	- peut être baisser la proba d'apparition des items >> non : augmenter mais baisser le coef
-//  - implémenter la succession de rounds
-//	- implémenter le calcul des points
-
-// TODO en réalité, les valeurs affichées en couleur sont les points marqués une fois que le joueur est éliminé.
-// mais celles en n&b sont les points avant la manche + nbre minimal de points pour la manche courante (en fonction de qui reste en jeu)
-// >> ça doit être géré coté IU

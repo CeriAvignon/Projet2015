@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.server;
+package fr.univavignon.courbes.inter.simpleimpl.server;
 
 /*
  * Courbes
@@ -24,54 +24,73 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
+import fr.univavignon.courbes.network.simpleimpl.Server;
 
 /**
- * Remote profile displayed for a server.
+ * Remote profile displayed for a client.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class RemoteProfileSelector { 
-	
-	private JCheckBox jcb_ready = new JCheckBox();
-	private JButton jb_kick = new JButton("Retirer");
-	
-	private PrintableProfile profile;
-	
-	public RemoteProfileSelector(final ServerSelectLocalPlayers sg, final JPanel jp, Profile p){
+public class RemoteProfile {
 
-		profile = new PrintableProfile();
-		profile.setProfile(p);
+	Profile profile;
+	JLabel jl;
+	JCheckBox isReady;
+	JButton jb_kick;
+	
+	public RemoteProfile(Profile profile){
+		this.profile = profile;
+		jl = new JLabel(profile.userName);		
 		
-		jp.add(new JLabel(p.userName));
-		jp.add(jcb_ready);
-		jp.add(jb_kick);
+	}
+	
+	public RemoteProfile(Profile profile, final Server server, final ServerSelectRemotePlayers ssrp){
 		
-		jcb_ready.setEnabled(false);
+		this(profile);
+
+		isReady = new JCheckBox();
+		isReady.setSelected(false);
 		
-		jb_kick.addActionListener(new ActionListener(){
+		jb_kick = new JButton("Retirer");
+		
+		jb_kick.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e){
-				//TODO faire l'action de kick
-//				sg. ...
+			public void actionPerformed(ActionEvent e) {
+				ssrp.removeRemoteProfile(RemoteProfile.this);
 			}
 		});
 		
-				
+		
+	}
+	
+	public JCheckBox getIsReady() {
+		return isReady;
 	}
 
-	public PrintableProfile getProfile() {
-		return profile;
+	public void setIsReady(JCheckBox isReady) {
+		this.isReady = isReady;
 	}
 
 	public JButton getJb_kick() {
 		return jb_kick;
 	}
-	
-	
 
+	public void setJb_kick(JButton jb_kick) {
+		this.jb_kick = jb_kick;
+	}
+
+	public void setJl(JLabel jl) {
+		this.jl = jl;
+	}
+
+	public Profile getProfile(){
+		return profile;
+	}
+	
+	public JLabel getJl(){
+		return jl;
+	}
 }

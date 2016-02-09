@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.local;
+package fr.univavignon.courbes.inter.simpleimpl.local;
 
 /*
  * Courbes

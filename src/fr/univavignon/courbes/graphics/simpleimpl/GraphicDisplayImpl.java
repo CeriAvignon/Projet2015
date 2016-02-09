@@ -32,7 +32,6 @@ import java.awt.image.VolatileImage;
 import java.io.IOException;
 
 import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 
@@ -55,9 +54,9 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
-		boardPanel = new BoardPanel(board);
+		boardPanel = new BoardPanel();
 		
-		scorePanel = new ScorePanel(round.players,Constants.SCORE_WIDTH);
+		scorePanel = new ScorePanel(round.players);
 	}
 
 	/** Panel utilisé pour afficher l'aire de jeu */
@@ -119,7 +118,7 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	public void end()
 	{	
 		// TODO rien de spécial à faire pour le moment. 
-		// libérer ressources GUI ? (mais le GC s'en occupe...)
+		// libérer ressources GUI ? (mais le GC s'en occupe déjà...)
 	}
 	
 	/**
@@ -138,6 +137,3 @@ public class GraphicDisplayImpl implements GraphicDisplay
 }
 
 // TODO reproduire l'animation d'apparition des items
-
-// TODO faut représenter les sens de déplacement/directions possibles juste avant le temps d'entrée
-//      peut être utiliser un autre mode (présentation ?) pour ça

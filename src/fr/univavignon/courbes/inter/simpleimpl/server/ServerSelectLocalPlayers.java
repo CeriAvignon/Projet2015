@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.config.server;
+package fr.univavignon.courbes.inter.simpleimpl.server;
 
 /*
  * Courbes
@@ -38,9 +38,9 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
+import fr.univavignon.courbes.inter.simpleimpl.LocalProfileSelectorOoold;
 import fr.univavignon.courbes.inter.simpleimpl.MainMenuPanel;
 import fr.univavignon.courbes.inter.simpleimpl.config.ControllableProfile;
-import fr.univavignon.courbes.inter.simpleimpl.config.LocalProfileSelectorOoold;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.network.simpleimpl.Server;
