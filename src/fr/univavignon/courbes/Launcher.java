@@ -81,3 +81,15 @@ public class Launcher extends JFrame
 
 	}
 }
+
+/*
+ * TODO
+ * - voir le pb de ralentissement sur les PC du CERI
+ * 		- stocker séparément l'ancienne trail et celle de la dernière itération ?
+ *			- pourrait permettre d'accélérer la com réseau
+ *			- mais pb de rafraichissement, par ex. pour les auréoles
+ * - certains champs des classes communes sont utilisés uniquement par le MP (donc : pas communs)
+ * 		>> à déplacer dans les classes du MP ?
+ * - relié : voir quels champs rendre transcients
+ * - on peut reproduire l'animation d'apparition des items
+ */

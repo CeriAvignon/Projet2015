@@ -135,5 +135,3 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		image = temp;
 	}
 }
-
-// TODO reproduire l'animation d'apparition des items

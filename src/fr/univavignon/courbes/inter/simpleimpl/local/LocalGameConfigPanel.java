@@ -221,7 +221,7 @@ public class LocalGameConfigPanel extends JPanel implements ActionListener
 		
 		// on compare toutes les paires de profils sélectionnés
 		int i1 = 0;
-		while(i1<selectedProfiles.size())
+		while(i1<selectedProfiles.size() && isReady)
 		{	LocalPlayerConfig lps1 = selectedProfiles.get(i1);
 			Player player1 = lps1.player;
 			int left1 = player1.leftKey;
@@ -233,7 +233,7 @@ public class LocalGameConfigPanel extends JPanel implements ActionListener
 			
 			else
 			{	int i2 = i1 + 1;
-				while(i2<selectedProfiles.size())
+				while(i2<selectedProfiles.size() && isReady)
 				{	LocalPlayerConfig lps2 = selectedProfiles.get(i2);
 					Player player2 = lps2.player;
 					int left2 = player2.leftKey;

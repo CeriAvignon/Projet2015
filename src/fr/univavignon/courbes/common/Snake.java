@@ -69,5 +69,3 @@ public class Snake implements Serializable
 	/** File contenant les items affectant actuellement ce serpent */
 	public Queue<ItemInstance> currentItems;
 }
-
-//TODO certains de ces champs sont uniquement utilisés par le MP >> à virer d'ici ?
