@@ -95,11 +95,13 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		Player pl1 = new Player();
 		pl1.profile = p1;
 		pl1.playerId = 0;
+		pl1.local = true;
 		pl1.totalScore = 0;
 		pl1.roundScore = 0;
 		Player pl2 = new Player();
 		pl2.profile = p2;
 		pl2.playerId = 1;
+		pl2.local = true;
 		pl2.totalScore = 0;
 		pl2.roundScore = 0;
 		Player players[] = {pl1,pl2};

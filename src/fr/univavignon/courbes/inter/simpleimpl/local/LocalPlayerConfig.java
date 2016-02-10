@@ -62,7 +62,7 @@ public class LocalPlayerConfig extends JPanel implements ActionListener, KeyList
 	 * @param configPanel
 	 * 		Panel de configuration contenant ce panel. 
 	 */
-	public LocalPlayerConfig(LocalGameConfigPanel configPanel)
+	public LocalPlayerConfig(AbstractLocalPlayerSelectionPanel configPanel)
 	{	this.configPanel = configPanel;
 		
 		initPlayer();
@@ -70,7 +70,7 @@ public class LocalPlayerConfig extends JPanel implements ActionListener, KeyList
 	}
 
 	/** Panel contenant ce panel */
-	private LocalGameConfigPanel configPanel;
+	private AbstractLocalPlayerSelectionPanel configPanel;
 	/** Bouton utilisé pour configurer la commande "aller à gauche" */
 	private JButton leftButton;
 	/** Bouton utilisé pour configurer la commande "aller à droite" */
@@ -138,6 +138,8 @@ public class LocalPlayerConfig extends JPanel implements ActionListener, KeyList
 		int index = configPanel.selectedProfiles.size();
 		player.profile = availableProfiles.get(Math.min(index,availableProfiles.size()-1));
 		player.playerId = index;
+		
+		player.local = true;
 		
 		player.totalScore = 0;
 		player.roundScore = 0;

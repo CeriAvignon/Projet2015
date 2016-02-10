@@ -31,7 +31,7 @@ import fr.univavignon.courbes.common.Snake;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class MyItemInstance extends ItemInstance
+public class PhysItemInstance extends ItemInstance
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	/** Générateur aléatoire utilisé lors de l'apparition d'items */
@@ -47,7 +47,7 @@ public class MyItemInstance extends ItemInstance
 	 * @param y
 	 * 		Position en ordonnée.
 	 */
-	public MyItemInstance(ItemType type, int x, int y)
+	public PhysItemInstance(ItemType type, int x, int y)
 	{	init(type,x,y);
 	}
 	
@@ -59,7 +59,7 @@ public class MyItemInstance extends ItemInstance
 	 * @param y
 	 * 		Position en ordonnée.
 	 */
-	public MyItemInstance(int x, int y)
+	public PhysItemInstance(int x, int y)
 	{	// tirage au sort du type d'item
 		int idx = RANDOM.nextInt(ItemType.values().length);
 		ItemType type = ItemType.values()[idx];
@@ -75,7 +75,7 @@ public class MyItemInstance extends ItemInstance
 	 * @param item
 	 * 		L'item à cloner.
 	 */
-	public MyItemInstance(MyItemInstance item)
+	public PhysItemInstance(PhysItemInstance item)
 	{	this.x = item.x;
 		this.y = item.y;
 		this.type = item.type;
@@ -125,7 +125,7 @@ public class MyItemInstance extends ItemInstance
 	 * 		{@code true} ssi l'item a terminé son effet et doit être
 	 * 		retiré de la liste par le serpent appelant cette méthode.
 	 */
-	public boolean updateEffect(long elapsedTime, MySnake snake)
+	public boolean updateEffect(long elapsedTime, PhysSnake snake)
 	{	switch(type)
 		{	case OTHERS_FAST:
 				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
@@ -171,7 +171,7 @@ public class MyItemInstance extends ItemInstance
 	 * 		{@code true} ssi l'item a terminé son effet et doit être
 	 * 		retiré de la liste par la Board appelant cette méthode.
 	 */
-	public boolean updateEffect(long elapsedTime, MyBoard board)
+	public boolean updateEffect(long elapsedTime, PhysBoard board)
 	{	switch(type)
 		{	case COLLECTIVE_CLEAN:
 				// cet item ne devrait pas être traité ici
@@ -199,7 +199,7 @@ public class MyItemInstance extends ItemInstance
 	 * @param snake
 	 * 		Serpent ayant ramassé l'item.
 	 */
-	public void pickUp(MyBoard board, MySnake snake)
+	public void pickUp(PhysBoard board, PhysSnake snake)
 	{	x = -1;
 		y = -1;
 		
@@ -224,7 +224,7 @@ public class MyItemInstance extends ItemInstance
 		{	remainingTime = type.duration;
 			for(Snake s: board.snakes)
 			{	if(s!=snake && s.eliminatedBy==null)
-				{	MyItemInstance item = new MyItemInstance(this);
+				{	PhysItemInstance item = new PhysItemInstance(this);
 					s.currentItems.offer(item);
 				}
 			}

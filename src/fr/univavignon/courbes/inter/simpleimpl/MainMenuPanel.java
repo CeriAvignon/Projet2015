@@ -159,7 +159,7 @@ public class MainMenuPanel extends JPanel implements ActionListener
 		else if(e.getSource()==serverGameButton)
 		{	
 //			if (ProfileManager.getProfiles().size() > 0)
-			{	mainWindow.displayPanel(PanelName.SERVER_GAME_CONFIG);
+			{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYERS);
 			}
 //			else
 //			{	JOptionPane.showMessageDialog
@@ -172,7 +172,7 @@ public class MainMenuPanel extends JPanel implements ActionListener
 	
 		else if(e.getSource()==clientGameButton)
 		{	if (ProfileManager.getProfiles().size() > 0)
-			{	mainWindow.displayPanel(PanelName.CLIENT_GAME_CONFIG);
+			{	mainWindow.displayPanel(PanelName.CLIENT_GAME_CONNECTION);
 			}
 			else
 			{	JOptionPane.showMessageDialog

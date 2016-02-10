@@ -33,10 +33,11 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameConfigPanel;
+import fr.univavignon.courbes.inter.simpleimpl.local.LocalGamePlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
-import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameConfigPanel;
+import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameLocalPlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameRemotePlayerSelectionPanel;
 
 /**
  * Menu principal du jeu.
@@ -120,14 +121,18 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	public enum PanelName
 	{	/** Menu principal */
 		MAIN_MENU,
-		/** Configuration d'une partie locale */
+		/** Sélection des joueurs pour une partie locale */
 		LOCAL_GAME_CONFIG,
 		/** Aire de jeu d'une partie locale */
-		LOCAL_GAME_ROUND,
-		/** Configuration d'une partie serveur */
-		SERVER_GAME_CONFIG,
-		/** Configueration d'une partie client */
-		CLIENT_GAME_CONFIG,
+		LOCAL_GAME_PLAY,
+		/** Sélection des joueurs locaux au serveur pour une partie réseau */
+		SERVER_GAME_LOCAL_PLAYERS,
+		/** Sélection des joueurs distants pour une partie réseau */
+		SERVER_GAME_REMOTE_PLAYERS,
+		/** Aire de jeu d'une partie réseau côté serveur */
+		SERVER_GAME_PLAY,
+		/** Configuration des informations de connexion pour une partie client */
+		CLIENT_GAME_CONNECTION,
 		/** Liste des profils */
 		PROFILE_LIST;
 	}
@@ -145,15 +150,21 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = mainMenuPanel;
 				break;
 			case LOCAL_GAME_CONFIG:
-				currentPanel = new LocalGameConfigPanel(this);
+				currentPanel = new LocalGamePlayerSelectionPanel(this);
 				break;
-			case LOCAL_GAME_ROUND:
+			case LOCAL_GAME_PLAY:
 				currentPanel = new LocalGameRoundPanel(this);
 				break;
-			case SERVER_GAME_CONFIG:
-				currentPanel = new ServerGameConfigPanel(this);
+			case SERVER_GAME_LOCAL_PLAYERS:
+				currentPanel = new ServerGameLocalPlayerSelectionPanel(this);
 				break;
-			case CLIENT_GAME_CONFIG:
+			case SERVER_GAME_REMOTE_PLAYERS:
+				currentPanel = new ServerGameRemotePlayerSelectionPanel(this);
+				break;
+			case SERVER_GAME_PLAY:
+//				currentPanel = new ServerGameRoundPanel(this);
+				break;
+			case CLIENT_GAME_CONNECTION:
 				break;
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);

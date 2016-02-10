@@ -42,7 +42,7 @@ import fr.univavignon.courbes.common.Snake;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class MyBoard extends Board
+public class PhysBoard extends Board
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	/** Générateur aléatoire utilisé lors de l'apparition d'items */
@@ -51,9 +51,9 @@ public class MyBoard extends Board
 	/**
 	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
 	 */
-	public MyBoard()
+	public PhysBoard()
 	{	items = new ArrayList<ItemInstance>();
-		currentItems = new LinkedList<MyItemInstance>();
+		currentItems = new LinkedList<PhysItemInstance>();
 		totalTime = 0;
 		mustClean = false;
 		
@@ -61,7 +61,7 @@ public class MyBoard extends Board
 	}
 	
 	/** File contenant les items affectant actuellement cette aire de jeu */
-	public transient List<MyItemInstance> currentItems;
+	public transient List<PhysItemInstance> currentItems;
 	/** Probabilité courante qu'un item apparaisse à chaque ms */
 	public transient float itemPopupRate;
 	/** Temps total écoulé depuis le début de la partie */
@@ -78,7 +78,7 @@ public class MyBoard extends Board
 	public void init(Player[] players)
 	{	snakes = new Snake[players.length];
 		for(int i=0;i<players.length;i++)
-		{	MySnake snake = new MySnake(i,this);
+		{	PhysSnake snake = new PhysSnake(i,this);
 			snakes[i] = snake;
 		}
 	}
@@ -94,11 +94,11 @@ public class MyBoard extends Board
 	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
 		snakes = new Snake[2];
 		// premier joueur
-		MySnake snake0 = new MySnake(0,this,Constants.BOARD_WIDTH*3/4,Constants.BOARD_HEIGHT*3/4);
+		PhysSnake snake0 = new PhysSnake(0,this,Constants.BOARD_WIDTH*3/4,Constants.BOARD_HEIGHT*3/4);
 		snakes[0] = snake0;
 		snake0.currentAngle = 0;
 		// second joueur
-		MySnake snake1 = new MySnake(1,this,Constants.BOARD_WIDTH/2,Constants.BOARD_HEIGHT/2);
+		PhysSnake snake1 = new PhysSnake(1,this,Constants.BOARD_WIDTH/2,Constants.BOARD_HEIGHT/2);
 		snakes[1] = snake1;
 		snake1.movingSpeed = 0;	// ce joueur ne doit pas bouger
 		
@@ -121,7 +121,7 @@ public class MyBoard extends Board
 		int y = Constants.BORDER_THICKNESS + sep + Constants.ITEM_RADIUS;
 		for(ItemType itemType: ItemType.values())
 		{	x = x + sep + Constants.ITEM_RADIUS;
-			MyItemInstance item = new MyItemInstance(itemType,x,y);
+			PhysItemInstance item = new PhysItemInstance(itemType,x,y);
 			x = x + Constants.ITEM_RADIUS;
 			items.add(item);
 		}
@@ -196,7 +196,7 @@ public class MyBoard extends Board
 	{	// màj des items présents dans l'aire de jeu
 		{	Iterator<ItemInstance> it = items.iterator();
 			while(it.hasNext())
-			{	MyItemInstance item = (MyItemInstance)it.next();
+			{	PhysItemInstance item = (PhysItemInstance)it.next();
 				boolean remove = item.updateLife(elapsedTime);
 				if(remove)
 					it.remove();
@@ -204,9 +204,9 @@ public class MyBoard extends Board
 		}
 		
 		// màj des items collectifs déjà ramassés par des joueurs
-		{	Iterator<MyItemInstance> it = currentItems.iterator();
+		{	Iterator<PhysItemInstance> it = currentItems.iterator();
 			while(it.hasNext())
-			{	MyItemInstance item = it.next();
+			{	PhysItemInstance item = it.next();
 				boolean remove = item.updateEffect(elapsedTime, this);
 				if(remove)
 					it.remove();
@@ -216,7 +216,7 @@ public class MyBoard extends Board
 		// faut-il faire apparaitre un item?
 		float p = RANDOM.nextFloat();
 		if(items.size()<Constants.MAX_ITEM_NBR && state==State.REGULAR && p<itemPopupRate*elapsedTime)
-		{	MyItemInstance item = generateItem();
+		{	PhysItemInstance item = generateItem();
 			if(item!=null)
 				items.add(item);
 		}
@@ -244,7 +244,7 @@ public class MyBoard extends Board
 		// on traite ensuite chaque serpent, dans l'ordre prédéterminé
 		for(int i: idx)
 		{	Snake s = snakes[i];
-			MySnake snake = (MySnake)s;
+			PhysSnake snake = (PhysSnake)s;
 			Direction dir = commands[i];
 			if(dir==null)
 				dir = Direction.NONE;
@@ -272,8 +272,8 @@ public class MyBoard extends Board
 	 * 		L'item généré, ou {@code null} s'il n'y a pas actuellement la place nécessaire 
 	 * 		sur l'aire de jeu.
 	 */
-	private MyItemInstance generateItem()
-	{	MyItemInstance result = null;
+	private PhysItemInstance generateItem()
+	{	PhysItemInstance result = null;
 		int margin = 10;
 		
 		// tirage a sort de la position de l'item
@@ -317,7 +317,7 @@ public class MyBoard extends Board
 		while(i<10 && !available);
 		
 		if(available)
-			result = new MyItemInstance(x,y);
+			result = new PhysItemInstance(x,y);
 		return result;
 	}
 

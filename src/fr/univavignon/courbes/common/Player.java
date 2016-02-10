@@ -36,6 +36,9 @@ public class Player implements Serializable
 	/** Numéro unique du joueur dans la partie en cours */
 	public int playerId;
 
+	/** Indique si le joueur est local ({@code true}) ou distant ({@code false}) */
+	public boolean local;
+	
 	/** Score total du joueur dans la partie courante, <i>avant</i> la manche courante */
 	public int totalScore;
 	/** Score partiel du joueur pour la manche courante */

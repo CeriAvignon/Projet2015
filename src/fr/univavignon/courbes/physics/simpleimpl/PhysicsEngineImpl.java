@@ -35,17 +35,17 @@ import fr.univavignon.courbes.physics.PhysicsEngine;
  */
 public class PhysicsEngineImpl implements PhysicsEngine
 {	/** Aire de jeu courante */
-	private MyBoard board;
+	private PhysBoard board;
 	
 	@Override
 	public void init(Player[] players)
-	{	board = new MyBoard();
+	{	board = new PhysBoard();
 		board.init(players);
 	}
 	
 	@Override
 	public void initDemo(Player[] players)
-	{	board = new MyBoard();
+	{	board = new PhysBoard();
 		board.initDemo(players);
 	}
 
@@ -62,6 +62,6 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	
 	@Override
 	public void forceUpdate(Board board)
-	{	board = (MyBoard)board;
+	{	board = (PhysBoard)board;
 	}
 }

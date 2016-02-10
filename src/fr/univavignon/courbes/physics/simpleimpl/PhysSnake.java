@@ -39,7 +39,7 @@ import fr.univavignon.courbes.common.Snake;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class MySnake extends Snake
+public class PhysSnake extends Snake
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
@@ -52,7 +52,7 @@ public class MySnake extends Snake
 	 * @param board
 	 * 		Aire de jeu de la manche en cours.
 	 */
-	public MySnake(int playerId, Board board)
+	public PhysSnake(int playerId, Board board)
 	{	this.playerId = playerId;
 		
 		movingSpeed = Constants.BASE_MOVING_SPEED;
@@ -94,7 +94,7 @@ public class MySnake extends Snake
 	 * @param y
 	 * 		Position en ordonnée.
 	 */
-	public MySnake(int playerId, Board board, int x, int y)
+	public PhysSnake(int playerId, Board board, int x, int y)
 	{	this(playerId,board);
 		
 		currentX = x;
@@ -160,7 +160,7 @@ public class MySnake extends Snake
 		
 		Iterator<ItemInstance> it = currentItems.iterator();
 		while(it.hasNext())
-		{	MyItemInstance item = (MyItemInstance)it.next();
+		{	PhysItemInstance item = (PhysItemInstance)it.next();
 			boolean remove = item.updateEffect(elapsedTime,this);
 			if(remove)
 				it.remove();
@@ -285,7 +285,7 @@ public class MySnake extends Snake
 	 * @return
 	 * 		{@code true} ssi une collision létale a été détectée.
 	 */
-	private boolean detectCollisions(MyBoard board, Set<Position> physicalTrail)
+	private boolean detectCollisions(PhysBoard board, Set<Position> physicalTrail)
 	{	boolean result = false;
 		
 		// on traite d'abord les items
@@ -294,7 +294,7 @@ public class MySnake extends Snake
 			Iterator<ItemInstance> it = board.items.iterator();
 			// on traite chaque item, et on s'arrête à la première collision détectée
 			while(!itemCollided && it.hasNext())
-			{	MyItemInstance item = (MyItemInstance)it.next();
+			{	PhysItemInstance item = (PhysItemInstance)it.next();
 				// on traite chaque nouveau pixel de la trainée, en s'arrêtant à la première collision
 				Iterator<Position> it2 = physicalTrail.iterator();
 				while(!itemCollided && it2.hasNext())
@@ -405,7 +405,7 @@ public class MySnake extends Snake
 	{	boolean result = false;
 		
 		if(eliminatedBy==null && board.state!=State.PRESENTATION)
-		{	MyBoard myBoard = (MyBoard)board;
+		{	PhysBoard myBoard = (PhysBoard)board;
 			
 			// on met à jour l'effet des items déjà ramassés
 			updateItemsEffect(elapsedTime);
