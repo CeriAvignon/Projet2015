@@ -83,6 +83,7 @@ public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements 
 	{	BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);
 		
+		initDimensions();
 		initPlayerCombo();
 		initPlayersPanel();
 		
@@ -118,6 +119,11 @@ public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements 
 	 */
 	protected abstract int getMaxPlayerNbr();
 	
+	/**
+	 * Initialise différentes valeurs utilisées pour la mise en forme.
+	 */
+	protected abstract void initDimensions();
+
 	/**
 	 * Initialise le combobox permettant de choisir
 	 * le nombre de joueurs.

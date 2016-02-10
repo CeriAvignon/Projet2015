@@ -41,7 +41,7 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.simpleimpl.LocalProfileSelectorOoold;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.inter.simpleimpl.server.RemoteProfile;
-import fr.univavignon.courbes.network.simpleimpl.Client;
+import fr.univavignon.courbes.network.simpleimpl.ClientCommunicationImpl;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -52,7 +52,7 @@ import net.miginfocom.swing.MigLayout;
 public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHandler{
 
 	private JoinServer js;
-	private Client c;
+	private ClientCommunicationImpl c;
 	
 	ArrayList<LocalProfileSelectorOoold> local_players;
 	List<RemoteProfile> remote_players;
@@ -65,7 +65,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 	JButton jb_ready = new JButton("Prêt");
 	
 	
-	public ClientGame(JoinServer js, Client c){
+	public ClientGame(JoinServer js, ClientCommunicationImpl c){
 		
 		super();
 		
@@ -139,11 +139,11 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 		this.setVisible(true);
 	}
 
-	public Client getC() {
+	public ClientCommunicationImpl getC() {
 		return c;
 	}
 
-	public void setC(Client c) {
+	public void setC(ClientCommunicationImpl c) {
 		this.c = c;
 	}
 

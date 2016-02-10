@@ -42,7 +42,7 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.inter.simpleimpl.config.ControllableProfile;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.PrintableProfile;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
-import fr.univavignon.courbes.network.simpleimpl.Server;
+import fr.univavignon.courbes.network.simpleimpl.ServerCommunicationImpl;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -66,7 +66,7 @@ public class ServerSelectRemotePlayers extends JFrame implements ServerProfileHa
 	
 	int currentNumberOfPlayers;
 	
-	Server server;
+	ServerCommunicationImpl server;
 
 
 	public ServerSelectRemotePlayers(final ServerSelectLocalPlayers serverSelectLocalPlayers,
@@ -85,7 +85,7 @@ public class ServerSelectRemotePlayers extends JFrame implements ServerProfileHa
 		
 		availableProfiles = ProfileManager.getProfiles();
 		
-		server = new Server();
+		server = new ServerCommunicationImpl();
 		server.launchServer();
 		
 		JPanel jp_player_number = new JPanel(new FlowLayout());
@@ -294,7 +294,7 @@ public class ServerSelectRemotePlayers extends JFrame implements ServerProfileHa
 		return result;
 	}
 	
-	public Server getServer(){
+	public ServerCommunicationImpl getServer(){
 		return server;
 	}
 

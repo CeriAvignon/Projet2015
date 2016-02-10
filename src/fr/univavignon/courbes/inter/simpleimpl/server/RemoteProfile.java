@@ -26,7 +26,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.network.simpleimpl.Server;
+import fr.univavignon.courbes.network.simpleimpl.ServerCommunicationImpl;
 
 /**
  * Remote profile displayed for a client.
@@ -46,7 +46,7 @@ public class RemoteProfile {
 		
 	}
 	
-	public RemoteProfile(Profile profile, final Server server, final ServerSelectRemotePlayers ssrp){
+	public RemoteProfile(Profile profile, final ServerCommunicationImpl server, final ServerSelectRemotePlayers ssrp){
 		
 		this(profile);
 

@@ -19,6 +19,7 @@ package fr.univavignon.courbes.inter.simpleimpl.server;
  */
 
 import java.awt.Dimension;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -34,16 +35,19 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.network.ServerCommunication;
+import fr.univavignon.courbes.network.simpleimpl.ServerCommunicationImpl;
 
 /**
  * Panel permettant de sélectionner les joueurs distants au serveur participant à une partie réseau.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectionPanel<ClientPlayerConfig>
+public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectionPanel<ClientPlayerConfig> implements ServerProfileHandler
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	/** Nombre minimal de joueurs distants recquis pour la partie */
@@ -64,22 +68,32 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	
 	/** Largeur des noms */
 	public int nameWidth;
-	/** Largeur des IP */
-	public int ipWidth;
+	/** Largeur du rang ELO */
+	public int eloWidth;
 	/** Largeur des boutons kick */
 	public int kickWidth;
+	/** Indique si on peut encore recevoir des requêtes de la part de clients */
+	private boolean blockRequests;
+	/** Moteur réseau */
+	private ServerCommunication serverCom;
 	
 	/**
 	 * Initialisation des composants de l'interface graphique.
 	 */
 	@Override
 	protected void init()
+	{	super.init();
+		
+		initServer();
+	}
+	
+	@Override
+	protected void initDimensions()
 	{	Dimension winDim = mainWindow.getPreferredSize();
 		nameWidth = (int)(winDim.width*0.5);
-		ipWidth = (int)(winDim.width*0.2);
+		eloWidth = (int)(winDim.width*0.2);
 		kickWidth = (int)(winDim.width*0.2);
-		
-		super.init();
+		blockRequests = false;
 	}
 	
 	@Override
@@ -108,9 +122,9 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 
 		titlePanel.add(Box.createHorizontalGlue());
 
-		JLabel rightLabel = new JLabel("Adresse IP");
+		JLabel rightLabel = new JLabel("Classement ELO");
 		rightLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		dim = new Dimension(ipWidth,height);
+		dim = new Dimension(eloWidth,height);
 		rightLabel.setPreferredSize(dim);
 		rightLabel.setMaximumSize(dim);
 		rightLabel.setMinimumSize(dim);
@@ -130,6 +144,16 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		
 		for(int i=0;i<Math.max(1,getMinPlayerNbr());i++)
 			addProfile();
+	}
+
+	/**
+	 * Initialise la partie serveur du moteur réseau
+	 */
+	private void initServer()
+	{	serverCom = new ServerCommunicationImpl();
+		serverCom.setErrorHandler(mainWindow);
+		serverCom.setProfileHandler(this);
+		serverCom.launchServer();
 	}
 	
 	@Override
@@ -216,9 +240,10 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	}
 	
 	@Override
-	protected void nextStep()
+	protected synchronized void nextStep()
 	{	if(checkConfiguration())
-		{	Round round = initRound();
+		{	blockRequests = true;
+			Round round = initRound();
 			mainWindow.currentRound = round;
 			mainWindow.displayPanel(PanelName.SERVER_GAME_PLAY);
 		}
@@ -231,15 +256,48 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	}
 	
 	@Override
-	protected void previousStep()
+	protected synchronized void previousStep()
 	{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYERS);
+		serverCom.closeServer();	//TODO vérifier que ceci provoque bien une déconnexion propre chez les clients (retour au menu principal)
+	}
+	
+	/**
+	 * Construit un tableau contenant tous les profils actuellement
+	 * sélectionnés, que ce soient les locaux ou les distants.
+	 * Parmi ces derniers, les positions pas encore remplies sont
+	 * représentées par des valeurs {@code null}.
+	 * 
+	 * @return
+	 * 		Un tableau contenant tous les joueurs sélectionnés jusqu'à présent.
+	 */
+	private Profile[] getAllPlayers()
+	{	Player players[] = mainWindow.currentRound.players;
+		int size = players.length + selectedProfiles.size();
+		int idx = 0;
+		Profile[] result = new Profile[size];
+		
+		// joueurs locaux
+		for(Player player: players)
+		{	result[idx] = player.profile;
+			idx++;
+		}
+		
+		// joueurs distants
+		for(ClientPlayerConfig cpc: selectedProfiles)
+		{	Profile profile = cpc.player.profile;
+			result[idx] = profile;
+			idx++;
+				
+		}
+		return result;
 	}
 	
 	@Override
-	protected void comboboxChanged()
+	protected synchronized void comboboxChanged()
 	{	int oldPlayerNbr = selectedProfiles.size();
 		int newPlayerNbr = (int) playerNbrCombo.getSelectedItem();
 		
+		// on met à jour les composants graphiques
 		if(oldPlayerNbr<newPlayerNbr)
 		{	for(int i=oldPlayerNbr;i<newPlayerNbr;i++)
 				addProfile();
@@ -251,5 +309,27 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 				playersPanel.repaint();
 			}
 		}
+		
+		// on prévient les clients
+		Profile profiles[] = getAllPlayers();
+		serverCom.sendProfiles(profiles);
+	}
+
+	@Override
+	public synchronized boolean fetchProfile(Profile profile)
+	{	boolean result = false;
+		
+		if(!blockRequests)
+		{	Iterator<ClientPlayerConfig> it = selectedProfiles.iterator(); 
+			while(it.hasNext() && !result)
+			{	ClientPlayerConfig cpc = it.next();
+				if(cpc.isAvailable())
+				{	cpc.setPlayer(profile);
+					result = true;
+				}
+			}
+		}
+		
+		return result;
 	}
 }

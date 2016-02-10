@@ -34,7 +34,7 @@ import fr.univavignon.courbes.common.Profile;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientProcessor extends Server implements Runnable{
+public class ClientProcessor extends ServerCommunicationImpl implements Runnable{
 
 	/** La socket du client. */
 	private Socket sock;

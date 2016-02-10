@@ -18,8 +18,6 @@ package fr.univavignon.courbes.inter;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.List;
-
 import fr.univavignon.courbes.common.Profile;
 
 /**
@@ -40,8 +38,8 @@ public interface ClientProfileHandler
 	 * cours de configuration.
 	 * 
 	 * @param profiles
-	 * 		Liste <i>à jour</i> des profils reçus par le Moteur Réseau (peut être vide si aucun 
-	 * 		joueur n'a encore été sélectionné). 
+	 * 		Tableau <i>à jour</i> des profils reçus par le Moteur Réseau. Les emplacements vides  
+	 * 		sont représentés par des valeurs {@code null}.
 	 */
-	public void updateProfiles(List<Profile> profiles);
+	public void updateProfiles(Profile[] profiles);
 }

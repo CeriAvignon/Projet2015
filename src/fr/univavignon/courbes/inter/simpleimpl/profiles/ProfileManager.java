@@ -98,7 +98,7 @@ public class ProfileManager
 			{	writer.write
 				(	profile.profileId + SEPARATOR + 
 					profile.country + SEPARATOR +
-					profile.score + SEPARATOR +
+					profile.eloRank + SEPARATOR +
 					profile.email + SEPARATOR +
 					profile.password + SEPARATOR
 				);
@@ -133,7 +133,7 @@ public class ProfileManager
 					profile.profileId = profileId;
 					profile.userName = elem[0].trim();
 					profile.country = elem[1].trim();
-					profile.score = Integer.parseInt(elem[2].trim());
+					profile.eloRank = Integer.parseInt(elem[2].trim());
 					profile.email = elem[3].trim();
 					profile.password = elem[4].trim();
 					PROFILES.add(profile);

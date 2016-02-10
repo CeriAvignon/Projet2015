@@ -29,7 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainMenuPanel;
-import fr.univavignon.courbes.network.simpleimpl.Client;
+import fr.univavignon.courbes.network.simpleimpl.ClientCommunicationImpl;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -75,7 +75,7 @@ public class JoinServer extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Client c = new Client();
+				ClientCommunicationImpl c = new ClientCommunicationImpl();
 				c.setIp(jtf_ip.getText());
 				c.setPort(Integer.parseInt(jtf_port.getText()));
 

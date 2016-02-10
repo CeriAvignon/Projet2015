@@ -34,8 +34,8 @@ public class Profile implements Serializable, Comparable<Profile>
 	/** Numéro unique du profil dans la BD du jeu */
 	public int profileId;
 	
-	/** Score ELO du profil relativement à toutes les parties qu'il a jouées */
-	public int score;
+	/** Rang ELO du profil relativement à toutes les parties qu'il a jouées */
+	public int eloRank;
 	
 	/** Adresse email associée au profil */
 	public String email;

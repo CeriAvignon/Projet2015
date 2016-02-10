@@ -38,6 +38,8 @@ import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
 import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameLocalPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameRemotePlayerSelectionPanel;
+import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.network.ServerCommunication;
 
 /**
  * Menu principal du jeu.
@@ -63,6 +65,10 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	private JPanel currentPanel;
 	/** Manche en cours de jeu */
 	public Round currentRound;
+	/** Moteur réseau actuellement utilisé par le serveur */
+	public ServerCommunication serverCom;
+	/** Moteur réseau actuellement utilisé par le client */
+	public ClientCommunication clientCom;
 	
 	/**
 	 * Initialise la fenêtre.

@@ -61,16 +61,11 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 	/** Largeur des touches */
 	public int keyWidth;
 	
-	/**
-	 * Initialisation des composants de l'interface graphique.
-	 */
 	@Override
-	protected void init()
+	protected void initDimensions()
 	{	Dimension winDim = mainWindow.getPreferredSize();
 		nameWidth = (int)(winDim.width*0.5);
 		keyWidth = (int)(winDim.width*0.2);
-		
-		super.init();
 	}
 
 	@Override

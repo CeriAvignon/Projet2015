@@ -18,7 +18,6 @@ package fr.univavignon.courbes.network;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.List;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
@@ -132,9 +131,10 @@ public interface ServerCommunication
      * parallèle de l'exécution du jeu. 
 	 * 
 	 * @param profiles
-	 * 		Liste des profils des joueurs participant à une partie.
+	 * 		Tableau <i>à jour</i> des profils participants à la partie. Les emplacements
+	 * 		vides sont représentés par des valeurs {@code null}.
 	 */
-	public void sendProfiles(List<Profile> profiles);
+	public void sendProfiles(Profile[] profiles);
 	
 	/**
 	 * Envoie la limite de points à atteindre pour gagner la partie,

@@ -42,7 +42,7 @@ import fr.univavignon.courbes.inter.ErrorHandler;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class Client implements ClientCommunication {
+public class ClientCommunicationImpl implements ClientCommunication {
 
 	/** Variable qui contient l'adresse ip du serveur */
 	protected String ip;
@@ -220,7 +220,7 @@ public class Client implements ClientCommunication {
 						ois = new ObjectInputStream(serverConnexion.getInputStream());
 						Object objet = ois.readObject();
 						if (objet instanceof List<?>) 
-							profileHandler.updateProfiles((List<Profile>)objet);
+							profileHandler.updateProfiles((Profile[])objet);
 						else if (objet instanceof String) {
 							String messageText = (String)objet;
 							if(messageText == "/close") {

@@ -54,7 +54,7 @@ public class ProfileTableModel extends AbstractTableModel
 		{	List<String> row = new ArrayList<String>();
 			row.add(profile.userName);
 			row.add(profile.country);
-			row.add(Integer.toString(profile.score));
+			row.add(Integer.toString(profile.eloRank));
 			rowdata.add(row);
 		}
 	}
@@ -74,7 +74,7 @@ public class ProfileTableModel extends AbstractTableModel
 	{	ArrayList<String> newRow = new ArrayList<String>();
 		newRow.add(profile.userName);
 		newRow.add(profile.country);
-		newRow.add(Integer.toString(profile.score));
+		newRow.add(Integer.toString(profile.eloRank));
 		
 		rowdata.add(newRow);
 		fireTableRowsInserted(rowdata.size()-1, rowdata.size()-1);

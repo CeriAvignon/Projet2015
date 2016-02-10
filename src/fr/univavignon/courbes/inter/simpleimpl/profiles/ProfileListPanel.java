@@ -172,7 +172,7 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 			Profile profile = new Profile();
 			profile.userName = userName;
 			profile.country = country;
-			profile.score = 0;
+			profile.eloRank = 0;
 			// on le rajoute à la liste
 			ProfileManager.addProfile(profile);
 			

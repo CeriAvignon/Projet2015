@@ -44,8 +44,8 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	private static final long serialVersionUID = 1L;
 	/** Texte utilisé pour le nom quand aucun joueur n'est sélectionné */
 	private static final String EMPTY_NAME = "Emplacement libre";
-	/** Texte utilisé pour l'IP quand aucun joueur n'est sélectionné */
-	private static final String EMPTY_IP = "-";
+	/** Texte utilisé pour le classement ELO quand aucun joueur n'est sélectionné */
+	private static final String EMPTY_ELO = "-";
 	
 	/**
 	 * Crée un panel chargé de représenter un joueur et
@@ -67,8 +67,8 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	public Player player;
 	/** Label affichant le nom du joueur */
 	public JLabel nameLabel;
-	/** Label affichant l'adresse IP du client du joueur */
-	public JLabel ipLabel;
+	/** Label affichant le rang ELO du joueur */
+	public JLabel eloLabel;
 	/** Bouton permettant de refuser le joueur */
 	public JButton kickButton;
 	
@@ -91,13 +91,13 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 		
 		add(Box.createHorizontalGlue());
 		
-		ipLabel = new JLabel(EMPTY_IP);
-		dim = new Dimension(configPanel.ipWidth,height);
-		ipLabel.setPreferredSize(dim);
-		ipLabel.setMaximumSize(dim);
-		ipLabel.setMinimumSize(dim);
-		ipLabel.setBackground(Constants.PLAYER_COLORS[player.playerId]);
-		add(ipLabel);
+		eloLabel = new JLabel(EMPTY_ELO);
+		dim = new Dimension(configPanel.eloWidth,height);
+		eloLabel.setPreferredSize(dim);
+		eloLabel.setMaximumSize(dim);
+		eloLabel.setMinimumSize(dim);
+		eloLabel.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+		add(eloLabel);
 		
 		add(Box.createHorizontalGlue());
 		
@@ -134,19 +134,29 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	
 	/**
 	 * Remplace le profil actuellement sélectionné par
-	 * celui passé en paramètre, en indiquant l'IP de son client,
-	 * elle aussi passée en paramètre.
+	 * celui passé en paramètre, en indiquant le classement ELO.
 	 * 
 	 * @param profile
 	 * 		Nouveau profil du joueur.
-	 * @param ipStr
-	 * 		IP associée au client du joueur.
 	 */
-	public void setPlayer(Profile profile, String ipStr)
+	public void setPlayer(Profile profile)
 	{	player.profile = profile;
 		nameLabel.setText(profile.userName);
-		ipLabel.setText(ipStr);
+		eloLabel.setText(Integer.toString(profile.eloRank));
 		kickButton.setEnabled(true);
+	}
+	
+	/**
+	 * Détermine si cette position est disponible.
+	 * Autrement dit : un client peut il utiliser ce slot,
+	 * ou bien est-il déjà pris ?
+	 * 
+	 * @return
+	 * 		{@code true} ssi la position est libre.
+	 */
+	public boolean isAvailable()
+	{	boolean result = player.profile==null;
+		return result;
 	}
 	
 	@Override
@@ -155,7 +165,7 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 		{	if(e.getSource()==kickButton)
 			{	player.profile = null;
 				nameLabel.setText(EMPTY_NAME);
-				ipLabel.setText(EMPTY_IP);
+				eloLabel.setText(EMPTY_ELO);
 				kickButton.setEnabled(false);
 			}
 		}

@@ -33,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
@@ -47,7 +46,7 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class Server implements ServerCommunication
+public class ServerCommunicationImpl implements ServerCommunication
 {
 	/** Variable qui contient l'adresse ip du serveur */
 	protected String ip;
@@ -131,7 +130,7 @@ public class Server implements ServerCommunication
  	   
 		try {
 			sSocket.close();
-			sSocket = new ServerSocket(this.port, Server.size, InetAddress.getByName(this.ip));
+			sSocket = new ServerSocket(this.port, ServerCommunicationImpl.size, InetAddress.getByName(this.ip));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -253,7 +252,7 @@ public class Server implements ServerCommunication
 	}
 	
 	@Override
-	public void sendProfiles(final List<Profile> profiles) {
+	public void sendProfiles(final Profile[] profiles) {
 		Thread send = new Thread(new Runnable(){
 			@Override
 			public void run(){
