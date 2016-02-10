@@ -33,9 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
-import fr.univavignon.courbes.inter.simpleimpl.client.JoinServer;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
-import fr.univavignon.courbes.inter.simpleimpl.server.ServerSelectLocalPlayers;
 
 /**
  * Panel contenant le menu principal du jeu.
@@ -159,23 +157,22 @@ public class MainMenuPanel extends JPanel implements ActionListener
 		}
 	
 		else if(e.getSource()==serverGameButton)
-		{	if (ProfileManager.getProfiles().size() > 0)
-			{	setVisible(false);
-				new ServerSelectLocalPlayers(MainMenuPanel.this);
+		{	
+//			if (ProfileManager.getProfiles().size() > 0)
+			{	mainWindow.displayPanel(PanelName.SERVER_GAME_CONFIG);
 			}
-			else
-			{	JOptionPane.showMessageDialog
-				(	mainWindow,
-					"<html>Pour démarrer un serveur, vous devez avoir défini au moins 1 profil."
-					+ "<br>(pour définir des profils, cliquez sur \"Profils\")</html>"
-				);
-			}
+//			else
+//			{	JOptionPane.showMessageDialog
+//				(	mainWindow,
+//					"<html>Pour démarrer un serveur, vous devez avoir défini au moins 1 profil."
+//					+ "<br>(pour définir des profils, cliquez sur \"Profils\")</html>"
+//				);
+//			}
 		}
 	
 		else if(e.getSource()==clientGameButton)
 		{	if (ProfileManager.getProfiles().size() > 0)
-			{	setVisible(false);
-				new JoinServer(MainMenuPanel.this);
+			{	mainWindow.displayPanel(PanelName.CLIENT_GAME_CONFIG);
 			}
 			else
 			{	JOptionPane.showMessageDialog

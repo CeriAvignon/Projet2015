@@ -36,6 +36,7 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameConfigPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
+import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameConfigPanel;
 
 /**
  * Menu principal du jeu.
@@ -150,6 +151,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new LocalGameRoundPanel(this);
 				break;
 			case SERVER_GAME_CONFIG:
+				currentPanel = new ServerGameConfigPanel(this);
 				break;
 			case CLIENT_GAME_CONFIG:
 				break;
