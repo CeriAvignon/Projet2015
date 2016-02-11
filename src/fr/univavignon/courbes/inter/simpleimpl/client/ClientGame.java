@@ -36,12 +36,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ClientConfigHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.simpleimpl.LocalProfileSelectorOoold;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
 import fr.univavignon.courbes.inter.simpleimpl.server.RemoteProfile;
-import fr.univavignon.courbes.network.simpleimpl.ClientCommunicationImpl;
+import fr.univavignon.courbes.network.simpleimpl.client.ClientCommunicationImpl;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -49,9 +49,9 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHandler{
+public class ClientGame extends JFrame implements ClientConfigHandler, ErrorHandler{
 
-	private JoinServer js;
+	private ClientGameServerConnectionPanel js;
 	private ClientCommunicationImpl c;
 	
 	ArrayList<LocalProfileSelectorOoold> local_players;
@@ -65,7 +65,7 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 	JButton jb_ready = new JButton("Prêt");
 	
 	
-	public ClientGame(JoinServer js, ClientCommunicationImpl c){
+	public ClientGame(ClientGameServerConnectionPanel js, ClientCommunicationImpl c){
 		
 		super();
 		
@@ -122,8 +122,8 @@ public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHan
 				}
 				else{
 					JOptionPane.showMessageDialog(ClientGame.this, "<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-							"<br>- tous les profils sont définis et différents ;" +
-							"<br>- toutes les commandes sont définies et différentes.</html>");
+							"<br/>- tous les profils sont définis et différents ;" +
+							"<br/>- toutes les commandes sont définies et différentes.</html>");
 				}
 			}
 		});

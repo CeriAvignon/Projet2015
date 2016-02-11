@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.simpleimpl;
+package fr.univavignon.courbes.network.simpleimpl.server;
 
 /*
  * Courbes
@@ -39,7 +39,7 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerProfileHandler;
+import fr.univavignon.courbes.inter.ServerConfigHandler;
 
 /**
  * Classe fille de ServerCommunication, elle en implémente toutes les méthodes.
@@ -67,7 +67,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 	/** Buffer pour les commandes d'un client */
 	protected Map<Integer, Direction> commands= null;
 	/** Erreur de profil */
-	protected ServerProfileHandler profileHandler;
+	protected ServerConfigHandler profileHandler;
 	/**Envoie d'un message d'erreur a l'IU	 */
 	protected ErrorHandler messageError;
 	
@@ -298,7 +298,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 	}
 
 	@Override
-	public void setProfileHandler(ServerProfileHandler profileHandler) {
+	public void setProfileHandler(ServerConfigHandler profileHandler) {
 		this.profileHandler = profileHandler;
 	}
 	

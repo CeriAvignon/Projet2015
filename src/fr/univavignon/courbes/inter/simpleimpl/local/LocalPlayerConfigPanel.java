@@ -42,7 +42,7 @@ import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class LocalPlayerConfig extends JPanel implements ActionListener, KeyListener
+public class LocalPlayerConfigPanel extends JPanel implements ActionListener, KeyListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
 	/** Ensemble de touches prédéfinies */
@@ -62,7 +62,7 @@ public class LocalPlayerConfig extends JPanel implements ActionListener, KeyList
 	 * @param configPanel
 	 * 		Panel de configuration contenant ce panel. 
 	 */
-	public LocalPlayerConfig(AbstractLocalPlayerSelectionPanel configPanel)
+	public LocalPlayerConfigPanel(AbstractLocalPlayerSelectionPanel configPanel)
 	{	this.configPanel = configPanel;
 		
 		initPlayer();

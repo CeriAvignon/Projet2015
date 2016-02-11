@@ -31,8 +31,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.simpleimpl.client.ClientGamePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.client.ClientGameServerConnectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.client.ClientGameWaitPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGamePlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
@@ -69,6 +73,8 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	public ServerCommunication serverCom;
 	/** Moteur réseau actuellement utilisé par le client */
 	public ClientCommunication clientCom;
+	/** Joueur sélectionné côté client pour participer à une partie réseau */
+	public Player clientPlayer;
 	
 	/**
 	 * Initialise la fenêtre.
@@ -127,18 +133,28 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	public enum PanelName
 	{	/** Menu principal */
 		MAIN_MENU,
+		
 		/** Sélection des joueurs pour une partie locale */
-		LOCAL_GAME_CONFIG,
+		LOCAL_GAME_PLAYER_SELECTION,
 		/** Aire de jeu d'une partie locale */
 		LOCAL_GAME_PLAY,
+		
 		/** Sélection des joueurs locaux au serveur pour une partie réseau */
-		SERVER_GAME_LOCAL_PLAYERS,
+		SERVER_GAME_LOCAL_PLAYER_SELECTION,
 		/** Sélection des joueurs distants pour une partie réseau */
-		SERVER_GAME_REMOTE_PLAYERS,
+		SERVER_GAME_REMOTE_PLAYER_SELECTION,
 		/** Aire de jeu d'une partie réseau côté serveur */
 		SERVER_GAME_PLAY,
+		
 		/** Configuration des informations de connexion pour une partie client */
 		CLIENT_GAME_CONNECTION,
+		/** Sélection du joueur local géré par ce client */
+		CLIENT_GAME_PLAYER_SELECTION,
+		/** Attente du début de partie */
+		CLIENT_GAME_WAIT,
+		/** Aire de jeu d'une partie réseau côté client */
+		CLIENT_GAME_PLAY,
+		
 		/** Liste des profils */
 		PROFILE_LIST;
 	}
@@ -155,22 +171,32 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		{	case MAIN_MENU:
 				currentPanel = mainMenuPanel;
 				break;
-			case LOCAL_GAME_CONFIG:
+			case LOCAL_GAME_PLAYER_SELECTION:
 				currentPanel = new LocalGamePlayerSelectionPanel(this);
 				break;
 			case LOCAL_GAME_PLAY:
 				currentPanel = new LocalGameRoundPanel(this);
 				break;
-			case SERVER_GAME_LOCAL_PLAYERS:
+			case SERVER_GAME_LOCAL_PLAYER_SELECTION:
 				currentPanel = new ServerGameLocalPlayerSelectionPanel(this);
 				break;
-			case SERVER_GAME_REMOTE_PLAYERS:
+			case SERVER_GAME_REMOTE_PLAYER_SELECTION:
 				currentPanel = new ServerGameRemotePlayerSelectionPanel(this);
 				break;
 			case SERVER_GAME_PLAY:
 //				currentPanel = new ServerGameRoundPanel(this);
 				break;
 			case CLIENT_GAME_CONNECTION:
+				currentPanel = new ClientGameServerConnectionPanel(this);
+				break;
+			case CLIENT_GAME_PLAYER_SELECTION:
+				currentPanel = new ClientGamePlayerSelectionPanel(this);
+				break;
+			case CLIENT_GAME_WAIT:
+				currentPanel = new ClientGameWaitPanel(this);
+				break;
+			case CLIENT_GAME_PLAY:
+//				currentPanel = new ClientGameRoundPanel(this);
 				break;
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);

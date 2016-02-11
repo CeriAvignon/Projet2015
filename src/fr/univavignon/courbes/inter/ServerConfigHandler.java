@@ -30,7 +30,7 @@ import fr.univavignon.courbes.common.Profile;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ServerProfileHandler 
+public interface ServerConfigHandler 
 {	
 	/**
 	 * Méthode utilisée <i>côté serveur</i> par le Moteur Réseau, pour envoyer à l'Interface 

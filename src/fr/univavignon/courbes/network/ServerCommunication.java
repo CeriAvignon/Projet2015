@@ -24,7 +24,7 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerProfileHandler;
+import fr.univavignon.courbes.inter.ServerConfigHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -99,7 +99,7 @@ public interface ServerCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
      */
-	public void setProfileHandler(ServerProfileHandler profileHandler);
+	public void setProfileHandler(ServerConfigHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.

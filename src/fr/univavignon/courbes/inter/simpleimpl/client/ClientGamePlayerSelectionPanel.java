@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.local;
+package fr.univavignon.courbes.inter.simpleimpl.client;
 
 /*
  * Courbes
@@ -20,25 +20,25 @@ package fr.univavignon.courbes.inter.simpleimpl.local;
 
 import javax.swing.JOptionPane;
 
-import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.local.AbstractLocalPlayerSelectionPanel;
 
 /**
- * Panel permettant de sélectionner les joueurs participant à une partie locale.
+ * Panel permettant de sélectionner les joueurs participant à une partie réseau côté client.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class LocalGamePlayerSelectionPanel extends AbstractLocalPlayerSelectionPanel
+public class ClientGamePlayerSelectionPanel extends AbstractLocalPlayerSelectionPanel
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	/** Title du panel */
-	private static final String TITLE = "Sélection des joueurs";
+	private static final String TITLE = "Sélection du joueur";
 	/** Nombre minimal de joueurs recquis pour la partie */
-	private static final int MIN_PLYR_NBR = 2;
+	private static final int MIN_PLYR_NBR = 1;
 	/** Nombre maximal de joueurs autorisé pour la partie */
-	private static final int MAX_PLYR_NBR = Constants.MAX_PLAYER_NBR;
+	private static final int MAX_PLYR_NBR = 1;
 	/** Texte associé à la combobox */
 	private static final String COMBO_TEXT = "Nombre de joueurs : ";
 	
@@ -49,10 +49,13 @@ public class LocalGamePlayerSelectionPanel extends AbstractLocalPlayerSelectionP
 	 * @param mainWindow
 	 * 		Fenêtre contenant ce panel.
 	 */
-	public LocalGamePlayerSelectionPanel(MainWindow mainWindow)
+	public ClientGamePlayerSelectionPanel(MainWindow mainWindow)
 	{	super(mainWindow,TITLE);
-	}
 	
+		playerNbrCombo.setEnabled(false);
+		comboLabel.setEnabled(false);
+	}
+
 	@Override
 	public int getMinPlayerNbr()
 	{	return MIN_PLYR_NBR;
@@ -67,19 +70,27 @@ public class LocalGamePlayerSelectionPanel extends AbstractLocalPlayerSelectionP
 	protected String getComboText()
 	{	return COMBO_TEXT;
 	}
+
+	@Override
+	protected void previousStep()
+	{	mainWindow.clientPlayer = null;
+		mainWindow.displayPanel(PanelName.MAIN_MENU);
+	}
 	
 	@Override
 	protected void nextStep()
 	{	if(checkConfiguration())
-		{	Round round = initRound();
-			mainWindow.currentRound = round;
-			mainWindow.displayPanel(PanelName.LOCAL_GAME_PLAY);
+		{	Player player = selectedProfiles.get(0).player;
+			mainWindow.clientPlayer = player;
+			mainWindow.displayPanel(PanelName.CLIENT_GAME_CONNECTION);
 		}
 		else
 		{	JOptionPane.showMessageDialog(mainWindow, 
-				"<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-				"<br/>- tous les profils sont définis et différents, et que" +
-				"<br/>- toutes les commandes sont définies et différentes.</html>");
+				"<html>Les données du joueur local ne sont pas correctement remplies. Vérifiez que" +
+				"<br/>les deux commandes sont définies et différentes.</html>");
 		}
 	}
 }
+
+//TODO à chaque écran, il faut traiter le cas où le serveur se déconnecte
+//TODO pareil pour le serveur: traiter le cas où un client se déconnecte

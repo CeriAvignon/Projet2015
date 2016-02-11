@@ -23,7 +23,7 @@ import java.util.Map;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ClientConfigHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
@@ -106,7 +106,7 @@ public interface ClientCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
      */
-	public void setProfileHandler(ClientProfileHandler profileHandler);
+	public void setClientHandler(ClientConfigHandler profileHandler);
 
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
@@ -114,8 +114,11 @@ public interface ClientCommunication
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de se connecter à une partie réseau existante.
+     * 
+     * @return
+     * 		{@code true} ssi la connexion a pu être effectuée.
      */
-	public void launchClient();
+	public boolean launchClient();
 
  	/**
      * Permet à un client de clore sa connexion avec le serveur.
@@ -131,21 +134,13 @@ public interface ClientCommunication
 	 *   
 	 * @param profile
 	 * 		Profil du joueur à ajouter à la partie.
-	 * @return
-	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou 
-	 * 		rejeté ({@code false}). 
 	 */
-	public boolean addProfile(Profile profile);
+	public void sendProfile(Profile profile);
 	
 	/**
-	 * Envoie au serveur le profil d'un joueur inscrit mais ne désirant plus participer 
-	 * à la partie en cours de configuration. Si le joueur n'est pas inscrit à la partie,
-	 * alors rien ne se passe (pas d'erreur).
-	 *   
-	 * @param profile
-	 * 		Profil du joueur à retirer de la partie.
+	 * Demande au serveur d'envoyer la dernière version de la liste des profils sélectionnés.
 	 */
-	public void removeProfile(Profile profile);
+	public void requestProfiles();
 	
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,
@@ -197,10 +192,10 @@ public interface ClientCommunication
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
      * parallèle de l'exécution du jeu. 
      *
-     * @param commands 
+     * @param command
      * 		Une liste contenant les directions choisies par chaque joueur local au client.
      */
-	public void sendCommands(Map<Integer,Direction> commands);
+	public void sendCommand(Direction command);
 
 //	/**
 //     * Permet au client de récupérer un message textuel envoyé par le serveur

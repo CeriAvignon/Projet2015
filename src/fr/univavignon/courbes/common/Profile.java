@@ -31,6 +31,30 @@ public class Profile implements Serializable, Comparable<Profile>
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+//	/**
+//	 * Crée un nouveau profil, vide. TODO
+//	 */
+//	public Profile()
+//	{
+//		//
+//	}
+//	
+//	/**
+//	 * Crée un nouveau profil qui est une copie de
+//	 * celui passé en paramètre.
+//	 *  
+//	 * @param profile
+//	 * 		Profil à recopier.
+//	 */
+//	public Profile(Profile profile)
+//	{	this.profileId = profile.profileId;
+//		this.eloRank = profile.eloRank;
+//		this.email = profile.email;
+//		this.userName = profile.userName;
+//		this.password = profile.password;
+//		this.country = profile.country;
+//	}
+	
 	/** Numéro unique du profil dans la BD du jeu */
 	public int profileId;
 	

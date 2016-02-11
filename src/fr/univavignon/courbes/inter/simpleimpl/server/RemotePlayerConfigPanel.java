@@ -39,7 +39,7 @@ import fr.univavignon.courbes.common.Round;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientPlayerConfig extends JPanel implements ActionListener
+public class RemotePlayerConfigPanel extends JPanel implements ActionListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
 	/** Texte utilisé pour le nom quand aucun joueur n'est sélectionné */
@@ -52,17 +52,20 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	 * sa configuration.
 	 * 
 	 * @param configPanel
-	 * 		Panel de configuration contenant ce panel. 
+	 * 		Panel de configuration contenant ce panel.
+	 * @param withButton
+	 * 		Indique s'il faut inclure un bouton pour rejeter le joueur (serveur) ou pas (client). 
 	 */
-	public ClientPlayerConfig(ServerGameRemotePlayerSelectionPanel configPanel)
+	public RemotePlayerConfigPanel(RemotePlayerSelectionPanel configPanel, boolean withButton)
 	{	this.configPanel = configPanel;
+		this.withButton = withButton;
 		
 		initPlayer();
 		initPanel();
 	}
 
 	/** Panel contenant ce panel */
-	private ServerGameRemotePlayerSelectionPanel configPanel;
+	private RemotePlayerSelectionPanel configPanel;
 	/** Joueur sélectionné */
 	public Player player;
 	/** Label affichant le nom du joueur */
@@ -71,6 +74,8 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	public JLabel eloLabel;
 	/** Bouton permettant de refuser le joueur */
 	public JButton kickButton;
+	/** Indique s'il faut mettre un bouton de kick ou pas dans ce panel */
+	private boolean withButton;
 	
 	/**
 	 * Initialise les composants contenus dans ce panel.
@@ -82,34 +87,41 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 		Dimension dim;
 		
 		nameLabel = new JLabel(EMPTY_NAME);
-		dim = new Dimension(configPanel.nameWidth,height);
+		if(withButton)
+			dim = new Dimension(configPanel.getNameWidth(),height);
+		else
+			dim = new Dimension(configPanel.getNameWidth()+configPanel.getKickWidth(),height);
 		nameLabel.setPreferredSize(dim);
 		nameLabel.setMaximumSize(dim);
 		nameLabel.setMinimumSize(dim);
 		nameLabel.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+		nameLabel.setOpaque(true);
 		add(nameLabel);
 		
 		add(Box.createHorizontalGlue());
 		
 		eloLabel = new JLabel(EMPTY_ELO);
-		dim = new Dimension(configPanel.eloWidth,height);
+		dim = new Dimension(configPanel.getEloWidth(),height);
 		eloLabel.setPreferredSize(dim);
 		eloLabel.setMaximumSize(dim);
 		eloLabel.setMinimumSize(dim);
 		eloLabel.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+		eloLabel.setOpaque(true);
 		add(eloLabel);
 		
-		add(Box.createHorizontalGlue());
-		
-		kickButton = new JButton("Rejet");
-		kickButton.addActionListener(this);
-		dim = new Dimension(configPanel.kickWidth,height);
-		kickButton.setPreferredSize(dim);
-		kickButton.setMaximumSize(dim);
-		kickButton.setMinimumSize(dim);
-		kickButton.setBackground(Constants.PLAYER_COLORS[player.playerId]);
-		add(this.kickButton);
-		kickButton.setEnabled(false);
+		if(withButton)
+		{	add(Box.createHorizontalGlue());
+			
+			kickButton = new JButton("Rejet");
+			kickButton.addActionListener(this);
+			dim = new Dimension(configPanel.getKickWidth(),height);
+			kickButton.setPreferredSize(dim);
+			kickButton.setMaximumSize(dim);
+			kickButton.setMinimumSize(dim);
+			kickButton.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+			add(this.kickButton);
+			kickButton.setEnabled(false);
+		}
 	}
 
 	/**
@@ -119,8 +131,8 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	{	player = new Player();
 		player.profile = null;
 		
-		Round round = configPanel.mainWindow.currentRound;
-		int index = round.players.length + configPanel.selectedProfiles.size();
+		Round round = configPanel.getMainWindow().currentRound;
+		int index = round.players.length + configPanel.getSelectedProfileCount();
 		player.playerId = index;
 		
 		player.local = false;
@@ -143,7 +155,8 @@ public class ClientPlayerConfig extends JPanel implements ActionListener
 	{	player.profile = profile;
 		nameLabel.setText(profile.userName);
 		eloLabel.setText(Integer.toString(profile.eloRank));
-		kickButton.setEnabled(true);
+		if(withButton)
+			kickButton.setEnabled(true);
 	}
 	
 	/**

@@ -34,6 +34,8 @@ import fr.univavignon.courbes.inter.simpleimpl.local.AbstractLocalPlayerSelectio
 public class ServerGameLocalPlayerSelectionPanel extends AbstractLocalPlayerSelectionPanel
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
+	/** Title du panel */
+	private static final String TITLE = "Sélection des joueurs locaux";
 	/** Nombre minimal de joueurs locaux recquis pour la partie */
 	private static final int MIN_PLYR_NBR = 0;
 	/** Nombre maximal de joueurs autorisé pour la partie */
@@ -49,7 +51,7 @@ public class ServerGameLocalPlayerSelectionPanel extends AbstractLocalPlayerSele
 	 * 		Fenêtre contenant ce panel.
 	 */
 	public ServerGameLocalPlayerSelectionPanel(MainWindow mainWindow)
-	{	super(mainWindow);
+	{	super(mainWindow,TITLE);
 	}
 	
 	@Override
@@ -72,13 +74,13 @@ public class ServerGameLocalPlayerSelectionPanel extends AbstractLocalPlayerSele
 	{	if(checkConfiguration())
 		{	Round round = initRound();
 			mainWindow.currentRound = round;
-			mainWindow.displayPanel(PanelName.SERVER_GAME_REMOTE_PLAYERS);
+			mainWindow.displayPanel(PanelName.SERVER_GAME_REMOTE_PLAYER_SELECTION);
 		}
 		else
 		{	JOptionPane.showMessageDialog(mainWindow, 
 				"<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-				"<br>- tous les profils sont définis et différents, et que" +
-				"<br>- toutes les commandes sont définies et différentes.</html>");
+				"<br/>- tous les profils sont définis et différents, et que" +
+				"<br/>- toutes les commandes sont définies et différentes.</html>");
 		}
 	}
 }

@@ -19,6 +19,7 @@ package fr.univavignon.courbes.inter;
  */
 
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
 
 /**
  * Interface implémentant les méthodes permettant au Moteur Réseau d'envoyer à l'Interface Utilisateur
@@ -30,7 +31,7 @@ import fr.univavignon.courbes.common.Profile;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ClientProfileHandler 
+public interface ClientConfigHandler 
 {	
 	/**
 	 * Méthode utilisée <i>côté client</i> par le Moteur Réseau, pour envoyer à l'Interface 
@@ -42,4 +43,20 @@ public interface ClientProfileHandler
 	 * 		sont représentés par des valeurs {@code null}.
 	 */
 	public void updateProfiles(Profile[] profiles);
+	
+	/**
+	 * Indique au client qu'il faut basculer sur le panel de jeu pour commencer la première manche.
+	 * 
+	 * @param round 
+	 * 		Objet representant la manche et toute sa configuration.
+	 */
+	public void startGame(Round round);
+	
+	/**
+	 * Indique au client que son profil a été rejeté par le serveur, pour ce qui concerne
+	 * la partie en cours de configuration. Autrement dit, il s'est fait kick.
+	 */
+	public void disconnection(); 
 }
+// TODO chacune de ces méthodes doivent être exécutées dans un thread swing
+// TODO pareil pour le serveur

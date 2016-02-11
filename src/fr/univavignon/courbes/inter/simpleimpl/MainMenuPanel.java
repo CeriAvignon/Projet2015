@@ -145,40 +145,30 @@ public class MainMenuPanel extends JPanel implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==localGameButton)	
 		{	if(ProfileManager.getProfiles().size() > 1)
-			{	mainWindow.displayPanel(PanelName.LOCAL_GAME_CONFIG);
+			{	mainWindow.displayPanel(PanelName.LOCAL_GAME_PLAYER_SELECTION);
 			}
 			else
 			{	JOptionPane.showMessageDialog
 				(	mainWindow,
 					"<html>Pour démarrer une partie locale, vous devez avoir défini au moins 2 profils."
-					+ "<br>(pour définir des profils, cliquez sur \"Profils\")</html>"
+					+ "<br/>(pour définir des profils, cliquez sur \"Profils\")</html>"
 				);
 			}
 		}
 	
 		else if(e.getSource()==serverGameButton)
-		{	
-//			if (ProfileManager.getProfiles().size() > 0)
-			{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYERS);
-			}
-//			else
-//			{	JOptionPane.showMessageDialog
-//				(	mainWindow,
-//					"<html>Pour démarrer un serveur, vous devez avoir défini au moins 1 profil."
-//					+ "<br>(pour définir des profils, cliquez sur \"Profils\")</html>"
-//				);
-//			}
+		{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
 		}
 	
 		else if(e.getSource()==clientGameButton)
 		{	if (ProfileManager.getProfiles().size() > 0)
-			{	mainWindow.displayPanel(PanelName.CLIENT_GAME_CONNECTION);
+			{	mainWindow.displayPanel(PanelName.CLIENT_GAME_PLAYER_SELECTION);
 			}
 			else
 			{	JOptionPane.showMessageDialog
 				(	mainWindow,
 					"<html>Pour démarrer un client, vous devez avoir défini au moins 1 profil."
-					+ "<br>(pour définir des profils, cliquez sur \"Profils\")</html>"
+					+ "<br/>(pour définir des profils, cliquez sur \"Profils\")</html>"
 				);
 			}
 		}

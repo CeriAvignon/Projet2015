@@ -38,10 +38,12 @@ import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 
 /**
  * Panel permettant de sélectionner les joueurs locaux participant à une partie.
+ * La classe doit être spécialisée pour s'adapter aux différents types de parties
+ * pouvant (ou devant) accueillir des joueurs locaux : locale, réseau/client, réseau/serveur.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSelectionPanel<LocalPlayerConfig>
+public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSelectionPanel<LocalPlayerConfigPanel>
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	
@@ -51,9 +53,11 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 	 * 
 	 * @param mainWindow
 	 * 		Fenêtre contenant ce panel.
+	 * @param title
+	 * 		Titre du panel.
 	 */
-	public AbstractLocalPlayerSelectionPanel(MainWindow mainWindow)
-	{	super(mainWindow);
+	public AbstractLocalPlayerSelectionPanel(MainWindow mainWindow, String title)
+	{	super(mainWindow,title);
 	}
 	
 	/** Largeur des noms */
@@ -120,7 +124,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 	
 	@Override
 	protected void addProfile()
-	{	LocalPlayerConfig lps = new LocalPlayerConfig(this);
+	{	LocalPlayerConfigPanel lps = new LocalPlayerConfigPanel(this);
 		selectedProfiles.add(lps);
 		playersPanel.add(lps);
 		
@@ -135,7 +139,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 		// on compare toutes les paires de profils sélectionnés
 		int i1 = 0;
 		while(i1<selectedProfiles.size() && isReady)
-		{	LocalPlayerConfig lpc1 = selectedProfiles.get(i1);
+		{	LocalPlayerConfigPanel lpc1 = selectedProfiles.get(i1);
 			Player player1 = lpc1.player;
 			int left1 = player1.leftKey;
 			int right1 = player1.rightKey;
@@ -147,7 +151,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 			else
 			{	int i2 = i1 + 1;
 				while(i2<selectedProfiles.size() && isReady)
-				{	LocalPlayerConfig lpsc = selectedProfiles.get(i2);
+				{	LocalPlayerConfigPanel lpsc = selectedProfiles.get(i2);
 					Player player2 = lpsc.player;
 					int left2 = player2.leftKey;
 					int right2 = player2.rightKey;
@@ -173,7 +177,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 		// initialisation des joueurs
 		result.players = new Player[selectedProfiles.size()];
 		for(int i=0;i<selectedProfiles.size();i++)
-		{	LocalPlayerConfig lcp = selectedProfiles.get(i);
+		{	LocalPlayerConfigPanel lcp = selectedProfiles.get(i);
 			Player player = lcp.player;
 			player.playerId = i;
 			result.players[i] = player;
@@ -182,11 +186,6 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 //		result.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(selectedProfiles.size());
 		
 		return result;
-	}
-	
-	@Override
-	protected void previousStep()
-	{	mainWindow.displayPanel(PanelName.MAIN_MENU);
 	}
 	
 	@Override
@@ -205,5 +204,10 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 				playersPanel.repaint();
 			}
 		}
+	}
+	
+	@Override
+	protected void previousStep()
+	{	mainWindow.displayPanel(PanelName.MAIN_MENU);
 	}
 }

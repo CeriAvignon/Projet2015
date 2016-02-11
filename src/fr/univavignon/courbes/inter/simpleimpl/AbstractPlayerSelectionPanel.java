@@ -21,13 +21,11 @@ package fr.univavignon.courbes.inter.simpleimpl;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,13 +35,15 @@ import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 
 /**
  * Panel permettant de sélectionner les joueurs participant à une partie.
+ * La classe doit être spécialisée pour s'adapter aux différents types
+ * de parties possibles : locale, réseau/client, réseau/serveur.
  * 
  * @param <T>
  * 		Type de joueur (local vs. distant) traité par ce panel.
  *  
  * @author	L3 Info UAPV 2015-16
  */
-public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements ActionListener
+public abstract class AbstractPlayerSelectionPanel<T> extends AbstractConfigurationPanel
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	
@@ -53,43 +53,29 @@ public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements 
 	 * 
 	 * @param mainWindow
 	 * 		Fenêtre contenant ce panel.
+	 * @param title
+	 * 		Titre du panel.
 	 */
-	public AbstractPlayerSelectionPanel(MainWindow mainWindow)
-	{	super();
-		this.mainWindow = mainWindow;
-		
-		init();
+	public AbstractPlayerSelectionPanel(MainWindow mainWindow, String title)
+	{	super(mainWindow, title);
 	}
 	
-	/** Fenêtre contenant ce panel */
-	public MainWindow mainWindow;
 	/** Label associé à la combobox portant sur le nombre de joueurs */
 	public JLabel comboLabel;
 	/** Combobox permettant de sélectionner le nombre de joueurs */
 	public JComboBox<Integer> playerNbrCombo;
 	/** Liste des profils sélectionnés */
-	public List<T> selectedProfiles = new ArrayList<T>();
-	/** Bouton permettant de revenir au menu principal */
-	public JButton backButton;
-	/** Bouton permettant de démarrer la partie */
-	public JButton nextButton;
+	public List<T> selectedProfiles;
 	/** Panel affichant les profils sélectionnés */
 	public JPanel playersPanel;
 	
-	/**
-	 * Initialisation des composants de l'interface graphique.
-	 */
-	protected void init()
-	{	BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-		setLayout(layout);
+	@Override
+	protected void initContent()
+	{	selectedProfiles = new ArrayList<T>();
 		
 		initDimensions();
 		initPlayerCombo();
 		initPlayersPanel();
-		
-		add(Box.createVerticalGlue());
-		
-		initButtons();
 	}
 	
 	/**
@@ -169,26 +155,6 @@ public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements 
 	protected abstract void initPlayersPanel();
 	
 	/**
-	 * Initialise les boutons de ce panel.
-	 */
-	protected void initButtons()
-	{	JPanel panel = new JPanel();
-		BoxLayout layout = new BoxLayout(panel, BoxLayout.LINE_AXIS);
-		panel.setLayout(layout);
-		add(panel);
-
-		backButton = new JButton("Retour");
-		backButton.addActionListener(this);
-		panel.add(backButton);
-		
-		panel.add(Box.createHorizontalGlue());
-		
-		nextButton = new JButton("Continuer");
-		nextButton.addActionListener(this);
-		panel.add(nextButton);
-	}
-	
-	/**
 	 * Ajoute les composants permettant de sélectionner un 
 	 * nouveau profil.
 	 */
@@ -213,31 +179,15 @@ public abstract class AbstractPlayerSelectionPanel<T> extends JPanel implements 
 	protected abstract Round initRound();
 	
 	/**
-	 * Passe à l'étape suivante de la configuration
-	 * de la partie, ou bien début la partie elle-même
-	 * (en fonction du type de partie).
-	 */
-	protected abstract void nextStep();
-	
-	/**
-	 * Revient à l'étape précédente de la configuration
-	 * de la partie, ou bien au menu principal
-	 * (en fonction du type de partie).
-	 */
-	protected abstract void previousStep();
-	
-	/**
 	 * Réagit à une modification de la combobox.
 	 */
 	protected abstract void comboboxChanged();
 	
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==backButton)
-			previousStep();
-		else if(e.getSource()==nextButton)
-			nextStep();
-		else if(e.getSource()==playerNbrCombo)
+	{	super.actionPerformed(e);
+		
+		if(e.getSource()==playerNbrCombo)
 			comboboxChanged();
 	}
 }
