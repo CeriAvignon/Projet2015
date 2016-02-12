@@ -23,7 +23,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerConfigHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté serveur
@@ -98,7 +98,7 @@ public interface ServerCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
      */
-	public void setConfigHandler(ServerConfigHandler profileHandler);
+	public void setConfigHandler(ServerProfileHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
@@ -189,6 +189,15 @@ public interface ServerCommunication
 	 * 		L'objet représentant la partie qui va commencer.
 	 */
 	public void sendRound(Round round);
+	
+	/**
+	 * Fait le nécessaire pour déconnecter le client correspondant
+	 * à l'index passé en paramètre.
+	 * 
+	 * @param index
+	 * 		Index du client à déconnecter.
+	 */
+	public void kickClient(int index);
 	
 	/**
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode

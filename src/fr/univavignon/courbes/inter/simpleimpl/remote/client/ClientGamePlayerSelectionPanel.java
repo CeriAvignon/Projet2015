@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.client;
+package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 
 /*
  * Courbes
@@ -24,6 +24,7 @@ import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.inter.simpleimpl.local.AbstractLocalPlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.local.LocalPlayerConfigPanel;
 
 /**
  * Panel permettant de sélectionner les joueurs participant à une partie réseau côté client.
@@ -52,8 +53,13 @@ public class ClientGamePlayerSelectionPanel extends AbstractLocalPlayerSelection
 	public ClientGamePlayerSelectionPanel(MainWindow mainWindow)
 	{	super(mainWindow,TITLE);
 	
+		// on désactive le combo
 		playerNbrCombo.setEnabled(false);
 		comboLabel.setEnabled(false);
+		
+		// on sort les couleurs
+		for(LocalPlayerConfigPanel lpcp: selectedProfiles)
+			lpcp.removeColor();
 	}
 
 	@Override

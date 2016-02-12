@@ -1,6 +1,6 @@
-Leroy,USA,0,leroy@fake.com,password1
-Kvothe,France,0,kvothe@fake.com,password2
-Fitz,Angleterre,0,fitz@fake.com,password3
-Test,France,0,test@fake.com,password4
-Toto,France,0,toto@fake.com,password5
-Zaza,France,0,zaza@fake.com,password6
+Leroy,USA,6,leroy@fake.com,password1
+Kvothe,France,5,kvothe@fake.com,password2
+Fitz,Angleterre,1,fitz@fake.com,password3
+Test,France,3,test@fake.com,password4
+Toto,France,2,toto@fake.com,password5
+Zaza,France,4,zaza@fake.com,password6

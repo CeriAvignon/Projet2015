@@ -157,7 +157,7 @@ public class MainMenuPanel extends JPanel implements ActionListener
 		}
 	
 		else if(e.getSource()==serverGameButton)
-		{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
+		{	mainWindow.displayPanel(PanelName.SERVER_GAME_PORT_SELECTION);
 		}
 	
 		else if(e.getSource()==clientGameButton)

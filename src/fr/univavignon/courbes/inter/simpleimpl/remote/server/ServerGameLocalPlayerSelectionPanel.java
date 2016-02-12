@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.server;
+package fr.univavignon.courbes.inter.simpleimpl.remote.server;
 
 /*
  * Courbes
@@ -67,6 +67,11 @@ public class ServerGameLocalPlayerSelectionPanel extends AbstractLocalPlayerSele
 	@Override
 	protected String getComboText()
 	{	return COMBO_TEXT;
+	}
+	
+	@Override
+	protected void previousStep()
+	{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
 	}
 	
 	@Override

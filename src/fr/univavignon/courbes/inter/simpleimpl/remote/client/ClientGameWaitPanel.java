@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.client;
+package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 
 /*
  * Courbes
@@ -26,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -35,12 +36,13 @@ import javax.swing.border.EtchedBorder;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.ClientConfigHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractConfigurationPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
-import fr.univavignon.courbes.inter.simpleimpl.server.RemotePlayerConfigPanel;
-import fr.univavignon.courbes.inter.simpleimpl.server.RemotePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerConfigPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerSelectionPanel;
+import fr.univavignon.courbes.network.ClientCommunication;
 
 /**
  * Panel permettant d'afficher côté client les joueurs actuellement sélectionnés
@@ -48,7 +50,7 @@ import fr.univavignon.courbes.inter.simpleimpl.server.RemotePlayerSelectionPanel
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientGameWaitPanel extends AbstractConfigurationPanel implements RemotePlayerSelectionPanel, ClientConfigHandler
+public class ClientGameWaitPanel extends AbstractConfigurationPanel implements RemotePlayerSelectionPanel, ClientProfileHandler
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	/** Title du panel */
@@ -63,6 +65,18 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 	 */
 	public ClientGameWaitPanel(MainWindow mainWindow)
 	{	super(mainWindow, TITLE);
+	}
+
+	@Override
+	public void init(String title)
+	{	ClientCommunication clientCom = mainWindow.clientCom;
+		clientCom.setProfileHandler(this);
+		Player player = mainWindow.clientPlayer;
+		mainWindow.clientCom.sendProfile(player.profile);
+//		clientCom.requestProfiles();//TODO plus besoin de requestProfile
+		
+		super.init(title);
+		nextButton.setEnabled(false);
 	}
 	
 	/** Liste des profils sélectionnés */
@@ -150,19 +164,6 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 		titlePanel.add(rightLabel);
 	}
 	
-	/**
-	 * Ajoute les composants permettant de sélectionner un 
-	 * nouveau profil.
-	 */
-	protected void addProfile()
-	{	RemotePlayerConfigPanel lps = new RemotePlayerConfigPanel(this,false);
-		selectedProfiles.add(lps);
-		playersPanel.add(lps);
-		
-		validate();
-		repaint();
-	}
-	
 	@Override
 	public int getSelectedProfileCount()
 	{	return selectedProfiles.size();
@@ -170,7 +171,9 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 
 	@Override
 	protected void previousStep()
-	{	mainWindow.displayPanel(PanelName.CLIENT_GAME_CONNECTION);
+	{	mainWindow.clientCom.closeClient();
+		mainWindow.clientCom.setProfileHandler(null);
+		mainWindow.displayPanel(PanelName.CLIENT_GAME_CONNECTION);
 	}
 	
 	@Override
@@ -184,13 +187,13 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 		for(int i=0;i<profiles.length;i++)
 		{	RemotePlayerConfigPanel rpcp;
 			if(selectedProfiles.size()>i)
-				rpcp = selectedProfiles.get(1+i);
+				rpcp = selectedProfiles.get(i);
 			else
 			{	rpcp = new RemotePlayerConfigPanel(this,false);
 				selectedProfiles.add(rpcp);
 				playersPanel.add(rpcp);
 			}
-			rpcp.setPlayer(profiles[i]);
+			rpcp.setProfile(profiles[i]);
 		}
 		
 		validate();
@@ -228,12 +231,31 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 	}
 
 	@Override
-	public void disconnection()
+	public void gotKicked()
 	{	//ce thread est exécuté plus tard par Swing, ce qui rend cette méthode non-bloquante pour le moteur réseau
 		SwingUtilities.invokeLater(new Runnable()
 		{	@Override
 			public void run()
-			{	mainWindow.clientCom.closeClient();
+			{	JOptionPane.showMessageDialog(mainWindow, 
+					"<html>Le serveur a rejeté le joueur sélectionné, soit personnellement,"
+					+ "<br/>soit parce que son profil était déjà utilisé dans cette partie.</html>");
+				previousStep();
+			}
+	    });
+	}
+
+	@Override
+	public void kickPlayer(int playerId)
+	{	// pas utilisé ici
+	}
+
+	@Override
+	public void connectionLost()
+	{	SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	JOptionPane.showMessageDialog(mainWindow, 
+					"<html>La connexion avec le serveur a été perdue.</html>");
 				previousStep();
 			}
 	    });

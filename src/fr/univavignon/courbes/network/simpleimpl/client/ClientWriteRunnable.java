@@ -20,10 +20,11 @@ package fr.univavignon.courbes.network.simpleimpl.client;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Classe chargée d'écrire en permanence sur le flux de sortie du client.
@@ -39,42 +40,54 @@ public class ClientWriteRunnable implements Runnable
 	 * 		Client concerné.
 	 */
 	public ClientWriteRunnable(ClientCommunicationImpl clientCom)
-	{	oos = clientCom.oos;
-		errorHandler = clientCom.errorHandler;
+	{	this.clientCom = clientCom;
+		socket = clientCom.socket;
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux de sortie utilisé pour communiquer avec le serveur */
-	private ObjectOutputStream oos;
-	/** Handler chargé des messages d'erreur */
-	private ErrorHandler errorHandler;
+	/** Socket utilisé pour communiquer avec le serveur */
+	private Socket socket;
+	/** Classe principale du client */
+	private ClientCommunicationImpl clientCom;
 	
 	@Override
 	public void run()
 	{	setActive(true);
+		ObjectOutputStream oos = null;
 		
 		try
-		{	do
+		{	// on récupère le flux de sortie
+			OutputStream os = socket.getOutputStream();
+			oos = new ObjectOutputStream(os);
+//			oos.writeObject("sdfsfsdf");
+			oos.flush();
+			
+			do
 			{	Object object = objects.poll();
 				if(object!=null)
 				{	oos.writeObject(object);
 					oos.flush();
+System.out.println("CLIENT>>> "+object.toString());
 				}
 			}
-			while(isActive());
+			while(isActive() || !objects.isEmpty());
+		}
+		catch(SocketException e)
+		{	// fermeture normale : connexion probablement fermée par l'autre thread ou le serveur
+			clientCom.lostConnection();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de l'envoi de données.");
+			clientCom.displayError("Erreur lors de l'envoi de données.");
 		}
 		finally
 		{	try
 			{	oos.close();
 			}
 			catch (IOException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 			}
 		}
 	}
@@ -112,3 +125,5 @@ public class ClientWriteRunnable implements Runnable
 	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le serveur */
 	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
 }
+
+//TODO utiliser notify pour endormir/réveiller le thread au lieu de boucle vide?

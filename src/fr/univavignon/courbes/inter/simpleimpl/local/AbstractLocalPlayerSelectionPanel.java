@@ -34,7 +34,6 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
-import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 
 /**
  * Panel permettant de sélectionner les joueurs locaux participant à une partie.
@@ -204,10 +203,5 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 				playersPanel.repaint();
 			}
 		}
-	}
-	
-	@Override
-	protected void previousStep()
-	{	mainWindow.displayPanel(PanelName.MAIN_MENU);
 	}
 }

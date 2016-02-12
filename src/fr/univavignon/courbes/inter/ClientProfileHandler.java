@@ -31,7 +31,7 @@ import fr.univavignon.courbes.common.Round;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ClientConfigHandler 
+public interface ClientProfileHandler 
 {	
 	/**
 	 * Méthode utilisée <i>côté client</i> par le Moteur Réseau, pour envoyer à l'Interface 
@@ -56,7 +56,13 @@ public interface ClientConfigHandler
 	 * Indique au client que son profil a été rejeté par le serveur, pour ce qui concerne
 	 * la partie en cours de configuration. Autrement dit, il s'est fait kick.
 	 */
-	public void disconnection(); 
+	public void gotKicked();
+
+	
+	/**
+	 * La connexion avec le serveur a été perdue accidentellement.
+	 */
+	public void connectionLost();
 }
 // TODO chacune de ces méthodes doivent être exécutées dans un thread swing
 // TODO pareil pour le serveur

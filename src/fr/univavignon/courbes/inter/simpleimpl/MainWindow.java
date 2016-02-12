@@ -34,14 +34,15 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.simpleimpl.client.ClientGamePlayerSelectionPanel;
-import fr.univavignon.courbes.inter.simpleimpl.client.ClientGameServerConnectionPanel;
-import fr.univavignon.courbes.inter.simpleimpl.client.ClientGameWaitPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGamePlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
-import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameLocalPlayerSelectionPanel;
-import fr.univavignon.courbes.inter.simpleimpl.server.ServerGameRemotePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGamePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGameServerConnectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGameWaitPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGameLocalPlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGamePortSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGameRemotePlayerSelectionPanel;
 import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.ServerCommunication;
 
@@ -139,6 +140,8 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		/** Aire de jeu d'une partie locale */
 		LOCAL_GAME_PLAY,
 		
+		/** Sélection du port TCP utilisé pour les connexions aux clients */
+		SERVER_GAME_PORT_SELECTION,
 		/** Sélection des joueurs locaux au serveur pour une partie réseau */
 		SERVER_GAME_LOCAL_PLAYER_SELECTION,
 		/** Sélection des joueurs distants pour une partie réseau */
@@ -176,6 +179,9 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				break;
 			case LOCAL_GAME_PLAY:
 				currentPanel = new LocalGameRoundPanel(this);
+				break;
+			case SERVER_GAME_PORT_SELECTION:
+				currentPanel = new ServerGamePortSelectionPanel(this);
 				break;
 			case SERVER_GAME_LOCAL_PLAYER_SELECTION:
 				currentPanel = new ServerGameLocalPlayerSelectionPanel(this);

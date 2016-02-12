@@ -20,15 +20,17 @@ package fr.univavignon.courbes.network.simpleimpl.server;
 
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerConfigHandler;
 
 /**
  * Classe chargée de lire en permanence sur le flux d'entrée du serveur.
@@ -47,37 +49,37 @@ public class ServerReadRunnable implements Runnable
 	 */
 	public ServerReadRunnable(ServerCommunicationImpl serverCom, int index)
 	{	this.serverCom = serverCom;
-		ois = serverCom.oiss[index];
-		configHandler = serverCom.configHandler;
-		errorHandler = serverCom.errorHandler;
+		this.index = index;
+		socket = serverCom.sockets[index];
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux d'entrée utilisé pour communiquer avec le client */
-	private ObjectInputStream ois;
-	/** Handler chargé de la configuration du serveur */
-	private ServerConfigHandler configHandler;
-	/** Handler chargé des messages d'erreur */
-	private ErrorHandler errorHandler;
+	/** Numéro du client */
+	private int index;
+	/** Socket utilisé pour communiquer avec le client */
+	private Socket socket;
 	/** Classe principale du serveur */
 	private ServerCommunicationImpl serverCom;
 
 	@Override
 	public void run()
 	{	setActive(true);
-		
+		ObjectInputStream ois = null;
+
 		try
-		{	do
+		{	InputStream is = socket.getInputStream();
+			ois = new ObjectInputStream(is);
+			
+			do
 			{	Object object = ois.readObject();
+System.out.println("SERVER<<< "+object.toString());
 
 				// objets mis en tampon
 				if(object instanceof String)
 				{	String string = (String)object;
-					if(string.equals(NetworkConstants.ANNOUNCE_DISCONNECTION))
-						setActive(false);//TODO probablement d'autres choses à faire à la suite d'une déconnexion ?
-					else if(string.equals(NetworkConstants.REQUEST_PROFILES))
+					if(string.equals(NetworkConstants.REQUEST_PROFILES))
 						serverCom.reSendProfiles();
 				}
 				else if(object instanceof Direction)
@@ -88,25 +90,29 @@ public class ServerReadRunnable implements Runnable
 				// objets passés au server handler
 				else if(object instanceof Profile)
 				{	Profile profile = (Profile)object;
-					configHandler.fetchProfile(profile);
+					serverCom.fetchProfile(profile,index);
 				}
 				
 			}
 			while(isActive());
+		}
+		catch(EOFException | SocketException e)
+		{	// fermeture normale : connexion probablement fermée par l'autre thread ou le client
+			serverCom.lostConnection(index);
 		}
 		catch (ClassNotFoundException e)
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de la réception de données.");
+			serverCom.displayError("Erreur lors de la réception de données.");
 		}
 		finally
 		{	try
 			{	ois.close();
 			}
 			catch (IOException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 			}
 		}
 	}

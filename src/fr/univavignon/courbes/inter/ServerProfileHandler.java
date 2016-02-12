@@ -30,7 +30,7 @@ import fr.univavignon.courbes.common.Profile;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ServerConfigHandler 
+public interface ServerProfileHandler 
 {	
 	/**
 	 * Méthode utilisée <i>côté serveur</i> par le Moteur Réseau, pour envoyer à l'Interface 
@@ -41,8 +41,17 @@ public interface ServerConfigHandler
 	 * 
 	 * @param profile
 	 * 		Le profil du joueur distant que l'on veut rajouter à la partie en cours de configuration.
-	 * @return
-	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou rejeté ({@code false}). 
+	 * @param index
+	 * 		Numéro du client hébergeant le joueur distant.
 	 */
-	public boolean fetchProfile(Profile profile);
+	public void fetchProfile(Profile profile, int index);
+	
+	/**
+	 * La connexion avec le client dont le numéro est indiqué a été perdue, soit 
+	 * volontairement de sa part, soit accidentellement.
+	 * 
+	 * @param index
+	 * 		Numéro du client dont on a perdu la connexion.
+	 */
+	public void connectionLost(int index);
 }

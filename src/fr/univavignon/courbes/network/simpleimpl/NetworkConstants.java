@@ -24,10 +24,18 @@ package fr.univavignon.courbes.network.simpleimpl;
  * @author	L3 Info UAPV 2015-16
  */
 public class NetworkConstants
-{	/** Le client indique au serveur qu'il se déconnecte, ou inversement */
-	public static final String ANNOUNCE_DISCONNECTION = "ANNOUNCE_DISCONNECTION";
+{	
+//	/** Le client indique au serveur qu'il se déconnecte, ou inversement */
+//	public static final String ANNOUNCE_DISCONNECTION = "ANNOUNCE_DISCONNECTION";
+	
+	/** Le serveur indique au client qu'il peut se connecter à la partie en cours de configuration */
+	public static final String ANNOUNCE_ACCEPTED_CONNECTION = "ANNOUNCE_ACCEPTED_CONNECTION";
+	/** Le serveur indique au client que son profil a été rejeté et ne participera pas à la partie (le message implique aussi une déconnexion) */
+	/** Le serveur indique au client qu'il ne peut pas se connecter à la partie en cours de configuration */
+	public static final String ANNOUNCE_REJECTED_CONNECTION = "ANNOUNCE_REJECTED_CONNECTION";
 	/** Le serveur indique au client que son profil a été rejeté et ne participera pas à la partie (le message implique aussi une déconnexion) */
 	public static final String ANNOUNCE_REJECTED_PROFILE = "ANNOUNCE_REJECTED_PROFILE";
+	
 //	/** Message indiquant que la partie va commencer */
 //	public static final String ANNOUNCE_GAME_START = "ANNOUNCE_GAME_START";
 	

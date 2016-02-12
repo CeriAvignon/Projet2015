@@ -88,46 +88,51 @@ public class Constants
 	
 	/** Nombre maximal de joueurs dans une manche donnée */
 	public static final int MAX_PLAYER_NBR = 6;
-    /** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
-    public static final Color[] PLAYER_COLORS = 
+	/** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
+	public static final Color[] PLAYER_COLORS = 
 	{	new Color(255, 69, 69),	// rouge
-    	new Color( 68, 68,255),	// bleu
-    	new Color(255,233, 43),	// jaune
-    	new Color(  2,209,192),	// turquoise
-    	new Color(255,136, 52),	// orange
-    	new Color(255,164,186)	// rose
+		new Color( 68, 68,255),	// bleu
+		new Color(255,233, 43),	// jaune
+		new Color( 2,209,192),	// turquoise
+		new Color(255,136, 52),	// orange
+		new Color(255,164,186)	// rose
 	};
-    /** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
-    public static final Color DISCO_PLAYER_COLOR = Color.GRAY;
-    /** Couleur utilisée pendant une manche pour tracer la tête d'un joueur éliminé */
-    public static final Color ELIM_PLAYER_COLOR = Color.DARK_GRAY;
-    /** Épaisseur des auréoles (en pixels) affichées autour de la tête des serpents pour représenter l'effet des items */
-    public static final int AUREOLA_THICKNESS = 6;
-    /** Espacement entre les auréoles, en pixels */
-    public static final int AUREOLA_SPACE = 2;
-    
-    /** Épaisseur de la bordure de l'aire de jeu (en pixels) */
-    public static final int BORDER_THICKNESS = 5;
-    /** Couleur de la bordure de l'aire de jeu */
-    public static final Color BORDER_COLOR = Color.WHITE;
-    
-    /** Points marqués par les joueurs à l'issue d'une manche, en fonction de leur classement */
-    public static final Map<Integer,Integer> POINTS_FOR_RANK = new HashMap<Integer,Integer>();
-    static
-    {	POINTS_FOR_RANK.put(1,5); //TODO points à confirmer sur le jeu original
-    	POINTS_FOR_RANK.put(2,4);
-    	POINTS_FOR_RANK.put(3,3);
-    	POINTS_FOR_RANK.put(4,2);
-    	POINTS_FOR_RANK.put(5,1);
-    	POINTS_FOR_RANK.put(6,0);
-    }
-    /** Limite de points à atteindre */
-    public static final Map<Integer,Integer> POINT_LIMIT_FOR_PLAYER_NBR = new HashMap<Integer,Integer>();
-    static
-    {	POINT_LIMIT_FOR_PLAYER_NBR.put(2,35);
-	    POINT_LIMIT_FOR_PLAYER_NBR.put(3,35);
-	    POINT_LIMIT_FOR_PLAYER_NBR.put(4,35);
-	    POINT_LIMIT_FOR_PLAYER_NBR.put(5,35);
-	    POINT_LIMIT_FOR_PLAYER_NBR.put(6,35);
-    }
+	/** Couleur utilisée pendant une manche pour indiquer qu'un joueur n'est plus connecté */
+	public static final Color DISCO_PLAYER_COLOR = Color.GRAY;
+	/** Couleur utilisée pendant une manche pour tracer la tête d'un joueur éliminé */
+	public static final Color ELIM_PLAYER_COLOR = Color.DARK_GRAY;
+	/** Épaisseur des auréoles (en pixels) affichées autour de la tête des serpents pour représenter l'effet des items */
+	public static final int AUREOLA_THICKNESS = 6;
+	/** Espacement entre les auréoles, en pixels */
+	public static final int AUREOLA_SPACE = 2;
+ 
+	/** Épaisseur de la bordure de l'aire de jeu (en pixels) */
+	public static final int BORDER_THICKNESS = 5;	
+	/** Couleur de la bordure de l'aire de jeu */
+	public static final Color BORDER_COLOR = Color.WHITE;
+ 
+	/** Points marqués par les joueurs à l'issue d'une manche, en fonction de leur classement */
+	public static final Map<Integer,Integer> POINTS_FOR_RANK = new HashMap<Integer,Integer>();
+	static
+	{	POINTS_FOR_RANK.put(1,5); //TODO points à confirmer sur le jeu original
+		POINTS_FOR_RANK.put(2,4);
+		POINTS_FOR_RANK.put(3,3);
+		POINTS_FOR_RANK.put(4,2);
+		POINTS_FOR_RANK.put(5,1);
+		POINTS_FOR_RANK.put(6,0);
+	}
+	/** Limite de points à atteindre */
+	public static final Map<Integer,Integer> POINT_LIMIT_FOR_PLAYER_NBR = new HashMap<Integer,Integer>();
+	static
+	{	POINT_LIMIT_FOR_PLAYER_NBR.put(2,35);
+		POINT_LIMIT_FOR_PLAYER_NBR.put(3,35);
+		POINT_LIMIT_FOR_PLAYER_NBR.put(4,35);
+		POINT_LIMIT_FOR_PLAYER_NBR.put(5,35);
+		POINT_LIMIT_FOR_PLAYER_NBR.put(6,35);
+	}
+	
+	/** Adresse IP par défaut */
+	public static final String DEFAULT_IP = "localhost";//60010;//453;
+	/** Port TCP par défaut */
+	public static final int DEFAULT_PORT = 9999;//60010;//453;
 }

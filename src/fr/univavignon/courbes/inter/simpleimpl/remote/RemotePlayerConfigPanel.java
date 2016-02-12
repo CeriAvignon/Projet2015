@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.server;
+package fr.univavignon.courbes.inter.simpleimpl.remote;
 
 /*
  * Courbes
@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Round;
 
 /**
  * Panel représentant un joueur en cours de configuration.
@@ -64,6 +63,26 @@ public class RemotePlayerConfigPanel extends JPanel implements ActionListener
 		initPanel();
 	}
 
+	/**
+	 * Crée un panel chargé de représenter un joueur et
+	 * sa configuration.
+	 * 
+	 * @param configPanel
+	 * 		Panel de configuration contenant ce panel.
+	 * @param withButton
+	 * 		Indique s'il faut inclure un bouton pour rejeter le joueur (serveur) ou pas (client). 
+	 * @param player 
+	 * 		Le joueur à recopier dans ce nouvel objet.
+	 */
+	public RemotePlayerConfigPanel(RemotePlayerSelectionPanel configPanel, boolean withButton, Player player)
+	{	this.configPanel = configPanel;
+		this.withButton = withButton;
+		
+		this.player = player;
+		initPanel();
+		setProfile(player.profile);
+	}
+	
 	/** Panel contenant ce panel */
 	private RemotePlayerSelectionPanel configPanel;
 	/** Joueur sélectionné */
@@ -131,8 +150,9 @@ public class RemotePlayerConfigPanel extends JPanel implements ActionListener
 	{	player = new Player();
 		player.profile = null;
 		
-		Round round = configPanel.getMainWindow().currentRound;
-		int index = round.players.length + configPanel.getSelectedProfileCount();
+//		Round round = configPanel.getMainWindow().currentRound;
+//		int index = round.players.length + configPanel.getSelectedProfileCount();
+		int index = configPanel.getSelectedProfileCount();
 		player.playerId = index;
 		
 		player.local = false;
@@ -151,12 +171,20 @@ public class RemotePlayerConfigPanel extends JPanel implements ActionListener
 	 * @param profile
 	 * 		Nouveau profil du joueur.
 	 */
-	public void setPlayer(Profile profile)
+	public void setProfile(Profile profile)
 	{	player.profile = profile;
-		nameLabel.setText(profile.userName);
-		eloLabel.setText(Integer.toString(profile.eloRank));
+		if(profile==null)
+		{	nameLabel.setText(EMPTY_NAME);
+			eloLabel.setText(EMPTY_ELO);
+			if(withButton)
+				kickButton.setEnabled(false);
+		}
+		else
+		{	nameLabel.setText(profile.userName);
+			eloLabel.setText(Integer.toString(profile.eloRank));
 		if(withButton)
 			kickButton.setEnabled(true);
+		}
 	}
 	
 	/**
@@ -180,6 +208,7 @@ public class RemotePlayerConfigPanel extends JPanel implements ActionListener
 				nameLabel.setText(EMPTY_NAME);
 				eloLabel.setText(EMPTY_ELO);
 				kickButton.setEnabled(false);
+				configPanel.kickPlayer(player.playerId);
 			}
 		}
 	}

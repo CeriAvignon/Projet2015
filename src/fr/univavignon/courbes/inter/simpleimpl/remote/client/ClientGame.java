@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.client;
+package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 
 /*
  * Courbes
@@ -36,11 +36,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ClientConfigHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.simpleimpl.LocalProfileSelectorOoold;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileManager;
-import fr.univavignon.courbes.inter.simpleimpl.server.RemoteProfile;
+import fr.univavignon.courbes.inter.simpleimpl.remote.server.RemoteProfile;
 import fr.univavignon.courbes.network.simpleimpl.client.ClientCommunicationImpl;
 import net.miginfocom.swing.MigLayout;
 
@@ -49,7 +49,7 @@ import net.miginfocom.swing.MigLayout;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientGame extends JFrame implements ClientConfigHandler, ErrorHandler{
+public class ClientGame extends JFrame implements ClientProfileHandler, ErrorHandler{
 
 	private ClientGameServerConnectionPanel js;
 	private ClientCommunicationImpl c;

@@ -22,22 +22,24 @@ import fr.univavignon.courbes.network.ServerCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 import fr.univavignon.courbes.common.Board;
+import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerConfigHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Classe fille de ClientCommunication, elle en implémente toutes les méthodes.
@@ -50,18 +52,36 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	////	ADRESSE IP
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient l'adresse ip de ce serveur */
-	private String ip;
-
+	private String ip = null;
+	
 	@Override
 	public String getIp()
-	{	return ip;
+	{	if(ip==null)
+		{	try
+			{	Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+				while(nis.hasMoreElements() && ip==null)
+				{	NetworkInterface ni = nis.nextElement();
+					Enumeration<InetAddress> ias = ni.getInetAddresses();
+					while(ias.hasMoreElements() && ip==null)
+					{	InetAddress ia = ias.nextElement();
+						String iaStr = ia.getHostAddress();
+						if(iaStr.startsWith("192.168."))
+								ip = iaStr;
+					}
+				}
+			}
+			catch (SocketException e)
+			{	e.printStackTrace();
+			}
+		}
+		return ip;
 	}
 
 	////////////////////////////////////////////////////////////////
 	////	PORT
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient le port de ce serveur */
-	private int port = 2345;
+	private int port = Constants.DEFAULT_PORT;//2345;
 
 	@Override
 	public int getPort()
@@ -74,21 +94,66 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	}
 	
 	////////////////////////////////////////////////////////////////
-	////	HANDLER CONFIGURATION
+	////	HANDLER DE PROFILS
 	////////////////////////////////////////////////////////////////
-	/** Handler normal */
-	public ServerConfigHandler configHandler;
+	/** Handler de profils */
+	public ServerProfileHandler profileHandler;
 
 	@Override
-	public void setConfigHandler(ServerConfigHandler configHandler)
-	{	this.configHandler = configHandler;
+	public void setConfigHandler(ServerProfileHandler configHandler)
+	{	this.profileHandler = configHandler;
 	}
+	
+	/**
+	 * Transmet cet appel au handler concerné.
+	 * 
+	 * @param profile
+	 * 		Le profil à transmettre.
+	 * @param index
+	 * 		Le numéro de client à transmettre.
+	 */
+	protected void fetchProfile(Profile profile, int index)
+	{	if(profileHandler!=null)
+			profileHandler.fetchProfile(profile,index);
+		else
+			System.err.println("Le handler de profils n'a pas été renseigné !");
+	}
+
+	/**
+	 * Transmet cet appel au handler concerné.
+	 * 
+	 * @param index
+	 * 		Le numéro de client à transmettre.
+	 */
+	public void connectionLost(int index)
+	{	if(profileHandler!=null)
+			profileHandler.connectionLost(index);
+		else
+			System.err.println("Le handler de profils n'a pas été renseigné !");
+	}
+	
+	////////////////////////////////////////////////////////////////
+	////	HANDLER D'ERREUR
+	////////////////////////////////////////////////////////////////
 	/** Handler d'erreurs */
 	public ErrorHandler errorHandler;
 
 	@Override
 	public void setErrorHandler(ErrorHandler errorHandler)
 	{	this.errorHandler = errorHandler;
+	}
+	
+	/**
+	 * Transmet cet appel au handler concerné.
+	 * 
+	 * @param message
+	 * 		Message à transmettre au handler.
+	 */
+	public void displayError(String message)
+	{	if(errorHandler!=null)
+		errorHandler.displayError(message);
+		else
+			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -99,11 +164,7 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	/** Socket de connexion */
 	private ServerSocket serverSocket;
 	/** Socket du client connecté au serveur */
-	private Socket[] sockets = null;
-	/** Flux d'entrée */
-	public ObjectInputStream[] oiss;
-	/** Flux de sortie */
-	public ObjectOutputStream[] ooss;
+	public Socket[] sockets = null;
 	
 	@Override
 	public void launchServer()
@@ -114,10 +175,16 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	@Override
 	public void run()
 	{	try
-		{	do
+		{	try
+			{	serverSocket = new ServerSocket(port);
+			}
+			catch (IOException e1)
+			{	e1.printStackTrace();
+			}
+		
+			do
 			{	try
-				{	serverSocket = new ServerSocket(port);
-					Socket socket = serverSocket.accept();
+				{	Socket socket = serverSocket.accept();
 					processClient(socket);
 				}
 				catch(UnknownHostException e)
@@ -157,37 +224,74 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	 * @throws IOException
 	 * 		Problème lors de la connexion au client.
 	 */
-	private void processClient(Socket socket) throws UnknownHostException, IOException
+	private synchronized void processClient(Socket socket) throws UnknownHostException, IOException
 	{	// on détermine le premier slot dispo
 		int index = 0;
-		while(index<sockets.length && sockets[index]==null)
-			index++;
+		if(sockets==null)
+		{	sockets = new Socket[1];
+			srrs = new ServerReadRunnable[1];
+			swrs = new ServerWriteRunnable[1];
+		}
+		else
+		{	while(index<sockets.length && sockets[index]!=null)
+				index++;
+		}
 		
-		// on ouvre le socket
-		sockets[index] = new Socket(ip, port);
+		// cas où il reste de la place sur le serveur
+		if(index<sockets.length)
+		{	// on ouvre le socket
+			sockets[index] = socket;
+			
+			// on crée un thread pour s'occuper des sorties
+			swrs[index] = new ServerWriteRunnable(this,index);
+			Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
+			outThread.start();
+			
+			// on crée un thread pour s'occuper des entrées
+			srrs[index] = new ServerReadRunnable(this,index);
+			Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
+			inThread.start();
+			
+			// on répond favorablement au client
+			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
+		}
 		
-		// on récupère le flux d'entrée
-		InputStream is = sockets[index].getInputStream();
-		oiss[index] = new ObjectInputStream(is);
-		
-		// on récupère le flux de sortie
-		OutputStream os = sockets[index].getOutputStream();
-		ooss[index] = new ObjectOutputStream(os);
-		
-		// on crée un thread pour s'occuper des entrées
-		srrs[index] = new ServerReadRunnable(this,index);
-		Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
-		inThread.start();
-
-		// et un autre pour les sorties
-		swrs[index] = new ServerWriteRunnable(this,index);
-		Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
-		outThread.start();
+		// cas où le serveur n'a plus de place
+		else
+		{	// on récupère le flux de sortie
+			OutputStream os = socket.getOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.flush();
+			
+//			// celui d'entrée (pour rien)
+//			socket.getInputStream();
+			
+			// on répond défavorablement au client
+			oos.writeObject(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+			
+			// on ferme la connexion
+			socket.close();
+		}
 	}
 	
 	@Override
-	public void closeServer()
-	{	// ferme le socket de connexion, ce qui doit entrainer la fin du thread associé
+	public synchronized void closeServer()
+	{	
+//		// prévient les clients de la prochaine fermeture
+//		for(int i=0;i<sockets.length;i++)
+//		{	if(swrs[i]!=null)
+//				swrs[i].objects.offer(NetworkConstants.ANNOUNCE_DISCONNECTION);
+//		}	
+//		
+//		// on attend que ces messages soient transmis
+//		try
+//		{	Thread.sleep(500);
+//		}
+//		catch(InterruptedException e)
+//		{	e.printStackTrace();
+//		}
+		
+		// ferme le socket de connexion, ce qui doit entrainer la fin du thread associé
 		try
 		{	serverSocket.close();
 			serverSocket = null;
@@ -208,55 +312,85 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	 * @param index
 	 * 		Numéro du client.
 	 */
-	private void closeConnection(int index)
-	{	// on indique aux deux threads de se terminer (proprement)
-		srrs[index].setActive(false);
-		srrs[index] = null;
-		swrs[index].setActive(false);
-		swrs[index] = null;
-		
-		oiss[index] = null;
-		ooss[index] = null;
-		
-		// on ferme la socket
-		try
-		{	sockets[index].close();
-			sockets[index] = null;
+	protected synchronized void closeConnection(int index)
+	{	if(sockets[index]!=null)
+		{	// on indique aux deux threads de se terminer (proprement)
+			srrs[index].setActive(false);
+			srrs[index] = null;
+			swrs[index].setActive(false);
+			swrs[index] = null;
+			
+			// on ferme la socket
+			try
+			{	sockets[index].close();
+				sockets[index] = null;
+			}
+			catch (IOException e)
+			{	//e.printStackTrace();
+				//errorHandler.displayError("Erreur lors de la fermeture du socket numéro "+index);
+			}
+			
+			// on indique à l'IU qu'on a perdu un client
 		}
-		catch (IOException e)
-		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de la fermeture du socket numéro "+index);
+	}
+	
+	/**
+	 * Méthode appelée quand la connexion avec un client est perdue
+	 * accidentellement.
+	 * 
+	 * @param index
+	 * 		Numéro du client concerné.
+	 */
+	protected synchronized void lostConnection(int index)
+	{	if(sockets[index]!=null)
+		{	connectionLost(index);
+			closeConnection(index);
 		}
 	}
 	
 	@Override
-	public void setClientNumber(int clientNumber)
-	{	if(sockets==null)
+	public synchronized void setClientNumber(int clientNumber)
+	{	// si pas de clients pour l'instant
+		if(sockets==null)
 		{	sockets = new Socket[clientNumber];
 			srrs = new ServerReadRunnable[clientNumber];
 			swrs = new ServerWriteRunnable[clientNumber];
-			oiss = new ObjectInputStream[clientNumber];
-			ooss = new ObjectOutputStream[clientNumber];
 			lastProfiles = new Profile[clientNumber];
 	
 		}
+		
+		// s'il y a déjà des clients
 		else
-		{	
-			// on ferme éventuellement des connexions existantes
+		{	// si le nombre diminue, il faut en fermer certains	
 			if(clientNumber<sockets.length)
-			{	for(int i=sockets.length-1;i>=clientNumber;i--)
+			{	// on prévient les clients rejetés
+				boolean announce = false;
+				for(int i=sockets.length-1;i>=clientNumber;i--)
 				{	if(swrs[i]!=null)
-						swrs[i].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);	
-					closeConnection(i);
+					{	swrs[i].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+						announce = true;
+					}
 				}
+				
+				// on attend un peu que les messages soient transmis
+				if(announce)
+				{	try
+					{	Thread.sleep(250);
+					}
+					catch (InterruptedException e)
+					{	e.printStackTrace();
+					}
+				}
+				
+				// on ferme les clients concernés
+				for(int i=sockets.length-1;i>=clientNumber;i--)
+					closeConnection(i);
 			}
 			
-			// on redimensionne les tableaux
+			// dans tous les cas, on redimensionne les tableaux
 			sockets = Arrays.copyOf(sockets, clientNumber);
 			srrs = Arrays.copyOf(srrs, clientNumber);
 			swrs = Arrays.copyOf(swrs, clientNumber);
-			oiss = Arrays.copyOf(oiss, clientNumber);
-			ooss = Arrays.copyOf(ooss, clientNumber);
 			lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
 		}
 	}
@@ -268,7 +402,7 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	private ServerReadRunnable[] srrs;
 	
 	@Override
-	public Direction[] retrieveCommands()
+	public synchronized Direction[] retrieveCommands()
 	{	Direction[] result = new Direction[sockets.length];
 		
 		for(int i=0;i<sockets.length;i++)
@@ -315,12 +449,30 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	public void sendBoard(Board board)
 	{	sendObject(board);
 	}
-
+	
 	@Override
 	public void sendRound(Round round)
 	{	sendObject(round);
 	}
-
+	
+	@Override
+	public void kickClient(int index)
+	{	// on prévient le client
+		if(swrs[index]!=null)
+			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+		
+		// on attend un peu quel le message lui parvienne
+		try
+		{	Thread.sleep(250);
+		}
+		catch(InterruptedException e)
+		{	e.printStackTrace();
+		}
+		
+		// on ferme la connexion
+		closeConnection(index);
+	}
+	
 	/**
 	 * Envoie un objet quelconque à tous les clients.
 	 * 

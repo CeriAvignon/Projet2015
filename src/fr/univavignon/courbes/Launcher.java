@@ -94,7 +94,6 @@ public class Launcher extends JFrame
  * - on peut reproduire l'animation d'apparition des items
  * 
  * - pr réseau :
- * 		- comment Client peut il se déconnecter ? quand ? conséquence pour serveur ?
- * 		- comment serveur peut-il déconnecter client ? quand ? conséquence pour client ?
- * 		- distinguer phase de config et phase de jeu ?
+ * 		- quand client se déconnecte >> retirer profil
+ * 		- quand serveur se déconnecte >> annuler partie
  */

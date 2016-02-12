@@ -21,7 +21,8 @@ package fr.univavignon.courbes.network;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.inter.ClientConfigHandler;
+import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
@@ -104,8 +105,20 @@ public interface ClientCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
      */
-	public void setConfigHandler(ClientConfigHandler profileHandler);
-
+	public void setProfileHandler(ClientProfileHandler profileHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification des joueurs lors de la
+     * configuration d'une partie. 
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param connectionHandler
+     * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
+     */
+	public void setConnectionHandler(ClientConnectionHandler connectionHandler);
+	
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
      * configuré l'adresse IP et le port. 

@@ -69,6 +69,11 @@ public class LocalGamePlayerSelectionPanel extends AbstractLocalPlayerSelectionP
 	}
 	
 	@Override
+	protected void previousStep()
+	{	mainWindow.displayPanel(PanelName.MAIN_MENU);
+	}
+	
+	@Override
 	protected void nextStep()
 	{	if(checkConfiguration())
 		{	Round round = initRound();

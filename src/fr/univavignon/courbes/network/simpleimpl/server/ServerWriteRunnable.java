@@ -20,10 +20,11 @@ package fr.univavignon.courbes.network.simpleimpl.server;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Classe chargée d'écrire en permanence sur le flux de sortie du serveur.
@@ -41,42 +42,57 @@ public class ServerWriteRunnable implements Runnable
 	 * 		Numéro du client pour le serveur.
 	 */
 	public ServerWriteRunnable(ServerCommunicationImpl serverCom, int index)
-	{	oos = serverCom.ooss[index];
-		errorHandler = serverCom.errorHandler;
+	{	this.serverCom = serverCom;
+		this.index = index;
+		socket = serverCom.sockets[index];
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux de sortie utilisé pour communiquer avec le client */
-	private ObjectOutputStream oos;
-	/** Handler chargé des messages d'erreur */
-	private ErrorHandler errorHandler;
+	/** Numéro du client */
+	private int index;
+	/** Socket utilisé pour communiquer avec le client */
+	private Socket socket;
+	/** Classe principale du serveur */
+	private ServerCommunicationImpl serverCom;
 	
 	@Override
 	public void run()
 	{	setActive(true);
+		ObjectOutputStream oos = null;
 		
 		try
-		{	do
+		{	// on récupère le flux de sortie
+			OutputStream os = socket.getOutputStream();
+			oos = new ObjectOutputStream(os);
+//			oos.writeObject("sdfsfsd");
+			oos.flush();
+			
+			do
 			{	Object object = objects.poll();
 				if(object!=null)
 				{	oos.writeObject(object);
 					oos.flush();
+System.out.println("SERVER>>> "+object.toString());
 				}
 			}
-			while(isActive());
+			while(isActive() || !objects.isEmpty());
+		}
+		catch(SocketException e)
+		{	// fermeture normale : connexion probablement fermée par l'autre thread ou le client
+			serverCom.lostConnection(index);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de l'envoi de données.");
+			serverCom.displayError("Erreur lors de l'envoi de données.");
 		}
 		finally
 		{	try
 			{	oos.close();
 			}
 			catch (IOException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 			}
 		}
 	}

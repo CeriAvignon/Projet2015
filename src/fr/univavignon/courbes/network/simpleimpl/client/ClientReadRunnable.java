@@ -20,16 +20,18 @@ package fr.univavignon.courbes.network.simpleimpl.client;
 
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.ClientConfigHandler;
-import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Classe chargée de lire en permanence sur le flux d'entrée du client.
@@ -45,36 +47,41 @@ public class ClientReadRunnable implements Runnable
 	 * 		Client concerné.
 	 */
 	public ClientReadRunnable(ClientCommunicationImpl clientCom)
-	{	ois = clientCom.ois;
-		configHandler = clientCom.configHandler;
-		errorHandler = clientCom.errorHandler;
+	{	this.clientCom = clientCom;
+		socket = clientCom.socket;
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux d'entrée utilisé pour communiquer avec le serveur */
-	private ObjectInputStream ois;
-	/** Handler chargé de la configuration du client */
-	private ClientConfigHandler configHandler;
-	/** Handler chargé des messages d'erreur */
-	private ErrorHandler errorHandler;
+	/** Socket utilisé pour communiquer avec le serveur */
+	private Socket socket;
+	/** Classe principale du client */
+	private ClientCommunicationImpl clientCom;
 
 	@Override
 	public void run()
 	{	setActive(true);
-		
+		ObjectInputStream ois = null;
+	
 		try
-		{	do
+		{	// on récupère le flux d'entrée
+			InputStream is = socket.getInputStream();
+			ois = new ObjectInputStream(is);
+			
+			do
 			{	Object object = ois.readObject();
-
+System.out.println("CLIENT<<< "+object.toString());
 				// objets mis en tampon
 				if(object instanceof String)
 				{	String string = (String)object;
-					if(string.equals(NetworkConstants.ANNOUNCE_DISCONNECTION))
-						setActive(false);//TODO probablement d'autres choses à faire à la suite d'une déconnexion ?
+					if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
+						clientCom.gotRefused();
+					else if(string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
+						clientCom.gotAccepted();
+					
 					else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
-						configHandler.disconnection();
+						clientCom.gotKicked();
 				}
 				else if(object instanceof Board)
 				{	Board board = (Board)object;
@@ -88,22 +95,26 @@ public class ClientReadRunnable implements Runnable
 				// objets passés au client handler
 				else if(object instanceof Round)
 				{	Round round = (Round)object;
-					configHandler.startGame(round);
+					clientCom.startGame(round);
 				}
 				else if(object instanceof Profile[])
 				{	Profile[] profiles = (Profile[])object;
-					configHandler.updateProfiles(profiles);
+				clientCom.updateProfiles(profiles);
 				}
 				
 			}
 			while(isActive());
 		}
-		catch (ClassNotFoundException e)
+		catch(EOFException | SocketException e)
+		{	// connexion probablement fermée par l'autre thread ou le serveur
+			clientCom.lostConnection();
+		}
+		catch(ClassNotFoundException e)
 		{	e.printStackTrace();
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de la réception de données.");
+			clientCom.displayError("Erreur lors de la réception de données.");
 		}
 		finally
 		{	try

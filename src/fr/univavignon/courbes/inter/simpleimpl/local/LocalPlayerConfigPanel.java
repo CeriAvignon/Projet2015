@@ -148,6 +148,16 @@ public class LocalPlayerConfigPanel extends JPanel implements ActionListener, Ke
 		player.rightKey = PREDEFINED_KEYS[index][1];
 	}
 	
+	/**
+	 * Enlève la couleur assignée aux composants de ce panel.
+	 */
+	public void removeColor()
+	{	rightButton.setBackground(null);
+		leftButton.setBackground(null);
+		playerSelectorCombo.setBackground(null);
+
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==playerSelectorCombo)

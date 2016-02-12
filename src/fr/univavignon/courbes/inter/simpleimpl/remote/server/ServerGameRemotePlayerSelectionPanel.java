@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.server;
+package fr.univavignon.courbes.inter.simpleimpl.remote.server;
 
 /*
  * Courbes
@@ -19,7 +19,6 @@ package fr.univavignon.courbes.inter.simpleimpl.server;
  */
 
 import java.awt.Dimension;
-import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -28,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
@@ -35,10 +35,12 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.ServerConfigHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerConfigPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerSelectionPanel;
 import fr.univavignon.courbes.network.ServerCommunication;
 import fr.univavignon.courbes.network.simpleimpl.server.ServerCommunicationImpl;
 
@@ -47,7 +49,7 @@ import fr.univavignon.courbes.network.simpleimpl.server.ServerCommunicationImpl;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectionPanel<RemotePlayerConfigPanel> implements ServerConfigHandler, RemotePlayerSelectionPanel
+public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectionPanel<RemotePlayerConfigPanel> implements ServerProfileHandler, RemotePlayerSelectionPanel
 {	/** Numéro de série */
 	private static final long serialVersionUID = 1L;
 	/** Title du panel */
@@ -156,7 +158,19 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		leftLabel.setBorder(border);
 		titlePanel.add(leftLabel);
 		
-		for(int i=0;i<Math.max(1,getMinPlayerNbr());i++)
+		// ajout des joueurs locaux (pour info)
+		Player[] localPlayers = mainWindow.currentRound.players;
+		for(Player localPlayer: localPlayers)
+		{	RemotePlayerConfigPanel lps = new RemotePlayerConfigPanel(this,true,localPlayer);
+			lps.kickButton.setEnabled(false);
+			lps.kickButton.setText("Local");
+			selectedProfiles.add(lps);
+			playersPanel.add(lps);
+		}
+		
+		// ajout des slots pour les joueurs distants
+		int remoteNbr = Math.max(1,getMinPlayerNbr());
+		for(int i=0;i<remoteNbr;i++)
 			addProfile();
 	}
 
@@ -168,6 +182,8 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		serverCom.setErrorHandler(mainWindow);
 		serverCom.setConfigHandler(this);
 		serverCom.launchServer();
+		int localNbr = selectedProfiles.size() - mainWindow.currentRound.players.length;
+		serverCom.setClientNumber(localNbr);
 		mainWindow.serverCom = serverCom;
 	}
 	
@@ -205,6 +221,17 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	}
 	
 	@Override
+	public void kickPlayer(int playerId)
+	{	// on vire le profil sélectionné pour ce numéro
+		int index = playerId - mainWindow.currentRound.players.length;
+		serverCom.kickClient(index);
+		
+		// on prévient les clients restants
+		Profile profiles[] = getAllPlayers();
+		serverCom.sendProfiles(profiles);
+	}
+	
+	@Override
 	protected boolean checkConfiguration()
 	{	boolean isReady = true;
 		
@@ -213,11 +240,9 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		while(i1<selectedProfiles.size() && isReady)
 		{	RemotePlayerConfigPanel cpc1 = selectedProfiles.get(i1);
 			Player player1 = cpc1.player;
-			int left1 = player1.leftKey;
-			int right1 = player1.rightKey;
 			Profile profile1 = player1.profile;
 			
-			if(left1==right1 || profile1==null || left1==-1 || right1==-1)
+			if(profile1==null)
 				isReady = false;
 			
 			else
@@ -225,12 +250,9 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 				while(i2<selectedProfiles.size() && isReady)
 				{	RemotePlayerConfigPanel cpc2 = selectedProfiles.get(i2);
 					Player player2 = cpc2.player;
-					int left2 = player2.leftKey;
-					int right2 = player2.rightKey;
 					Profile profile2 = player2.profile;
 					
-					if(profile2==null || profile1.equals(profile2)
-						|| left1==left2 || left1==right2 || right1==left2 || right1==right2)
+					if(profile2==null || profile1.equals(profile2))
 						isReady = false;
 					else
 						i2++;
@@ -292,31 +314,22 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	 * 		Un tableau contenant tous les joueurs sélectionnés jusqu'à présent.
 	 */
 	private Profile[] getAllPlayers()
-	{	Player players[] = mainWindow.currentRound.players;
-		int size = players.length + selectedProfiles.size();
-		int idx = 0;
-		Profile[] result = new Profile[size];
+	{	Profile[] result = new Profile[selectedProfiles.size()];
 		
-		// joueurs locaux
-		for(Player player: players)
-		{	result[idx] = player.profile;
-			idx++;
+		for(int i=0;i<selectedProfiles.size();i++)
+		{	RemotePlayerConfigPanel cpc = selectedProfiles.get(i);
+			Profile profile = cpc.player.profile;
+			result[i] = profile;
 		}
 		
-		// joueurs distants
-		for(RemotePlayerConfigPanel cpc: selectedProfiles)
-		{	Profile profile = cpc.player.profile;
-			result[idx] = profile;
-			idx++;
-				
-		}
 		return result;
 	}
 	
 	@Override
 	protected synchronized void comboboxChanged()
-	{	int oldPlayerNbr = selectedProfiles.size();
-		int newPlayerNbr = (int) playerNbrCombo.getSelectedItem();
+	{	int localPlayerNbr = mainWindow.currentRound.players.length;
+		int oldPlayerNbr = selectedProfiles.size();
+		int newPlayerNbr = localPlayerNbr + (int) playerNbrCombo.getSelectedItem();
 		
 		// on met à jour les composants graphiques
 		if(oldPlayerNbr<newPlayerNbr)
@@ -328,11 +341,12 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 			{	selectedProfiles.remove(i-1);
 				playersPanel.remove(i);
 				playersPanel.repaint();
+				mainWindow.serverCom.kickClient(i-localPlayerNbr-1);
 			}
 		}
 		
 		// on met à jour le Moteur Réseau
-		serverCom.setClientNumber(selectedProfiles.size());
+		serverCom.setClientNumber(selectedProfiles.size()-localPlayerNbr);
 		
 		// on prévient les clients
 		Profile profiles[] = getAllPlayers();
@@ -340,23 +354,67 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	}
 
 	@Override
-	public synchronized boolean fetchProfile(Profile profile)
-	{	boolean result = false;
-		
-		if(!blockRequests)
-		{	Iterator<RemotePlayerConfigPanel> it = selectedProfiles.iterator(); 
-			while(it.hasNext() && !result)
-			{	RemotePlayerConfigPanel cpc = it.next();
-				if(cpc.isAvailable())
-				{	cpc.setPlayer(profile);
-					result = true;
+	public synchronized void fetchProfile(final Profile profile, final int index)
+	{	if(!blockRequests)
+		{	SwingUtilities.invokeLater(new Runnable()
+			{	@Override
+				public void run()
+				{	int localPlayers = mainWindow.currentRound.players.length;
+					int playerIndex = index+localPlayers;
+					// on vérifie si le profil n'est pas déjà sélectionné
+					boolean found = false;
+					int i = 0;
+					while(i<selectedProfiles.size() && !found)
+					{	if(i!=playerIndex)
+						{	RemotePlayerConfigPanel rpcp = selectedProfiles.get(i);
+							Player player0 = rpcp.player;
+							Profile profile0 = player0.profile;
+							found = profile0!=null && profile.equals(profile0);
+						}
+						i++;
+					}
+
+					// auquel cas on le refuse
+					if(found)
+						mainWindow.serverCom.kickClient(index);
+					
+					// si pas déjà présent, on tente de l'ajouter
+					else
+					{	RemotePlayerConfigPanel cpc = selectedProfiles.get(playerIndex);
+						if(cpc.isAvailable())
+						{	// on rajoute le joueur à l'emplacement associé au client
+							cpc.setProfile(profile);
+							
+							// on prévient les clients du changement
+							Profile profiles[] = getAllPlayers();
+							serverCom.sendProfiles(profiles);
+							
+							// on rafraichit
+							validate();
+							repaint();
+						}
+					}
 				}
-			}
+		    });
 		}
-		
-		return result;
+	}
+
+	@Override
+	public void connectionLost(final int index)
+	{	if(!blockRequests)
+		{	SwingUtilities.invokeLater(new Runnable()
+			{	@Override
+				public void run()
+				{	// on vire le profil sélectionné pour ce numéro
+					int playerId =  index + mainWindow.currentRound.players.length;
+					RemotePlayerConfigPanel rpcp = selectedProfiles.get(playerId);
+					rpcp.setProfile(null);
+					
+					// on prévient les clients restants
+					Profile profiles[] = getAllPlayers();
+					serverCom.sendProfiles(profiles);
+				}
+		    });
+		}
 	}
 }
-
-//TODO quand on kicke un client, faut décaller ceux qui seraient après
-//TODO faut pouvoir configurer le port du serveur, et afficher l'adresse IP (reprendre l'écran de connexion du client)

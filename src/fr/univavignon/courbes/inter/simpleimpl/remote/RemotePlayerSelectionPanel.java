@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.server;
+package fr.univavignon.courbes.inter.simpleimpl.remote;
 
 /*
  * Courbes
@@ -42,6 +42,15 @@ public interface RemotePlayerSelectionPanel
 	 * 		Nombre de joueurs sélectionnés.
 	 */
 	public int getSelectedProfileCount();
+	
+	/**
+	 * Indique au panel principal qu'il doit retirer le joueur
+	 * dont le numéro est indiqué (suite à un kick).
+	 * 
+	 * @param playerId
+	 * 		Numéro du joueur à dégager.
+	 */
+	public void kickPlayer(int playerId);
 	
 	/**
 	 * Renvoie la largeur (en pixels) accordée aux noms des joueurs.
