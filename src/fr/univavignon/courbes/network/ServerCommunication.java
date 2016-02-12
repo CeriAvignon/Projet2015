@@ -18,11 +18,10 @@ package fr.univavignon.courbes.network;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Map;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerConfigHandler;
 
@@ -99,7 +98,7 @@ public interface ServerCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
      */
-	public void setProfileHandler(ServerConfigHandler profileHandler);
+	public void setConfigHandler(ServerConfigHandler profileHandler);
 	
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
@@ -117,6 +116,16 @@ public interface ServerCommunication
      */
 	public void closeServer();
 
+	/**
+	 * Change le nombre de joueurs distants autorisés pour la configuration
+	 * en cours. Un réduction du nombre de joueurs peut impliquer d'en déconnecter
+	 * certains.
+	 * 
+	 * @param clientNumber
+	 * 		Nouveau nombre de joueurs distants.
+	 */
+	public void setClientNumber(int clientNumber);
+	
 	/**
 	 * Envoie la liste des profils des joueurs de la manche à tous les 
 	 * clients connectés à ce serveur.
@@ -171,7 +180,16 @@ public interface ServerCommunication
      * 		Etat courant de l'aire de jeu.
      */
 	public void sendBoard(Board board);
-
+	
+	/**
+	 * Indique que la manche est sur le point de démarrer, cloturant
+	 * ainsi la phase de configuration du jeu.
+	 * 
+	 * @param round
+	 * 		L'objet représentant la partie qui va commencer.
+	 */
+	public void sendRound(Round round);
+	
 	/**
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
      * renvoie une map, associant à l'ID d'un joueur la dernière commande qu'il a
@@ -184,11 +202,11 @@ public interface ServerCommunication
      * parallèle de l'exécution du jeu. 
      *
      * @return 
-     * 		Une map contenant les directions choisies par chaque joueur traité par
+     * 		Un tableau contenant les directions choisies par chaque joueur traité par
      * 		un client. Si un client ne renvoie rien, les valeurs manquantes doivent
      * 		être remplacées par des valeurs {@link Direction#NONE}.
      */
-	public Map<Integer,Direction> retrieveCommands();
+	public Direction[] retrieveCommands();
 
 //	/**
 //     * Permet au serveur d'envoyer un message textuel à tous les clients qui lui sont

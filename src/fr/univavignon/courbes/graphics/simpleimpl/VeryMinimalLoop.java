@@ -137,7 +137,7 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 	 */
 	public synchronized void start()
 	{	running = true;
-		loopThread = new Thread(this,"Courbes");
+		loopThread = new Thread(this,"Courbes-Loop");
 		loopThread.start();
 	}
 	

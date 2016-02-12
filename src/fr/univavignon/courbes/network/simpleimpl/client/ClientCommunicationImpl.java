@@ -21,18 +21,13 @@ package fr.univavignon.courbes.network.simpleimpl.client;
 import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Map;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -47,6 +42,9 @@ import fr.univavignon.courbes.inter.ErrorHandler;
  */
 public class ClientCommunicationImpl implements ClientCommunication
 {	
+	////////////////////////////////////////////////////////////////
+	////	ADRESSE IP
+	////////////////////////////////////////////////////////////////
 	/** Variable qui contient l'adresse ip du serveur */
 	private String ip;
 
@@ -60,9 +58,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	this.ip = ip;
 	}
 
-	
-	
-	
+	////////////////////////////////////////////////////////////////
+	////	PORT
+	////////////////////////////////////////////////////////////////
 	/** Variable qui contient le port du serveur */
 	private int port = 2345;
 
@@ -76,15 +74,15 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	this.port = port;
 	}
 	
-	
-	
-	
+	////////////////////////////////////////////////////////////////
+	////	HANDLER CONFIGURATION
+	////////////////////////////////////////////////////////////////
 	/** Handler normal */
 	public ClientConfigHandler configHandler;
 
 	@Override
-	public void setClientHandler(ClientConfigHandler profileHandler)
-	{	this.configHandler = profileHandler;
+	public void setConfigHandler(ClientConfigHandler configHandler)
+	{	this.configHandler = configHandler;
 	}
 	/** Handler d'erreurs */
 	public ErrorHandler errorHandler;
@@ -94,9 +92,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	this.errorHandler = errorHandler;
 	}
 	
-	
-	
-	
+	////////////////////////////////////////////////////////////////
+	////	CONNEXION
+	////////////////////////////////////////////////////////////////
 	/** Socket du client connecté au serveur */
 	private Socket socket = null;
 	/** Flux d'entrée */
@@ -122,12 +120,12 @@ public class ClientCommunicationImpl implements ClientCommunication
 			
 			// on crée un thread pour s'occuper des entrées
 			crr = new ClientReadRunnable(this);
-			Thread inThread = new Thread(crr);
+			Thread inThread = new Thread(crr,"Courbes-Client-In");
 			inThread.start();
 
 			// et un autre pour les sorties
 			cwr = new ClientWriteRunnable(this);
-			Thread outThread = new Thread(cwr);
+			Thread outThread = new Thread(cwr,"Courbes-Client-Out");
 			outThread.start();
 		}
 		catch(UnknownHostException e)
@@ -146,23 +144,33 @@ public class ClientCommunicationImpl implements ClientCommunication
 
 	@Override
 	public void closeClient()
-	{	
-//		try
-//		{	socket.close();
-//		}
-//		catch(IOException e)
-//		{	e.printStackTrace();
-//			errorHandler.displayError("Erreur lors de la fermeture du socket.");
-//		}
-		
-		// on indique aux deux threads de se terminer (proprement)
+	{	// on indique aux deux threads de se terminer (proprement)
 		crr.setActive(false);
+		crr = null;
 		cwr.setActive(false);
+		cwr = null;
+		
+		// on ferme la socket
+		try
+		{	socket.close();
+			socket = null;
+		}
+		catch (IOException e)
+		{	e.printStackTrace();
+			errorHandler.displayError("Erreur lors de la fermeture du socket.");
+		}
 	}
 
+	@Override
+	public boolean isConnected()
+	{	boolean result = socket!=null && socket.isConnected() && !socket.isClosed();
+		return result;
+	}
 	
-	
-	
+	////////////////////////////////////////////////////////////////
+	////	ENTREES
+	////////////////////////////////////////////////////////////////
+	/** Objet chargé de la communication en entrée avec le serveur */
 	private ClientReadRunnable crr;
 
 	@Override
@@ -177,9 +185,10 @@ public class ClientCommunicationImpl implements ClientCommunication
 		return result;
 	}
 	
-	
-	
-	
+	////////////////////////////////////////////////////////////////
+	////	SORTIES
+	////////////////////////////////////////////////////////////////
+	/** Objet chargé de la communication en sortie avec le serveur */
 	private ClientWriteRunnable cwr;
 	
 	@Override

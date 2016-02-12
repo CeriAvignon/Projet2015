@@ -38,14 +38,26 @@ import fr.univavignon.courbes.inter.ErrorHandler;
  */
 public class ClientReadRunnable implements Runnable
 {	
+	/**
+	 * Crée un objet chargé de la communication en entrée avec le serveur.
+	 * 
+	 * @param clientCom
+	 * 		Client concerné.
+	 */
 	public ClientReadRunnable(ClientCommunicationImpl clientCom)
 	{	ois = clientCom.ois;
 		configHandler = clientCom.configHandler;
 		errorHandler = clientCom.errorHandler;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	TRANSMISSION
+	////////////////////////////////////////////////////////////////
+	/** Flux d'entrée utilisé pour communiquer avec le serveur */
 	private ObjectInputStream ois;
+	/** Handler chargé de la configuration du client */
 	private ClientConfigHandler configHandler;
+	/** Handler chargé des messages d'erreur */
 	private ErrorHandler errorHandler;
 
 	@Override
@@ -64,12 +76,10 @@ public class ClientReadRunnable implements Runnable
 					else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
 						configHandler.disconnection();
 				}
-				
 				else if(object instanceof Board)
 				{	Board board = (Board)object;
 					boards.offer(board);
 				}
-				
 				else if(object instanceof Integer)
 				{	Integer integer = (Integer)object;
 					pointsLimits.offer(integer);
@@ -80,7 +90,6 @@ public class ClientReadRunnable implements Runnable
 				{	Round round = (Round)object;
 					configHandler.startGame(round);
 				}
-				
 				else if(object instanceof Profile[])
 				{	Profile[] profiles = (Profile[])object;
 					configHandler.updateProfiles(profiles);
@@ -106,16 +115,38 @@ public class ClientReadRunnable implements Runnable
 		}
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	ETAT
+	////////////////////////////////////////////////////////////////
+	/** Indique si le thread est actif */
 	private boolean active = true;
 	
-	public void setActive(boolean goOn)
-	{	this.active = goOn;
+	/**
+	 * Change l'état d'activité du thread (généralement utilisé
+	 * pour stopper le thread, et donc se déconnecter du serveur).
+	 *  
+	 * @param active
+	 * 		Nouvel état d'activité.
+	 */
+	public void setActive(boolean active)
+	{	this.active = active;
 	}
 	
+	/**
+	 * Indique si le thread est actif.
+	 * 
+	 * @return
+	 * 		{@code true} ssi le thread est actuellement actif.
+	 */
 	private boolean isActive()
 	{	return active;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	FILES DE DONNEES
+	////////////////////////////////////////////////////////////////
+	/** File des aires de jeu reçues du serveur et en attente de récupération par l'Interface Utilisateur */
 	protected Queue<Board> boards = new ConcurrentLinkedQueue<Board>();
+	/** File des limites de points reçues du serveur et en attente de récupération par l'Interface Utilisateur */
 	protected Queue<Integer> pointsLimits = new ConcurrentLinkedQueue<Integer>();
 }

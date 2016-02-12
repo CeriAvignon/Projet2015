@@ -28,7 +28,6 @@ public class NetworkConstants
 	public static final String ANNOUNCE_DISCONNECTION = "ANNOUNCE_DISCONNECTION";
 	/** Le serveur indique au client que son profil a été rejeté et ne participera pas à la partie (le message implique aussi une déconnexion) */
 	public static final String ANNOUNCE_REJECTED_PROFILE = "ANNOUNCE_REJECTED_PROFILE";
-	
 //	/** Message indiquant que la partie va commencer */
 //	public static final String ANNOUNCE_GAME_START = "ANNOUNCE_GAME_START";
 	

@@ -19,287 +19,318 @@ package fr.univavignon.courbes.network.simpleimpl.server;
  */
 
 import fr.univavignon.courbes.network.ServerCommunication;
+import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Map;
+import java.util.Arrays;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerConfigHandler;
 
 /**
- * Classe fille de ServerCommunication, elle en implémente toutes les méthodes.
+ * Classe fille de ClientCommunication, elle en implémente toutes les méthodes.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerCommunicationImpl implements ServerCommunication
-{
-	/** Variable qui contient l'adresse ip du serveur */
-	protected String ip;
-	/** Variable qui contient le port du serveur */
-	protected int port = 2345;
-	/**Variable qui contient permet au serveur d'attendre des connexions clients tant qu'il est ouvert. */
-	protected boolean isRunning = false;
-	/**Variable qui définit le nombre maximum de connexion que le serveur peut accueillir. */
-	protected static int size = 6;
-	/** Variable qui gére le nombre de clients connectés */
-	protected static int nbClients = 0;
-	/** Liste qui contient toute les adresses ip des clients pour l'envoie en UDP */
-	protected ArrayList<String> arrayOfIp = new ArrayList<String>();
-	/** Liste qui contient toute les sockets pour l'envoie en TCP  */
-	protected ArrayList<Socket> socketArray = new ArrayList<Socket>();
-	/** Socket du serveur. */
-	private ServerSocket sSocket = null;
-	/** Buffer pour les commandes d'un client */
-	protected Map<Integer, Direction> commands= null;
-	/** Erreur de profil */
-	protected ServerConfigHandler profileHandler;
-	/**Envoie d'un message d'erreur a l'IU	 */
-	protected ErrorHandler messageError;
-	
+public class ServerCommunicationImpl implements ServerCommunication, Runnable
+{	
+	////////////////////////////////////////////////////////////////
+	////	ADRESSE IP
+	////////////////////////////////////////////////////////////////
+	/** Variable qui contient l'adresse ip de ce serveur */
+	private String ip;
+
 	@Override
-	public String getIp() {
-		return this.ip;
+	public String getIp()
+	{	return ip;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////	PORT
+	////////////////////////////////////////////////////////////////
+	/** Variable qui contient le port de ce serveur */
+	private int port = 2345;
+
+	@Override
+	public int getPort()
+	{	return port;
 	}
 
 	@Override
-	public int getPort() {
-		return this.port;
-	}
-
-	@Override
-	public void setPort(int port) {
-		this.port = port;
+	public void setPort(int port)
+	{	this.port = port;
 	}
 	
-	@Override
-	public void launchServer() {
-		//step 1 : define address ip
-		String adressIp;
-		System.setProperty("java.net.preferIPv4Stack" , "true");
- 	    try {
- 	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
- 	        while (interfaces.hasMoreElements()) {
- 	        	NetworkInterface iface = interfaces.nextElement();
- 	            // filters out 127.0.0.1 and inactive interfaces
- 	            if (iface.isLoopback() || !iface.isUp())
- 	                continue;
+	////////////////////////////////////////////////////////////////
+	////	HANDLER CONFIGURATION
+	////////////////////////////////////////////////////////////////
+	/** Handler normal */
+	public ServerConfigHandler configHandler;
 
- 	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
- 	            InetAddress addr = addresses.nextElement();
- 	            adressIp = addr.getHostAddress();
- 	            this.ip = adressIp;
- 	            System.out.println(this.ip);
- 	        }
- 	    } catch (SocketException e) {
- 	        throw new RuntimeException(e);
- 	    }
-		//step 2 : define port if value by default is impossible
- 	   try {
-    		this.sSocket = new ServerSocket(this.port);
-    	} catch (IOException e) {
-        	this.port = 0;
-    	}
- 	   
- 	    if(this.port == 0) {
- 	    	for(int portTest = 1; portTest <= 6000; portTest++){ // find a free port
- 	    		try {
- 	    			this.sSocket = new ServerSocket(portTest);
- 	        		this.port = portTest;
- 	        		break;
- 	    		} catch (IOException e) {
- 	    			; //error here is normal , so we don't need an action.
- 	    		}
- 	    	}
- 	    }
-		//step 3 : launch server
- 	   
-		try {
-			sSocket.close();
-			sSocket = new ServerSocket(this.port, ServerCommunicationImpl.size, InetAddress.getByName(this.ip));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
- 	    Thread launch = new Thread(new Runnable(){
- 	    	@Override
-			public void run(){
- 	    		isRunning = true;
- 	    		while(isRunning){
- 	    			try {
- 	    				//wait client communication
- 	    				if (nbClients < size){
-	 	    				Socket client = sSocket.accept(); 
-	 	    				socketArray.add(client);
-	 	    				arrayOfIp.add(client.getInetAddress().getHostAddress());
-	 	    				nbClients++;
-	 	    				Thread newClient = new Thread(new ClientProcessor(client));
-	 	    				newClient.start();
- 	    				}
- 	    			} catch (IOException e) {
- 	    				e.printStackTrace();
- 	    			}
- 	    		}
- 	    		try {
- 	    			sSocket.close();
- 	    		} catch (IOException e) {
- 	    			e.printStackTrace();
- 	    			sSocket = null;
- 	    		}
- 	    	}
- 	    });  
-	   launch.start();
+	@Override
+	public void setConfigHandler(ServerConfigHandler configHandler)
+	{	this.configHandler = configHandler;
 	}
+	/** Handler d'erreurs */
+	public ErrorHandler errorHandler;
 
 	@Override
-	public void closeServer() {
-		this.isRunning = false;
-		sendText("/close");
-		try {
-			sSocket.close();
-		} catch (IOException e) {
-			sSocket=null;
-			e.printStackTrace();
-		}
+	public void setErrorHandler(ErrorHandler errorHandler)
+	{	this.errorHandler = errorHandler;
 	}
-
+	
+	////////////////////////////////////////////////////////////////
+	////	CONNEXION
+	////////////////////////////////////////////////////////////////
+	/** Processus principal du serveur (seulement pour la configuration= */
+	private Thread mainThread;
+	/** Socket de connexion */
+	private ServerSocket serverSocket;
+	/** Socket du client connecté au serveur */
+	private Socket[] sockets = null;
+	/** Flux d'entrée */
+	public ObjectInputStream[] oiss;
+	/** Flux de sortie */
+	public ObjectOutputStream[] ooss;
+	
 	@Override
-	public void sendPointThreshold(final int pointThreshold) {
-		Thread send = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				sendObject(pointThreshold);
-			}
-		});
-		send.start();
-		return;
+	public void launchServer()
+	{	mainThread = new Thread(this, "Courbes-ServerThread-Main");
+		mainThread.start();
 	}
-
+	
 	@Override
-	public void sendBoard(final Board board) {
-		Thread send = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				try {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ObjectOutputStream oos = new ObjectOutputStream(baos);
-					oos.writeObject(board);
-					oos.flush();
-					// get the byte array of the object
-					byte[] Buf= baos.toByteArray();
-					
-					int number = Buf.length;;
-					byte[] data = new byte[4];
-					
-					// int -> byte[]
-					for (int i = 0; i < 4; ++i) {
-						int shift = i << 3; // i * 8
-						data[3-i] = (byte)((number & (0xff << shift)) >>> shift);
-					}
-					DatagramSocket socket = new DatagramSocket(port);
-					
-					for(String adresseIp:arrayOfIp){ 
-						InetAddress client = InetAddress.getByName(adresseIp);
-						DatagramPacket packet = new DatagramPacket(data, 4, client, port+1);
-	        	      	socket.send(packet);
-	        	      	// now send the Board
-	        	      	packet = new DatagramPacket(Buf, Buf.length, client, port+1);
-	        	      	socket.send(packet);
-					}
-					socket.close();
-				} catch(Exception e) {
+	public void run()
+	{	try
+		{	do
+			{	try
+				{	serverSocket = new ServerSocket(port);
+					Socket socket = serverSocket.accept();
+					processClient(socket);
+				}
+				catch(UnknownHostException e)
+				{	errorHandler.displayError("Impossible de se connecter au client.");
 					e.printStackTrace();
 				}
-			}
-		});
-		send.start();
-	}
-
-	@Override
-	public Map<Integer, Direction> retrieveCommands() {
-		return this.commands;
-	}
-
-	/**
-	 * Envoie un message à tous les clients.
-	 * @param message
-	 * 		Un String contenant le message a envoyé.
-	 */
-	public void sendText(final String message) {
-		Thread send = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				sendObject(message);
-			}
-		});
-		send.start();
-		return ;
-	}
-	
-	@Override
-	public void sendProfiles(final Profile[] profiles) {
-		Thread send = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				sendObject(profiles);
-			}
-		});
-		send.start();
-		return;
-	}
-	
-	/**
-	 * 	Permet d'envoyer un objet a tous les clients.
-	 * @param objet
-	 * 		Correspond à n'importe quel objet à sérialiser puis à envoyer.
-	 */
-	private synchronized void sendObject(Object objet) {
-		for(Socket sock:socketArray){
-			try {
-				ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
-				oos.writeObject(objet);
-				oos.flush();
-			
-			} catch (IOException e) {
-				nbClients--;
-				socketArray.remove(sock);
-				arrayOfIp.remove(sock.getInetAddress().getHostAddress());
-				messageError.displayError("L'ip "+sock.getInetAddress().getHostAddress()+" a été déconnecté.");
-				try {
-					sock.close();
-				} catch (IOException e1) {
-					sock = null;
-					e1.printStackTrace();
+				catch(IOException e)
+				{	// si c'est une SocketException, on la re-lève
+					if(!(e instanceof SocketException))
+					{	SocketException se = (SocketException)e;
+						throw se;
+					}
+					// sinon, on la traite ici
+					else
+					{	errorHandler.displayError("Impossible de se connecter au client.");
+						e.printStackTrace();
+					}
 				}
-				e.printStackTrace();
+			}
+			while(true);
+		}
+		catch(SocketException e)
+		{	// rien à faire : c'est juste qu'un autre thread a fermé ce socket
+		}
+
+	}
+
+	/**
+	 * Initialise les objets et les theads nécessaires
+	 * au traitement d'un client.
+	 * 
+	 * @param socket
+	 * 		Socket utilisé pour communiquer avec le client.
+	 * 
+	 * @throws UnknownHostException
+	 * 		Problème lors de la connexion au client.
+	 * @throws IOException
+	 * 		Problème lors de la connexion au client.
+	 */
+	private void processClient(Socket socket) throws UnknownHostException, IOException
+	{	// on détermine le premier slot dispo
+		int index = 0;
+		while(index<sockets.length && sockets[index]==null)
+			index++;
+		
+		// on ouvre le socket
+		sockets[index] = new Socket(ip, port);
+		
+		// on récupère le flux d'entrée
+		InputStream is = sockets[index].getInputStream();
+		oiss[index] = new ObjectInputStream(is);
+		
+		// on récupère le flux de sortie
+		OutputStream os = sockets[index].getOutputStream();
+		ooss[index] = new ObjectOutputStream(os);
+		
+		// on crée un thread pour s'occuper des entrées
+		srrs[index] = new ServerReadRunnable(this,index);
+		Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
+		inThread.start();
+
+		// et un autre pour les sorties
+		swrs[index] = new ServerWriteRunnable(this,index);
+		Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
+		outThread.start();
+	}
+	
+	@Override
+	public void closeServer()
+	{	// ferme le socket de connexion, ce qui doit entrainer la fin du thread associé
+		try
+		{	serverSocket.close();
+			serverSocket = null;
+		}
+		catch(IOException e)
+		{	e.printStackTrace();
+		}
+		
+		// ferme les connexions avec les clients
+		for(int i=0;i<sockets.length;i++)
+			closeConnection(i);
+	}
+	
+	/**
+	 * Ferme la connection et tue les processus associés
+	 * à un client donné.
+	 * 
+	 * @param index
+	 * 		Numéro du client.
+	 */
+	private void closeConnection(int index)
+	{	// on indique aux deux threads de se terminer (proprement)
+		srrs[index].setActive(false);
+		srrs[index] = null;
+		swrs[index].setActive(false);
+		swrs[index] = null;
+		
+		oiss[index] = null;
+		ooss[index] = null;
+		
+		// on ferme la socket
+		try
+		{	sockets[index].close();
+			sockets[index] = null;
+		}
+		catch (IOException e)
+		{	e.printStackTrace();
+			errorHandler.displayError("Erreur lors de la fermeture du socket numéro "+index);
+		}
+	}
+	
+	@Override
+	public void setClientNumber(int clientNumber)
+	{	if(sockets==null)
+		{	sockets = new Socket[clientNumber];
+			srrs = new ServerReadRunnable[clientNumber];
+			swrs = new ServerWriteRunnable[clientNumber];
+			oiss = new ObjectInputStream[clientNumber];
+			ooss = new ObjectOutputStream[clientNumber];
+			lastProfiles = new Profile[clientNumber];
+	
+		}
+		else
+		{	
+			// on ferme éventuellement des connexions existantes
+			if(clientNumber<sockets.length)
+			{	for(int i=sockets.length-1;i>=clientNumber;i--)
+				{	if(swrs[i]!=null)
+						swrs[i].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);	
+					closeConnection(i);
+				}
+			}
+			
+			// on redimensionne les tableaux
+			sockets = Arrays.copyOf(sockets, clientNumber);
+			srrs = Arrays.copyOf(srrs, clientNumber);
+			swrs = Arrays.copyOf(swrs, clientNumber);
+			oiss = Arrays.copyOf(oiss, clientNumber);
+			ooss = Arrays.copyOf(ooss, clientNumber);
+			lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////
+	////	ENTREES
+	////////////////////////////////////////////////////////////////
+	/** Objet chargé de la communication en entrée avec le serveur */
+	private ServerReadRunnable[] srrs;
+	
+	@Override
+	public Direction[] retrieveCommands()
+	{	Direction[] result = new Direction[sockets.length];
+		
+		for(int i=0;i<sockets.length;i++)
+		{	ServerReadRunnable srr = srrs[i];
+			if(srr==null)
+				result[i] = Direction.NONE;
+			else
+			{	result[i] = srrs[i].directions.poll();
+				if(result[i]==null)
+					result[i] = Direction.NONE;
 			}
 		}
-		return;
-	}
-
-	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.messageError = errorHandler;
-	}
-
-	@Override
-	public void setProfileHandler(ServerConfigHandler profileHandler) {
-		this.profileHandler = profileHandler;
+		
+		return result;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	SORTIES
+	////////////////////////////////////////////////////////////////
+	/** Objet chargé de la communication en sortie avec le serveur */
+	private ServerWriteRunnable[] swrs;
+	/** Dernière version de la liste de profils */
+	private Profile[] lastProfiles = new Profile[1];
+	
+	@Override
+	public void sendProfiles(Profile[] profiles)
+	{	lastProfiles = Arrays.copyOf(profiles,profiles.length);
+		sendObject(profiles);
+	}
+	
+	/**
+	 * Renvoie la dernière liste de profils reçue.
+	 */
+	public void reSendProfiles()
+	{	sendObject(lastProfiles);
+	}
+	
+	@Override
+	public void sendPointThreshold(int pointThreshold)
+	{	sendObject(pointThreshold);
+	}
+	
+	@Override
+	public void sendBoard(Board board)
+	{	sendObject(board);
+	}
+
+	@Override
+	public void sendRound(Round round)
+	{	sendObject(round);
+	}
+
+	/**
+	 * Envoie un objet quelconque à tous les clients.
+	 * 
+	 * @param object
+	 * 		L'objet à envoyer.
+	 */
+	public void sendObject(Object object)
+	{	for(ServerWriteRunnable swr: swrs)
+		{	if(swr!=null)
+				swr.objects.offer(object);
+		}
+	}
 }

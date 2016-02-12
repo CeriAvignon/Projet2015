@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.simpleimpl.client;
+package fr.univavignon.courbes.network.simpleimpl.server;
 
 /*
  * Courbes
@@ -18,60 +18,92 @@ package fr.univavignon.courbes.network.simpleimpl.client;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerConfigHandler;
 
 /**
- * Classe chargée d'écrire en permanence sur le flux de sortie du client.
+ * Classe chargée de lire en permanence sur le flux d'entrée du serveur.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientWriteRunnable implements Runnable
+public class ServerReadRunnable implements Runnable
 {	
 	/**
-	 * Crée un objet chargé de la communication en sortie avec le serveur.
+	 * Crée un objet chargé de la communication en entrée avec le client.
 	 * 
-	 * @param clientCom
-	 * 		Client concerné.
+	 * @param serverCom
+	 * 		Serveur concerné.
+	 * @param index
+	 * 		Numéro du client pour le serveur.
 	 */
-	public ClientWriteRunnable(ClientCommunicationImpl clientCom)
-	{	oos = clientCom.oos;
-		errorHandler = clientCom.errorHandler;
+	public ServerReadRunnable(ServerCommunicationImpl serverCom, int index)
+	{	this.serverCom = serverCom;
+		ois = serverCom.oiss[index];
+		configHandler = serverCom.configHandler;
+		errorHandler = serverCom.errorHandler;
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux de sortie utilisé pour communiquer avec le serveur */
-	private ObjectOutputStream oos;
+	/** Flux d'entrée utilisé pour communiquer avec le client */
+	private ObjectInputStream ois;
+	/** Handler chargé de la configuration du serveur */
+	private ServerConfigHandler configHandler;
 	/** Handler chargé des messages d'erreur */
 	private ErrorHandler errorHandler;
-	
+	/** Classe principale du serveur */
+	private ServerCommunicationImpl serverCom;
+
 	@Override
 	public void run()
 	{	setActive(true);
 		
 		try
 		{	do
-			{	Object object = objects.poll();
-				if(object!=null)
-				{	oos.writeObject(object);
-					oos.flush();
+			{	Object object = ois.readObject();
+
+				// objets mis en tampon
+				if(object instanceof String)
+				{	String string = (String)object;
+					if(string.equals(NetworkConstants.ANNOUNCE_DISCONNECTION))
+						setActive(false);//TODO probablement d'autres choses à faire à la suite d'une déconnexion ?
+					else if(string.equals(NetworkConstants.REQUEST_PROFILES))
+						serverCom.reSendProfiles();
 				}
+				else if(object instanceof Direction)
+				{	Direction direction = (Direction)object;
+					directions.offer(direction);
+				}
+				
+				// objets passés au server handler
+				else if(object instanceof Profile)
+				{	Profile profile = (Profile)object;
+					configHandler.fetchProfile(profile);
+				}
+				
 			}
 			while(isActive());
 		}
+		catch (ClassNotFoundException e)
+		{	e.printStackTrace();
+		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			errorHandler.displayError("Erreur lors de l'envoi de données.");
+			errorHandler.displayError("Erreur lors de la réception de données.");
 		}
 		finally
 		{	try
-			{	oos.close();
+			{	ois.close();
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
@@ -109,6 +141,6 @@ public class ClientWriteRunnable implements Runnable
 	////////////////////////////////////////////////////////////////
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
-	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le serveur */
-	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
+	/** File des directions reçues du client et en attente de récupération par l'Interface Utilisateur */
+	protected Queue<Direction> directions = new ConcurrentLinkedQueue<Direction>();
 }

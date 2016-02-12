@@ -226,4 +226,16 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 			}
 	    });
 	}
+
+	@Override
+	public void disconnection()
+	{	//ce thread est exécuté plus tard par Swing, ce qui rend cette méthode non-bloquante pour le moteur réseau
+		SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	mainWindow.clientCom.closeClient();
+				previousStep();
+			}
+	    });
+	}
 }

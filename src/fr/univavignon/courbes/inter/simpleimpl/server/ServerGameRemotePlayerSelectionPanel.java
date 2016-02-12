@@ -166,7 +166,7 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	private void initServer()
 	{	serverCom = new ServerCommunicationImpl();
 		serverCom.setErrorHandler(mainWindow);
-		serverCom.setProfileHandler(this);
+		serverCom.setConfigHandler(this);
 		serverCom.launchServer();
 		mainWindow.serverCom = serverCom;
 	}
@@ -331,6 +331,9 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 			}
 		}
 		
+		// on met à jour le Moteur Réseau
+		serverCom.setClientNumber(selectedProfiles.size());
+		
 		// on prévient les clients
 		Profile profiles[] = getAllPlayers();
 		serverCom.sendProfiles(profiles);
@@ -354,3 +357,6 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		return result;
 	}
 }
+
+//TODO quand on kicke un client, faut décaller ceux qui seraient après
+//TODO faut pouvoir configurer le port du serveur, et afficher l'adresse IP (reprendre l'écran de connexion du client)

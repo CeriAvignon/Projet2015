@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.simpleimpl.client;
+package fr.univavignon.courbes.network.simpleimpl.server;
 
 /*
  * Courbes
@@ -26,27 +26,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
- * Classe chargée d'écrire en permanence sur le flux de sortie du client.
+ * Classe chargée d'écrire en permanence sur le flux de sortie du serveur.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientWriteRunnable implements Runnable
+public class ServerWriteRunnable implements Runnable
 {	
 	/**
-	 * Crée un objet chargé de la communication en sortie avec le serveur.
+	 * Crée un objet chargé de la communication en sortie avec le client.
 	 * 
-	 * @param clientCom
-	 * 		Client concerné.
+	 * @param serverCom
+	 * 		Serveur concerné.
+	 * @param index
+	 * 		Numéro du client pour le serveur.
 	 */
-	public ClientWriteRunnable(ClientCommunicationImpl clientCom)
-	{	oos = clientCom.oos;
-		errorHandler = clientCom.errorHandler;
+	public ServerWriteRunnable(ServerCommunicationImpl serverCom, int index)
+	{	oos = serverCom.ooss[index];
+		errorHandler = serverCom.errorHandler;
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	TRANSMISSION
 	////////////////////////////////////////////////////////////////
-	/** Flux de sortie utilisé pour communiquer avec le serveur */
+	/** Flux de sortie utilisé pour communiquer avec le client */
 	private ObjectOutputStream oos;
 	/** Handler chargé des messages d'erreur */
 	private ErrorHandler errorHandler;
@@ -109,6 +111,6 @@ public class ClientWriteRunnable implements Runnable
 	////////////////////////////////////////////////////////////////
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
-	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le serveur */
+	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le client */
 	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
 }

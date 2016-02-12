@@ -84,7 +84,8 @@ public class ClientGameServerConnectionPanel extends AbstractConfigurationPanel
 	
 	@Override
 	protected void initContent()
-	{	connected = mainWindow.clientCom!=null;
+	{	ClientCommunication clientCom = mainWindow.clientCom;
+		connected = clientCom!=null && clientCom.isConnected();
 		
 		Dimension winDim = mainWindow.getPreferredSize();
 		Dimension dim;
@@ -101,8 +102,8 @@ public class ClientGameServerConnectionPanel extends AbstractConfigurationPanel
 		JLabel ipLabel = new JLabel("Adresse IP : ");
 		panel.add(ipLabel);
 		
-		if(connected)
-		{	String ipStr = mainWindow.clientCom.getIp();
+		if(clientCom!=null)
+		{	String ipStr = clientCom.getIp();
 			ipTextField = new JTextField(ipStr);
 		
 		}
@@ -119,8 +120,8 @@ public class ClientGameServerConnectionPanel extends AbstractConfigurationPanel
 		JLabel portLabel = new JLabel("Port : ");
 		panel.add(portLabel);
 		
-		if(connected)
-		{	String portStr = Integer.toString(mainWindow.clientCom.getPort());
+		if(clientCom!=null)
+		{	String portStr = Integer.toString(clientCom.getPort());
 			portTextField = new JTextField(portStr);
 		}
 		else
@@ -133,7 +134,7 @@ public class ClientGameServerConnectionPanel extends AbstractConfigurationPanel
 		
 		panel.add(Box.createGlue());
 
-		connectButton = new JButton("Connexion");
+		connectButton = new JButton("N/A");
 		dim = new Dimension((int)(winDim.width*0.1),height);
 		connectButton.setPreferredSize(dim);
 		connectButton.setMaximumSize(dim);
@@ -222,7 +223,7 @@ public class ClientGameServerConnectionPanel extends AbstractConfigurationPanel
 		
 		updatePanel();
 		
-		mainWindow.clientCom = null;	//TODO penser à faire la même chose à la fin de la partie. c'est aussi vrai pour le serveur.
+//		mainWindow.clientCom = null;
 	}
 	
 	@Override

@@ -18,8 +18,6 @@ package fr.univavignon.courbes.network;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Map;
-
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
@@ -106,7 +104,7 @@ public interface ClientCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
      */
-	public void setClientHandler(ClientConfigHandler profileHandler);
+	public void setConfigHandler(ClientConfigHandler profileHandler);
 
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
@@ -124,6 +122,14 @@ public interface ClientCommunication
      * Permet à un client de clore sa connexion avec le serveur.
      */
 	public void closeClient();
+	
+	/**
+	 * Indique si le client est actuellement connecté au serveur.
+	 * 
+	 * @return
+	 * 		{@code true} ssi ce client est actuellement connecté au serveur.
+	 */
+	public boolean isConnected();
 	
 	/**
 -	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
