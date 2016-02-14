@@ -107,7 +107,7 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		Player players[] = {pl1,pl2};
 		
 		pe = new PhysicsEngineImpl();
-		pe.initDemo(players);
+		pe.initDemo();
 		Board board = pe.getBoard();
 		
 		round = new Round();
@@ -116,7 +116,7 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		round.pointLimit = 30;
 		
 		gd = new GraphicDisplayImpl();
-		gd.init(round);
+		gd.init(players.length);
 		boardPanel = gd.getBoardPanel();
 		scorePanel = gd.getScorePanel();
 		

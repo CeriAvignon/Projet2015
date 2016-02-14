@@ -31,6 +31,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
@@ -161,6 +162,30 @@ public class ClientCommunicationImpl implements ClientCommunication
 			profileHandler.connectionLost();
 		else
 			System.err.println("Le handler de profils n'a pas été renseigné !");
+	}
+	
+	////////////////////////////////////////////////////////////////
+	////	HANDLER DE LA PARTIE
+	////////////////////////////////////////////////////////////////
+	/** Handler de la partie */
+	public ClientGameHandler gameHandler;
+
+	@Override
+	public void setGameHandler(ClientGameHandler gameHandler)
+	{	this.gameHandler = gameHandler;
+	}
+	
+	/**
+	 * Transmet cet appel au handler concerné.
+	 * 
+	 * @param round
+	 * 		Manche à transmettre au handler.
+	 */
+	public void fetchRound(Round round)
+	{	if(gameHandler!=null)
+		gameHandler.fetchRound(round);
+		else
+			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -306,5 +331,11 @@ public class ClientCommunicationImpl implements ClientCommunication
 	public void requestProfiles()
 	{	if(cwr!=null)
 			cwr.objects.offer(NetworkConstants.REQUEST_PROFILES);
+	}
+	
+	@Override
+	public void sendAcknowledgment()
+	{	if(cwr!=null)
+			cwr.objects.offer(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
 	}
 }

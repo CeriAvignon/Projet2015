@@ -22,7 +22,6 @@ import java.util.List;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Player;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
@@ -43,10 +42,10 @@ public interface PhysicsEngine
 	 * valeurs passées en paramètres, puis renvoyer cet objet pour 
 	 * que l'Interface Utilisateur puisse l'utiliser à son tour.
 	 * 
-	 * @param players
-	 * 		Joueurs participants à la manche.
+	 * @param playerNbr
+	 * 		Nombre de joueurs participants à la manche.
 	 */
-	public void init(Player[] players);
+	public void init(int playerNbr);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -56,11 +55,8 @@ public interface PhysicsEngine
 	 * 	<li>Afficher tous les items existants</li>
 	 * 	<li>Seulement deux joueurs : le premier est contrôlé normalement, le second est immobile</li>
 	 * </ul>
-	 * 
-	 * @param players
-	 * 		Joueurs participants à la manche.
 	 */
-	public void initDemo(Player[] players);
+	public void initDemo();
 	
 	/**
 	 * Renvoie l'aire de jeu créée lors de l'initialisation de
@@ -70,6 +66,16 @@ public interface PhysicsEngine
 	 * 		Un objet représentant l'aire de jeu de la manche.
 	 */
 	public Board getBoard();
+	
+	/**
+	 * Initialise l'aire de jeu d'un Moteur Physique situé
+	 * côté client, et qui doit donc s'aligner sur l'aire de
+	 * jeu du serveur.
+	 * 
+	 * @param board
+	 * 		Aire de jeu du serveur.
+	 */
+	public void setBoard(Board board);
 	
 	/**
 	 * Cette méthode doit être appelée par l'Interface Utilisateur

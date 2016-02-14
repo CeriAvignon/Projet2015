@@ -22,6 +22,7 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
@@ -109,8 +110,8 @@ public interface ClientCommunication
 	
 	/**
      * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
-     * à utiliser pour prévenir d'une modification des joueurs lors de la
-     * configuration d'une partie. 
+     * à utiliser pour prévenir d'une modification lors de la connexion lors
+     * de la configuration d'une partie. 
      * <br/>
      * Cette méthode doit être invoquée avant le lancement du client.
      * 
@@ -118,6 +119,17 @@ public interface ClientCommunication
      * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
      */
 	public void setConnectionHandler(ClientConnectionHandler connectionHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur de transmettre au Moteur Réseau
+     * les données relatives à la partie. 
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param gameHandler
+     * 		Un objet implémentant l'interface {@code ClientGameHandler}.
+     */
+	public void setGameHandler(ClientGameHandler gameHandler);
 	
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
@@ -216,32 +228,8 @@ public interface ClientCommunication
      */
 	public void sendCommand(Direction command);
 
-//	/**
-//     * Permet au client de récupérer un message textuel envoyé par le serveur
-//     * auquel il est connecté.
-//     * <br/>
-//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-//     * parallèle de l'exécution du jeu. 
-//     *
-//     * @return
-//     * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
-//     * 		n'a été envoyé.
-//     */
-//	public String retrieveText();
-//
-//	/**
-//     * Permet au client d'envoyer un message textuel au serveur auquel il est 
-//     * connecté.
-//     * <br/>
-//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-//     * parallèle de l'exécution du jeu. 
-//     *
-//     * @param message 
-//     * 		Le message textuel à envoyer au serveur.
-//     */
-//	public void sendText(String message);
+	/**
+     * Permet au client d'indiquer au serveur qu'il est prêt à commencer la manche.. 
+     */
+	public void sendAcknowledgment();
 }

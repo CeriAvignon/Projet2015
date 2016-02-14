@@ -23,6 +23,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
@@ -98,8 +99,19 @@ public interface ServerCommunication
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ServerProfileHandler}.
      */
-	public void setConfigHandler(ServerProfileHandler profileHandler);
+	public void setProfileHandler(ServerProfileHandler profileHandler);
 	
+	/**
+     * Permet à l'Interface Utilisateur de transmettre au Moteur Réseau
+     * les données relatives à la partie. 
+     * <br/>
+     * Cette méthode doit être invoquée avant le lancement du client.
+     * 
+     * @param gameHandler
+     * 		Un objet implémentant l'interface {@code ServerGameHandler}.
+     */
+	public void setGameHandler(ServerGameHandler gameHandler);
+
 	/**
      * Permet de créer un serveur pour que les clients puissent s'y connecter.
      * <br/>

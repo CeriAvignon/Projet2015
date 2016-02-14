@@ -31,7 +31,6 @@ import java.awt.Transparency;
 import java.awt.image.VolatileImage;
 import java.io.IOException;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 
@@ -44,19 +43,17 @@ import fr.univavignon.courbes.graphics.GraphicDisplay;
 public class GraphicDisplayImpl implements GraphicDisplay
 {	
 	@Override
-	public void init(Round round)
-	{	Board board = round.board;
-		
-		image = null;
+	public void init(int playerNbr)
+	{	image = null;
 		try
-		{	boardDrawer = new BoardDrawer(board);
+		{	boardDrawer = new BoardDrawer();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
 		boardPanel = new BoardPanel();
 		
-		scorePanel = new ScorePanel(round.players);
+		scorePanel = new ScorePanel(playerNbr);
 	}
 
 	/** Panel utilisé pour afficher l'aire de jeu */

@@ -81,6 +81,8 @@ System.out.println("SERVER<<< "+object.toString());
 				{	String string = (String)object;
 					if(string.equals(NetworkConstants.REQUEST_PROFILES))
 						serverCom.reSendProfiles();
+					else if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
+						serverCom.fetchAcknowledgment(index);
 				}
 				else if(object instanceof Direction)
 				{	Direction direction = (Direction)object;

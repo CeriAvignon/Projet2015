@@ -223,6 +223,7 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 				}
 				
 				// on bascule sur le panel de jeu
+				mainWindow.clientCom.setProfileHandler(null);
 				mainWindow.clientPlayer = null;
 				mainWindow.currentRound = round;
 				mainWindow.displayPanel(PanelName.CLIENT_GAME_PLAY);

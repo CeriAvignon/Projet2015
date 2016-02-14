@@ -35,22 +35,18 @@ public class BoardDrawer
 	/**
 	 * Initialise les données nécessaires au tracé de l'aire de jeu.
 	 * 
-	 * @param board
-	 * 		Aire de jeu de la manche courante. 
-	 * 
 	 * @throws IOException
 	 * 		Problème lors de l'initialisation des objets chargés du tracé.
 	 */
-	public BoardDrawer(Board board) throws IOException
-	{	snakesDrawer = new SnakeDrawer(board);
-		itemDrawer = new ItemDrawer(board);
+	public BoardDrawer() throws IOException
+	{	snakesDrawer = new SnakeDrawer();
+		itemDrawer = new ItemDrawer();
 	}
 	
 	/** Objet utilisé pour dessiner les serpents et leurs auréoles */
 	private SnakeDrawer snakesDrawer;
 	/** Objet utilisé pour dessiner les items présents sur l'aire de jeu */
 	private ItemDrawer itemDrawer;
-	
 	
 	/**
 	 * Trace la bordure de l'aire de jeu, qui empêche les serpents

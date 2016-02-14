@@ -96,6 +96,7 @@ System.out.println("CLIENT<<< "+object.toString());
 				else if(object instanceof Round)
 				{	Round round = (Round)object;
 					clientCom.startGame(round);
+					clientCom.fetchRound(round);
 				}
 				else if(object instanceof Profile[])
 				{	Profile[] profiles = (Profile[])object;

@@ -47,11 +47,8 @@ public class SnakeDrawer
 {	
 	/**
 	 * Initialise les données nécessaires au tracé des snakes.
-	 * 
-	 * @param board 
-	 * 		Aire de jeu de la partie en cours.
 	 */
-	public SnakeDrawer(Board board)
+	public SnakeDrawer()
 	{	
 		// TODO on pourrait, par exemple, rajouter un tirage au sort des couleurs des joueurs.
 	}

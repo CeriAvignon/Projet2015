@@ -38,11 +38,13 @@ import fr.univavignon.courbes.inter.simpleimpl.local.LocalGamePlayerSelectionPan
 import fr.univavignon.courbes.inter.simpleimpl.local.LocalGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.profiles.ProfileListPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGamePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGameRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGameServerConnectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.client.ClientGameWaitPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGameLocalPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGamePortSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGameRemotePlayerSelectionPanel;
+import fr.univavignon.courbes.inter.simpleimpl.remote.server.ServerGameRoundPanel;
 import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.ServerCommunication;
 
@@ -190,7 +192,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new ServerGameRemotePlayerSelectionPanel(this);
 				break;
 			case SERVER_GAME_PLAY:
-//				currentPanel = new ServerGameRoundPanel(this);
+				currentPanel = new ServerGameRoundPanel(this);
 				break;
 			case CLIENT_GAME_CONNECTION:
 				currentPanel = new ClientGameServerConnectionPanel(this);
@@ -202,7 +204,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new ClientGameWaitPanel(this);
 				break;
 			case CLIENT_GAME_PLAY:
-//				currentPanel = new ClientGameRoundPanel(this);
+				currentPanel = new ClientGameRoundPanel(this);
 				break;
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);

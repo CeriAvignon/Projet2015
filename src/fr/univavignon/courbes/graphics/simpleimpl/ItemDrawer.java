@@ -44,13 +44,10 @@ public class ItemDrawer
 	 * Initialise les données nécessaires au tracé des items.
 	 * En particulier, charge les images des items, si pas déjà fait.
 	 * 
-	 * @param board
-	 * 		Aire de jeu de la partie actuelle. 
-	 * 
 	 * @throws IOException 
 	 * 		Problème lors du chargement d'une image.
 	 */
-	public ItemDrawer(Board board) throws IOException
+	public ItemDrawer() throws IOException
 	{	// on ne charge les images que si nécessaire (i.e. la 1ère fois)
 		if(IMAGES.isEmpty())
 		{	String imageFolder = "res" + File.separator + "images" + File.separator;
