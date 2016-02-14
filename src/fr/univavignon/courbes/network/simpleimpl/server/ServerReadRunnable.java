@@ -38,7 +38,9 @@ import fr.univavignon.courbes.common.Profile;
  * @author	L3 Info UAPV 2015-16
  */
 public class ServerReadRunnable implements Runnable
-{	
+{	/**  Indique s'il faut logger les échanges réseaux (debug) */
+	private final static boolean LOG = false;
+	
 	/**
 	 * Crée un objet chargé de la communication en entrée avec le client.
 	 * 
@@ -74,13 +76,16 @@ public class ServerReadRunnable implements Runnable
 			
 			do
 			{	Object object = ois.readObject();
-System.out.println("SERVER<<< "+object.toString());
+				if(LOG)
+					System.out.println("SERVER<<< "+object.toString());
 
 				// objets mis en tampon
 				if(object instanceof String)
 				{	String string = (String)object;
 					if(string.equals(NetworkConstants.REQUEST_PROFILES))
 						serverCom.reSendProfiles();
+					else if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
+						serverCom.fetchAcknowledgment(index);
 				}
 				else if(object instanceof Direction)
 				{	Direction direction = (Direction)object;

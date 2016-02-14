@@ -39,6 +39,9 @@ public class NetworkConstants
 //	/** Message indiquant que la partie va commencer */
 //	public static final String ANNOUNCE_GAME_START = "ANNOUNCE_GAME_START";
 	
+	/** Message indiquant que le client est prêt à commencer la manche */
+	public static final String ANNOUNCE_ACKNOWLEDGMENT = "ANNOUNCE_ACKNOWLEDGMENT";
+	
 	/** Le client requiert que le serveur lui envoie les profils actuellement sélectionnés pour la partie en cours de configuration */
 	public static final String REQUEST_PROFILES = "REQUEST_PROFILES";
 }

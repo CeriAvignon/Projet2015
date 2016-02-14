@@ -42,6 +42,8 @@ import fr.univavignon.courbes.common.Snake;
 public class PhysSnake extends Snake
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	/** Taille maximale de la file {@link #prevDisks} */
+	private final static int PREV_DISK_SIZE = 20;
 	
 	/**
 	 * Crée le serpent associé au numéro indiqué, pour le profil
@@ -105,19 +107,17 @@ public class PhysSnake extends Snake
 	}
 
 	/** Nombre de pixels restants pour terminer le trou courant */
-	private transient float remainingHole;
+	private float remainingHole;
 	/** Temps écoulé depuis la fin du dernier trou (en ms) */
-	private transient long timeSinceLastHole;
+	private long timeSinceLastHole;
 	/** Taille courante d'un trou (en pixels) */
-	public transient int currentHoleWidth;
+	public int currentHoleWidth;
 	/** Position en abscisse de la tête exprimée avec un réel */
 	private float realX;
 	/** Position en ordonnée de la tête exprimée avec un réel */
 	private float realY;
 	/** File contenant les derniers disques tracés pour représenter la trainée du serpent (utilisée pour les collisions) */
 	public LinkedList<Set<Position>> prevDisks;
-	/** Taille maximale de la file {@link #prevDisks} */
-	private final static int PREV_DISK_SIZE = 20;
 	/** Position <i>non-normalisée</i> à l'itération précédente */
 	private Position prevPos;
 	

@@ -24,10 +24,6 @@ import fr.univavignon.courbes.common.Round;
 /**
  * Interface implémentant les méthodes permettant au Moteur Réseau d'envoyer à l'Interface Utilisateur
  * les données relatives à la configuration des joueurs participant à une partie réseau, <i>côté client</i>.
- * <br/>
- * Chaque binôme de la composante Interface Utilisateur doit définir une classe implémentant 
- * cette interface, puis l'instancier. Notez qu'il est possible pour une classe d'implémenter
- * plusieurs interfaces simultanément.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -58,7 +54,6 @@ public interface ClientProfileHandler
 	 */
 	public void gotKicked();
 
-	
 	/**
 	 * La connexion avec le serveur a été perdue accidentellement.
 	 */

@@ -22,7 +22,6 @@ import java.util.List;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
@@ -38,20 +37,25 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	private PhysBoard board;
 	
 	@Override
-	public void init(Player[] players)
+	public void init(int playerNbr)
 	{	board = new PhysBoard();
-		board.init(players);
+		board.init(playerNbr);
 	}
 	
 	@Override
-	public void initDemo(Player[] players)
+	public void initDemo()
 	{	board = new PhysBoard();
-		board.initDemo(players);
+		board.initDemo();
 	}
 
 	@Override
 	public Board getBoard()
 	{	return board;
+	}
+	
+	@Override
+	public void setBoard(Board board)
+	{	this.board = (PhysBoard)board;
 	}
 	
 	@Override
@@ -62,6 +66,6 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	
 	@Override
 	public void forceUpdate(Board board)
-	{	board = (PhysBoard)board;
+	{	this.board = (PhysBoard)board;
 	}
 }

@@ -57,11 +57,10 @@ public class ScorePanel extends JPanel
 	/**
 	 * Crée un panel permettant d'afficher le score en cours de partie.
 	 * 
-	 * @param players
-	 * 		Tableau de joueurs, contenant les informations nécessaires à l'affichage des scores.
-	 * 		Ici, on a surtout besoin de connaitre le nombre de joueurs, pour initialiser les labels.
+	 * @param playerNbr
+	 * 		Nombre de joueurs à afficher.
 	 */
-	public ScorePanel(Player[] players)
+	public ScorePanel(int playerNbr)
 	{	// définition du layout du panel
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);
@@ -72,7 +71,7 @@ public class ScorePanel extends JPanel
 		setMaximumSize(dim);
 		
 		initHeader();
-		initRows(players);
+		initRows(playerNbr);
 	}
 	
 	/**
@@ -121,16 +120,16 @@ public class ScorePanel extends JPanel
 	 * Initialisation des composants utilisés pour 
 	 * afficher les scores, noms des joueurs, etc.
 	 * 
-	 * @param players
-	 * 		Tableau des joueurs à afficher.
+	 * @param playerNbr
+	 * 		Nombre de joueurs à afficher.
 	 */
-	private void initRows(Player[] players)
+	private void initRows(int playerNbr)
 	{	Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		
-		roundScoreLabels = new JLabel[players.length];
-		nameLabels = new JLabel[players.length];
-		gameScoreLabels = new JLabel[players.length];
-		for(int i=0;i<players.length;i++)
+		roundScoreLabels = new JLabel[playerNbr];
+		nameLabels = new JLabel[playerNbr];
+		gameScoreLabels = new JLabel[playerNbr];
+		for(int i=0;i<playerNbr;i++)
 		{	// on crée le panel pour la ligne du joueur
 			JPanel panel = new JPanel();
 			BoxLayout layout = new BoxLayout(panel, BoxLayout.X_AXIS);

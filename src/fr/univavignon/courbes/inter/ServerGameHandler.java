@@ -20,19 +20,27 @@ package fr.univavignon.courbes.inter;
 
 /**
  * Interface implémentant les méthodes permettant au Moteur Réseau d'envoyer à l'Interface Utilisateur
- * les données relatives à la connection du client à une partie distante.
+ * les données relatives au déroulement de la partie elle-même, <i>côté serveur</i>.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ClientConnectionHandler 
+public interface ServerGameHandler 
 {	
 	/**
-	 * Indique au client que le serveur ne l'a pas accepté dans sa partie en cours de configuration.
+	 * Le serveur a reçu le signal d'un client
+	 * indiquant qu'il est prêt à commencer la manche.
+	 * 
+	 * @param index
+	 * 		Numéro du client concerné.
 	 */
-	public void gotRefused();
+	public void fetchAcknowledgment(int index);
 	
 	/**
-	 * Indique au client que le serveur l'a accepté dans sa partie en cours de configuration. 
+	 * La connexion avec le client dont le numéro est indiqué a été perdue, soit 
+	 * volontairement de sa part, soit accidentellement.
+	 * 
+	 * @param index
+	 * 		Numéro du client dont on a perdu la connexion.
 	 */
-	public void gotAccepted();
+	public void connectionLost(int index);
 }

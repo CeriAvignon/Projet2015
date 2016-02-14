@@ -18,21 +18,27 @@ package fr.univavignon.courbes.inter;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fr.univavignon.courbes.common.Round;
+
 /**
  * Interface implémentant les méthodes permettant au Moteur Réseau d'envoyer à l'Interface Utilisateur
- * les données relatives à la connection du client à une partie distante.
+ * les données relatives au déroulement de la partie elle-même, <i>côté client</i>.
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public interface ClientConnectionHandler 
+public interface ClientGameHandler 
 {	
 	/**
-	 * Indique au client que le serveur ne l'a pas accepté dans sa partie en cours de configuration.
+	 * Reçoit la manche du serveur et l'utilise
+	 * pour intialiser la manche à venir.
+	 * 
+	 * @param round
+	 * 		Manche mise à jour.
 	 */
-	public void gotRefused();
-	
+	public void fetchRound(Round round);
+
 	/**
-	 * Indique au client que le serveur l'a accepté dans sa partie en cours de configuration. 
+	 * La connexion avec le serveur a été perdue accidentellement.
 	 */
-	public void gotAccepted();
+	public void connectionLost();
 }

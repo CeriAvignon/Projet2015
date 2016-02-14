@@ -45,7 +45,7 @@ public class Constants
 	public static final int WINDOW_HEIGHT = 20+BOARD_HEIGHT+20;
 	
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
-	public static final long ENTRANCE_DURATION = 2000;//5000; 	//TODO à confirmer
+	public static final long ENTRANCE_DURATION = 3000;//5000; 	//TODO à confirmer
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
 	public static final long PRESENTATION_DURATION = 3000; 	//TODO à confirmer
 	/** Durée de la période, à la fin d'une manche, pendant laquelle il ne reste qu'un seul joueur en lice */

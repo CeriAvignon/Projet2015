@@ -32,7 +32,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author	L3 Info UAPV 2015-16
  */
 public class ServerWriteRunnable implements Runnable
-{	
+{	/**  Indique s'il faut logger les échanges réseaux (debug) */
+	private final static boolean LOG = false;
+	
 	/**
 	 * Crée un objet chargé de la communication en sortie avec le client.
 	 * 
@@ -66,7 +68,6 @@ public class ServerWriteRunnable implements Runnable
 		{	// on récupère le flux de sortie
 			OutputStream os = socket.getOutputStream();
 			oos = new ObjectOutputStream(os);
-//			oos.writeObject("sdfsfsd");
 			oos.flush();
 			
 			do
@@ -74,7 +75,9 @@ public class ServerWriteRunnable implements Runnable
 				if(object!=null)
 				{	oos.writeObject(object);
 					oos.flush();
-System.out.println("SERVER>>> "+object.toString());
+					oos.reset();
+					if(LOG)
+						System.out.println("SERVER>>> "+object.toString());
 				}
 			}
 			while(isActive() || !objects.isEmpty());

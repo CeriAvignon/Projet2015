@@ -39,7 +39,9 @@ import fr.univavignon.courbes.common.Round;
  * @author	L3 Info UAPV 2015-16
  */
 public class ClientReadRunnable implements Runnable
-{	
+{	/**  Indique s'il faut logger les échanges réseaux (debug) */
+	private final static boolean LOG = false;
+	
 	/**
 	 * Crée un objet chargé de la communication en entrée avec le serveur.
 	 * 
@@ -49,6 +51,7 @@ public class ClientReadRunnable implements Runnable
 	public ClientReadRunnable(ClientCommunicationImpl clientCom)
 	{	this.clientCom = clientCom;
 		socket = clientCom.socket;
+		firstRound = true;
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -58,6 +61,8 @@ public class ClientReadRunnable implements Runnable
 	private Socket socket;
 	/** Classe principale du client */
 	private ClientCommunicationImpl clientCom;
+	/** Indentifie la premier manche reçue */
+	private boolean firstRound;
 
 	@Override
 	public void run()
@@ -71,7 +76,8 @@ public class ClientReadRunnable implements Runnable
 			
 			do
 			{	Object object = ois.readObject();
-System.out.println("CLIENT<<< "+object.toString());
+				if(LOG)
+					System.out.println("CLIENT<<< "+object.toString());
 				// objets mis en tampon
 				if(object instanceof String)
 				{	String string = (String)object;
@@ -95,7 +101,12 @@ System.out.println("CLIENT<<< "+object.toString());
 				// objets passés au client handler
 				else if(object instanceof Round)
 				{	Round round = (Round)object;
-					clientCom.startGame(round);
+					if(firstRound)
+					{	clientCom.startGame(round);
+						firstRound = false;
+					}
+					else
+						clientCom.fetchRound(round);
 				}
 				else if(object instanceof Profile[])
 				{	Profile[] profiles = (Profile[])object;

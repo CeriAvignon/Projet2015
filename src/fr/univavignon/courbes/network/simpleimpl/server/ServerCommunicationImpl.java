@@ -39,6 +39,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
@@ -100,7 +101,7 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	public ServerProfileHandler profileHandler;
 
 	@Override
-	public void setConfigHandler(ServerProfileHandler configHandler)
+	public void setProfileHandler(ServerProfileHandler configHandler)
 	{	this.profileHandler = configHandler;
 	}
 	
@@ -128,8 +129,36 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	public void connectionLost(int index)
 	{	if(profileHandler!=null)
 			profileHandler.connectionLost(index);
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
+		if(gameHandler!=null)
+			gameHandler.connectionLost(index);
+//		else
+//			System.err.println("Le handler de la partie n'a pas été renseigné !");
+	}
+	
+	////////////////////////////////////////////////////////////////
+	////	HANDLER DE LA PARTIE
+	////////////////////////////////////////////////////////////////
+	/** Handler de la partie */
+	public ServerGameHandler gameHandler;
+
+	@Override
+	public void setGameHandler(ServerGameHandler gameHandler)
+	{	this.gameHandler = gameHandler;
+	}
+	
+	/**
+	 * Transmet cet appel au handler concerné.
+	 * 
+	 * @param index
+	 * 		Le numéro de client à transmettre.
+	 */
+	public void fetchAcknowledgment(int index)
+	{	if(gameHandler!=null)
+			gameHandler.fetchAcknowledgment(index);
 		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -442,7 +471,8 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	
 	@Override
 	public void sendPointThreshold(int pointThreshold)
-	{	sendObject(pointThreshold);
+	{	Integer value = new Integer(pointThreshold);
+		sendObject(value);
 	}
 	
 	@Override

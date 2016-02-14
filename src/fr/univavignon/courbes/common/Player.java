@@ -48,4 +48,16 @@ public class Player implements Serializable
 	public int leftKey;
 	/** Numéro de la touche utilisée par le joueur pour aller à droite */
 	public int rightKey;
+	
+	@Override
+	public String toString()
+	{	StringBuffer result = new StringBuffer();
+		result.append(playerId + ". " + profile.userName);
+		if(!local)
+			result.append(" (Remote)");
+		else
+			result.append(" (L=" + leftKey + " R=" + rightKey + ")");
+		result.append(" " + roundScore + "/" + totalScore);
+		return result.toString();
+	}
 }

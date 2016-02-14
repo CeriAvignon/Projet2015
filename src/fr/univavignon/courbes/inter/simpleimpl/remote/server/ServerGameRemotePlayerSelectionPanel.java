@@ -78,8 +78,6 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	private int eloWidth;
 	/** Largeur des boutons kick */
 	private int kickWidth;
-	/** Indique si on peut encore recevoir des requêtes de la part de clients */
-	private boolean blockRequests;
 	/** Moteur réseau */
 	private ServerCommunication serverCom;
 	
@@ -94,7 +92,6 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		nameWidth = (int)(winDim.width*0.5);
 		eloWidth = (int)(winDim.width*0.2);
 		kickWidth = (int)(winDim.width*0.2);
-		blockRequests = false;
 	}
 	
 	@Override
@@ -180,7 +177,7 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	private void initServer()
 	{	serverCom = new ServerCommunicationImpl();
 		serverCom.setErrorHandler(mainWindow);
-		serverCom.setConfigHandler(this);
+		serverCom.setProfileHandler(this);
 		serverCom.launchServer();
 		int localNbr = selectedProfiles.size() - mainWindow.currentRound.players.length;
 		serverCom.setClientNumber(localNbr);
@@ -284,9 +281,18 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	@Override
 	protected synchronized void nextStep()
 	{	if(checkConfiguration())
-		{	blockRequests = true;
+		{	mainWindow.serverCom.setProfileHandler(null);
 			Round round = initRound();
 			mainWindow.currentRound = round;
+			mainWindow.serverCom.sendRound(round);
+			// on laisse un peu de temps aux clients
+			// (pas très propre, vaudrait mieux faire une vraie synchro) 
+			try
+			{	Thread.sleep(500);
+			}
+			catch (InterruptedException e)
+			{	e.printStackTrace();
+			}
 			mainWindow.displayPanel(PanelName.SERVER_GAME_PLAY);
 		}
 		else
@@ -355,66 +361,62 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 
 	@Override
 	public synchronized void fetchProfile(final Profile profile, final int index)
-	{	if(!blockRequests)
-		{	SwingUtilities.invokeLater(new Runnable()
-			{	@Override
-				public void run()
-				{	int localPlayers = mainWindow.currentRound.players.length;
-					int playerIndex = index+localPlayers;
-					// on vérifie si le profil n'est pas déjà sélectionné
-					boolean found = false;
-					int i = 0;
-					while(i<selectedProfiles.size() && !found)
-					{	if(i!=playerIndex)
-						{	RemotePlayerConfigPanel rpcp = selectedProfiles.get(i);
-							Player player0 = rpcp.player;
-							Profile profile0 = player0.profile;
-							found = profile0!=null && profile.equals(profile0);
-						}
-						i++;
+	{	SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	int localPlayers = mainWindow.currentRound.players.length;
+				int playerIndex = index+localPlayers;
+				// on vérifie si le profil n'est pas déjà sélectionné
+				boolean found = false;
+				int i = 0;
+				while(i<selectedProfiles.size() && !found)
+				{	if(i!=playerIndex)
+					{	RemotePlayerConfigPanel rpcp = selectedProfiles.get(i);
+						Player player0 = rpcp.player;
+						Profile profile0 = player0.profile;
+						found = profile0!=null && profile.equals(profile0);
 					}
+					i++;
+				}
 
-					// auquel cas on le refuse
-					if(found)
-						mainWindow.serverCom.kickClient(index);
-					
-					// si pas déjà présent, on tente de l'ajouter
-					else
-					{	RemotePlayerConfigPanel cpc = selectedProfiles.get(playerIndex);
-						if(cpc.isAvailable())
-						{	// on rajoute le joueur à l'emplacement associé au client
-							cpc.setProfile(profile);
-							
-							// on prévient les clients du changement
-							Profile profiles[] = getAllPlayers();
-							serverCom.sendProfiles(profiles);
-							
-							// on rafraichit
-							validate();
-							repaint();
-						}
+				// auquel cas on le refuse
+				if(found)
+					mainWindow.serverCom.kickClient(index);
+				
+				// si pas déjà présent, on tente de l'ajouter
+				else
+				{	RemotePlayerConfigPanel cpc = selectedProfiles.get(playerIndex);
+					if(cpc.isAvailable())
+					{	// on rajoute le joueur à l'emplacement associé au client
+						cpc.setProfile(profile);
+						
+						// on prévient les clients du changement
+						Profile profiles[] = getAllPlayers();
+						serverCom.sendProfiles(profiles);
+						
+						// on rafraichit
+						validate();
+						repaint();
 					}
 				}
-		    });
-		}
+			}
+	    });
 	}
 
 	@Override
 	public void connectionLost(final int index)
-	{	if(!blockRequests)
-		{	SwingUtilities.invokeLater(new Runnable()
-			{	@Override
-				public void run()
-				{	// on vire le profil sélectionné pour ce numéro
-					int playerId =  index + mainWindow.currentRound.players.length;
-					RemotePlayerConfigPanel rpcp = selectedProfiles.get(playerId);
-					rpcp.setProfile(null);
-					
-					// on prévient les clients restants
-					Profile profiles[] = getAllPlayers();
-					serverCom.sendProfiles(profiles);
-				}
-		    });
-		}
+	{	SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	// on vire le profil sélectionné pour ce numéro
+				int playerId =  index + mainWindow.currentRound.players.length;
+				RemotePlayerConfigPanel rpcp = selectedProfiles.get(playerId);
+				rpcp.setProfile(null);
+				
+				// on prévient les clients restants
+				Profile profiles[] = getAllPlayers();
+				serverCom.sendProfiles(profiles);
+			}
+		   });
 	}
 }

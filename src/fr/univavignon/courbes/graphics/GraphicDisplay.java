@@ -34,10 +34,10 @@ public interface GraphicDisplay
 	 * Cette méthode doit être appelée par l'Interface Utilisateur
 	 * au début de chaque manche.
 	 * 
-	 * @param round
-	 * 		Données de la partie en cours, incluant l'aire de jeu et les joueurs.
+	 * @param playerNbr
+	 * 		Nombre de joueurs à afficher.
 	 */
-	public void init(Round round);
+	public void init(int playerNbr);
 	
 	/**
 	 * Renvoie le panel de l'aire de jeu, initialisé par le Moteur Graphique.

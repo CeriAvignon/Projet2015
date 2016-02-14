@@ -32,7 +32,6 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
-import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 
@@ -61,23 +60,23 @@ public class PhysBoard extends Board
 	}
 	
 	/** File contenant les items affectant actuellement cette aire de jeu */
-	public transient List<PhysItemInstance> currentItems;
+	public List<PhysItemInstance> currentItems;
 	/** Probabilité courante qu'un item apparaisse à chaque ms */
-	public transient float itemPopupRate;
+	public float itemPopupRate;
 	/** Temps total écoulé depuis le début de la partie */
-	public transient long totalTime;
+	public long totalTime;
 	/** Marqueur indiquant qu'il faut nettoyer l'aire de jeu des traînées */
-	public transient boolean mustClean;
+	public boolean mustClean;
 	
 	/**
 	 * Initialise l'aire de jeu pour une manche.
 	 * 
-	 * @param players
-	 * 		Joueurs participants à la manche.
+	 * @param playerNbr
+	 * 		Nombre de joueurs participants à la manche.
 	 */
-	public void init(Player[] players)
-	{	snakes = new Snake[players.length];
-		for(int i=0;i<players.length;i++)
+	public void init(int playerNbr)
+	{	snakes = new Snake[playerNbr];
+		for(int i=0;i<playerNbr;i++)
 		{	PhysSnake snake = new PhysSnake(i,this);
 			snakes[i] = snake;
 		}
@@ -86,11 +85,8 @@ public class PhysBoard extends Board
 	/**
 	 * Initialise l'aire de jeu de manière à tester le
 	 * jeu (relativement) facilement.
-	 * 
-	 * @param players
-	 * 		Joueurs participants à la manche.
 	 */
-	public void initDemo(Player[] players)
+	public void initDemo()
 	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
 		snakes = new Snake[2];
 		// premier joueur
@@ -179,7 +175,7 @@ public class PhysBoard extends Board
 	{	totalTime = totalTime + elapsedTime;
 		if(totalTime <= Constants.PRESENTATION_DURATION)
 			state = State.PRESENTATION;
-		else if(totalTime <= Constants.ENTRANCE_DURATION)
+		else if(totalTime <= Constants.PRESENTATION_DURATION+Constants.ENTRANCE_DURATION)
 			state = State.ENTRANCE;
 		else
 			state = State.REGULAR;

@@ -22,9 +22,6 @@ package fr.univavignon.courbes.inter;
  * Interface implémentant les méthodes permettant au MR de demander à l'IU d'afficher 
  * des messages d'erreur. Par exemple, cela peut être fait dans la console texte, ou 
  * bien sous forme de fenêtre de type pop-up.
- * <br/>
- * Chaque binôme de la composante Interface Utilisateur doit définir une classe implémentant 
- * cette interface, puis l'instancier.
  * 
  * @author	L3 Info UAPV 2015-16
  */
