@@ -104,12 +104,12 @@ public class PhysBoard extends Board
 		for(int x=Constants.BORDER_THICKNESS;x<x1;x++)
 		{	for(int dy=0;dy<snakes[1].headRadius*2;dy++)
 			{	Position pos = new Position(x,y0+dy);
-				snakes[1].trail.add(pos);
+				snakes[1].newTrail.add(pos);
 			}
 		}
 		Position center = new Position(snakes[1].currentX,snakes[1].currentY);
 		Set<Position> disk = GraphicTools.processDisk(center, snakes[1].headRadius);
-		snakes[1].trail.addAll(disk);
+		snakes[1].newTrail.addAll(disk);
 		
 		// on rajoute les items
 		int sep = (int)((Constants.BOARD_WIDTH-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
@@ -258,7 +258,9 @@ public class PhysBoard extends Board
 	private void cleanSnakes()
 	{	mustClean = false;
 		for(Snake snake: snakes)
-			snake.trail.clear();
+		{	snake.newTrail.clear();
+			snake.clearedTrail = true;
+		}
 	}
 	
 	/**
@@ -302,8 +304,9 @@ public class PhysBoard extends Board
 			// on compare aux trainées des serpents
 			{	int s = 0;
 				while(s<snakes.length && available)
-				{	Snake snake = snakes[s];
-					available = !itemReach.removeAll(snake.trail);
+				{	PhysSnake snake = (PhysSnake)snakes[s];
+					available = !itemReach.removeAll(snake.oldTrail);
+					available = !itemReach.removeAll(snake.newTrail);
 					s++;
 				}
 			}

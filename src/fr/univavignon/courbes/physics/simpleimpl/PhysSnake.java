@@ -69,7 +69,8 @@ public class PhysSnake extends Snake
 		realY = currentY;
 		prevPos = new Position(currentX,currentY);
 		
-		trail = new TreeSet<Position>();
+		newTrail = new TreeSet<Position>();
+		oldTrail = new TreeSet<Position>();
 		prevDisks = new LinkedList<Set<Position>>();
 		
 		currentAngle = (float)(Math.random()*Math.PI*2);	// on tire une valeur réelle entre 0 et 2pi
@@ -106,6 +107,8 @@ public class PhysSnake extends Snake
 		prevPos = new Position(currentX,currentY);
 	}
 
+	/** Ancienne partie de la trainée du serpent sur l'aire de jeu */
+	public Set<Position> oldTrail;
 	/** Nombre de pixels restants pour terminer le trou courant */
 	private float remainingHole;
 	/** Temps écoulé depuis la fin du dernier trou (en ms) */
@@ -335,9 +338,10 @@ public class PhysSnake extends Snake
 		if(eliminatedBy==null && board.state==State.REGULAR && !fly && remainingHole<=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
-			{	Snake snake = board.snakes[i];
+			{	PhysSnake snake = (PhysSnake)board.snakes[i];
 //				if(snake!=this)
-				{	boolean changed = physicalTrail.removeAll(snake.trail);
+				{	boolean changed = physicalTrail.removeAll(snake.oldTrail)
+						|| physicalTrail.removeAll(snake.newTrail);
 					if(changed)
 					{	eliminatedBy = i;
 						result = true;
@@ -376,10 +380,12 @@ public class PhysSnake extends Snake
 		
 		// mise à jour de la traînée
 		if(board.state==State.REGULAR && !fly && remainingHole<=0)
-		{	if(eliminatedBy==null)
-				trail.addAll(graphicalTrail);
+		{	oldTrail.addAll(newTrail);
+			newTrail.clear();
+			if(eliminatedBy==null)
+				newTrail.addAll(graphicalTrail);
 			else
-				trail.addAll(physicalTrail);
+				newTrail.addAll(physicalTrail);
 		}
 		
 		// mise à jour de l'angle

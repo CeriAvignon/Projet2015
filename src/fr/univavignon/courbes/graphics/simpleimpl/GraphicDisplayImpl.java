@@ -46,7 +46,7 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	public void init(int playerNbr)
 	{	image = null;
 		try
-		{	boardDrawer = new BoardDrawer();
+		{	boardDrawer = new BoardDrawer(playerNbr);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
@@ -112,10 +112,8 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	}
 	
 	@Override
-	public void end()
-	{	
-		// TODO rien de spécial à faire pour le moment. 
-		// libérer ressources GUI ? (mais le GC s'en occupe déjà...)
+	public void reset()
+	{	boardDrawer.reset();
 	}
 	
 	/**

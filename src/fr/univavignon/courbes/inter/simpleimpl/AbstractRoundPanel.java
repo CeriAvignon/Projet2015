@@ -247,7 +247,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 * la partie, pour pouvoir enchaîner une autre manche.
 	 */
 	protected void resetRound()
-	{	physicsEngine.init(round.players.length);
+	{	graphicDisplay.reset();
+		physicsEngine.init(round.players.length);
 		round.board = physicsEngine.getBoard();
 		for(Player player: round.players)
 			player.roundScore = 0;

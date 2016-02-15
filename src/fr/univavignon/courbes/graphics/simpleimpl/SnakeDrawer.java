@@ -23,9 +23,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
+import java.awt.image.BufferedImage;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Board.State;
@@ -47,11 +50,19 @@ public class SnakeDrawer
 {	
 	/**
 	 * Initialise les données nécessaires au tracé des snakes.
+	 * 
+	 * @param playerNbr
+	 * 		Nombre de joueurs à afficher.
 	 */
-	public SnakeDrawer()
-	{	
-		// TODO on pourrait, par exemple, rajouter un tirage au sort des couleurs des joueurs.
+	public SnakeDrawer(int playerNbr)
+	{	images = new Image[playerNbr];
+		reset();
+		
+		// TODO on pourrait aussi, par exemple, rajouter un tirage au sort des couleurs des joueurs.
 	}
+	
+	/** images utilisées pour accélerer le tracer des serpents */
+	private Image images[];
 	
 	/**
 	 * Trace tous les serpents présents dans l'aire de jeu.
@@ -77,11 +88,22 @@ public class SnakeDrawer
 				color = playerColor;
 			else
 				color = Constants.DISCO_PLAYER_COLOR;
-			g.setColor(color);
-				
+			
+			// on efface éventuellement l'image
+			if(snakes[playerId].clearedTrail)
+			{	images[playerId] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+				snakes[playerId].clearedTrail = false;
+			}
+			// on complète le corps dans l'image
+			Graphics2D gImg = (Graphics2D)images[playerId].getGraphics();
+			gImg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			gImg.setColor(color);
 			// on boucle sur chaque position, i.e. chaque pixel
-			for(Position position: snake.trail)
-				g.drawLine(position.x, position.y, position.x, position.y);
+			for(Position position: snake.newTrail)
+				gImg.drawLine(position.x, position.y, position.x, position.y);
+			gImg.dispose();
+			// on dessine l'image dans le panel
+			g.drawImage(images[playerId],0,0,null);
 			
 			// pour debug : affiche en jaune la partie du serpent utilisée pour détecter les collisions
 //			g.setColor(Color.YELLOW);
@@ -160,31 +182,33 @@ public class SnakeDrawer
 		
 		// on traite chaque serpent individuellement
 		for(Snake snake: snakes)
-		{	// on récupère le centre des auréoles (i.e. centre de la tête)
-			int x = snake.currentX;
-			int y = snake.currentY;
-			
-			// initialisation de l'espace entre la tête et l'auréole à tracer
-			int offset = snake.headRadius + Constants.AUREOLA_SPACE*2;
-			
-			// on traite séparément chaque item qui affecte actuellement le serpent
-			// chacun sera représenté sous la forme d'une auréole
-			for(ItemInstance item: snake.currentItems)
-			{	// on détermine la couleur en fonction du type d'item
-				ItemType type = item.type;
-				Color color = type.color;
-				g.setColor(color);
+		{	if(snake.eliminatedBy==null)
+			{	// on récupère le centre des auréoles (i.e. centre de la tête)
+				int x = snake.currentX;
+				int y = snake.currentY;
 				
-				// on trace un arc de cercle centré sur la tête
-				// sa longueur est proportionnelle au temps d'effet restant à l'item 
-				int radius = offset + Constants.AUREOLA_THICKNESS/2;
-				double startAngle = Math.toDegrees(-snake.currentAngle); // angle de déplacement du serpent
-				double extentAngle = 360*item.remainingTime/(double)type.duration;
-				Arc2D arc = new Arc2D.Double(x-radius, y-radius, 2*radius, 2*radius, startAngle, extentAngle, Arc2D.OPEN);
-				g.draw(arc);
+				// initialisation de l'espace entre la tête et l'auréole à tracer
+				int offset = snake.headRadius + Constants.AUREOLA_SPACE*2;
 				
-				// on met à jour l'espace avec l'auréole suivante
-				offset = offset + Constants.AUREOLA_THICKNESS + Constants.AUREOLA_SPACE;
+				// on traite séparément chaque item qui affecte actuellement le serpent
+				// chacun sera représenté sous la forme d'une auréole
+				for(ItemInstance item: snake.currentItems)
+				{	// on détermine la couleur en fonction du type d'item
+					ItemType type = item.type;
+					Color color = type.color;
+					g.setColor(color);
+					
+					// on trace un arc de cercle centré sur la tête
+					// sa longueur est proportionnelle au temps d'effet restant à l'item 
+					int radius = offset + Constants.AUREOLA_THICKNESS/2;
+					double startAngle = Math.toDegrees(-snake.currentAngle); // angle de déplacement du serpent
+					double extentAngle = 360*item.remainingTime/(double)type.duration;
+					Arc2D arc = new Arc2D.Double(x-radius, y-radius, 2*radius, 2*radius, startAngle, extentAngle, Arc2D.OPEN);
+					g.draw(arc);
+					
+					// on met à jour l'espace avec l'auréole suivante
+					offset = offset + Constants.AUREOLA_THICKNESS + Constants.AUREOLA_SPACE;
+				}
 			}
 		}
 		
@@ -238,4 +262,13 @@ public class SnakeDrawer
 		g.drawLine(x1, y1, x2, y2);
 		g.fillPolygon(xPoints, yPoints, 3);
     }
+
+
+	/**
+	 * Nettoie les serpents en prévision de la prochaine manche.
+	 */
+	public void reset()
+	{	for(int i=0;i<images.length;i++)
+			images[i] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+	}
 }

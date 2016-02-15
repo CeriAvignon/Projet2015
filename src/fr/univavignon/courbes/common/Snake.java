@@ -44,8 +44,10 @@ public class Snake implements Serializable
 	/** Position courante de la tête du serpent en ordonnée */
 	public int currentY;
 	
-	/** Trainées du serpent sur l'aire de jeu */
-	public Set<Position> trail;
+	/** Nouvelle partie de la trainée du serpent sur l'aire de jeu */
+	public Set<Position> newTrail;
+	/** Indique si la trainée du serpent a été réinitialisée lors de la dernière itération */
+	public boolean clearedTrail;
 
 	/** Angle représentant la direction de déplacement courante du serpent, par rapport à l'horizontale */
 	public float currentAngle;

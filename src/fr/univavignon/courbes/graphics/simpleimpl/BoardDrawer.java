@@ -35,11 +35,14 @@ public class BoardDrawer
 	/**
 	 * Initialise les données nécessaires au tracé de l'aire de jeu.
 	 * 
+	 * @param playerNbr
+	 * 		Nombre de joueurs à afficher.
+	 * 
 	 * @throws IOException
 	 * 		Problème lors de l'initialisation des objets chargés du tracé.
 	 */
-	public BoardDrawer() throws IOException
-	{	snakesDrawer = new SnakeDrawer();
+	public BoardDrawer(int playerNbr) throws IOException
+	{	snakesDrawer = new SnakeDrawer(playerNbr);
 		itemDrawer = new ItemDrawer();
 	}
 	
@@ -113,4 +116,11 @@ public class BoardDrawer
 		// puis les auréoles des serpents
 		snakesDrawer.drawAureolas(round.board, g);
     }
+
+	/**
+	 * Nettoie l'aire de jeu en prévision de la prochaine manche.
+	 */
+	public void reset()
+	{	snakesDrawer.reset();
+	}
 }

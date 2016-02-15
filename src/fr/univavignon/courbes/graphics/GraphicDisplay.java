@@ -70,5 +70,5 @@ public interface GraphicDisplay
 	 * pour demander l'affichage de son gagnant. Si la partie est terminée,
 	 * il faut plutot afficher le classement final et les scores définitifs.
 	 */
-	public void end();
+	public void reset();
 }
