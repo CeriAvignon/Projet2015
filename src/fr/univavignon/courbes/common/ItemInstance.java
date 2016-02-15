@@ -34,6 +34,27 @@ public class ItemInstance implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Initialise un item vide.
+	 */
+	public ItemInstance()
+	{	// rien à faire
+	}
+	
+	/**
+	 * Initialise un nouvel item en recopiant celui passé en paramètre. 
+	 * On en a besoin pour des raisons de synchronisation.
+	 * 
+	 * @param item
+	 * 		L'item à recopier.
+	 */
+	public ItemInstance(ItemInstance item)
+	{	this.x = item.x;
+		this.y = item.y;
+		this.type = item.type;
+		this.remainingTime = item.remainingTime;
+	}
+	
 	/** Position sur l'axe des abscisses */
 	public int x;
 	/** Position sur l'axe des ordonnées */

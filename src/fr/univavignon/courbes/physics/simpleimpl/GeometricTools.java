@@ -31,7 +31,7 @@ import fr.univavignon.courbes.common.Position;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class GraphicTools
+public class GeometricTools
 {	
 	/**
 	 * Renvoie la liste des pixels constituant le segment qui relie les points

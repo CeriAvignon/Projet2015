@@ -105,6 +105,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		physicsEngine = new PhysicsEngineImpl();
 		physicsEngine.init(round.players.length);
 		round.board = physicsEngine.getBoard();
+		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		
 		graphicDisplay = new GraphicDisplayImpl();
 		graphicDisplay.init(round.players.length);
@@ -219,6 +220,9 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			
 			// on teste la fin de la manche
 			result = prevEliminated.size()>=players.length-1;
+			
+			// on met à jour la limite de points
+			updatePointLimit();
 		}
 		
 		return result;
@@ -252,6 +256,16 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		round.board = physicsEngine.getBoard();
 		for(Player player: round.players)
 			player.roundScore = 0;
+		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		running = true;
+	}
+	
+	/**
+	 * Met à jour la limite de points en fonction du nombre de
+	 * joueurs en jeu et de leur score.
+	 */
+	protected void updatePointLimit()
+	{	// on ne fait pas varier la limite en cours de rencontre, mais c'est possible de le faire ici
+		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 	}
 }

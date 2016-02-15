@@ -19,6 +19,7 @@ package fr.univavignon.courbes.common;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,39 @@ import java.util.List;
 public class Board implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Initialise une aire de jeu vide.
+	 */
+	public Board()
+	{	// rien à faire
+	}
+	
+	/**
+	 * Initialise une nouvelle aire de jeu en recopiant
+	 * celle passée en paramètre. On en a besoin pour des
+	 * raisons de synchronisation.
+	 * 
+	 * @param board
+	 * 		L'aire de jeu à recopier.
+	 */
+	public Board(Board board)
+	{	this.state = board.state;
+		this.hasBorder = board.hasBorder;
+		
+		this.snakes = new Snake[board.snakes.length];
+		for(int i=0;i<snakes.length;i++)
+		{	Snake snake = board.snakes[i];
+			Snake copy = new Snake(snake);
+			this.snakes[i] = copy;
+		}
+		
+		this.items = new ArrayList<ItemInstance>();
+		for(ItemInstance item: board.items)
+		{	ItemInstance copy = new ItemInstance(item);
+			this.items.add(copy);
+		}
+	}
 	
 	/** Indique la phase du jeu : présentation, entrée ou normal */
 	public State state;

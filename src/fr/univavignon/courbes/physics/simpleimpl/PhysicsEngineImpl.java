@@ -52,6 +52,12 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	public Board getBoard()
 	{	return board;
 	}
+
+	@Override
+	public Board getBoardCopy()
+	{	Board result = new PhysBoard(board);
+		return result;
+	}
 	
 	@Override
 	public void setBoard(Board board)
@@ -59,11 +65,15 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	}
 	
 	@Override
-	public List<Integer> update(long elapsedTime, Direction commands[])
-	{	List<Integer> result = board.update(elapsedTime,commands);
-		return result;
+	public void update(long elapsedTime, Direction commands[])
+	{	board.update(elapsedTime,commands);
 	}
 	
+	@Override
+	public List<Integer> getEliminatedPlayers()
+	{	return board.getEliminatedPlayers();
+	}
+		
 	@Override
 	public void forceUpdate(Board board)
 	{	this.board = (PhysBoard)board;

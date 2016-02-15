@@ -76,10 +76,7 @@ public class PhysItemInstance extends ItemInstance
 	 * 		L'item à cloner.
 	 */
 	public PhysItemInstance(PhysItemInstance item)
-	{	this.x = item.x;
-		this.y = item.y;
-		this.type = item.type;
-		this.remainingTime = item.remainingTime;
+	{	super(item);
 	}
 
 	/**

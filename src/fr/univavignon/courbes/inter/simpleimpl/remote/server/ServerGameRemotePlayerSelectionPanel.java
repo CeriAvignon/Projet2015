@@ -274,7 +274,9 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 			result.players[i] = player;
 		}
 		
-		result.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(selectedProfiles.size());
+		// initialisation de la limite de points
+//		result.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(selectedProfiles.size());
+		
 		return result;
 	}
 	

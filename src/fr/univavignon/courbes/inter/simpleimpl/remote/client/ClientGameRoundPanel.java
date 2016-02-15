@@ -121,12 +121,20 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 			elapsedStatTime = elapsedStatTime + elapsedTime;
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
-			{	Direction[] directions = keyManager.retrieveDirections();
-				sendDirection(directions);
-				retrieveBoard();
-				physicsEngine.forceUpdate(round.board);
-				List<Integer> lastEliminated = physicsEngine.update(elapsedPhysTime, directions);
-				boolean finished = updatePoints(prevEliminated,lastEliminated); //TODO comment ce truc se goupille avec la board en mise à jour forcée ? comment récup lastEliminated?
+			{	// on envoie les commandes au serveur
+				Direction[] directions = keyManager.retrieveDirections();
+				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE...
+				// on met à jour le moteur physique
+				Board board = clientCom.retrieveBoard();
+				if(board!=null)
+				{	round.board = board;
+					physicsEngine.forceUpdate(round.board);
+				}
+				else 
+					physicsEngine.update(elapsedPhysTime, directions);
+				// on met à jour les scores
+				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
+				boolean finished = updatePoints(prevEliminated,lastEliminated);
 				if(finished)
 					finalCount = 1;
 				phyUpdateNbr++;
@@ -164,16 +172,6 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	private void sendDirection(Direction[] directions)
 	{	Direction direction = directions[localPlayerId];
 		clientCom.sendCommand(direction);
-	}
-	
-	/**
-	 * Met l'aire de jeu à jour avec celle reçue du serveur
-	 * (si on en a reçu une depuis la dernière mise à jour).
-	 */
-	private void retrieveBoard()
-	{	Board board = clientCom.retrieveBoard();
-		if(board!=null)
-			round.board = board;
 	}
 	
 	@Override

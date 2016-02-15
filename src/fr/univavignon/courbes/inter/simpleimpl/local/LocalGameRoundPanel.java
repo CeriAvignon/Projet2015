@@ -92,8 +92,12 @@ public class LocalGameRoundPanel extends AbstractRoundPanel
 				elapsedStatTime = elapsedStatTime + elapsedTime;
 				
 				if(elapsedPhysTime/PHYS_DELAY >= 1)
-				{	Direction[] directions = keyManager.retrieveDirections();
-					List<Integer> lastEliminated = physicsEngine.update(elapsedPhysTime, directions);
+				{	// on récupère les commandes des joueurs
+					Direction[] directions = keyManager.retrieveDirections();
+					// on met à jour le moteur physique
+					physicsEngine.update(elapsedPhysTime, directions);
+					// on met à jour les scores
+					List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 					boolean finished = updatePoints(prevEliminated,lastEliminated);
 					if(finished)
 						finalCount = 1;

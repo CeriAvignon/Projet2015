@@ -68,6 +68,14 @@ public interface PhysicsEngine
 	public Board getBoard();
 	
 	/**
+	 * Renvoie une copie de l'aire de jeu.
+	 *  
+	 * @return
+	 * 		Copie de l'aire de jeu de la manche.
+	 */
+	public Board getBoardCopy();
+	
+	/**
 	 * Initialise l'aire de jeu d'un Moteur Physique situé
 	 * côté client, et qui doit donc s'aligner sur l'aire de
 	 * jeu du serveur.
@@ -94,10 +102,17 @@ public interface PhysicsEngine
 	 * 		Temps écoulé depuis la dernière mise à jour, exprimé en ms.
 	 * @param commands
 	 * 		Dernière commande générée par le chaque joueur.
+	 */
+	public void update(long elapsedTime, Direction commands[]);
+	
+	/**
+	 * Renvoie la liste des numéros des joueurs éliminés lors de la dernière
+	 * itéation  (dans l'ordre d'élimination).
+	 * 
 	 * @return
 	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
 	 */
-	public List<Integer> update(long elapsedTime, Direction commands[]);
+	public List<Integer> getEliminatedPlayers();
 	
 	/**
 	 * Cette méthode est appelée par l'Interface Utilisateur côté client, lors 

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
@@ -122,11 +123,16 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 			elapsedStatTime = elapsedStatTime + elapsedTime;
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
-			{	Direction[] directions = keyManager.retrieveDirections();
+			{	// on récupère les commandes des joueurs
+				Direction[] directions = keyManager.retrieveDirections();
 				completeDirections(directions);
-				List<Integer> lastEliminated = physicsEngine.update(elapsedPhysTime, directions);
+				// on met à jour le moteur physique et on envoie aux clients
+				physicsEngine.update(elapsedPhysTime, directions);
+				Board board = physicsEngine.getBoardCopy();
+				serverCom.sendBoard(board);
+				// on met à jour les scores
+				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 				boolean finished = updatePoints(prevEliminated,lastEliminated);
-				serverCom.sendBoard(round.board);
 				if(finished)
 					finalCount = 1;
 				phyUpdateNbr++;
@@ -221,3 +227,4 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 }
 
 // TODO rajouter un contrôle de la fréq de mise à jour réseau ?
+// TODO dans MP client, éviter tout ce qui dépend du hasard: pas d'item, pas de trous dans traines...

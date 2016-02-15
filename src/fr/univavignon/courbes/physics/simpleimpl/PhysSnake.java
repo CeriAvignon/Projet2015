@@ -107,6 +107,32 @@ public class PhysSnake extends Snake
 		prevPos = new Position(currentX,currentY);
 	}
 
+	/**
+	 * Crée un nouveau serpent, qui est une copie de
+	 * celui passée en paramètre.
+	 * 
+	 * @param snake
+	 * 		Serpent à recopier.
+	 */
+	public PhysSnake(PhysSnake snake)
+	{	super(snake);
+		
+		this.oldTrail = new TreeSet<Position>(snake.oldTrail);
+		this.remainingHole = snake.remainingHole;
+		this.timeSinceLastHole = snake.timeSinceLastHole;
+		this.currentHoleWidth = snake.currentHoleWidth;
+		this.realX = snake.realX;
+		this.realY = snake.realY;
+		
+		this.prevDisks = new LinkedList<Set<Position>>();
+		for(Set<Position> set: snake.prevDisks)
+		{	Set<Position> copy = new TreeSet<Position>(set);
+			this.prevDisks.add(copy);
+		}
+		
+		this.prevPos = new Position(snake.prevPos);
+	}
+
 	/** Ancienne partie de la trainée du serpent sur l'aire de jeu */
 	public Set<Position> oldTrail;
 	/** Nombre de pixels restants pour terminer le trou courant */
@@ -251,14 +277,14 @@ public class PhysSnake extends Snake
 		// on identifie la trainée de pixels correspondant au déplacement
 		if(!prevPos.equals(newPos))
 		{	// segment allant de l'ancienne à la nouvelle position
-			List<Position> segment = GraphicTools.processSegment(prevPos, newPos);
+			List<Position> segment = GeometricTools.processSegment(prevPos, newPos);
 			
 			Set<Position> newDisk = null;
 			// on parcourt le segment en traçant les disques correspondants
 			// (pas vraiment optimal comme algo, mais ça suffit ici)
 			for(Position pos: segment)
 			{	// on calcule le disque centré sur la position courante
-				newDisk = GraphicTools.processDisk(pos, headRadius);
+				newDisk = GeometricTools.processDisk(pos, headRadius);
 				// on le rajoute à la trainée graphique
 				graphTrail.addAll(newDisk);
 				// on le rajoute à la file des derniers disques

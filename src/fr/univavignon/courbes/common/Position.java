@@ -45,6 +45,19 @@ public class Position implements Serializable, Comparable<Position>
 		this.y = y;
 	}
 	
+	/**
+	 * Instancie une nouvelle position en
+	 * recopiant celle passée en paramètre.
+	 * 
+	 * @param position
+	 * 		Position à recopier.
+	 */
+	
+	public Position(Position position)
+	{	this.x = position.x;
+		this.y = position.y;
+	}
+	
 	/** Position sur l'axe des abscisses */
 	public int x;
 	/** Position sur l'axe des ordonnées */

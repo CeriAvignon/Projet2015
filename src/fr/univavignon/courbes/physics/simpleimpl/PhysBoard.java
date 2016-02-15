@@ -55,8 +55,32 @@ public class PhysBoard extends Board
 		currentItems = new LinkedList<PhysItemInstance>();
 		totalTime = 0;
 		mustClean = false;
+		lastEliminated = new ArrayList<Integer>();
 		
 		resetCharacs();
+	}
+	
+	/**
+	 * Crée une nouvelle aire de jeu, qui est une copie de
+	 * celle passée en paramètre.
+	 * 
+	 * @param board
+	 * 		L'aire de jeu à recopier.
+	 */
+	public PhysBoard(PhysBoard board)
+	{	super(board);
+		
+		this.currentItems = new ArrayList<PhysItemInstance>();
+		for(PhysItemInstance item: board.currentItems)
+		{	PhysItemInstance copy = new PhysItemInstance(item);
+			this.items.add(copy);
+		}
+		
+		this.itemPopupRate = board.itemPopupRate;
+		this.totalTime = board.totalTime;
+		this.mustClean = board.mustClean;
+		
+		this.lastEliminated = new ArrayList<Integer>(board.lastEliminated);
 	}
 	
 	/** File contenant les items affectant actuellement cette aire de jeu */
@@ -67,6 +91,8 @@ public class PhysBoard extends Board
 	public long totalTime;
 	/** Marqueur indiquant qu'il faut nettoyer l'aire de jeu des traînées */
 	public boolean mustClean;
+	/** Liste des joueurs éliminés lors de la dernière itération */ 
+	private List<Integer> lastEliminated;
 	
 	/**
 	 * Initialise l'aire de jeu pour une manche.
@@ -108,7 +134,7 @@ public class PhysBoard extends Board
 			}
 		}
 		Position center = new Position(snakes[1].currentX,snakes[1].currentY);
-		Set<Position> disk = GraphicTools.processDisk(center, snakes[1].headRadius);
+		Set<Position> disk = GeometricTools.processDisk(center, snakes[1].headRadius);
 		snakes[1].newTrail.addAll(disk);
 		
 		// on rajoute les items
@@ -140,10 +166,8 @@ public class PhysBoard extends Board
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 * @param commands
 	 * 		Commandes de chaque joueur.
-	 * @return
-	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
 	 */
-	public List<Integer> update(long elapsedTime, Direction[] commands)
+	public void update(long elapsedTime, Direction[] commands)
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
 		
@@ -154,13 +178,11 @@ public class PhysBoard extends Board
 		updateItems(elapsedTime);
 		
 		// on met à jour les serpents
-		List<Integer> result = updateSnakes(elapsedTime,commands);
+		lastEliminated = updateSnakes(elapsedTime,commands);
 		
 		// si nécessaire, on nettoie l'aire de jeu des trainées des serpents 
 		if(mustClean)
 			cleanSnakes();
-		
-		return result;
 	}
 	
 	/**
@@ -288,7 +310,7 @@ public class PhysBoard extends Board
 			// on récupère un disque représentant l'espace occupé par l'item (plus une marge)
 			Position center = new Position(x,y);
 			int radius = Constants.ITEM_RADIUS+margin;
-			Set<Position> itemReach = GraphicTools.processDisk(center, radius);
+			Set<Position> itemReach = GeometricTools.processDisk(center, radius);
 			available = true;
 			
 			// on compare aux autres items
@@ -296,7 +318,7 @@ public class PhysBoard extends Board
 				while(it.hasNext() && available)
 				{	ItemInstance item = it.next();
 					Position c = new Position(item.x,item.y);
-					Set<Position> ir = GraphicTools.processDisk(c, radius);
+					Set<Position> ir = GeometricTools.processDisk(c, radius);
 					available = !itemReach.removeAll(ir);
 				}
 			}
@@ -355,5 +377,16 @@ public class PhysBoard extends Board
 			result.add(copy);
 		}
 		return result;
+	}
+	
+	/**
+	 * Renvoie la liste des numéros des joueurs éliminés lors de la dernière
+	 * itéation  (dans l'ordre d'élimination).
+	 * 
+	 * @return
+	 * 		Numéros des joueurs éliminés lors de cette itération (dans l'ordre d'élimination).
+	 */
+	public List<Integer> getEliminatedPlayers()
+	{	return lastEliminated;
 	}
 }
