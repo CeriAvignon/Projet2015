@@ -86,7 +86,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		// on envoie l'aire de jeu et on attend les clients
 		resetRound();
 	}
-
+	
 	@Override
 	public void run()
 	{	// on joue la rencontre (i.e. plusieurs manches)
