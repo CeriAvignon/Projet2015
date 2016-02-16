@@ -30,64 +30,6 @@ public class NetworksClient implements ClientCommunication {
 		return 0;
 	}
 
-<<<<<<< HEAD
-	@Override
-	public void setPort(int port) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setProfileHandler(ClientProfileHandler profileHandler) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void launchClient() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closeClient() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean addProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void removeProfile(Profile profile) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Integer retrievePointThreshold() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Board retrieveBoard() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void sendCommands(Map<Integer, Direction> commands) {
-=======
 	
 	public void setPort(int port) {
 		// TODO Auto-generated method stub
@@ -148,24 +90,18 @@ public class NetworksClient implements ClientCommunication {
 		
 	}
 
-	@Override
 	public List<Profile> retrieveProfiles() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String retrieveText() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void sendText(String message) {
->>>>>>> refs/remotes/origin/Groupe19
 		// TODO Auto-generated method stub
 		
 	}
-
-	
 }

@@ -63,7 +63,7 @@ public class Network extends Window {
 	 */
 	public void joinNetwork()
 	{
-		clientCommunication = new NOM_DE_LA_CLASSE_CLIENT();
+		clientCommunication = null; // TODO new NOM_DE_LA_CLASSE_CLIENT();
 		JPanel joinNetwork = new JPanel(new BorderLayout());
 		JLabel ip = new JLabel("Adresse ip du serveur : ");
 		inputIP = new JTextField();
@@ -118,7 +118,7 @@ public class Network extends Window {
 	 */
 	public void addNetwork()
 	{
-		serverCommunication = new NOM_DE_LA_CLASSE_SERVER();
+		serverCommunication = null; // TODO new NOM_DE_LA_CLASSE_SERVER();
 		ErrorHandler error = new Error();
 		serverCommunication.setErrorHandler(error);
 		

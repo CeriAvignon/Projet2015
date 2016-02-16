@@ -27,14 +27,4 @@ public class Graphics implements GraphicDisplay{
 		// TODO Auto-generated method stub
 		
 	}
-
-<<<<<<< HEAD
-=======
-	@Override
-	public void init(Board board, int pointThreshold, List<Profile> players) {
-		// TODO Auto-generated method stub
-		
-	}
-
->>>>>>> refs/remotes/origin/Groupe19
 }

@@ -14,7 +14,7 @@ public class ServerProfile implements ServerProfileHandler{
 	@Override
 	public boolean fetchProfile(Profile profile)
 	{
-		ClientCommunication clientCommunication = new NOM_DE_LA_CLASSE_CLIENT();
+		ClientCommunication clientCommunication = null; // TODO new NOM_DE_LA_CLASSE_CLIENT();
 		return clientCommunication.addProfile(profile);
 	}
 }

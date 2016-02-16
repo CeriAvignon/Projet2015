@@ -17,7 +17,7 @@ public class ClientProfile implements ClientProfileHandler{
 	@Override
 	public void updateProfiles(List<Profile> profiles) {
 		
-		ServerCommunication serverCommunication = new NOM_DE_LA_CLASSE_SERVER();
+		ServerCommunication serverCommunication = null;// TODO new NOM_DE_LA_CLASSE_SERVER();
 		serverCommunication.sendProfiles(profiles);
 	}
 }

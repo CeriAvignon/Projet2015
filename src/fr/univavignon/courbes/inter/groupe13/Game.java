@@ -120,8 +120,8 @@ public class Game extends Window{
 		 
 		 
 		 /* instancier le moteur physique et le moteur graphique*/
-		 PhysicsEngine physicsEngine = new NOM_DE_LA_CLASSE_PHYSICS();
-		 GraphicDisplay graphicDisplay = new NOM_DE_LA_CLASSE_GRAPHIC();
+		 PhysicsEngine physicsEngine = null;//TODO new NOM_DE_LA_CLASSE_PHYSICS();
+		 GraphicDisplay graphicDisplay = null; //TODO new NOM_DE_LA_CLASSE_GRAPHIC();
 		 
 		 commands = new HashMap<>();
 	     addKeyListener(this);
