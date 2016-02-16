@@ -29,6 +29,7 @@ import java.net.NetworkInterface;
 
 /**
  * 
+<<<<<<< HEAD
  * @author Marie et Mary    
  * 
  * Création de la classe server qui implémente les fonction de l'interface serverCommunication

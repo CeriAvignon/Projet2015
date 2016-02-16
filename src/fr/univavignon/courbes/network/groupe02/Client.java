@@ -21,7 +21,7 @@ import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.network.ClientCommunication;
 /**
  * 
- * @author Marie V. et Mary  P  
+ * @author Marie V.
  * 
  * Création de la classe client qui implémente les fonction de l'interface clientCommunication
  *
@@ -57,7 +57,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Fonction permettant de modifier l'adresse ip du client
 	 * 
 	 * @param ip
@@ -69,7 +69,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Fonction permettant de récupérer le port du client
 	 * 
 	 * @param null
@@ -82,7 +82,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Fonction permettant de récupérer modifier le port du client
 	 * 
 	 * @param port
@@ -94,7 +94,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Fonction permettant de lancer un client
 	 * 
 	 * @return null
@@ -119,7 +119,7 @@ public class Client implements ClientCommunication
 	}
 	
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Fonction permettant de fermer un client lorsqu'il se déconnecte du serveur
 	 * 
 	 * @param null
@@ -143,42 +143,38 @@ public class Client implements ClientCommunication
 	}
 
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Permet d'indiquer au Moteur Réseau l'objet
      * à utiliser pour prévenir d'une erreur lors de l'exécution.
      *  
 	 * @param errorHandler
 	 * @return null
 	 */
-	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) 
 	{
 		
 	}
 		
 	/**
-	 * @author Marie V. et Mary  P  
+	 * @author Marie V.
 	 * Permet d'indiquer au Moteur Réseau l'objet
      * à utiliser pour prévenir d'une modification des joueurs
      *  
 	 * @param profileHandler
 	 * @return null
 	 */
-	@Override
 	public void setProfileHandler(ClientProfileHandler profileHandler) 
 	{
 		
 	} 
 	
 
-	@Override
 	public boolean addProfile(Profile profile)
 	{
 		
 		return false;
 	}
 
-	@Override
 	public void removeProfile(Profile profile) 
 	{
 		
@@ -204,82 +200,17 @@ public class Client implements ClientCommunication
 		
 	}
 
-	/*public String retrieveText() 
-	{
-		final BufferedReader rec; //Pour recevoir		
-		try 
-		{
-			socketClient = new Socket(this.ip, this.port);
-			//flux pour recevoir
-			rec = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-			
-			Thread receive = new Thread(new Runnable()
-			{
-				String message;
-				
-				@Override
-				public void run()
-				{
-					try
-					{
-						message = rec.readLine();
-						while(message != null)
-						{
-							System.out.println("Server :" + message);
-							message = rec.readLine();
-						}
-						System.out.println("Server disconnected");
-						socketClient.close();
-					}
-					catch(IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
-			});
-			receive.start();
-		}
-		catch (UnknownHostException e) 
-	     {
-	         e.printStackTrace();
-	     } 
-	     catch (IOException e) 
-	     {
-	         e.printStackTrace();
-	     }
+	public List<Profile> retrieveProfiles() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void sendText(final String message) 
-	{
-		final PrintWriter out; // Pour envoyer
-		
-		try 
-		{
-			socketClient = new Socket(this.ip, this.port);
-			out = new PrintWriter(socketClient.getOutputStream()); //flux pour envoyer
-			
-			Thread send = new Thread(new Runnable()
-			{				
-				@Override
-				public void run()
-				{
-					out.println(message);
-					out.flush();
-				}
-			});
-			send.start();
-		} 
-		catch (UnknownHostException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}		
-	}*/
-	
-	
+	public String retrieveText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void sendText(String message) {
+		// TODO Auto-generated method stub
+	}
 }

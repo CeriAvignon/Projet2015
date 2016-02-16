@@ -57,6 +57,7 @@ public class Localserver extends Fenetre implements ActionListener{
 		switch(nom) {
 		
 			case "Partie local" :
+<<<<<<< HEAD
 				new Game("Mode Local", 1024, 680, clientProfile);
 				this.dispose();
 				break;
@@ -64,6 +65,15 @@ public class Localserver extends Fenetre implements ActionListener{
 			case "Partie serveur" :
 				
 				new ServeurGame("Mode reseau ", 300, 400);
+=======
+				new Game("Mode Serveur", 1024, 680, serverList);
+				this.dispose();
+				break;
+			
+			case "Partie serveur" :
+				
+				new ServeurGame("Mode Client", 300, 400);
+>>>>>>> refs/remotes/origin/Groupe19
 				this.dispose();				
 				break;
 				
