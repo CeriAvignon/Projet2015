@@ -115,8 +115,34 @@ public class PhysSnake extends Snake
 	 * 		Serpent à recopier.
 	 */
 	public PhysSnake(PhysSnake snake)
-	{	super(snake);
+	{	// classe Snake
+		this.playerId = snake.playerId;
+		this.currentX = snake.currentX;
+		this.currentY = snake.currentY;
 		
+		this.newTrail = new TreeSet<Position>(snake.newTrail);
+		this.clearedTrail = snake.clearedTrail;
+		
+		this.currentAngle = snake.currentAngle;
+		this.headRadius = snake.headRadius;
+		this.movingSpeed = snake.movingSpeed;
+		this.turningSpeed = snake.turningSpeed;
+		
+		this.eliminatedBy = snake.eliminatedBy;
+		this.connected = snake.connected;
+		
+		this.inversion = snake.inversion;
+		this.fly = snake.fly;
+		
+		this.currentItems = new LinkedList<ItemInstance>();
+		Iterator<ItemInstance> it = snake.currentItems.iterator();
+		while(it.hasNext())
+		{	PhysItemInstance item = (PhysItemInstance)it.next();
+			PhysItemInstance copy = new PhysItemInstance(item);
+			this.currentItems.add(copy);
+		}
+		
+		// classe PhysSnake
 		this.oldTrail = new TreeSet<Position>(snake.oldTrail);
 		this.remainingHole = snake.remainingHole;
 		this.timeSinceLastHole = snake.timeSinceLastHole;

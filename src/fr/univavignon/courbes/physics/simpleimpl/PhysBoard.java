@@ -68,8 +68,26 @@ public class PhysBoard extends Board
 	 * 		L'aire de jeu à recopier.
 	 */
 	public PhysBoard(PhysBoard board)
-	{	super(board);
+	{	// classe Board
+		this.state = board.state;
+		this.hasBorder = board.hasBorder;
 		
+		this.snakes = new Snake[board.snakes.length];
+		for(int i=0;i<snakes.length;i++)
+		{	PhysSnake snake = (PhysSnake)board.snakes[i];
+			PhysSnake copy = new PhysSnake(snake);
+			this.snakes[i] = copy;
+		}
+		
+		this.items = new ArrayList<ItemInstance>();
+		Iterator<ItemInstance> it = board.items.iterator();
+		while(it.hasNext())
+		{	PhysItemInstance item = (PhysItemInstance)it.next();
+			PhysItemInstance copy = new PhysItemInstance(item);
+			this.items.add(copy);
+		}
+		
+		// classe PhysBoard
 		this.currentItems = new ArrayList<PhysItemInstance>();
 		for(PhysItemInstance item: board.currentItems)
 		{	PhysItemInstance copy = new PhysItemInstance(item);

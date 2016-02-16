@@ -19,10 +19,8 @@ package fr.univavignon.courbes.common;
  */
 
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Cette classe contient les informations et caractéristiques d'un serpent.
@@ -42,46 +40,6 @@ import java.util.TreeSet;
 public class Snake implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * Initialise un serpent vide.
-	 */
-	public Snake()
-	{	// rien à faire
-	}
-	
-	/**
-	 * Initialise une nouveau serpent en recopiant celui passé en paramètre. 
-	 * On en a besoin pour des raisons de synchronisation.
-	 * 
-	 * @param snake
-	 * 		Le serpent à recopier.
-	 */
-	public Snake(Snake snake)
-	{	this.playerId = snake.playerId;
-		this.currentX = snake.currentX;
-		this.currentY = snake.currentY;
-		
-		this.newTrail = new TreeSet<Position>(snake.newTrail);
-		this.clearedTrail = snake.clearedTrail;
-		
-		this.currentAngle = snake.currentAngle;
-		this.headRadius = snake.headRadius;
-		this.movingSpeed = snake.movingSpeed;
-		this.turningSpeed = snake.turningSpeed;
-		
-		this.eliminatedBy = snake.eliminatedBy;
-		this.connected = snake.connected;
-		
-		this.inversion = snake.inversion;
-		this.fly = snake.fly;
-		
-		this.currentItems = new LinkedList<ItemInstance>();
-		for(ItemInstance item: snake.currentItems)
-		{	ItemInstance copy = new ItemInstance(item);
-			this.currentItems.add(copy);
-		}
-	}
 	
 	/** Numéro du joueur associé à ce serpent, dans la partie en cours */
 	public int playerId;
