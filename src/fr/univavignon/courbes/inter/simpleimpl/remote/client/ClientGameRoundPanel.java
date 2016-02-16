@@ -25,12 +25,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Board.State;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.common.SmallUpdate;
 import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractRoundPanel;
@@ -38,8 +36,6 @@ import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.inter.simpleimpl.local.KeyManager;
 import fr.univavignon.courbes.network.ClientCommunication;
-import fr.univavignon.courbes.physics.simpleimpl.PhysBoard;
-import fr.univavignon.courbes.physics.simpleimpl.PhysicsEngineImpl;
 
 /**
  * Panel utilisé pour afficher le jeu proprement dit,
@@ -139,17 +135,19 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 				{	if(updateData instanceof Board)
 						round.board = (Board)updateData;
 					physicsEngine.forceUpdate(updateData);
-if(updateData instanceof SmallUpdate)
-{	SmallUpdate su = (SmallUpdate)updateData;
-	PhysBoard b = (PhysBoard)physicsEngine.getBoard();
-//	System.out.println(su.state+" vs. "+b.state);
-	if(su.state==State.REGULAR)
-		System.out.println();
-}
+//if(updateData instanceof SmallUpdate)
+//{	SmallUpdate su = (SmallUpdate)updateData;
+//	PhysBoard b = (PhysBoard)physicsEngine.getBoard();
+////	System.out.println(su.state+" vs. "+b.state);
+//	if(su.state==State.ENTRANCE)
+//		System.out.println();
+//}
 //System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);					
 //				}
 				// on met à jour les scores
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
+if(!lastEliminated.isEmpty())
+	System.out.println();
 				boolean finished = updatePoints(prevEliminated,lastEliminated);
 				if(finished)
 					finalCount = 1;

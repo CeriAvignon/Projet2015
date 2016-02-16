@@ -131,8 +131,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 * Effectue la partie tout entière, i.e. plusieurs manches.
 	 */
 	protected void playMatch()
-	{	Player[] players = round.players;
-		totalPoints = new int[players.length];
+	{	totalPoints = new int[round.players.length];
 		Arrays.fill(totalPoints, 0);
 
 		do
@@ -140,6 +139,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			playRound();
 			
 			// on met à jour les score totaux
+			Player[] players = round.players;
 			for(int i=0;i<players.length;i++)
 				totalPoints[i] = players[i].totalScore;
 

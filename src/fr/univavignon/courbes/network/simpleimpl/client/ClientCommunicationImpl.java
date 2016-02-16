@@ -22,6 +22,7 @@ import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -235,6 +236,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 			crr = new ClientReadRunnable(this);
 			Thread inThread = new Thread(crr,"Courbes-Client-In");
 			inThread.start();
+		}
+		catch(ConnectException e)
+		{	result = false;
 		}
 		catch(UnknownHostException e)
 		{	result = false;

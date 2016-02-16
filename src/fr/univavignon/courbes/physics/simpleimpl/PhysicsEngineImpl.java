@@ -79,7 +79,7 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	@Override
 	public void forceUpdate(UpdateInterface updateData)
 	{	if(updateData instanceof PhysBoard)
-			this.board = (PhysBoard)board;
+			this.board = (PhysBoard)updateData;
 		else
 		{	SmallUpdate smallUpdate = (SmallUpdate)updateData;
 			board.forceUpdate(smallUpdate);
