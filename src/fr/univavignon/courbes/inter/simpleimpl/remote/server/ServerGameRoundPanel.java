@@ -23,10 +23,10 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
@@ -110,6 +110,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
 		long finalCount = 0;							// décompte pour la toute fin de partie
+		int physUpdates = 0;							// nombre de petites màj physiques depuis la dernière grosse 
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		
@@ -128,8 +129,12 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 				completeDirections(directions);
 				// on met à jour le moteur physique et on envoie aux clients
 				physicsEngine.update(elapsedPhysTime, directions);
-				Board board = physicsEngine.getBoardCopy();
-				serverCom.sendBoard(board);
+//System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);
+				physUpdates++;
+				UpdateInterface updateData = physicsEngine.getSmallUpdate();
+				if(physUpdates==20)
+					updateData = physicsEngine.getBoardCopy();
+				serverCom.sendUpdate(updateData);
 				// on met à jour les scores
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 				boolean finished = updatePoints(prevEliminated,lastEliminated);
@@ -211,7 +216,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	private synchronized void processLostConnection(int index)
 	{	int playerId = localPlayerNbr + index;
 		round.board.snakes[playerId].connected = false;
-		clientIndices.remove(playerId);
+		clientIndices.remove(new Integer(playerId));
 		notify();
 	}
 	

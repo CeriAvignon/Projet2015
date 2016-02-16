@@ -22,6 +22,8 @@ import java.util.List;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.SmallUpdate;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
@@ -75,7 +77,17 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	}
 		
 	@Override
-	public void forceUpdate(Board board)
-	{	this.board = (PhysBoard)board;
+	public void forceUpdate(UpdateInterface updateData)
+	{	if(updateData instanceof PhysBoard)
+			this.board = (PhysBoard)board;
+		else
+		{	SmallUpdate smallUpdate = (SmallUpdate)updateData;
+			board.forceUpdate(smallUpdate);
+		}
+	}
+	
+	@Override
+	public SmallUpdate getSmallUpdate()
+	{	return(board.smallUpdate);
 	}
 }

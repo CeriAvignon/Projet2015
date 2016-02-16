@@ -56,13 +56,13 @@ public class SnakeDrawer
 	 */
 	public SnakeDrawer(int playerNbr)
 	{	images = new Image[playerNbr];
-		reset();
+		resetImages();
 		
 		// TODO on pourrait aussi, par exemple, rajouter un tirage au sort des couleurs des joueurs.
 	}
 	
 	/** images utilisées pour accélerer le tracer des serpents */
-	private Image images[];
+	private transient Image images[];
 	
 	/**
 	 * Trace tous les serpents présents dans l'aire de jeu.
@@ -88,6 +88,18 @@ public class SnakeDrawer
 				color = playerColor;
 			else
 				color = Constants.DISCO_PLAYER_COLOR;
+			
+//			// ancienne version : on dessine chaque pixel de la traine (lent)
+//			g.setColor(playerColor);
+//			for(Position position: ((PhysSnake)snake).oldTrail)
+//				g.drawLine(position.x, position.y, position.x, position.y);
+//			for(Position position: snake.newTrail)
+//				g.drawLine(position.x, position.y, position.x, position.y);
+			
+			if(images==null)
+			{	images = new Image[snakes.length];
+				resetImages();
+			}
 			
 			// on efface éventuellement l'image
 			if(snakes[playerId].clearedTrail)
@@ -265,9 +277,9 @@ public class SnakeDrawer
 
 
 	/**
-	 * Nettoie les serpents en prévision de la prochaine manche.
+	 * Nettoie les images des serpents en prévision de la prochaine manche.
 	 */
-	public void reset()
+	public void resetImages()
 	{	for(int i=0;i<images.length;i++)
 			images[i] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	}

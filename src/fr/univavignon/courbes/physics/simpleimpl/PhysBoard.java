@@ -33,6 +33,7 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
+import fr.univavignon.courbes.common.SmallUpdate;
 import fr.univavignon.courbes.common.Snake;
 
 /**
@@ -56,8 +57,6 @@ public class PhysBoard extends Board
 		totalTime = 0;
 		mustClean = false;
 		lastEliminated = new ArrayList<Integer>();
-		
-		resetCharacs();
 	}
 	
 	/**
@@ -111,6 +110,8 @@ public class PhysBoard extends Board
 	public boolean mustClean;
 	/** Liste des joueurs éliminés lors de la dernière itération */ 
 	private List<Integer> lastEliminated;
+	/** Objet représentant la dernière mise à jour minimale (pour le réseau) */
+	public SmallUpdate smallUpdate;
 	
 	/**
 	 * Initialise l'aire de jeu pour une manche.
@@ -174,6 +175,9 @@ public class PhysBoard extends Board
 	private void resetCharacs()
 	{	itemPopupRate = Constants.BASE_ITEM_POPUP_RATE;
 		hasBorder = true;
+		
+		smallUpdate = new SmallUpdate(snakes.length);
+		smallUpdate.hasBorder = hasBorder;
 	}
 	
 	/**
@@ -189,7 +193,7 @@ public class PhysBoard extends Board
 	{	// on réinitialise les paramètres de l'aire de jeu susceptibles de changer à chaque itération
 		resetCharacs();
 		
-		// si on est au début de jeu, on met l'état
+		// si on est au début de jeu, on met l'état à jour 
 		updateState(elapsedTime);
 		
 		// on met à jour les items (items encore en jeu et items collectifs ramassés)
@@ -201,6 +205,9 @@ public class PhysBoard extends Board
 		// si nécessaire, on nettoie l'aire de jeu des trainées des serpents 
 		if(mustClean)
 			cleanSnakes();
+		
+		// on finalise l'objet de mise à jour
+		completeSmallUpdate();
 	}
 	
 	/**
@@ -230,13 +237,23 @@ public class PhysBoard extends Board
 	 */
 	private void updateItems(long elapsedTime)
 	{	// màj des items présents dans l'aire de jeu
-		{	Iterator<ItemInstance> it = items.iterator();
+		{	// on réalise la mise à jour des items
+			Iterator<ItemInstance> it = items.iterator();
+			int i = 0;
+			List<Integer> removedItems = new ArrayList<Integer>();
 			while(it.hasNext())
 			{	PhysItemInstance item = (PhysItemInstance)it.next();
 				boolean remove = item.updateLife(elapsedTime);
 				if(remove)
-					it.remove();
+				{	it.remove();
+					removedItems.add(i);
+				}
+				i++;
 			}
+			// on indique dans l'objet de mise à jour ceux qui sont supprimés
+			smallUpdate.removedItems = new int[removedItems.size()];
+			for(i=0;i<removedItems.size();i++)
+				smallUpdate.removedItems[i] = removedItems.get(i);
 		}
 		
 		// màj des items collectifs déjà ramassés par des joueurs
@@ -254,7 +271,10 @@ public class PhysBoard extends Board
 		if(items.size()<Constants.MAX_ITEM_NBR && state==State.REGULAR && p<itemPopupRate*elapsedTime)
 		{	PhysItemInstance item = generateItem();
 			if(item!=null)
-				items.add(item);
+			{	items.add(item);
+				// on ajoute le nouvel item dans l'objet de mise à jour
+				smallUpdate.newItem = new PhysItemInstance(item);
+			}
 		}
 	}
 	
@@ -406,5 +426,82 @@ public class PhysBoard extends Board
 	 */
 	public List<Integer> getEliminatedPlayers()
 	{	return lastEliminated;
+	}
+	
+	/**
+	 * Finalise l'objet utilisé pour effectuer des mises à jour minimales.
+	 */
+	private void completeSmallUpdate()
+	{	smallUpdate.state = state;
+		smallUpdate.hasBorder = hasBorder;
+		
+		for(int i=0;i<snakes.length;i++)
+		{	PhysSnake snake = (PhysSnake)snakes[i];
+			smallUpdate.clearedTrail[i] = snake.clearedTrail;
+			smallUpdate.posX[i] = snake.realX;
+			smallUpdate.posY[i] = snake.realY;
+			smallUpdate.headRadiuses[i] = snake.headRadius;
+			smallUpdate.eliminatedBy[i] = snake.eliminatedBy;
+			smallUpdate.connected[i] = snake.connected;
+			smallUpdate.fly[i] = snake.fly;
+			{	ItemInstance[] ci = new ItemInstance[snake.currentItems.size()];
+				Iterator<ItemInstance> it = snake.currentItems.iterator();
+				int j = 0;
+				while(it.hasNext())
+				{	PhysItemInstance item = (PhysItemInstance)it.next();
+					ci[j] = new PhysItemInstance(item);
+					j++;
+				}
+				smallUpdate.currentItems.add(ci);
+			}
+			TreeSet<Position> nt = new TreeSet<Position>(snake.newTrail);
+			smallUpdate.newTrails.add(nt);
+		}
+		
+		smallUpdate.lastEliminated = new int[lastEliminated.size()];
+		for(int i=0;i<lastEliminated.size();i++)
+			smallUpdate.lastEliminated[i] = lastEliminated.get(i);
+	}
+	
+	/**
+	 * Effectue une mise à jour minimale basée sur les données
+	 * transmises en paramètre.
+	 * 
+	 * @param smallUpdate
+	 * 		Données minimales nécessaires à une mise à jour de l'aire de jeu.
+	 */
+	public void forceUpdate(SmallUpdate smallUpdate)
+	{	// aire de jeu
+		state = smallUpdate.state;
+		hasBorder = smallUpdate.hasBorder;
+		
+		// items
+		for(int i: smallUpdate.removedItems)
+			currentItems.remove(i);
+		if(smallUpdate.newItem!=null)
+			currentItems.add((PhysItemInstance)smallUpdate.newItem);
+		
+		// serpents
+		for(int i=0;i<snakes.length;i++)
+		{	PhysSnake snake = (PhysSnake)snakes[i];
+			snake.clearedTrail = smallUpdate.clearedTrail[i];
+			snake.realX = smallUpdate.posX[i];
+			snake.realY = smallUpdate.posY[i];
+			snake.currentX = (int)Math.round(snake.realX);
+			snake.currentY = (int)Math.round(snake.realY);
+			snake.headRadius = smallUpdate.headRadiuses[i];
+			snake.eliminatedBy = smallUpdate.eliminatedBy[i];
+			snake.connected = smallUpdate.connected[i];
+			snake.fly = smallUpdate.fly[i];
+			snake.newTrail.clear();
+			snake.newTrail.addAll(smallUpdate.newTrails.get(i));
+			snake.currentItems.clear();
+			for(ItemInstance ii: smallUpdate.currentItems.get(i))
+				snake.currentItems.offer(ii);
+		}
+		
+		lastEliminated = new ArrayList<Integer>();
+		for(int i: smallUpdate.lastEliminated)
+			lastEliminated.add(i);
 	}
 }

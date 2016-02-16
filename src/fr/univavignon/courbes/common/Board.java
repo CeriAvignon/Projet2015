@@ -18,7 +18,6 @@ package fr.univavignon.courbes.common;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ import java.util.List;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public abstract class Board implements Serializable
+public abstract class Board implements UpdateInterface
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	

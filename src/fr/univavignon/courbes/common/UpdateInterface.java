@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network;
+package fr.univavignon.courbes.common;
 
 /*
  * Courbes
@@ -21,16 +21,13 @@ package fr.univavignon.courbes.network;
 import java.io.Serializable;
 
 /**
- * Classe spécifiquement conçue pour représenter les données du jeu 
- * transmises à chaque itération. On ne transmet pas l'aire de jeu entière
- * afin d'optimiser les échanges : on se consacre sur ce qui change d'une itération
- * à l'autre.
+ * Objet utilisé pour faire la mise à jour du jeu à travers
+ * le réseau, pendant une partie. Peut être carrément toute l'aire
+ * de jeu {@link Board} (grosse mise à jour) ou bien un objet plus petit de 
+ * classe {@link SmallUpdate} (petite mise à jour).
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class NetData implements Serializable
-{	/** Numéro de série (pour {@code Serializable}) */
-	private static final long serialVersionUID = 1L;
-	
-	// TODO
+public interface UpdateInterface extends Serializable
+{	// pas de méthodes dans cette interface
 }

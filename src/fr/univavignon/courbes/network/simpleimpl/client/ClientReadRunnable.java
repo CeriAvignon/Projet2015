@@ -29,9 +29,9 @@ import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
 
 /**
  * Classe chargée de lire en permanence sur le flux d'entrée du client.
@@ -89,9 +89,10 @@ public class ClientReadRunnable implements Runnable
 					else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
 						clientCom.gotKicked();
 				}
-				else if(object instanceof Board)
-				{	Board board = (Board)object;
-					boards.offer(board);
+				else if(object instanceof UpdateInterface)
+				{	UpdateInterface ud = (UpdateInterface)object;
+					updateData.offer(ud);
+					//System.out.println(boards.size());					
 				}
 				else if(object instanceof Integer)
 				{	Integer integer = (Integer)object;
@@ -168,7 +169,7 @@ public class ClientReadRunnable implements Runnable
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
 	/** File des aires de jeu reçues du serveur et en attente de récupération par l'Interface Utilisateur */
-	protected Queue<Board> boards = new ConcurrentLinkedQueue<Board>();
+	protected Queue<UpdateInterface> updateData = new ConcurrentLinkedQueue<UpdateInterface>();
 	/** File des limites de points reçues du serveur et en attente de récupération par l'Interface Utilisateur */
 	protected Queue<Integer> pointsLimits = new ConcurrentLinkedQueue<Integer>();
 }

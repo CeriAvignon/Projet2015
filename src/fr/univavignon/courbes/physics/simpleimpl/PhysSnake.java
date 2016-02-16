@@ -168,9 +168,9 @@ public class PhysSnake extends Snake
 	/** Taille courante d'un trou (en pixels) */
 	public int currentHoleWidth;
 	/** Position en abscisse de la tête exprimée avec un réel */
-	private float realX;
+	public float realX;
 	/** Position en ordonnée de la tête exprimée avec un réel */
-	private float realY;
+	public float realY;
 	/** File contenant les derniers disques tracés pour représenter la trainée du serpent (utilisée pour les collisions) */
 	public LinkedList<Set<Position>> prevDisks;
 	/** Position <i>non-normalisée</i> à l'itération précédente */

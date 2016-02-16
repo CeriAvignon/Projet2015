@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
 import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
@@ -304,8 +304,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	}
 
 	@Override
-	public Board retrieveBoard()
-	{	Board result = crr.boards.poll();
+	public UpdateInterface retrieveUpdate()
+	{	UpdateInterface result = crr.updateData.poll();
 		return result;
 	}
 	

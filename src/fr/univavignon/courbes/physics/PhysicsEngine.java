@@ -22,6 +22,8 @@ import java.util.List;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.SmallUpdate;
+import fr.univavignon.courbes.common.UpdateInterface;
 
 /**
  * Ensemble de méthodes permettant à l'Interface Utilisateur de 
@@ -93,7 +95,7 @@ public interface PhysicsEngine
 	 * le temps écoulé depuis la dernière mise à jour. Le Moteur Physique
 	 * doit pour cela modifier l'objet de type {@link Board} représentant
 	 * l'aire de jeu, qui avait été initialisé par {@link #init}
-	 * (ou par {@link #forceUpdate(Board)}.
+	 * (ou par {@link #forceUpdate}.
 	 * <br/>
 	 * Le paramètre {@code commands} représente les dernières commandes générées
 	 * par les joueurs. La map associe un ID de joueur à sa commande.
@@ -129,8 +131,17 @@ public interface PhysicsEngine
 	 * Le remplacement doit se faire de manière à ne pas induire de modification 
 	 * dans le traitement effectué par les autres composantes.
 	 * 
-	 * @param board
-	 * 		Nouvelle aire de jeu, devant remplacer l'aire de jeu courante.
+	 * @param updateData
+	 * 		Données utilisées pour mettre à jour la partie courante.
 	 */
-	public void forceUpdate(Board board);
+	public void forceUpdate(UpdateInterface updateData);
+	
+	/**
+	 * Renvoie un objet plus petit que l'aire de jeu entière, qui contient les données
+	 * minimales nécessaires au client pour effectuer une mise à jour.
+	 * 
+	 * @return
+	 * 		Données minimales pour une mise à jour côté client.
+	 */
+	public SmallUpdate getSmallUpdate();
 }

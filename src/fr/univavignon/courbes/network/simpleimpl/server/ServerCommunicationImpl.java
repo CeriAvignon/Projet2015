@@ -33,11 +33,11 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
@@ -476,8 +476,8 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	}
 	
 	@Override
-	public void sendBoard(Board board)
-	{	sendObject(board);
+	public void sendUpdate(UpdateInterface updateData)
+	{	sendObject(updateData);
 	}
 	
 	@Override

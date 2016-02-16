@@ -18,10 +18,10 @@ package fr.univavignon.courbes.network;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
@@ -188,10 +188,10 @@ public interface ServerCommunication
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
      * parallèle de l'exécution du jeu. 
     * 
-     * @param board
+     * @param updateData
      * 		Etat courant de l'aire de jeu.
      */
-	public void sendBoard(Board board);
+	public void sendUpdate(UpdateInterface updateData);
 	
 	/**
 	 * Indique que la manche est sur le point de démarrer, cloturant

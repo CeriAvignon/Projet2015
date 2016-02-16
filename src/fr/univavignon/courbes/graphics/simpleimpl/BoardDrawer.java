@@ -121,6 +121,6 @@ public class BoardDrawer
 	 * Nettoie l'aire de jeu en prévision de la prochaine manche.
 	 */
 	public void reset()
-	{	snakesDrawer.reset();
+	{	snakesDrawer.resetImages();
 	}
 }

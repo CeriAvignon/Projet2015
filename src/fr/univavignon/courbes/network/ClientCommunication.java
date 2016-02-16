@@ -18,9 +18,9 @@ package fr.univavignon.courbes.network;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
 import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
@@ -205,11 +205,11 @@ public interface ClientCommunication
      * avant de pouvoir continuer son exécution. La transmission doit se faire en
      * parallèle de l'exécution du jeu. 
     * 
-     * @return board
+     * @return
      * 		Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      * 		n'a été envoyée.
      */
-	public Board retrieveBoard();
+	public UpdateInterface retrieveUpdate();
 
 	/**
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
