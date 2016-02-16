@@ -529,5 +529,13 @@ public class MyPhysicsEngine implements PhysicsEngine{
 				System.out.println("Error ???");
 				break;
 		}
+	}
+
+
+
+	@Override
+	public Board initDemo(int width, int height, int[] profileIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }
