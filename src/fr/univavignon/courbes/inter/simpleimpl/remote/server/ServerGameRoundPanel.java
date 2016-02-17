@@ -178,9 +178,11 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	 */
 	private void completeDirections(Direction[] localDirections)
 	{	Direction[] clientDirections = serverCom.retrieveCommands();
-		int j = 0;
-		for(int i: clientIndices)
-			localDirections[i] = clientDirections[j];
+		if(clientDirections!=null)
+		{	int j = 0;
+			for(int i: clientIndices)
+				localDirections[i] = clientDirections[j];
+		}
 	}
 	
 	@Override
@@ -190,6 +192,9 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		
 		// on transmet aux clients
 		serverCom.sendRound(round);
+		
+		// on vide le buffer des màj qui y sont encore stockées
+		while(serverCom.retrieveCommands()!=null);
 		
 		// on attend que les clients soient prêts (attente passive)
 		while(readyClientNbr<clientIndices.size())

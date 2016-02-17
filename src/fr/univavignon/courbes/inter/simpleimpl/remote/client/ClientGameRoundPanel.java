@@ -212,6 +212,9 @@ if(!lastEliminated.isEmpty())
 		// on force le moteur physique à utiliser l'aire de jeu reçue du serveur
 		physicsEngine.setBoard(round.board);
 		
+		// on vide le buffer des màj qui y sont encore stockées
+		while(clientCom.retrieveUpdate()!=null);
+		
 		// on indique au serveur qu'on est prêt
 		clientCom.sendAcknowledgment();
 	}

@@ -449,6 +449,16 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 			}
 		}
 		
+		// si aucune direction autre que NONE, on renvoie null
+		boolean none = true;
+		int i = 0;
+		while(none && i<result.length)
+		{	none = result[i]==Direction.NONE;
+			i++;
+		}
+		if(none)
+			result = null;
+		
 		return result;
 	}
 	

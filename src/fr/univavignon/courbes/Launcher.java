@@ -86,7 +86,6 @@ public class Launcher extends JFrame
  * - on pourrait reproduire l'animation d'apparition des items
  * 
  * - pr réseau :
- * 		- réinitialiser la direction du joueur local client en début de nouvelle manche
  * 		- les items n'apparaissent pas chez client
  * 		- traces restent chez client d'un round à l'autre
  * 		- client déconnecté pas marqué comme tel (pas couleur grise pdt jeu)
