@@ -45,6 +45,9 @@ import fr.univavignon.courbes.common.Round;
  * le panel pourrait tout aussi bien être dessiné entièrement, pour
  * obtenir un rendu similaire à celui du jeu original, et avec des
  * animations.
+ * <br/>
+ * <b>Remarque :</b> la mis en forme pourrait grandement être améliorée
+ * pour ressembler plus au jeu original.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -238,6 +241,4 @@ public class ScorePanel extends JPanel
 			return result;
 		}
 	};
-	
-	// TODO la mise en forme pourrait être grandement améliorée pour coller plus au jeu original
 }

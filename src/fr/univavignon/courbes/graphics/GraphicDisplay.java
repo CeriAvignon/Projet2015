@@ -67,8 +67,7 @@ public interface GraphicDisplay
 	
 	/**
 	 * L’Interface Utilisateur invoque cette fonction à la fin de la manche,
-	 * pour demander l'affichage de son gagnant. Si la partie est terminée,
-	 * il faut plutot afficher le classement final et les scores définitifs.
+	 * pour réinitialiser le moteur graphique dans l'optique d'une nouvelle manche.
 	 */
 	public void reset();
 }

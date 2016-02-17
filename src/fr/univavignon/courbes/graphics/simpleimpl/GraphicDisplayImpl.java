@@ -56,14 +56,31 @@ public class GraphicDisplayImpl implements GraphicDisplay
 		scorePanel = new ScorePanel(playerNbr);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////	PANELS
+	////////////////////////////////////////////////////////////////
 	/** Panel utilisé pour afficher l'aire de jeu */
 	private BoardPanel boardPanel;
-	/** Image dans laquelle on dessine */
-	private Image image;
-	/** Objet utilisé pour dessiner dans l'image cache */
-	private BoardDrawer boardDrawer;
 	/** Panel utilisé pour afficher le score */
 	private ScorePanel scorePanel;
+	
+	@Override
+	public JPanel getBoardPanel()
+	{	return boardPanel;
+	}
+	
+	@Override
+	public JPanel getScorePanel()
+	{	return scorePanel;	
+	}
+	
+	////////////////////////////////////////////////////////////////
+	////	METHODES DE TRACE
+	////////////////////////////////////////////////////////////////
+	/** Objet utilisé pour dessiner dans l'image cache */
+	private BoardDrawer boardDrawer;
+	/** Image dans laquelle on dessine */
+	private Image image;
 	
 	@Override
 	public void update(Round round)
@@ -99,16 +116,6 @@ public class GraphicDisplayImpl implements GraphicDisplay
 			again = ((VolatileImage)image).contentsLost();
 		}
 		while(again);
-	}
-	
-	@Override
-	public JPanel getBoardPanel()
-	{	return boardPanel;
-	}
-	
-	@Override
-	public JPanel getScorePanel()
-	{	return scorePanel;	
 	}
 	
 	@Override

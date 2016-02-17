@@ -37,7 +37,9 @@ import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
- * Classe fille de ClientCommunication, elle en implémente toutes les méthodes.
+ * Implémentation de la classe {@link ClientCommunication}. Elle se repose
+ * sur deux autres classes pour les entrées ({@link ClientReadRunnable}) et 
+ * les sorties ({@link ClientWriteRunnable}).
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -329,12 +331,6 @@ public class ClientCommunicationImpl implements ClientCommunication
 	public void sendProfile(Profile profile)
 	{	if(cwr!=null)
 			cwr.objects.offer(profile);
-	}
-
-	@Override
-	public void requestProfiles()
-	{	if(cwr!=null)
-			cwr.objects.offer(NetworkConstants.REQUEST_PROFILES);
 	}
 	
 	@Override

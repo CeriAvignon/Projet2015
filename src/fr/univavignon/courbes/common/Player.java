@@ -31,24 +31,39 @@ public class Player implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	////////////////////////////////////////////////////////////////
+	////	IDENTIFICATION
+	////////////////////////////////////////////////////////////////
 	/** Profil du joueur dans le jeu, en général */
 	public Profile profile;
 	/** Numéro unique du joueur dans la partie en cours */
 	public int playerId;
 
+	////////////////////////////////////////////////////////////////
+	////	RESEAU
+	////////////////////////////////////////////////////////////////
 	/** Indique si le joueur est local ({@code true}) ou distant ({@code false}) */
 	public boolean local;
 	
+	////////////////////////////////////////////////////////////////
+	////	SCORE
+	////////////////////////////////////////////////////////////////
 	/** Score total du joueur dans la partie courante, <i>avant</i> la manche courante */
 	public int totalScore;
 	/** Score partiel du joueur pour la manche courante */
 	public int roundScore;
 	
+	////////////////////////////////////////////////////////////////
+	////	COMMANDES
+	////////////////////////////////////////////////////////////////
 	/** Numéro de la touche utilisée par le joueur pour aller à gauche */
 	public int leftKey;
 	/** Numéro de la touche utilisée par le joueur pour aller à droite */
 	public int rightKey;
 	
+	////////////////////////////////////////////////////////////////
+	////	TEXTE
+	////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
 	{	StringBuffer result = new StringBuffer();

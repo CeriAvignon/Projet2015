@@ -73,7 +73,7 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 		clientCom.setProfileHandler(this);
 		Player player = mainWindow.clientPlayer;
 		mainWindow.clientCom.sendProfile(player.profile);
-//		clientCom.requestProfiles();//TODO plus besoin de requestProfile
+//		clientCom.requestProfiles();
 		
 		super.init(title);
 		nextButton.setEnabled(false);
@@ -182,22 +182,28 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 	}
 
 	@Override
-	public void updateProfiles(Profile[] profiles)
-	{	// on met à jour le panel de manière à refléter les derniers changements
-		for(int i=0;i<profiles.length;i++)
-		{	RemotePlayerConfigPanel rpcp;
-			if(selectedProfiles.size()>i)
-				rpcp = selectedProfiles.get(i);
-			else
-			{	rpcp = new RemotePlayerConfigPanel(this,false);
-				selectedProfiles.add(rpcp);
-				playersPanel.add(rpcp);
+	public void updateProfiles(final Profile[] profiles)
+	{	final ClientGameWaitPanel panel = this;
+		SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	// on met à jour le panel de manière à refléter les derniers changements
+				for(int i=0;i<profiles.length;i++)
+				{	RemotePlayerConfigPanel rpcp;
+					if(selectedProfiles.size()>i)
+						rpcp = selectedProfiles.get(i);
+					else
+					{	rpcp = new RemotePlayerConfigPanel(panel,false);
+						selectedProfiles.add(rpcp);
+						playersPanel.add(rpcp);
+					}
+					rpcp.setProfile(profiles[i]);
+				}
+				
+				validate();
+				repaint();
 			}
-			rpcp.setProfile(profiles[i]);
-		}
-		
-		validate();
-		repaint();
+	    });
 	}
 
 	@Override

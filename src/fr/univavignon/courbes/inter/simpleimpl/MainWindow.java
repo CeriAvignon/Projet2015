@@ -29,6 +29,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
@@ -217,21 +218,27 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	}
 	
 	@Override
-	public void displayError(String errorMessage)
-	{	JOptionPane.showMessageDialog(this, errorMessage, "Erreur", JOptionPane.WARNING_MESSAGE);
-		System.out.println("ERROR: "+errorMessage);
+	public void displayError(final String errorMessage)
+	{	final MainWindow window = this;
+		SwingUtilities.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	JOptionPane.showMessageDialog(window, errorMessage, "Erreur", JOptionPane.WARNING_MESSAGE);
+				System.out.println("ERROR: "+errorMessage);
+			}
+		});
 	}
-
+	
 	@Override
 	public void windowOpened(WindowEvent e)
 	{	// pas utilisé
 	}
-
+	
 	@Override
 	public void windowClosing(WindowEvent e)
 	{	closeWindow();
 	}
-
+	
 	@Override
 	public void windowClosed(WindowEvent e)
 	{	// pas utilisé
@@ -241,17 +248,17 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	public void windowIconified(WindowEvent e)
 	{	// pas utilisé
 	}
-
+	
 	@Override
 	public void windowDeiconified(WindowEvent e)
 	{	// pas utilisé
 	}
-
+	
 	@Override
 	public void windowActivated(WindowEvent e)
 	{	// pas utilisé
 	}
-
+	
 	@Override
 	public void windowDeactivated(WindowEvent e)
 	{	// pas utilisé

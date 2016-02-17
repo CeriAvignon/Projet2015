@@ -308,8 +308,8 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	
 	@Override
 	protected synchronized void previousStep()
-	{	serverCom.closeServer();	//TODO vérifier que ceci provoque bien une déconnexion propre chez les clients (retour au menu principal)
-		mainWindow.serverCom = null;	// TODO opération à reproduire quand la partie se termine
+	{	serverCom.closeServer();
+		mainWindow.serverCom = null;
 		mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
 	}
 	

@@ -126,7 +126,6 @@ public class ClientWriteRunnable implements Runnable
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
 	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le serveur */
+//	protected Queue<Object> objects = new LinkedBlockingQueue<Object>();
 	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
 }
-
-//TODO utiliser notify pour endormir/réveiller le thread au lieu de boucle vide?

@@ -62,6 +62,8 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	private ClientCommunication clientCom;
 	/** Numéro du joueur local */
 	private int localPlayerId;
+	/** Indique si l'objet représentant la prochaine manche a été reçu */
+	private boolean newRoundReceived = false;
 	
 	@Override
 	protected synchronized void init()
@@ -91,12 +93,15 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	{	// on joue la rencontre (i.e. plusieurs manches)
 		playMatch();
 		
-		// TODO la mise à jour des stats irait ici
+		// TODO la mise à jour des stats devrait aller ici
+		// (soit calcul local, soit synchronisation avec le serveur)
 		
 		// on repart au menu principal
 		clientCom.closeClient();
 		clientCom.setGameHandler(null);
 		mainWindow.clientCom = null;
+		mainWindow.currentRound = null;
+		mainWindow.clientPlayer = null;
 		mainWindow.displayPanel(PanelName.MAIN_MENU);
 	}
 	
@@ -111,6 +116,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		long finalCount = 0;							// décompte pour la toute fin de partie
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
+		newRoundReceived = false;
 		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
@@ -124,7 +130,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
 			{	// on envoie les commandes au serveur
 				Direction[] directions = keyManager.retrieveDirections();
-				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE...
+				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE (auquel cas on n'enverrait rien)
 				// on met à jour le moteur physique
 				UpdateInterface updateData = clientCom.retrieveUpdate();
 				if(updateData==null)
@@ -195,11 +201,13 @@ if(!lastEliminated.isEmpty())
 		super.resetRound();
 		
 		// on attend d'avoir récupèré l'aire de jeu (attente passive)
-		try
-		{	wait();
-		}
-		catch (InterruptedException e)
-		{	e.printStackTrace();
+		if(!newRoundReceived)
+		{	try
+			{	wait();
+			}
+			catch (InterruptedException e)
+			{	e.printStackTrace();
+			}
 		}
 		// on force le moteur physique à utiliser l'aire de jeu reçue du serveur
 		physicsEngine.setBoard(round.board);
@@ -210,7 +218,9 @@ if(!lastEliminated.isEmpty())
 
 	@Override
 	public synchronized void fetchRound(Round round)
-	{	// on adapte la manche au joueur local
+	{	newRoundReceived = true;
+		
+		// on adapte la manche au joueur local
 		for(int i=0;i<this.round.players.length;i++)
 		{	if(i==localPlayerId)
 			{	round.players[i].local = true;
@@ -248,5 +258,3 @@ if(!lastEliminated.isEmpty())
 	    });
 	}
 }
-//TODO ya probablement un pb de mise à jour des scores si divergence localement du moteur physique
-//TODO faudrait passer toutes les données relatives au moteur physique (pas de transcient?)

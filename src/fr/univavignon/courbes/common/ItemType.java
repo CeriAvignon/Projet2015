@@ -30,13 +30,20 @@ import java.io.Serializable;
  * @author	L3 Info UAPV 2015-16
  */
 public enum ItemType implements Serializable
-{	/** Le joueur qui ramasse l'item accélère (bonus) */
+{	
+	////////////////////////////////////////////////////////////////
+	////	EFFET SUR SOI
+	////////////////////////////////////////////////////////////////
+	/** Le joueur qui ramasse l'item accélère (bonus) */
 	USER_FAST(3000l,new Color(168,211,117)),
 	/** Le joueur qui ramasse l'item ralentit (bonus) */
 	USER_SLOW(10000l,new Color(168,211,117)),
 	/** Le joueur qui ramasse l'item vole au dessus des obstacles (bonus) */
 	USER_FLY(6000l,new Color(168,211,117)),
 	
+	////////////////////////////////////////////////////////////////
+	////	EFFET SUR LES AUTRES JOUEURS
+	////////////////////////////////////////////////////////////////
 	/** Les autres joueurs accélèrent (malus) */
 	OTHERS_FAST(3000l,new Color(227,103,103)),
 	/** Les autres joueurs laissent des trainées plus épaisses (malus) */
@@ -46,6 +53,9 @@ public enum ItemType implements Serializable
 	/** Les commandes des autres joueurs sont inversées (malus) */
 	OTHERS_REVERSE(5000l,new Color(227,103,103)),
 	
+	////////////////////////////////////////////////////////////////
+	////	EFFET SUR TOUS
+	////////////////////////////////////////////////////////////////
 	/** La probabilité d'apparition d'un item augmente */
 	COLLECTIVE_WEALTH(60000l,new Color(106,156,207)),
 	/** Tous les joueurs peuvent traverser les murs d'enceinte */
@@ -69,6 +79,6 @@ public enum ItemType implements Serializable
 	/** Durée associée à l'effet de l'item, exprimée en ms */
 	public long duration;
 	
-	/** Couleur associée à l'item */ //TODO devraient en fait être pastels
+	/** Couleur associée à l'item */
 	public Color color;
 }

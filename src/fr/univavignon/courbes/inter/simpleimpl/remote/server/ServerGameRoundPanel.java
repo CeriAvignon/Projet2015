@@ -98,6 +98,8 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		// on repart au menu principal
 		serverCom.closeServer();
 		serverCom.setGameHandler(null);
+		mainWindow.serverCom = null;
+		mainWindow.currentRound= null;
 		mainWindow.displayPanel(PanelName.MAIN_MENU);
 	}
 	
@@ -113,6 +115,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		int physUpdates = 0;							// nombre de petites màj physiques depuis la dernière grosse 
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
+		readyClientNbr = 0;
 		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
@@ -186,7 +189,6 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		super.resetRound();
 		
 		// on transmet aux clients
-		readyClientNbr = 0;
 		serverCom.sendRound(round);
 		
 		// on attend que les clients soient prêts (attente passive)

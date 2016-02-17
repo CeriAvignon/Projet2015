@@ -31,45 +31,33 @@ public class Profile implements Serializable, Comparable<Profile>
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
-//	/**
-//	 * Crée un nouveau profil, vide. TODO
-//	 */
-//	public Profile()
-//	{
-//		//
-//	}
-//	
-//	/**
-//	 * Crée un nouveau profil qui est une copie de
-//	 * celui passé en paramètre.
-//	 *  
-//	 * @param profile
-//	 * 		Profil à recopier.
-//	 */
-//	public Profile(Profile profile)
-//	{	this.profileId = profile.profileId;
-//		this.eloRank = profile.eloRank;
-//		this.email = profile.email;
-//		this.userName = profile.userName;
-//		this.password = profile.password;
-//		this.country = profile.country;
-//	}
-	
+	////////////////////////////////////////////////////////////////
+	////	IDENTIFICATION
+	////////////////////////////////////////////////////////////////
 	/** Numéro unique du profil dans la BD du jeu */
 	public int profileId;
+	/** Mot de passe associé au profil */
+	public String password;
 	
+	////////////////////////////////////////////////////////////////
+	////	STATS
+	////////////////////////////////////////////////////////////////
 	/** Rang ELO du profil relativement à toutes les parties qu'il a jouées */
 	public int eloRank;
 	
+	////////////////////////////////////////////////////////////////
+	////	DETAILS PERSO
+	////////////////////////////////////////////////////////////////
 	/** Adresse email associée au profil */
 	public String email;
 	/** Nom d'utilisateur associé au profil */
 	public String userName;
-	/** Mot de passe associé au profil */
-	public String password;
 	/** Pays associé au profil */
 	public String country;
 	
+	////////////////////////////////////////////////////////////////
+	////	COMPARAISON
+	////////////////////////////////////////////////////////////////
 	@Override
 	public int compareTo(Profile profile)
 	{	int result = profileId - profile.profileId;
@@ -88,6 +76,9 @@ public class Profile implements Serializable, Comparable<Profile>
 		return result;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	TEXTE
+	////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
 	{	return userName;

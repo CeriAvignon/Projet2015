@@ -34,14 +34,19 @@ public abstract class ItemInstance implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	////////////////////////////////////////////////////////////////
+	////	POSITION
+	////////////////////////////////////////////////////////////////
 	/** Position sur l'axe des abscisses */
 	public int x;
 	/** Position sur l'axe des ordonnées */
 	public int y;
 	
+	////////////////////////////////////////////////////////////////
+	////	AUTRES
+	////////////////////////////////////////////////////////////////
 	/** Type d'item */
 	public ItemType type;
-	
 	/** Durée restante (en ms) : soit d'affichage si l'item est en jeu, soit d'effet si l'item a été ramassé */
 	public long remainingTime;
 }

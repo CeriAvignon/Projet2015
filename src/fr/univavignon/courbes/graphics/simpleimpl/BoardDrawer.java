@@ -46,11 +46,17 @@ public class BoardDrawer
 		itemDrawer = new ItemDrawer();
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	OBJETS AUXILIAIRES
+	////////////////////////////////////////////////////////////////
 	/** Objet utilisé pour dessiner les serpents et leurs auréoles */
 	private SnakeDrawer snakesDrawer;
 	/** Objet utilisé pour dessiner les items présents sur l'aire de jeu */
 	private ItemDrawer itemDrawer;
 	
+	////////////////////////////////////////////////////////////////
+	////	METHODES DE TRACE
+	////////////////////////////////////////////////////////////////
 	/**
 	 * Trace la bordure de l'aire de jeu, qui empêche les serpents
 	 * de traverser les limites de l'aire de jeu pour réapparaitre

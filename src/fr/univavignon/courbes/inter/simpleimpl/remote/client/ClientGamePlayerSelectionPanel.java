@@ -97,6 +97,3 @@ public class ClientGamePlayerSelectionPanel extends AbstractLocalPlayerSelection
 		}
 	}
 }
-
-//TODO à chaque écran, il faut traiter le cas où le serveur se déconnecte
-//TODO pareil pour le serveur: traiter le cas où un client se déconnecte

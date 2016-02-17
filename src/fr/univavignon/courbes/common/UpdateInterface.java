@@ -29,5 +29,6 @@ import java.io.Serializable;
  * @author	L3 Info UAPV 2015-16
  */
 public interface UpdateInterface extends Serializable
-{	// pas de méthodes dans cette interface
+{	
+	// pas de méthode dans cette interface
 }

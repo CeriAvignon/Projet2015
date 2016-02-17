@@ -131,5 +131,6 @@ public class ServerWriteRunnable implements Runnable
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
 	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le client */
+//	protected Queue<Object> objects = new LinkedBlockingQueue<Object>();
 	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
 }

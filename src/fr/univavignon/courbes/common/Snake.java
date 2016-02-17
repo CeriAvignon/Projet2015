@@ -41,19 +41,31 @@ public class Snake implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	////////////////////////////////////////////////////////////////
+	////	IDENTIFICATION
+	////////////////////////////////////////////////////////////////
 	/** Numéro du joueur associé à ce serpent, dans la partie en cours */
 	public int playerId;
 	
+	////////////////////////////////////////////////////////////////
+	////	POSITION
+	////////////////////////////////////////////////////////////////
 	/** Position courante de la tête du serpent en abscisse */
 	public int currentX;
 	/** Position courante de la tête du serpent en ordonnée */
 	public int currentY;
 	
+	////////////////////////////////////////////////////////////////
+	////	TRAINE
+	////////////////////////////////////////////////////////////////
 	/** Nouvelle partie de la trainée du serpent sur l'aire de jeu */
 	public Set<Position> newTrail;
 	/** Indique si la trainée du serpent a été réinitialisée lors de la dernière itération */
 	public boolean clearedTrail;
 
+	////////////////////////////////////////////////////////////////
+	////	DONNEES PHYSIQUES
+	////////////////////////////////////////////////////////////////
 	/** Angle représentant la direction de déplacement courante du serpent, par rapport à l'horizontale */
 	public float currentAngle;
 	/** Rayon de la tête du serpent, en pixels */
@@ -63,16 +75,21 @@ public class Snake implements Serializable
 	/** Vitesse à laquelle le serpent change de direction, exprimée en radians par ms */
 	public float turningSpeed;
 	
+	////////////////////////////////////////////////////////////////
+	////	ETAT
+	////////////////////////////////////////////////////////////////
 	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, {@code i} si collision avec le joueur numéro {@code i} */
 	public Integer eliminatedBy;
 	/** Etat de connexion du serpent : {@code false} il est distant et déconnecté, {@code true} il est distant connecté ou local */
 	public boolean connected;
 	
+	////////////////////////////////////////////////////////////////
+	////	ITEMS
+	////////////////////////////////////////////////////////////////
+	/** File contenant les items affectant actuellement ce serpent */
+	public Queue<ItemInstance> currentItems;
 	/**Inversion des commandes : {@code false} le serpent est dirigé normalement, {@code true} ses commandes sont inversées */
 	public boolean inversion;
 	/** Mode avion ({@code true}) ou pas ({@code false}) (effet de l'item {@link ItemType#USER_FLY}) */
 	public boolean fly;
-	
-	/** File contenant les items affectant actuellement ce serpent */
-	public Queue<ItemInstance> currentItems;
 }

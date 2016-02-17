@@ -32,18 +32,28 @@ import java.util.Map;
  * @author	L3 Info UAPV 2015-16
  */
 public class Constants
-{	/** Largeur de l'aire de jeu standard */
+{	
+	////////////////////////////////////////////////////////////////
+	////	AIRE DE JEU
+	////////////////////////////////////////////////////////////////
+	/** Largeur de l'aire de jeu standard */
 	public static final int BOARD_WIDTH = 800;//TODO à confirmer
 	/** Hauteur de l'aire de jeu standard */
 	public static final int BOARD_HEIGHT = 800;//TODO à confirmer
 	/** Largeur du panel de score */
 	public static final int SCORE_WIDTH = 200;//TODO à confirmer
 	
+	////////////////////////////////////////////////////////////////
+	////	FENÊTRE
+	////////////////////////////////////////////////////////////////
 	/** Largeur de la fenêtre de jeu */
 	public static final int WINDOW_WIDTH = 20+BOARD_WIDTH+20+SCORE_WIDTH+20;
 	/** Hauteur de la fenêtre de jeu */
 	public static final int WINDOW_HEIGHT = 20+BOARD_HEIGHT+20;
 	
+	////////////////////////////////////////////////////////////////
+	////	DUREES ASSOCIEES AUX ETATS DE LA MANCHE
+	////////////////////////////////////////////////////////////////
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
 	public static final long ENTRANCE_DURATION = 3000;//5000; 	//TODO à confirmer
 	/** Durée de la période, au début d'une manche, pendant laquelle les collisions sont désactivées */
@@ -51,21 +61,33 @@ public class Constants
 	/** Durée de la période, à la fin d'une manche, pendant laquelle il ne reste qu'un seul joueur en lice */
 	public static final long END_DURATION = 3000; 	//TODO à confirmer
 	
+	////////////////////////////////////////////////////////////////
+	////	VITESSE DE DEPLACEMENT
+	////////////////////////////////////////////////////////////////
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
 	public static final float BASE_MOVING_SPEED = 0.08f;
 	/** Coefficient multiplicatif/diviseur appliqué à la vitesse de déplacement pour l'augmenter/la diminuer */
 	public static final float MOVING_SPEED_COEFF = 2f;
 	
+	////////////////////////////////////////////////////////////////
+	////	VITESSE DE ROTATION
+	////////////////////////////////////////////////////////////////
 	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
 	public static final float BASE_TURNING_SPEED = (float)(0.0003*2*Math.PI);
 	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
 	public static final float TURNING_COEFF = 1.25f;
 	
+	////////////////////////////////////////////////////////////////
+	////	TAILLE DE LA TÊTE
+	////////////////////////////////////////////////////////////////
 	/** Rayon initial de la tête d'un serpent, exprimé en pixels */ 
 	public static final int BASE_HEAD_RADIUS = 4;
 	/** Coefficient multiplicateur appliqué au rayon de la tête d'un serpent pour l'augmenter */
 	public static final float HEAD_RADIUS_COEFF = 2;
 
+	////////////////////////////////////////////////////////////////
+	////	TROUS DANS LES TRAINES
+	////////////////////////////////////////////////////////////////
 	/** Taux de création des trous, correspond à la probabilité pour un serpent de laisser un trou dans sa traine à chaque ms */
 	public static final float HOLE_RATE = 0.0008f;
 	/** Largeur d'un trou pour un serpent d'épaisseur normale, exprimée en pixels */
@@ -75,6 +97,9 @@ public class Constants
 	/** Délai minimal entre deux trous */
 	public static final long MIN_HOLE_DELAY = 100; //TODO à confirmer
 	
+	////////////////////////////////////////////////////////////////
+	////	ITEMS
+	////////////////////////////////////////////////////////////////
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
@@ -86,6 +111,9 @@ public class Constants
 	/** Nombre maximal d'items affichés simultanément à l'écran */
 	public static final int MAX_ITEM_NBR = 10;
 	
+	////////////////////////////////////////////////////////////////
+	////	JOUEURS & SERPENTS
+	////////////////////////////////////////////////////////////////
 	/** Nombre maximal de joueurs dans une manche donnée */
 	public static final int MAX_PLAYER_NBR = 6;
 	/** Tableau contenant les couleurs associées à chaque numéro de joueur pendant une manche */
@@ -106,11 +134,17 @@ public class Constants
 	/** Espacement entre les auréoles, en pixels */
 	public static final int AUREOLA_SPACE = 2;
  
+	////////////////////////////////////////////////////////////////
+	////	BORDURE DE L'AIRE DE JEU
+	////////////////////////////////////////////////////////////////
 	/** Épaisseur de la bordure de l'aire de jeu (en pixels) */
 	public static final int BORDER_THICKNESS = 5;	
 	/** Couleur de la bordure de l'aire de jeu */
 	public static final Color BORDER_COLOR = Color.WHITE;
  
+	////////////////////////////////////////////////////////////////
+	////	POINTS
+	////////////////////////////////////////////////////////////////
 	/** Points marqués par les joueurs à l'issue d'une manche, en fonction de leur classement */
 	public static final Map<Integer,Integer> POINTS_FOR_RANK = new HashMap<Integer,Integer>();
 	static
@@ -131,6 +165,9 @@ public class Constants
 		POINT_LIMIT_FOR_PLAYER_NBR.put(6,35);
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	DONNEES RESEAU
+	////////////////////////////////////////////////////////////////
 	/** Adresse IP par défaut */
 	public static final String DEFAULT_IP = "localhost";//60010;//453;
 	/** Port TCP par défaut */

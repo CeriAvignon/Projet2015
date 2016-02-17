@@ -82,9 +82,10 @@ public class ServerReadRunnable implements Runnable
 				// objets mis en tampon
 				if(object instanceof String)
 				{	String string = (String)object;
-					if(string.equals(NetworkConstants.REQUEST_PROFILES))
-						serverCom.reSendProfiles();
-					else if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
+//					if(string.equals(NetworkConstants.REQUEST_PROFILES))
+//						serverCom.reSendProfiles();
+//					else 
+					if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
 						serverCom.fetchAcknowledgment(index);
 				}
 				else if(object instanceof Direction)

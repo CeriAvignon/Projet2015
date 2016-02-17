@@ -126,7 +126,10 @@ public interface PhysicsEngine
 	 * par le serveur, et représentant une version plus récente de l'aire de jeu.
 	 * Autrement dit, dans le cas du jeu en réseau côté client, le Moteur
 	 * Physique ne fait pas de calcul : il se contente de mettre à jour
-	 * l'aire de jeu avec les informations qu'il reçoit. 
+	 * l'aire de jeu avec les informations qu'il reçoit. La mise à jour peut aussi
+	 * être partielle, ce qui permet de ne pas passer l'aire de jeu entière, mais
+	 * seulement un objet plus petit contenant uniquement les modifications par 
+	 * rapport à l'état précédent de l'aire de jeu.
 	 * <br/>
 	 * Le remplacement doit se faire de manière à ne pas induire de modification 
 	 * dans le traitement effectué par les autres composantes.
@@ -138,7 +141,9 @@ public interface PhysicsEngine
 	
 	/**
 	 * Renvoie un objet plus petit que l'aire de jeu entière, qui contient les données
-	 * minimales nécessaires au client pour effectuer une mise à jour.
+	 * minimales nécessaires au client pour effectuer une mise à jour. Cette méthode est
+	 * utilisée côté serveur, pour obtenir un objet de mise à jour qui sera ensuite
+	 * transmis aux clients. 
 	 * 
 	 * @return
 	 * 		Données minimales pour une mise à jour côté client.

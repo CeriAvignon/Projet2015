@@ -274,8 +274,7 @@ public class SnakeDrawer
 		g.drawLine(x1, y1, x2, y2);
 		g.fillPolygon(xPoints, yPoints, 3);
     }
-
-
+    
 	/**
 	 * Nettoie les images des serpents en prévision de la prochaine manche.
 	 */

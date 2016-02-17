@@ -43,7 +43,9 @@ import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
- * Classe fille de ClientCommunication, elle en implémente toutes les méthodes.
+ * Implémentation de la classe {@link ServerCommunication}. Elle se repose
+ * sur deux autres classes pour les entrées ({@link ServerReadRunnable}) et 
+ * les sorties ({@link ServerWriteRunnable}) associées à chaque client.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -211,18 +213,20 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 			{	e1.printStackTrace();
 			}
 		
+			Socket socket;
 			do
 			{	try
-				{	Socket socket = serverSocket.accept();
+				{	socket = serverSocket.accept();
 					processClient(socket);
 				}
 				catch(UnknownHostException e)
-				{	errorHandler.displayError("Impossible de se connecter au client.");
-					e.printStackTrace();
+				{	
+//					errorHandler.displayError("Impossible de se connecter au client.");
+//					e.printStackTrace();
 				}
 				catch(IOException e)
 				{	// si c'est une SocketException, on la re-lève
-					if(!(e instanceof SocketException))
+					if(e instanceof SocketException)
 					{	SocketException se = (SocketException)e;
 						throw se;
 					}
@@ -462,12 +466,12 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 		sendObject(profiles);
 	}
 	
-	/**
-	 * Renvoie la dernière liste de profils reçue.
-	 */
-	public void reSendProfiles()
-	{	sendObject(lastProfiles);
-	}
+//	/**
+//	 * Renvoie la dernière liste de profils reçue.
+//	 */
+//	public void reSendProfiles()
+//	{	sendObject(lastProfiles);
+//	}
 	
 	@Override
 	public void sendPointThreshold(int pointThreshold)

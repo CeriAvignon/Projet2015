@@ -26,7 +26,7 @@ import java.util.List;
  * <br/>
  * Il faut bien distinguer la notion de partie et de manche. Les joueurs
  * sont confrontés lors d'une parties se déroulant sur plusieurs manches
- * distinctes. À chaque, chaque joueur marque un certain nombre de points.
+ * distinctes. À chacune, chaque joueur marque un certain nombre de points.
  * Un joueur gagne la partie quand son score dépasse une certaine valeur
  * limite. 
  * 
@@ -36,6 +36,9 @@ public abstract class Board implements UpdateInterface
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	////////////////////////////////////////////////////////////////
+	////	ETAT DE LA MANCHE
+	////////////////////////////////////////////////////////////////
 	/** Indique la phase du jeu : présentation, entrée ou normal */
 	public State state;
 	
@@ -54,12 +57,21 @@ public abstract class Board implements UpdateInterface
 		REGULAR;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	////	BORDURES
+	////////////////////////////////////////////////////////////////
 	/** Indique si l'aire de jeu contient actuellement une bordure ou si celle-ci est absente */
 	public boolean hasBorder;
 	
+	////////////////////////////////////////////////////////////////
+	////	SERPENTS
+	////////////////////////////////////////////////////////////////
 	/** Tableau contenant tous les serpents de la manche, placés dans l'ordre des ID des joueurs correspondants */
 	public Snake snakes[];
 	
+	////////////////////////////////////////////////////////////////
+	////	ITEMS
+	////////////////////////////////////////////////////////////////
 	/** Position des items sur l'aire de jeu: associe la position du <i>centre</i> d'un item à la valeur de cet item */
 	public List<ItemInstance> items;
 }

@@ -82,13 +82,12 @@ public class Launcher extends JFrame
 }
 
 /*
- * TODO
- * - on peut reproduire l'animation d'apparition des items
+ * TODO tâches à traiter :
+ * - on pourrait reproduire l'animation d'apparition des items
  * 
  * - pr réseau :
- * 		- quand client se déconnecte >> retirer profil
- * 		- quand serveur se déconnecte >> annuler partie
- * 
  * 		- réinitialiser la direction du joueur local client en début de nouvelle manche
- * 		- pb quand le serveur accepte la fin de la manche avant les clients
+ * 		- les items n'apparaissent pas chez client
+ * 		- traces restent chez client d'un round à l'autre
+ * 		- client déconnecté pas marqué comme tel (pas couleur grise pdt jeu)
  */

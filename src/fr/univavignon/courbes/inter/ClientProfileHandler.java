@@ -59,5 +59,3 @@ public interface ClientProfileHandler
 	 */
 	public void connectionLost();
 }
-// TODO chacune de ces méthodes doivent être exécutées dans un thread swing
-// TODO pareil pour le serveur
