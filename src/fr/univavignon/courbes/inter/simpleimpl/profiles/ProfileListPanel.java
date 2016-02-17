@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Collections;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -168,7 +169,7 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 
 		// on vérifie que les champs ont été remplis, et que le nom n'est pas déjà pris
 		if(!userName.isEmpty() && !country.isEmpty() && !ProfileManager.containsUserName(userName))
-		{	// on crée le profile
+		{	// on crée le profil
 			Profile profile = new Profile();
 			profile.userName = userName;
 			profile.country = country;
