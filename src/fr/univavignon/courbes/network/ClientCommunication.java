@@ -1,10 +1,28 @@
 package fr.univavignon.courbes.network;
 
-import java.util.Map;
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.UpdateInterface;
+import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientGameHandler;
 import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
@@ -12,18 +30,8 @@ import fr.univavignon.courbes.inter.ErrorHandler;
  * Ensemble de méthodes permettant à l'Interface Utilisateur côté client
  * de communiquer avec l'Interface Utilisateur côté serveur, via le Moteur
  * Réseau.
- * <br/>
- * Chaque binôme de la composante Moteur Réseau doit définir une classe
- * implémentant cette interface, qui sera instanciée par l'Interface Utilisateur.
- * <br/>
- * La communication réseau doit être non-bloquante pour l'Interface Utilisateur.
- * Cela signifie que le Moteur Réseau doit mettre en place un système de buffering.
- * Autrement dit, quand il reçoit des données provenant du serveur, il les garde
- * en mémoire jusqu'à ce que l'Interface Utilisateur le sollicite via l'une des
- * méthodes de type {@code retrieveXxxxx} pour obtenir cette information.
- * Inversement, quand l'Interface Utilisateur invoque une méthode de type {@code sendXxxxx},
- * l'expédition vers le serveur doit se faire dans un thread dédié, afin de ne
- * pas bloquer l'exécution du jeu.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public interface ClientCommunication
 {	
@@ -68,8 +76,6 @@ public interface ClientCommunication
 	/**
      * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
      * à utiliser pour prévenir d'une erreur lors de l'exécution. 
-     * <br/>
-     * Cette méthode doit être invoquée avant le lancement du client.
      * 
      * @param errorHandler
      * 		Un objet implémentant l'interface {@code ErrorHandler}.
@@ -80,22 +86,42 @@ public interface ClientCommunication
      * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
      * à utiliser pour prévenir d'une modification des joueurs lors de la
      * configuration d'une partie. 
-     * <br/>
-     * Cette méthode doit être invoquée avant le lancement du client.
      * 
      * @param profileHandler
      * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
      */
 	public void setProfileHandler(ClientProfileHandler profileHandler);
-
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour prévenir d'une modification lors de la connexion lors
+     * de la configuration d'une partie. 
+     * 
+     * @param connectionHandler
+     * 		Un objet implémentant l'interface {@code ClientProfileHandler}.
+     */
+	public void setConnectionHandler(ClientConnectionHandler connectionHandler);
+	
+	/**
+     * Permet à l'Interface Utilisateur d'indiquer au Moteur Réseau l'objet
+     * à utiliser pour transmettre les données relatives à la partie en cours. 
+     * 
+     * @param gameHandler
+     * 		Un objet implémentant l'interface {@code ClientGameHandler}.
+     */
+	public void setGameHandler(ClientGameHandler gameHandler);
+	
 	/**
      * Permet au client de se connecter au serveur dont on a préalablement
      * configuré l'adresse IP et le port. 
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de se connecter à une partie réseau existante.
+     * 
+     * @return
+     * 		{@code true} ssi la connexion a pu être effectuée.
      */
-	public void launchClient();
+	public boolean launchClient();
 
  	/**
      * Permet à un client de clore sa connexion avec le serveur.
@@ -103,43 +129,25 @@ public interface ClientCommunication
 	public void closeClient();
 	
 	/**
+	 * Indique si le client est actuellement connecté au serveur.
+	 * 
+	 * @return
+	 * 		{@code true} ssi ce client est actuellement connecté au serveur.
+	 */
+	public boolean isConnected();
+	
+	/**
 -	 * Envoie au serveur le profil d'un joueur désirant participer à la partie
-	 * en cours de configuration. Si plusieurs joueurs utilisent le même client,
-	 * alors la méthode doit être appelée plusieurs fois successivement. Chaque
-	 * joueur peut être refusé par le serveur, par exemple si la partie ne peut
-	 * pas accueillir plus de joueurs.
+	 * en cours de configuration.
 	 *   
 	 * @param profile
 	 * 		Profil du joueur à ajouter à la partie.
-	 * @return
-	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou 
-	 * 		rejeté ({@code false}). 
 	 */
-	public boolean addProfile(Profile profile);
-	
-	/**
-	 * Envoie au serveur le profil d'un joueur inscrit mais ne désirant plus participer 
-	 * à la partie en cours de configuration. Si le joueur n'est pas inscrit à la partie,
-	 * alors rien ne se passe (pas d'erreur).
-	 *   
-	 * @param profile
-	 * 		Profil du joueur à retirer de la partie.
-	 */
-	public void removeProfile(Profile profile);
+	public void sendProfile(Profile profile);
 	
 	/**
 	 * Récupère la limite de points à atteindre pour gagner la partie,
 	 * limite envoyée par le serveur auquel ce client est connecté.
-	 * <br/>
-	 * Cette méthode est invoquée par l'Interface Utilisateur à chaque
-	 * début de manche. En effet, la limite peut changer à chaque 
-	 * manche en fonction du nombre de points des joueurs (pour gagner,
-	 * il faut avoir un certain nombre de points d'avance sur le 2ème). 
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
 	 * 
 	 * @return pointThreshold
 	 * 		Limite de point courante de la partie, ou {@code null} si aucune
@@ -153,17 +161,12 @@ public interface ClientCommunication
      * <br/>
      * Cette méthode est appelée par l'Interface Utilisateur à
      * chaque itération d'une manche.
-      * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
-    * 
-     * @return board
+     * 
+     * @return
      * 		Etat courant de l'aire de jeu, ou {@code null} si aucune mise à jour
      * 		n'a été envoyée.
      */
-	public Board retrieveBoard();
+	public UpdateInterface retrieveUpdate();
 
 	/**
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
@@ -171,43 +174,14 @@ public interface ClientCommunication
      * <i>sur le serveur</i>, pour la manche en cours, et la direction correspond à la
      * commande générée par le joueur. Si un joueur n'a pas généré de commande, alors la 
      * valeur associée doit être {@link Direction#NONE}.
-     * <br/>
-     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-     * parallèle de l'exécution du jeu. 
      *
-     * @param commands 
+     * @param command
      * 		Une liste contenant les directions choisies par chaque joueur local au client.
      */
-	public void sendCommands(Map<Integer,Direction> commands);
-
-//	/**
-//     * Permet au client de récupérer un message textuel envoyé par le serveur
-//     * auquel il est connecté.
-//     * <br/>
-//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-//     * parallèle de l'exécution du jeu. 
-//     *
-//     * @return
-//     * 		Contient le message envoyé par le serveur, ou {@code null} si aucun message
-//     * 		n'a été envoyé.
-//     */
-//	public String retrieveText();
-//
-//	/**
-//     * Permet au client d'envoyer un message textuel au serveur auquel il est 
-//     * connecté.
-//     * <br/>
-//     * <b>Attention :</b> il est important que cette méthode ne soit pas bloquante : 
-//     * l'Interface Utilisateur n'a pas à attendre que la transmission soit réalisée 
-//     * avant de pouvoir continuer son exécution. La transmission doit se faire en
-//     * parallèle de l'exécution du jeu. 
-//     *
-//     * @param message 
-//     * 		Le message textuel à envoyer au serveur.
-//     */
-//	public void sendText(String message);
+	public void sendCommand(Direction command);
+	
+	/**
+     * Permet au client d'indiquer au serveur qu'il est prêt à commencer la manche.. 
+     */
+	public void sendAcknowledgment();
 }

@@ -1,14 +1,30 @@
 package fr.univavignon.courbes.inter;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import fr.univavignon.courbes.common.Profile;
 
 /**
  * Interface implémentant les méthodes permettant au Moteur Réseau d'envoyer à l'Interface Utilisateur
  * les données relatives à la configuration des joueurs participant à une partie réseau, <i>côté serveur</i>.
- * <br/>
- * Chaque binôme de la composante Interface Utilisateur doit définir une classe implémentant 
- * cette interface, puis l'instancier. Notez qu'il est possible pour une classe d'implémenter
- * plusieurs interfaces simultanément.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
 public interface ServerProfileHandler 
 {	
@@ -20,9 +36,18 @@ public interface ServerProfileHandler
 	 * a été accepté ({@code true}) ou rejeté ({@code false}).
 	 * 
 	 * @param profile
-	 * 		Le profil du joueur distant que l'on veut rajouter à la partie en cous de configuration.
-	 * @return
-	 * 		Un booléen indiquant si le profil a été accepté ({@code true}) ou rejeté ({@code false}). 
+	 * 		Le profil du joueur distant que l'on veut rajouter à la partie en cours de configuration.
+	 * @param index
+	 * 		Numéro du client hébergeant le joueur distant.
 	 */
-	public boolean fetchProfile(Profile profile);
+	public void fetchProfile(Profile profile, int index);
+	
+	/**
+	 * La connexion avec le client dont le numéro est indiqué a été perdue, soit 
+	 * volontairement de sa part, soit accidentellement.
+	 * 
+	 * @param index
+	 * 		Numéro du client dont on a perdu la connexion.
+	 */
+	public void connectionLost(int index);
 }
