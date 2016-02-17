@@ -68,7 +68,7 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 					while(ias.hasMoreElements() && ip==null)
 					{	InetAddress ia = ias.nextElement();
 						String iaStr = ia.getHostAddress();
-						if(iaStr.startsWith("192.168."))
+						if(iaStr.startsWith("192.168.") || iaStr.startsWith("10.104."))
 								ip = iaStr;
 					}
 				}
