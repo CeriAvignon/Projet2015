@@ -99,7 +99,7 @@ public class ProfileManager
 			
 			for(Profile profile: PROFILES)
 			{	writer.write
-				(	profile.profileId + SEPARATOR + 
+				(	profile.userName + SEPARATOR + 
 					profile.country + SEPARATOR +
 					profile.eloRank + SEPARATOR +
 					profile.email + SEPARATOR +

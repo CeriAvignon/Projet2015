@@ -24,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,6 +49,10 @@ import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 public class ProfileListPanel extends JPanel implements ActionListener, FocusListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
+	/** Nom par défaut pour le champ texte */
+	private static final String DEFAULT_NAME = "Nom";
+	/** Pays par défaut pour le champ texte */
+	private static final String DEFAULT_COUNTRY = "Pays";
 	
 	/**
 	 * Crée un nouveau panel destiné à afficher la liste des profils.
@@ -75,6 +81,8 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 	private JButton backButton;
 	/** Bouton pour ajouter le nouveau profil */
 	private JButton addButton;
+	/** Bouton pour supprimer le profil sélectionné */
+	private JButton removeButton;
 	
 	/**
 	 * Méthode principale d'initialisation du panel.
@@ -96,6 +104,8 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 	 */
 	private void initTablePanel()
 	{	playerTable = new JTable();
+		playerTable.setAutoCreateRowSorter(true);
+		
 		playerTable.setModel(new ProfileTableModel());
 		
 		scrollPane = new JScrollPane
@@ -123,14 +133,14 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 		Dimension frameDim = mainWindow.getPreferredSize();
 		Dimension dim = new Dimension(frameDim.width,30);
 		
-		nameField = new JTextField("Nom");
+		nameField = new JTextField(DEFAULT_NAME);
 		nameField.addFocusListener(this);
 		nameField.setPreferredSize(dim);
 		nameField.setMaximumSize(dim);
 		nameField.setMinimumSize(dim);
 		add(nameField);
 
-		countryField = new JTextField("Pays");
+		countryField = new JTextField(DEFAULT_COUNTRY);
 		countryField.addFocusListener(this);
 		countryField.setPreferredSize(dim);
 		countryField.setMaximumSize(dim);
@@ -149,6 +159,12 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 		backButton = new JButton("Retour");
 		backButton.addActionListener(this);
 		panel.add(backButton);
+		
+		panel.add(Box.createHorizontalGlue());
+		
+		removeButton = new JButton("Supprimer");
+		removeButton.addActionListener(this);
+		panel.add(removeButton);
 		
 		panel.add(Box.createHorizontalGlue());
 		
@@ -172,7 +188,8 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 			Profile profile = new Profile();
 			profile.userName = userName;
 			profile.country = country;
-			profile.eloRank = 0;
+			profile.eloRank = ProfileManager.getProfiles().size()+1;
+			
 			// on le rajoute à la liste
 			ProfileManager.addProfile(profile);
 			
@@ -181,8 +198,28 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 			model.addProfile(profile);
 			
 			// on réinitialise les champs texte
-			nameField.setText("Pseudonyme");
-			countryField.setText("Pays");
+			nameField.setText(DEFAULT_NAME);
+			countryField.setText(DEFAULT_COUNTRY);
+		}
+	}
+	
+	/**
+	 * Suppression d'un profil existant.
+	 */
+	private void removePlayer()
+	{	int selected = playerTable.getSelectedRow();
+		
+		if(selected>=0)
+		{	// on récupère le profil
+			List<Profile> profiles = new ArrayList<Profile>(ProfileManager.getProfiles());
+			Profile profile = profiles.get(selected);
+			
+			// on supprime le profil de la liste
+			ProfileManager.removeProfile(profile);
+			
+			// on le supprime de la table
+			ProfileTableModel model = (ProfileTableModel) playerTable.getModel();
+			model.removeProfile(selected);
 		}
 	}
 	
@@ -207,5 +244,7 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 			mainWindow.displayPanel(PanelName.MAIN_MENU);
 		else if(e.getSource()==addButton)
 			addPlayer();
+		else if(e.getSource()==removeButton)
+			removePlayer();
 	}
 }
