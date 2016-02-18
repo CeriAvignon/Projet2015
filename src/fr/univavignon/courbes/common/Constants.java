@@ -103,7 +103,7 @@ public class Constants
 	/** Rayon d'un item, exprimé en pixels */
 	public static final int ITEM_RADIUS = 20;
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
-	public static final long ITEM_DURATION = 7000;	// TODO à confirmer
+	public static final long ITEM_DURATION = -1; // valeur négative = infini
 	/** Probabilité qu'un item apparaisse à chaque ms */
 	public static final float BASE_ITEM_POPUP_RATE = 0.0001f; 
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */

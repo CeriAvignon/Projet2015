@@ -110,8 +110,11 @@ public class PhysItemInstance extends ItemInstance
 	 * 		{@code true} ssi l'item est arrivé en fin de vie et doit disparaitre.
 	 */
 	public boolean updateLife(long elapsedTime)
-	{	remainingTime = remainingTime - elapsedTime;
-		boolean remove = remainingTime<0;
+	{	boolean remove = false;
+		if(remainingTime>0)
+		{	remainingTime = remainingTime - elapsedTime;
+			remove = remainingTime<0;
+		}
 		return remove;
 	}
 	
