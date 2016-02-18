@@ -212,7 +212,18 @@ public class PhysItemInstance extends ItemInstance
 			board.mustClean = true;
 	
 		// item collectif avec effet dans la durée
-		else if(type==ItemType.COLLECTIVE_TRAVERSE || type==ItemType.COLLECTIVE_WEALTH)
+		else if(type==ItemType.COLLECTIVE_TRAVERSE)
+		{	remainingTime = type.duration;
+			board.currentItems.add(this);
+			// doit quand même être rajouté à chaque serpent, pour des raisons graphiques
+			for(Snake s: board.snakes)
+			{	if(s.eliminatedBy==null)
+				{	PhysItemInstance item = new PhysItemInstance(this);
+					s.currentItems.offer(item);
+				}
+			}
+		}
+		else if(type==ItemType.COLLECTIVE_WEALTH)
 		{	remainingTime = type.duration;
 			board.currentItems.add(this);
 		}
