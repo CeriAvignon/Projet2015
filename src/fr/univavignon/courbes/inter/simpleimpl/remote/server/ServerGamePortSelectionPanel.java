@@ -20,6 +20,7 @@ package fr.univavignon.courbes.inter.simpleimpl.remote.server;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.inter.simpleimpl.remote.AbstractConnectionPanel;
 import fr.univavignon.courbes.network.ServerCommunication;
 import fr.univavignon.courbes.network.simpleimpl.server.ServerCommunicationImpl;
@@ -72,6 +73,7 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
 	protected void nextStep()
 	{	String portStr = portTextField.getText();
 		int port = Integer.parseInt(portStr);
+		SettingsManager.setLastPort(port);
 		mainWindow.serverCom.setPort(port);
 	
 		mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
@@ -80,6 +82,12 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
 	@Override
 	public String getDefaultIp()
 	{	String result = mainWindow.serverCom.getIp();
+		return result;
+	}
+
+	@Override
+	public int getDefaultPort()
+	{	int result = SettingsManager.getLastPort();
 		return result;
 	}
 }

@@ -21,9 +21,9 @@ package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.inter.simpleimpl.remote.AbstractConnectionPanel;
 import fr.univavignon.courbes.network.ClientCommunication;
@@ -53,7 +53,14 @@ public class ClientGameServerConnectionPanel extends AbstractConnectionPanel imp
 	
 	@Override
 	public String getDefaultIp()
-	{	return Constants.DEFAULT_IP;
+	{	String result = SettingsManager.getLastServerIp();
+		return result;
+	}
+
+	@Override
+	public int getDefaultPort()
+	{	int result = SettingsManager.getLastServerPort();
+		return result;
 	}
 	
 	/**
@@ -71,10 +78,12 @@ public class ClientGameServerConnectionPanel extends AbstractConnectionPanel imp
 		
 		String ipStr = ipTextField.getText();
 		clientCom.setIp(ipStr);
+		SettingsManager.setLastServerIp(ipStr);
 		
 		String portStr = portTextField.getText();
 		int port = Integer.parseInt(portStr);
 		clientCom.setPort(port);
+		SettingsManager.setLastServerPort(port);
 		
 		// puis on se connecte
 		boolean result = clientCom.launchClient();

@@ -133,7 +133,8 @@ public class ClientReadRunnable implements Runnable
 			{	ois.close();
 			}
 			catch (IOException e)
-			{	e.printStackTrace();
+			{	
+//				e.printStackTrace();
 			}
 		}
 	}
