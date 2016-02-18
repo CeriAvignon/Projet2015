@@ -118,6 +118,78 @@ public class SettingsManager
 	}
 
 	////////////////////////////////////////////////////////////////
+	////	DONNEES GRAPHIQUES
+	////////////////////////////////////////////////////////////////
+	/** Largeur de l'aire de jeu */
+	private static int boardWidth = 800;
+	/** Hauteur de l'aire de jeu */
+	private static int boardHeight = 800;
+	
+	/**
+	 * Renvoie la largeur de l'aire de jeu, en pixels.
+	 * 
+	 * @return
+	 * 		Largeur de l'aire de jeu.
+	 */
+	public static int getBoardWidth()
+	{	return boardWidth;
+	}
+	
+	/**
+	 * Renvoie la hauteur de l'aire de jeu, en pixels.
+	 * 
+	 * @return
+	 * 		Hauteur de l'aire de jeu.
+	 */
+	public static int getBoardHeight()
+	{	return boardHeight;
+	}
+	
+	/**
+	 * Modifie la largeur de l'aire de jeu.
+	 * 
+	 * @param boardWidth
+	 * 		Nouvelle largeur de l'aire de jeu, en pixels.
+	 */
+	public static void setBoardWidth(int boardWidth)
+	{	SettingsManager.boardWidth = boardWidth;
+		recordSettings();
+	}
+	
+	/**
+	 * Modifie la hauteur de l'aire de jeu.
+	 * 
+	 * @param boardHeight
+	 * 		Nouvelle hauteur de l'aire de jeu, en pixels.
+	 */
+	public static void setBoardHeight(int boardHeight)
+	{	SettingsManager.boardHeight = boardHeight;
+		recordSettings();
+	}
+	
+	/**
+	 * Renvoie la largeur de la fenêtre, en pixels.
+	 * 
+	 * @return
+	 * 		Largeur de la fenêtre.
+	 */
+	public static int getWindowWidth()
+	{	int result = Constants.WINDOW_MARGIN + boardWidth + Constants.WINDOW_MARGIN + Constants.SCORE_WIDTH + Constants.WINDOW_MARGIN;
+		return result;
+	}
+	
+	/**
+	 * Renvoie la hauteur de la fenêtre, en pixels.
+	 * 
+	 * @return
+	 * 		Hauteur de la fenêtre.
+	 */
+	public static int getWindowHeight()
+	{	int result = Constants.WINDOW_MARGIN + boardHeight + Constants.WINDOW_MARGIN;
+		return result;
+	}
+	
+	////////////////////////////////////////////////////////////////
 	////	METHODES GENERALES
 	////////////////////////////////////////////////////////////////
 	/**
@@ -129,9 +201,15 @@ public class SettingsManager
 			OutputStreamWriter osw = new OutputStreamWriter(fos);
 			PrintWriter writer = new PrintWriter(osw);
 			
+			// données de connexion
 			writer.write(lastServerIp+"\n");
 			writer.write(lastServerPort+"\n");
 			writer.write(lastPort+"\n");
+			
+			// données graphiques
+			writer.write(boardWidth+"\n");
+			writer.write(boardHeight+"\n");
+			
 			// TODO on peut rajouter d'autres réglages similaires ici
 			// pensez à les rajouter aussi dans la méthode de chargement, 
 			// en respectant le même ordre
@@ -160,12 +238,19 @@ public class SettingsManager
 				InputStreamReader isr = new InputStreamReader(fis);
 				Scanner scanner = new Scanner(isr);
 				
-				// on en lit chaque ligne
+				// données de connexion
 				lastServerIp = scanner.nextLine();
 				String lastServerPortStr = scanner.nextLine();
 				lastServerPort = Integer.parseInt(lastServerPortStr);
 				String lastPortStr = scanner.nextLine();
 				lastPort = Integer.parseInt(lastPortStr);
+				
+				// données graphiques
+				String boardWidthStr = scanner.nextLine();
+				boardWidth = Integer.parseInt(boardWidthStr);
+				String boardHeightStr = scanner.nextLine();
+				boardHeight = Integer.parseInt(boardHeightStr);
+
 				// TODO complétez les éventuels réglages supplémentaires ici, 
 				// de façon symétrique au chargement (même ordre)
 				

@@ -38,6 +38,7 @@ import javax.swing.border.EtchedBorder;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Panel utilisé pour afficher le score de la manche en cours.
@@ -68,7 +69,8 @@ public class ScorePanel extends JPanel
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);
 		
-		Dimension dim = new Dimension(Constants.SCORE_WIDTH,Constants.BOARD_HEIGHT);
+		int boardHeight = SettingsManager.getBoardHeight();
+		Dimension dim = new Dimension(Constants.SCORE_WIDTH,boardHeight);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);

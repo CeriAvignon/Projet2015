@@ -40,6 +40,7 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Contient les méthodes permettant de dessiner les serpents.
@@ -103,7 +104,9 @@ public class SnakeDrawer
 			
 			// on efface éventuellement l'image
 			if(snakes[playerId].clearedTrail)
-			{	images[playerId] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			{	int boardWidth = SettingsManager.getBoardWidth();
+				int boardHeight = SettingsManager.getBoardHeight();
+				images[playerId] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 				snakes[playerId].clearedTrail = false;
 			}
 			// on complète le corps dans l'image
@@ -279,7 +282,9 @@ public class SnakeDrawer
 	 * Nettoie les images des serpents en prévision de la prochaine manche.
 	 */
 	public void resetImages()
-	{	for(int i=0;i<images.length;i++)
-			images[i] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+	{	int boardWidth = SettingsManager.getBoardWidth();
+		int boardHeight = SettingsManager.getBoardHeight();
+		for(int i=0;i<images.length;i++)
+			images[i] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 	}
 }

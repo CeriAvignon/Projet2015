@@ -24,6 +24,7 @@ import java.io.IOException;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
  
 /**
  * Contient les méthodes permettant de dessiner l'aire de jeu.
@@ -69,19 +70,21 @@ public class BoardDrawer
 	 */
 	private void drawBorder(Board board, Graphics2D g)
 	{	if(board.hasBorder)
-		{	g.setColor(Constants.BORDER_COLOR);
+		{	int boardWidth = SettingsManager.getBoardWidth();
+			int boardHeight = SettingsManager.getBoardHeight();
+			g.setColor(Constants.BORDER_COLOR);
 			// haut
 			g.fillRect(
 				0, 
 				0, 
-				Constants.BOARD_WIDTH, 
+				boardWidth, 
 				Constants.BORDER_THICKNESS
 			);
 			// bas
 			g.fillRect(
 				0, 
-				Constants.BOARD_HEIGHT-Constants.BORDER_THICKNESS, 
-				Constants.BOARD_WIDTH, 
+				boardHeight-Constants.BORDER_THICKNESS, 
+				boardWidth, 
 				Constants.BORDER_THICKNESS
 			);
 			// gauche
@@ -89,14 +92,14 @@ public class BoardDrawer
 				0, 
 				Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
-				Constants.BOARD_HEIGHT-2*Constants.BORDER_THICKNESS
+				boardHeight-2*Constants.BORDER_THICKNESS
 			);
 			// droite
 			g.fillRect(
-				Constants.BOARD_WIDTH-Constants.BORDER_THICKNESS, 
+					boardWidth-Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
 				Constants.BORDER_THICKNESS, 
-				Constants.BOARD_HEIGHT-2*Constants.BORDER_THICKNESS
+				boardHeight-2*Constants.BORDER_THICKNESS
 			);
 		}
 	}

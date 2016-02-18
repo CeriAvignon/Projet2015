@@ -36,10 +36,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Panel destiné à afficher la liste des profils existants.
@@ -116,7 +116,8 @@ public class ProfileListPanel extends JPanel implements ActionListener, FocusLis
 		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 		scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 		Dimension frameDim = mainWindow.getPreferredSize();
-		Dimension dim = new Dimension(frameDim.width,(int)(Constants.BOARD_HEIGHT*0.8));
+		int boardHeight = SettingsManager.getBoardHeight();
+		Dimension dim = new Dimension(frameDim.width,(int)(boardHeight*0.8));
 		scrollPane.setPreferredSize(dim);
 		scrollPane.setMaximumSize(dim);
 		scrollPane.setMinimumSize(dim);

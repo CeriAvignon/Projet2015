@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
@@ -97,7 +96,9 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		{	e.printStackTrace();
 		}
 		
-		Dimension dim = new Dimension(Constants.WINDOW_WIDTH,Constants.WINDOW_HEIGHT);
+		int windowHeight = SettingsManager.getWindowHeight();
+		int windowWidth = SettingsManager.getWindowWidth();
+		Dimension dim = new Dimension(windowWidth,windowHeight);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);
