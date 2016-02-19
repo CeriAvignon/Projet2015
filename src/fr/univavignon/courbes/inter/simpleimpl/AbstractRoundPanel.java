@@ -30,6 +30,7 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
 import fr.univavignon.courbes.graphics.simpleimpl.GraphicDisplayImpl;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
@@ -252,8 +253,16 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 */
 	protected void resetRound()
 	{	graphicDisplay.reset();
+	
+		Snake[] snakes = round.board.snakes;
+		boolean[] connected = new boolean[snakes.length];
+		for(int i=0;i<snakes.length;i++)
+			connected[i] = snakes[i].connected;
 		physicsEngine.init(round.players.length);
 		round.board = physicsEngine.getBoard();
+		snakes = round.board.snakes;
+		for(int i=0;i<snakes.length;i++)
+			snakes[i].connected = connected[i];
 		for(Player player: round.players)
 			player.roundScore = 0;
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);

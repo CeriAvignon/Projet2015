@@ -146,14 +146,14 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 //	PhysBoard b = (PhysBoard)physicsEngine.getBoard();
 ////	System.out.println(su.state+" vs. "+b.state);
 //	if(su.state==State.ENTRANCE)
-//		System.out.println();
+//		System.out.print("");
 //}
 //System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);					
 //				}
 				// on met à jour les scores
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 if(!lastEliminated.isEmpty())
-	System.out.println();
+	System.out.print("");
 				boolean finished = updatePoints(prevEliminated,lastEliminated);
 				if(finished)
 					finalCount = 1;

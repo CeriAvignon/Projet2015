@@ -90,9 +90,4 @@ public class Launcher extends JFrame
 /*
  * TODO tâches à traiter :
  * - on pourrait reproduire l'animation d'apparition des items
- * 
- * - pr réseau :
- * 		- les items n'apparaissent pas chez le client
- * 		- traces restent chez client d'un round à l'autre
- * 		- client déconnecté pas marqué comme tel (pas couleur grise pdt jeu)
  */

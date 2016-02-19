@@ -36,7 +36,7 @@ public class ServerWriteRunnable implements Runnable
 {	/**  Indique s'il faut logger les échanges réseaux (debug) */
 	private final static boolean LOG = false;
 	/** Indique s'il faut utiliser la file bloquante ou pas (pour comparer avec la file non-bloquante) */
-	private final static boolean BLOCKING = true;
+	private final static boolean BLOCKING = false;
 	
 	/**
 	 * Crée un objet chargé de la communication en sortie avec le client.

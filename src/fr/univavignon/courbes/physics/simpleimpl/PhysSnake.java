@@ -79,6 +79,7 @@ public class PhysSnake extends Snake
 		currentAngle = (float)(Math.random()*Math.PI*2);	// on tire une valeur réelle entre 0 et 2pi
 				
 		eliminatedBy = null;
+		connected = true;
 		
 		remainingHole = 0;
 		timeSinceLastHole = 0;
@@ -193,7 +194,7 @@ public class PhysSnake extends Snake
 		turningSpeed = Constants.BASE_TURNING_SPEED;
 
 		// connection
-		connected = true;
+//		connected = true;
 		
 		// commandes
 		inversion = false;
