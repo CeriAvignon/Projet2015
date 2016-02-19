@@ -118,8 +118,8 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	protected void fetchProfile(Profile profile, int index)
 	{	if(profileHandler!=null)
 			profileHandler.fetchProfile(profile,index);
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 
 	/**
@@ -133,6 +133,7 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 			profileHandler.connectionLost(index);
 //		else
 //			System.err.println("Le handler de profils n'a pas été renseigné !");
+		
 		if(gameHandler!=null)
 			gameHandler.connectionLost(index);
 //		else
@@ -159,8 +160,8 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	public void fetchAcknowledgment(int index)
 	{	if(gameHandler!=null)
 			gameHandler.fetchAcknowledgment(index);
-		else
-			System.err.println("Le handler de partie n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -182,9 +183,9 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	 */
 	public void displayError(String message)
 	{	if(errorHandler!=null)
-		errorHandler.displayError(message);
-		else
-			System.err.println("Le handler d'erreur n'a pas été renseigné !");
+			errorHandler.displayError(message);
+//		else
+//			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
