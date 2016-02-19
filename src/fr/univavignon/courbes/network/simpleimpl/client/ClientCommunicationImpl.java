@@ -94,8 +94,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	protected void gotAccepted()
 	{	if(connectionHandler!=null)
 			connectionHandler.gotAccepted();
-		else
-			System.err.println("Le handler de connexion n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
 	
 	/**
@@ -105,8 +105,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	closeClient();
 		if(connectionHandler!=null)
 			connectionHandler.gotRefused();
-		else
-			System.err.println("Le handler de connexion n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -127,8 +127,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	closeClient();
 		if(profileHandler!=null)
 			profileHandler.gotKicked();
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 	
 	/**
@@ -140,8 +140,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	protected void updateProfiles(Profile[] profiles)
 	{	if(profileHandler!=null)
 			profileHandler.updateProfiles(profiles);
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 	
 	/**
@@ -153,8 +153,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	protected void startGame(Round round)
 	{	if(profileHandler!=null)
 			profileHandler.startGame(round);
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 	
 	/**
@@ -163,8 +163,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	public void connectionLost()
 	{	if(profileHandler!=null)
 			profileHandler.connectionLost();
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -186,9 +186,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 	 */
 	public void fetchRound(Round round)
 	{	if(gameHandler!=null)
-		gameHandler.fetchRound(round);
-		else
-			System.err.println("Le handler de partie n'a pas été renseigné !");
+			gameHandler.fetchRound(round);
+//		else
+//			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -210,9 +210,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 	 */
 	public void displayError(String message)
 	{	if(errorHandler!=null)
-		errorHandler.displayError(message);
-		else
-			System.err.println("Le handler d'erreur n'a pas été renseigné !");
+			errorHandler.displayError(message);
+//		else
+//			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////

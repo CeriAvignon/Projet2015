@@ -56,6 +56,10 @@ import fr.univavignon.courbes.network.ServerCommunication;
 public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
+	/** Nom du jeu */
+	private static final String GAME_NAME = "Courbes";
+	/** Version du jeu */
+	private static final String GAME_VERSION = "1";
 	
 	/**
 	 * Crée le menu principal et tous ses composants graphiques.
@@ -85,7 +89,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	private void initWindow()
 	{	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	
-		setTitle("Courbes");
+		updateTitle();
 		try
 		{	String iconPath = "res/images/icon.png";
 			File iconFile = new File(iconPath);
@@ -212,10 +216,23 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new ProfileListPanel(this);
 				break;
 		}
-			
+		
+		updateTitle();
 		getContentPane().add(currentPanel);
 		validate();
 		repaint();		
+	}
+	
+	/**
+	 * Met à jour le titre de la fenêtre.
+	 */
+	public void updateTitle()
+	{	String title = GAME_NAME + " v" + GAME_VERSION;
+		if(serverCom!=null)
+		{	String ipStr = serverCom.getIp();
+			title = title + " - " + ipStr;
+		}
+		setTitle(title);
 	}
 	
 	@Override
