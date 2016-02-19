@@ -25,6 +25,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Classe chargée d'écrire en permanence sur le flux de sortie du client.
@@ -34,6 +35,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ClientWriteRunnable implements Runnable
 {	/**  Indique s'il faut logger les échanges réseaux (debug) */
 	private final static boolean LOG = false;
+	/** Indique s'il faut utiliser la file bloquante ou pas (pour comparer avec la file non-bloquante) */
+	private final static boolean BLOCKING = true;
 	
 	/**
 	 * Crée un objet chargé de la communication en sortie avec le serveur.
@@ -44,6 +47,11 @@ public class ClientWriteRunnable implements Runnable
 	public ClientWriteRunnable(ClientCommunicationImpl clientCom)
 	{	this.clientCom = clientCom;
 		socket = clientCom.socket;
+		
+		if(BLOCKING)
+			objects = new LinkedBlockingQueue<Object>();
+		else
+			objects = new ConcurrentLinkedQueue<Object>();
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -126,6 +134,5 @@ public class ClientWriteRunnable implements Runnable
 	////	FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
 	/** File des objets déposés par l'Interface Utilisateur et en attente d'expédition vers le serveur */
-//	protected Queue<Object> objects = new LinkedBlockingQueue<Object>();
-	protected Queue<Object> objects = new ConcurrentLinkedQueue<Object>();
+	protected Queue<Object> objects;
 }
