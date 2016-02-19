@@ -186,7 +186,12 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	
 	@Override
 	public int getMinPlayerNbr()
-	{	return MIN_PLYR_NBR;
+	{	Round round = mainWindow.currentRound;
+		Player players[] = round.players;
+		int result = MIN_PLYR_NBR;
+		if(players.length==0)
+			result++;
+		return result;
 	}
 	
 	@Override
