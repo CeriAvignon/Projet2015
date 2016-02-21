@@ -305,9 +305,8 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 		}
 		else
 		{	JOptionPane.showMessageDialog(mainWindow, 
-				"<html>Les données des joueurs locaux ne sont pas correctement remplies. Vérifiez que :" +
-				"<br/>- tous les profils sont définis et différents, et que" +
-				"<br/>- toutes les commandes sont définies et différentes.</html>");
+				"<html>Tous les joueurs distants n'ont pas été sélectionnés.<br/>"
+				+ "Ajoutez de nouveaux joueurs ou diminuez le nombre de joueurs distants.</html>");
 		}
 	}
 	

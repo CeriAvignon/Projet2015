@@ -367,6 +367,7 @@ public class PhysSnake extends Snake
 						itemCollided = true;
 						// on le sort de la liste des items encore en jeu
 						it.remove();
+						board.removedItems.add(item.itemId);
 						// on le ramasse
 						item.pickUp(board,this);
 					}

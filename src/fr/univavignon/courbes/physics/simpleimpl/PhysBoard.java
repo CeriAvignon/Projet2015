@@ -55,6 +55,7 @@ public class PhysBoard extends Board
 	public PhysBoard()
 	{	items = new ArrayList<ItemInstance>();
 		currentItems = new LinkedList<PhysItemInstance>();
+		removedItems = new ArrayList<Integer>();
 		totalTime = 0;
 		mustClean = false;
 		lastEliminated = new ArrayList<Integer>();
@@ -88,6 +89,7 @@ public class PhysBoard extends Board
 		}
 		
 		// classe PhysBoard
+		this.removedItems = new ArrayList<Integer>(board.removedItems);
 		this.currentItems = new ArrayList<PhysItemInstance>();
 		for(PhysItemInstance item: board.currentItems)
 		{	PhysItemInstance copy = new PhysItemInstance(item);
@@ -103,6 +105,8 @@ public class PhysBoard extends Board
 	
 	/** File contenant les items affectant actuellement cette aire de jeu */
 	public List<PhysItemInstance> currentItems;
+	/** Liste contenant les numéros des items disparaissant de l'aire de jeu lors de cette itération */
+	public List<Integer> removedItems;
 	/** Probabilité courante qu'un item apparaisse à chaque ms */
 	public float itemPopupRate;
 	/** Temps total écoulé depuis le début de la partie */
@@ -182,6 +186,7 @@ public class PhysBoard extends Board
 		
 		smallUpdate = new SmallUpdate(snakes.length);
 		smallUpdate.hasBorder = hasBorder;
+		removedItems.clear();
 	}
 	
 	/**
@@ -243,21 +248,15 @@ public class PhysBoard extends Board
 	{	// màj des items présents dans l'aire de jeu
 		{	// on réalise la mise à jour des items
 			Iterator<ItemInstance> it = items.iterator();
-			int i = 0;
 			List<Integer> removedItems = new ArrayList<Integer>();
 			while(it.hasNext())
 			{	PhysItemInstance item = (PhysItemInstance)it.next();
 				boolean remove = item.updateLife(elapsedTime);
 				if(remove)
 				{	it.remove();
-					removedItems.add(i);
+					removedItems.add(item.itemId);
 				}
-				i++;
 			}
-			// on indique dans l'objet de mise à jour ceux qui sont supprimés
-			smallUpdate.removedItems = new int[removedItems.size()];
-			for(i=0;i<removedItems.size();i++)
-				smallUpdate.removedItems[i] = removedItems.get(i);
 		}
 		
 		// màj des items collectifs déjà ramassés par des joueurs
@@ -274,6 +273,7 @@ public class PhysBoard extends Board
 		float p = RANDOM.nextFloat();
 		if(items.size()<Constants.MAX_ITEM_NBR && state==State.REGULAR && p<itemPopupRate*elapsedTime)
 		{	PhysItemInstance item = generateItem();
+//item.type = ItemType.COLLECTIVE_CLEAN;		
 			if(item!=null)
 			{	items.add(item);
 				// on ajoute le nouvel item dans l'objet de mise à jour
@@ -442,9 +442,16 @@ public class PhysBoard extends Board
 	 * Finalise l'objet utilisé pour effectuer des mises à jour minimales.
 	 */
 	private void completeSmallUpdate()
-	{	smallUpdate.state = state;
+	{	// général
+		smallUpdate.state = state;
 		smallUpdate.hasBorder = hasBorder;
 		
+		// items
+		smallUpdate.removedItems = new int[removedItems.size()];
+		for(int i=0;i<removedItems.size();i++)
+			smallUpdate.removedItems[i] = removedItems.get(i);
+		
+		// serpents
 		for(int i=0;i<snakes.length;i++)
 		{	PhysSnake snake = (PhysSnake)snakes[i];
 			smallUpdate.clearedTrail[i] = snake.clearedTrail;
@@ -468,6 +475,7 @@ public class PhysBoard extends Board
 			smallUpdate.newTrails.add(nt);
 		}
 		
+		// joueurs éliminés
 		smallUpdate.lastEliminated = new int[lastEliminated.size()];
 		for(int i=0;i<lastEliminated.size();i++)
 			smallUpdate.lastEliminated[i] = lastEliminated.get(i);
@@ -486,10 +494,20 @@ public class PhysBoard extends Board
 		hasBorder = smallUpdate.hasBorder;
 		
 		// items
-		for(int i: smallUpdate.removedItems)
-			currentItems.remove(i);
+		for(int i=0;i<smallUpdate.removedItems.length;i++)
+		{	int itemId = smallUpdate.removedItems[i];
+			boolean found = false;
+			Iterator<ItemInstance> it = items.iterator();
+			while(!found && it.hasNext())
+			{	PhysItemInstance item = (PhysItemInstance)it.next();
+				if(item.itemId==itemId)
+				{	it.remove();
+					found = true;
+				}
+			}
+		}
 		if(smallUpdate.newItem!=null)
-			currentItems.add((PhysItemInstance)smallUpdate.newItem);
+			items.add((PhysItemInstance)smallUpdate.newItem);
 		
 		// serpents
 		for(int i=0;i<snakes.length;i++)

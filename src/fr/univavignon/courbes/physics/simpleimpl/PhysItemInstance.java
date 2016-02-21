@@ -34,6 +34,8 @@ import fr.univavignon.courbes.common.Snake;
 public class PhysItemInstance extends ItemInstance
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	/** Compteur pour attribuer des numéros uniques aux items */
+	private static int ID_COUNT = 0;
 	/** Générateur aléatoire utilisé lors de l'apparition d'items */
 	private static final Random RANDOM = new Random();
 	
@@ -81,8 +83,14 @@ public class PhysItemInstance extends ItemInstance
 		this.y = item.y;
 		this.type = item.type;
 		this.remainingTime = item.remainingTime;
+		
+		// classe PhysItemInstance
+		this.itemId = item.itemId;
 	}
-
+	
+	/** Numéro de l'item (utilisé pour le mode réseau) */
+	public int itemId;
+	
 	/**
 	 * Initialise un item.
 	 * 
@@ -94,7 +102,9 @@ public class PhysItemInstance extends ItemInstance
 	 * 		Position en ordonnée.
 	 */
 	private void init(ItemType type, int x, int y)
-	{	this.type = type;
+	{	this.itemId = ID_COUNT++;
+		
+		this.type = type;
 		this.x = x;
 		this.y = y;
 		

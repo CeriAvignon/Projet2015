@@ -44,6 +44,13 @@ import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Contient les méthodes permettant de dessiner les serpents.
+ * <br/>
+ * Pour aller plus vite, on ne redessine pas tous les pixels des serpents
+ * un par un à chaque itération. À la place, on maintient une image contenant
+ * tous les pixels précédents, et on y rajoute les nouveaux pixels à chaque
+ * itération. Puis, on dessine cette image sur l'aire de jeu pour obtenir le 
+ * serpent. La recopie d'une telle image est beaucoup plus rapide que le tracé
+ * de chaque pixel pris séparément.
  * 
  * @author	L3 Info UAPV 2015-16
  */

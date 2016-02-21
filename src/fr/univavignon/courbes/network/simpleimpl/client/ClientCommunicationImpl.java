@@ -165,6 +165,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 			profileHandler.connectionLost();
 //		else
 //			System.err.println("Le handler de profils n'a pas été renseigné !");
+		if(gameHandler!=null)
+			gameHandler.connectionLost();
 	}
 	
 	////////////////////////////////////////////////////////////////
