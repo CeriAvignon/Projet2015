@@ -52,7 +52,7 @@ public class KeyManager implements KeyListener
 		initPause();
 	}
 	
-	/** Associe à une touche le joueur qui l'a sélectionnée */
+	/** Associe à une touche le numéro du joueur qui l'a sélectionnée */
 	private Map<Integer,Integer> keyPlayerMapping;
 	/** Associe à une touche la direction qu'elle représente */
 	private Map<Integer,Direction> keyDirectionMapping;
@@ -157,6 +157,18 @@ public class KeyManager implements KeyListener
 	public synchronized Direction[] retrieveDirections()
 	{	Direction[] result = Arrays.copyOf(currentDirections, currentDirections.length);
 		return result;
+	}
+	
+	/**
+	 * Réinitialise les dernières directions stockées, en prévision
+	 * du début d'une nouvelle manche.
+	 */
+	public synchronized void reset()
+	{	Arrays.fill(currentDirections,Direction.NONE);
+		pause = false;
+		passIteration = false;
+		keyState.put(PAUSE_KEY,false);
+		keyState.put(STEP_KEY,false);
 	}
 	
 	/**
