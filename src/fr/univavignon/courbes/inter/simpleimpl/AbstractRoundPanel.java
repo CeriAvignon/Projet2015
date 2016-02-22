@@ -234,7 +234,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 */
 	public synchronized void start()
 	{	running = true;
-		loopThread = new Thread(this,"Courbes -- Round");
+		loopThread = new Thread(this,"Courbes-Round");
 		loopThread.start();
 	}
 	

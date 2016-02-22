@@ -63,7 +63,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	/** Numéro du joueur local */
 	private int localPlayerId;
 	/** Indique si l'objet représentant la prochaine manche a été reçu */
-	private boolean newRoundReceived = false;
+	private Round newRound = null;
 	
 	@Override
 	protected synchronized void init()
@@ -116,7 +116,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		long finalCount = 0;							// décompte pour la toute fin de partie
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
-		newRoundReceived = false;
+		newRound = null;
 		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
@@ -201,7 +201,7 @@ if(!lastEliminated.isEmpty())
 		super.resetRound();
 		
 		// on attend d'avoir récupèré l'aire de jeu (attente passive)
-		if(!newRoundReceived)
+		if(newRound==null)
 		{	try
 			{	wait();
 			}
@@ -210,6 +210,8 @@ if(!lastEliminated.isEmpty())
 			}
 		}
 		// on force le moteur physique à utiliser l'aire de jeu reçue du serveur
+		round = newRound;
+		mainWindow.currentRound = round;
 		physicsEngine.setBoard(round.board);
 		
 		// on vide le buffer des màj qui y sont encore stockées
@@ -221,7 +223,7 @@ if(!lastEliminated.isEmpty())
 
 	@Override
 	public synchronized void fetchRound(Round round)
-	{	newRoundReceived = true;
+	{	newRound = round;
 		
 		// on adapte la manche au joueur local
 		for(int i=0;i<this.round.players.length;i++)
@@ -236,9 +238,6 @@ if(!lastEliminated.isEmpty())
 				round.players[i].rightKey = -1;
 			}
 		}
-		
-		this.round = round;
-		mainWindow.currentRound = round;
 		
 		// on prévient le thread qui attend cette donnée pour pouvoir continuer l'initialisation
 		notify();
