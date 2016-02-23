@@ -167,7 +167,9 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		CLIENT_GAME_PLAY,
 		
 		/** Liste des profils */
-		PROFILE_LIST;
+		PROFILE_LIST,
+		/** Affichage des statistiques */
+		STATISTICS;
 	}
 	
 	/**
@@ -214,6 +216,11 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				break;
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);
+				break;
+			case STATISTICS:
+				System.out.println("Option pas encore implémentée...");
+				// TODO à compléter
+				// currentPanel = new XxxxxxPanel(this);
 				break;
 		}
 		

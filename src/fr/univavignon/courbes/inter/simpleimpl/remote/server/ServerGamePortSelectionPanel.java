@@ -18,6 +18,15 @@ package fr.univavignon.courbes.inter.simpleimpl.remote.server;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
@@ -31,11 +40,13 @@ import fr.univavignon.courbes.network.simpleimpl.server.ServerCommunicationImpl;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
+public class ServerGamePortSelectionPanel extends AbstractConnectionPanel implements ItemListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
 	/** Title du panel */
-	private static final String TITLE = "Sélection du port";
+	private static final String TITLE = "Configuration réseau";
+	/** Title du panel */
+	private static final String BOX_LABEL = "Partie publique : ";
 	
 	/**
 	 * Construit un nouveau panel chargé de connecter le client à son serveur.
@@ -46,6 +57,9 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
 	public ServerGamePortSelectionPanel(MainWindow mainWindow)
 	{	super(mainWindow,TITLE);
 	}
+	
+	/** Check box pour la partie publique/privée */
+	private JCheckBox publicBox;
 	
 	@Override
 	protected void init(String title)
@@ -59,8 +73,37 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
 		
 		super.init(title);
 		
+	}
+	
+	@Override
+	protected void initContent()
+	{	super.initContent();
+	
+		// on désactive le text field
 //		ipTextField.setEditable(false);
 		ipTextField.setEnabled(false);
+		
+		// on rajoute la check box
+		Dimension winDim = mainWindow.getPreferredSize();
+		Dimension dim;
+		int height = 30;
+		
+		JPanel panel = new JPanel();
+		BoxLayout layout = new BoxLayout(panel, BoxLayout.LINE_AXIS);
+		panel.setLayout(layout);
+		dim = new Dimension((int)(winDim.width),height);
+		panel.setPreferredSize(dim);
+		panel.setMaximumSize(dim);
+		panel.setMinimumSize(dim);
+		
+		JLabel publicLabel = new JLabel(BOX_LABEL);
+		panel.add(publicLabel);
+		
+		publicBox = new JCheckBox();
+		publicBox.addItemListener(this);
+		panel.add(publicBox);
+		
+		add(panel);
 	}
 	
 	@Override
@@ -89,5 +132,13 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel
 	public int getDefaultPort()
 	{	int result = SettingsManager.getLastPort();
 		return result;
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e)
+	{	if(e.getSource()==publicBox)
+		{	System.out.println("Modification de la JCheckBox: "+publicBox.isSelected());
+			// TODO à compléter avec le traitement relatif au serveur central...
+		}
 	}
 }
