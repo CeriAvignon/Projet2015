@@ -127,7 +127,7 @@ public class SnakeDrawer
 			// on dessine l'image dans le panel
 			g.drawImage(images[playerId],0,0,null);
 			
-			// pour debug : affiche en jaune la partie du serpent utilisée pour détecter les collisions
+			// pour debug : affiche en jaune la section de la traine du serpent utilisée pour détecter les collisions
 //			g.setColor(Color.YELLOW);
 //			MySnake s = (MySnake)snake;
 //			for(Set<Position> disk: s.prevDisks)

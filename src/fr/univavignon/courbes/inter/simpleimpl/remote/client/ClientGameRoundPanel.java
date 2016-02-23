@@ -90,7 +90,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	
 	@Override
 	public void run()
-	{	// on joue la rencontre (i.e. plusieurs manches)
+	{	// on joue la partie (i.e. plusieurs manches)
 		playMatch();
 		
 		// TODO la mise à jour des stats devrait aller ici
@@ -113,8 +113,8 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
-		long finalCount = 0;							// décompte pour la toute fin de partie
-		boolean finished = false;						// indique si la partie est finie, au sens des règles du jeu
+		long finalCount = 0;							// décompte pour la toute fin de manche
+		boolean finished = false;						// indique si la manche est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		newRound = null;

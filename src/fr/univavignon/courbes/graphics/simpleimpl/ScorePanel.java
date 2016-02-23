@@ -59,7 +59,7 @@ public class ScorePanel extends JPanel
 	private final static int ROW_HEIGHT = 30;
 	
 	/**
-	 * Crée un panel permettant d'afficher le score en cours de partie.
+	 * Crée un panel permettant d'afficher le score en cours de manche.
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs à afficher.

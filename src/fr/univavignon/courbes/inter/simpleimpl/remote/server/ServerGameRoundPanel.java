@@ -90,7 +90,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	
 	@Override
 	public void run()
-	{	// on joue la rencontre (i.e. plusieurs manches)
+	{	// on joue la partie (i.e. plusieurs manches)
 		playMatch();
 		
 		// TODO la mise à jour des stats irait ici
@@ -111,9 +111,9 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
-		long finalCount = 0;							// décompte pour la toute fin de partie
+		long finalCount = 0;							// décompte pour la toute fin de manche
 		int physUpdates = 0;							// nombre de petites màj physiques depuis la dernière grosse 
-		boolean finished = false;						// indique si la partie est finie, au sens des règles du jeu
+		boolean finished = false;						// indique si la manche est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		readyClientNbr = 0;

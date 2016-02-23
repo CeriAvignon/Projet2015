@@ -109,7 +109,7 @@ public class PhysBoard extends Board
 	public List<Integer> removedItems;
 	/** Probabilité courante qu'un item apparaisse à chaque ms */
 	public float itemPopupRate;
-	/** Temps total écoulé depuis le début de la partie */
+	/** Temps total écoulé depuis le début de la manche */
 	public long totalTime;
 	/** Marqueur indiquant qu'il faut nettoyer l'aire de jeu des traînées */
 	public boolean mustClean;

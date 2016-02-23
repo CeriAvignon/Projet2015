@@ -36,7 +36,7 @@ public class BoardPanel extends JPanel
 	
 	/**
 	 * Crée un panel permettant d'afficher l'aire de jeu
-	 * en cours de partie.
+	 * en cours de manche.
 	 */
 	public BoardPanel()
 	{	// on fixe les dimensions du panel

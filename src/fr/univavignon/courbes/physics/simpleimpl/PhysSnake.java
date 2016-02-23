@@ -163,7 +163,7 @@ public class PhysSnake extends Snake
 		this.prevPos = new Position(snake.prevPos);
 	}
 
-	/** Ancienne partie de la trainée du serpent sur l'aire de jeu */
+	/** Ancienne section de la trainée du serpent sur l'aire de jeu */
 	public Set<Position> oldTrail;
 	/** Nombre de pixels restants pour terminer le trou courant */
 	private float remainingHole;

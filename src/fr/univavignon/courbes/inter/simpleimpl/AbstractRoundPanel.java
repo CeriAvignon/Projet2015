@@ -94,7 +94,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected boolean showStats = false;
 	/** Score total de chaque joueur */
 	protected int[] totalPoints;
-	/** Indique si la rencontre est finie, ou encore en cours */
+	/** Indique si la partie est finie, ou encore en cours */
 	protected boolean matchOver = false;
 	/** Indique quel serpent a été éliminé par quoi : {@code null} pour pas éliminé, une <i>valeur négative</i> pour la bordure, et {@code playerId} pour un serpent (possiblement le joueur lui-même) */
 	protected Integer[] eliminatedBy;
@@ -154,11 +154,11 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			}
 			matchOver = totalPoints[maxIdx]>=Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(totalPoints.length);
 			
-			// on affiche éventuellement le vainqueur de la rencontre
+			// on affiche éventuellement le vainqueur de la partie
 			if(matchOver)
 			{	Profile profile = players[maxIdx].profile;
 				String name = profile.userName;
-				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+"a gagné la rencontre !");
+				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+"a gagné la partie !");
 			}
 			
 			// ou bien celui de la manche, et on recommence
@@ -186,14 +186,14 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	/**
 	 * Recalcule les points des joueurs en fonction des éliminations
 	 * qui se sont produites lors de la dernière itération. La fonction
-	 * renvoie aussi un booléen indiquant si la partie est finie ou pas.
+	 * renvoie aussi un booléen indiquant si la manche est finie ou pas.
 	 * 
 	 * @param prevEliminated
 	 * 		Liste des numéros des joueurs éliminés lors des itérations précédentes.
 	 * @param lastEliminated
 	 * 		Liste des numéros des joueurs éliminés lors de l'itération en cours.
 	 * @return
-	 * 		{@code true} ssi la partie doit se terminer.
+	 * 		{@code true} ssi la manche doit se terminer.
 	 */
 	protected boolean updatePoints(List<Integer> prevEliminated, List<Integer> lastEliminated)
 	{	boolean result = false;
@@ -277,7 +277,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 * joueurs en jeu et de leur score.
 	 */
 	protected void updatePointLimit()
-	{	// on ne fait pas varier la limite en cours de rencontre, mais c'est possible de le faire ici
+	{	// on ne fait pas varier la limite en cours de partie, mais c'est possible de le faire ici
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 	}
 	

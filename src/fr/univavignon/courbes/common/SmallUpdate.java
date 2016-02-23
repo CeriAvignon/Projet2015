@@ -90,7 +90,7 @@ public class SmallUpdate implements UpdateInterface
 	public boolean[] connected;
 	/** Mode avion  */
 	public boolean[] fly;
-	/** Dernière partie de la trainée */
+	/** Dernière section de la trainée */
 	public List<TreeSet<Position>> newTrails;
 	/** Items affectant actuellement chaque serpent */
 	public List<ItemInstance[]> currentItems;
