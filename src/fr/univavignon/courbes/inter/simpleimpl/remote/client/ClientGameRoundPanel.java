@@ -114,6 +114,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
 		long finalCount = 0;							// décompte pour la toute fin de partie
+		boolean finished = false;						// indique si la partie est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		newRound = null;
@@ -154,9 +155,13 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 if(!lastEliminated.isEmpty())
 	System.out.print("");
-				boolean finished = updatePoints(prevEliminated,lastEliminated);
-				if(finished)
-					finalCount = 1;
+				if(!finished)
+				{	finished = updatePoints(prevEliminated,lastEliminated);
+					if(finished)
+					{	finalCount = 1;
+						updatedEliminatedBy();
+					}
+				}
 }
 				phyUpdateNbr++;
 				elapsedPhysTime = 0;

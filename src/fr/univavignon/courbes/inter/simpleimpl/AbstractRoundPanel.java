@@ -96,6 +96,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected int[] totalPoints;
 	/** Indique si la rencontre est finie, ou encore en cours */
 	protected boolean matchOver = false;
+	/** Indique quel serpent a été éliminé par quoi : {@code null} pour pas éliminé, une <i>valeur négative</i> pour la bordure, et {@code playerId} pour un serpent (possiblement le joueur lui-même) */
+	protected Integer[] eliminatedBy;
 	
 	/**
 	 * Initialise le panel et les objets qu'il utilise.
@@ -277,5 +279,19 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected void updatePointLimit()
 	{	// on ne fait pas varier la limite en cours de rencontre, mais c'est possible de le faire ici
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
+	}
+	
+	/**
+	 * Met à jour la liste des valeurs indiquand qui
+	 * a été éliminé par qui.
+	 */
+	protected void updatedEliminatedBy()
+	{	Snake[] snakes = round.board.snakes;
+		eliminatedBy = new Integer[snakes.length];
+		for(int i=0;i<snakes.length;i++)
+		{	eliminatedBy[i] = snakes[i].eliminatedBy;
+			System.out.print(" "+eliminatedBy[i]);
+		}
+		System.out.println();
 	}
 }

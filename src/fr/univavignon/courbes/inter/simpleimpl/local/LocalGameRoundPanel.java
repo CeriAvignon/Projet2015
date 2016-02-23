@@ -68,6 +68,7 @@ public class LocalGameRoundPanel extends AbstractRoundPanel
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
 		long finalCount = 0;							// décompte pour la toute fin de partie
+		boolean finished = false;						// indique si la partie est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		
@@ -99,9 +100,13 @@ public class LocalGameRoundPanel extends AbstractRoundPanel
 					physicsEngine.update(elapsedPhysTime, directions);
 					// on met à jour les scores
 					List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
-					boolean finished = updatePoints(prevEliminated,lastEliminated);
-					if(finished)
-						finalCount = 1;
+					if(!finished)
+					{	finished = updatePoints(prevEliminated,lastEliminated);
+						if(finished)
+						{	finalCount = 1;
+							updatedEliminatedBy();
+						}
+					}
 					phyUpdateNbr++;
 					elapsedPhysTime = 0;
 				}

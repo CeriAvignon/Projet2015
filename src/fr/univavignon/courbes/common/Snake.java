@@ -78,7 +78,7 @@ public class Snake implements Serializable
 	////////////////////////////////////////////////////////////////
 	////	ETAT
 	////////////////////////////////////////////////////////////////
-	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, {@code i} si collision avec le joueur numéro {@code i} */
+	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, valeur entière {@code playerId} si collision avec le joueur numéro {@code playerId} (qui peut être lui-même) */
 	public Integer eliminatedBy;
 	/** Etat de connexion du serpent : {@code false} il est distant et déconnecté, {@code true} il est distant connecté ou local */
 	public boolean connected;
