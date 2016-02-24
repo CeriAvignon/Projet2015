@@ -104,7 +104,7 @@ public class ServerReadRunnable implements Runnable
 		}
 		catch(EOFException | SocketException e)
 		{	// fermeture normale : connexion probablement fermée par l'autre thread ou le client
-			serverCom.lostConnection(index);
+//			serverCom.lostConnection(index);
 		}
 		catch (ClassNotFoundException e)
 		{	e.printStackTrace();

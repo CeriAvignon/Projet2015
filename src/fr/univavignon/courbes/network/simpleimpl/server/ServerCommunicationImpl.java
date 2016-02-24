@@ -1,5 +1,27 @@
 package fr.univavignon.courbes.network.simpleimpl.server;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
+
+import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerGameHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
+
 /*
  * Courbes
  * Copyright 2015-16 L3 Info UAPV 2015-16
@@ -19,28 +41,8 @@ package fr.univavignon.courbes.network.simpleimpl.server;
  */
 
 import fr.univavignon.courbes.network.ServerCommunication;
+import fr.univavignon.courbes.network.simpleimpl.Network;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Enumeration;
-
-import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.common.UpdateInterface;
-import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerGameHandler;
-import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 /**
  * Implémentation de la classe {@link ServerCommunication}. Elle se repose
@@ -49,13 +51,17 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ServerCommunicationImpl implements ServerCommunication, Runnable
+public class ServerCommunicationImpl implements ServerCommunication
 {	
 	////////////////////////////////////////////////////////////////
 	////	ADRESSE IP
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient l'adresse ip de ce serveur */
 	private String ip = null;
+	
+	Server server;
+	int currentNumberOfClients = 0;
+	
 	
 	@Override
 	public String getIp()
@@ -190,240 +196,140 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	////////////////////////////////////////////////////////////////
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
-	/** Processus principal du serveur (seulement pour la configuration= */
-	private Thread mainThread;
-	/** Socket de connexion */
-	private ServerSocket serverSocket;
-	/** Socket du client connecté au serveur */
-	public Socket[] sockets = null;
 	
 	@Override
 	public void launchServer()
-	{	mainThread = new Thread(this, "Courbes-ServerThread-Main");
-		mainThread.start();
+	{	server = new Server(){
+			protected Connection newConnection () 
+			{	// By providing our own connection implementation, we can store per
+				// connection state without a connection ID to state look up.
+				return new ProfileConnection();
+			}
+		};
+
+		// For consistency, the classes to be sent over the network are
+		// registered by the same method for both the client and server.		
+		Network.register(server);
+
+		server.addListener(new Listener(){
+
+			@Override
+			public void received(Connection c, Object object){
+
+			       // We only use one type of connections
+			       ProfileConnection connection = (ProfileConnection)c;
+
+			       if(object instanceof Profile){
+			    	   
+			    	   // Ignore the object if a client has already registered a profile. This is
+			    	   // impossible with our client, but a hacker could send messages at any time.
+			    	   if(connection.profile != null)
+			    		   return;
+			    	   
+			    	   // S'il reste de la place pour que le client se connecte
+			    	   if(currentNumberOfClients < lastProfiles.length)
+			    	   {	server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
+			    	   		connection.profile = (Profile)object;
+			    	   		lastProfiles[currentNumberOfClients] = connection;
+			    	   		currentNumberOfClients++;
+			    	   }
+			    	   else
+			    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+			    	
+			       }
+			       
+			       else if(object instanceof String){
+			    	   //TODO
+			       }
+			       
+			       else if(object instanceof Direction){
+			    	   int id = getProfileId(connection.profile);
+			    	   lastProfiles[id].direction = (Direction)object;
+			    	   //TODO
+			       }
+			       
+
+			}
+
+			@Override
+			public void disconnected(Connection c){
+
+			       ProfileConnection connection = (ProfileConnection)c;
+			       if(connection.profile != null){
+			    	   removeProfile(connection);
+			    	   //TODO
+			       }
+			       	
+
+			}
+
+		});		
+		
+		try {
+			server.bind(getPort(), getPort());
+		} catch (IOException e) {
+			//TODO
+			e.printStackTrace();
+		}
+		
+		server.start();
 	}
 	
-	@Override
-	public void run()
-	{	try
-		{	try
-			{	serverSocket = new ServerSocket(port);
-			}
-			catch (IOException e1)
-			{	e1.printStackTrace();
-			}
+	public int getProfileId(Profile p){
 		
-			Socket socket;
-			do
-			{	try
-				{	socket = serverSocket.accept();
-					processClient(socket);
-				}
-				catch(UnknownHostException e)
-				{	
-//					errorHandler.displayError("Impossible de se connecter au client.");
-//					e.printStackTrace();
-				}
-				catch(IOException e)
-				{	// si c'est une SocketException, on la re-lève
-					if(e instanceof SocketException)
-					{	SocketException se = (SocketException)e;
-						throw se;
-					}
-					// sinon, on la traite ici
-					else
-					{	errorHandler.displayError("Impossible de se connecter au client.");
-						e.printStackTrace();
-					}
-				}
-			}
-			while(true);
-		}
-		catch(SocketException e)
-		{	// rien à faire : c'est juste qu'un autre thread a fermé ce socket
-		}
+		int result = -1;
 
+ 	    boolean found = false;
+ 	    int i = 0;
+ 	   
+ 	    while(i < currentNumberOfClients || !found){
+ 		   
+ 		    if(lastProfiles[i].profile.equals(p))
+ 			   found = true;
+ 		    else
+ 			    ++i;
+ 	   }
+		
+		return result;
+		
+	}
+	
+	public void removeProfile(ProfileConnection pc){
+ 	   
+		int id = getProfileId(pc.profile);
+		lastProfiles[id] = lastProfiles[currentNumberOfClients];
+ 		lastProfiles[currentNumberOfClients] = null;
+ 		currentNumberOfClients--;
+ 		pc.close();
+ 		
+		
+	}
+	
+	static class ProfileConnection extends Connection
+	{	public Profile profile; 
+		public Direction direction = Direction.NONE;
 	}
 
-	/**
-	 * Initialise les objets et les theads nécessaires
-	 * au traitement d'un client.
-	 * 
-	 * @param socket
-	 * 		Socket utilisé pour communiquer avec le client.
-	 * 
-	 * @throws UnknownHostException
-	 * 		Problème lors de la connexion au client.
-	 * @throws IOException
-	 * 		Problème lors de la connexion au client.
-	 */
-	private synchronized void processClient(Socket socket) throws UnknownHostException, IOException
-	{	// on détermine le premier slot dispo
-		int index = 0;
-		if(sockets==null)
-		{	sockets = new Socket[1];
-			srrs = new ServerReadRunnable[1];
-			swrs = new ServerWriteRunnable[1];
-		}
-		else
-		{	while(index<sockets.length && sockets[index]!=null)
-				index++;
-		}
-		
-		// cas où il reste de la place sur le serveur
-		if(index<sockets.length)
-		{	// on ouvre le socket
-			sockets[index] = socket;
-			
-			// on crée un thread pour s'occuper des sorties
-			swrs[index] = new ServerWriteRunnable(this,index);
-			Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
-			outThread.start();
-			
-			// on crée un thread pour s'occuper des entrées
-			srrs[index] = new ServerReadRunnable(this,index);
-			Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
-			inThread.start();
-			
-			// on répond favorablement au client
-			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
-		}
-		
-		// cas où le serveur n'a plus de place
-		else
-		{	// on récupère le flux de sortie
-			OutputStream os = socket.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-			oos.flush();
-			
-//			// celui d'entrée (pour rien)
-//			socket.getInputStream();
-			
-			// on répond défavorablement au client
-			oos.writeObject(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
-			
-			// on ferme la connexion
-			socket.close();
-		}
-	}
 	
 	@Override
 	public synchronized void closeServer()
-	{	
-//		// prévient les clients de la prochaine fermeture
-//		for(int i=0;i<sockets.length;i++)
-//		{	if(swrs[i]!=null)
-//				swrs[i].objects.offer(NetworkConstants.ANNOUNCE_DISCONNECTION);
-//		}	
-//		
-//		// on attend que ces messages soient transmis
-//		try
-//		{	Thread.sleep(500);
-//		}
-//		catch(InterruptedException e)
-//		{	e.printStackTrace();
-//		}
-		
-		// ferme le socket de connexion, ce qui doit entrainer la fin du thread associé
-		try
-		{	serverSocket.close();
-			serverSocket = null;
-		}
-		catch(IOException e)
-		{	e.printStackTrace();
-		}
-		
-		// ferme les connexions avec les clients
-		for(int i=0;i<sockets.length;i++)
-			closeConnection(i);
-	}
-	
-	/**
-	 * Ferme la connection et tue les processus associés
-	 * à un client donné.
-	 * 
-	 * @param index
-	 * 		Numéro du client.
-	 */
-	protected synchronized void closeConnection(int index)
-	{	if(sockets[index]!=null)
-		{	// on indique aux deux threads de se terminer (proprement)
-			srrs[index].setActive(false);
-			srrs[index] = null;
-			swrs[index].setActive(false);
-			swrs[index] = null;
-			
-			// on ferme la socket
-			try
-			{	sockets[index].close();
-				sockets[index] = null;
-			}
-			catch (IOException e)
-			{	//e.printStackTrace();
-				//errorHandler.displayError("Erreur lors de la fermeture du socket numéro "+index);
-			}
-			
-			// on indique à l'IU qu'on a perdu un client
-		}
-	}
-	
-	/**
-	 * Méthode appelée quand la connexion avec un client est perdue
-	 * accidentellement.
-	 * 
-	 * @param index
-	 * 		Numéro du client concerné.
-	 */
-	protected synchronized void lostConnection(int index)
-	{	if(sockets[index]!=null)
-		{	connectionLost(index);
-			closeConnection(index);
-		}
+	{	server.close();
 	}
 	
 	@Override
 	public synchronized void setClientNumber(int clientNumber)
-	{	// si pas de clients pour l'instant
-		if(sockets==null)
-		{	sockets = new Socket[clientNumber];
-			srrs = new ServerReadRunnable[clientNumber];
-			swrs = new ServerWriteRunnable[clientNumber];
-			lastProfiles = new Profile[clientNumber];
-	
-		}
-		
-		// s'il y a déjà des clients
-		else
-		{	// si le nombre diminue, il faut en fermer certains	
-			if(clientNumber<sockets.length)
-			{	// on prévient les clients rejetés
-				boolean announce = false;
-				for(int i=sockets.length-1;i>=clientNumber;i--)
-				{	if(swrs[i]!=null)
-					{	swrs[i].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-						announce = true;
-					}
+	{	// si le nombre diminue, il faut en fermer certains	
+		if(clientNumber < lastProfiles.length)	
+		{	
+			if(clientNumber < lastProfiles.length)
+				// on prévient les clients rejetés				
+				for(int i=lastProfiles.length-1 ; i>=clientNumber ; i--)
+				{	ProfileConnection connection = lastProfiles[i];
+					server.sendToUDP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+					removeProfile(connection);
 				}
-				
-				// on attend un peu que les messages soient transmis
-				if(announce)
-				{	try
-					{	Thread.sleep(250);
-					}
-					catch (InterruptedException e)
-					{	e.printStackTrace();
-					}
-				}
-				
-				// on ferme les clients concernés
-				for(int i=sockets.length-1;i>=clientNumber;i--)
-					closeConnection(i);
-			}
 			
 			// dans tous les cas, on redimensionne les tableaux
-			sockets = Arrays.copyOf(sockets, clientNumber);
-			srrs = Arrays.copyOf(srrs, clientNumber);
-			swrs = Arrays.copyOf(swrs, clientNumber);
 			lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
 		}
 	}
@@ -431,8 +337,6 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	////////////////////////////////////////////////////////////////
 	////	ENTREES
 	////////////////////////////////////////////////////////////////
-	/** Objet chargé de la communication en entrée avec le serveur */
-	private ServerReadRunnable[] srrs;
 	
 	@Override
 	public synchronized Direction[] retrieveCommands()
@@ -455,10 +359,8 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	////////////////////////////////////////////////////////////////
 	////	SORTIES
 	////////////////////////////////////////////////////////////////
-	/** Objet chargé de la communication en sortie avec le serveur */
-	private ServerWriteRunnable[] swrs;
 	/** Dernière version de la liste de profils */
-	private Profile[] lastProfiles = new Profile[1];
+	private ProfileConnection[] lastProfiles = new ProfileConnection[1];
 	
 	@Override
 	public void sendProfiles(Profile[] profiles)
@@ -519,4 +421,126 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 				swr.objects.offer(object);
 		}
 	}
+	
+
+	
+//	@Override
+//	public void run()
+//	{	try
+//		{	try
+//			{	serverSocket = new ServerSocket(port);
+//			}
+//			catch (IOException e1)
+//			{	e1.printStackTrace();
+//			}
+//		
+//			Socket socket;
+//			do
+//			{	try
+//				{	socket = serverSocket.accept();
+//					processClient(socket);
+//				}
+//				catch(UnknownHostException e)
+//				{	
+////					errorHandler.displayError("Impossible de se connecter au client.");
+////					e.printStackTrace();
+//				}
+//				catch(IOException e)
+//				{	// si c'est une SocketException, on la re-lève
+//					if(e instanceof SocketException)
+//					{	SocketException se = (SocketException)e;
+//						throw se;
+//					}
+//					// sinon, on la traite ici
+//					else
+//					{	errorHandler.displayError("Impossible de se connecter au client.");
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//			while(true);
+//		}
+//		catch(SocketException e)
+//		{	// rien à faire : c'est juste qu'un autre thread a fermé ce socket
+//		}
+//
+//	}
+	
+//	/**
+//	 * Initialise les objets et les theads nécessaires
+//	 * au traitement d'un client.
+//	 * 
+//	 * @param socket
+//	 * 		Socket utilisé pour communiquer avec le client.
+//	 * 
+//	 * @throws UnknownHostException
+//	 * 		Problème lors de la connexion au client.
+//	 * @throws IOException
+//	 * 		Problème lors de la connexion au client.
+//	 */
+//	private synchronized void processClient(Socket socket) throws UnknownHostException, IOException
+//	{	// on détermine le premier slot dispo
+//		int index = 0;
+//		if(sockets==null)
+//		{	sockets = new Socket[1];
+//			srrs = new ServerReadRunnable[1];
+//			swrs = new ServerWriteRunnable[1];
+//		}
+//		else
+//		{	while(index<sockets.length && sockets[index]!=null)
+//				index++;
+//		}
+//		
+//		// cas où il reste de la place sur le serveur
+//		if(index<sockets.length)
+//		{	// on ouvre le socket
+//			sockets[index] = socket;
+//			
+//			// on crée un thread pour s'occuper des sorties
+//			swrs[index] = new ServerWriteRunnable(this,index);
+//			Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
+//			outThread.start();
+//			
+//			// on crée un thread pour s'occuper des entrées
+//			srrs[index] = new ServerReadRunnable(this,index);
+//			Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
+//			inThread.start();
+//			
+//			// on répond favorablement au client
+//			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
+//		}
+//		
+//		// cas où le serveur n'a plus de place
+//		else
+//		{	// on récupère le flux de sortie
+//			OutputStream os = socket.getOutputStream();
+//			ObjectOutputStream oos = new ObjectOutputStream(os);
+//			oos.flush();
+//			
+////			// celui d'entrée (pour rien)
+////			socket.getInputStream();
+//			
+//			// on répond défavorablement au client
+//			oos.writeObject(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+//			
+//			// on ferme la connexion
+//			socket.close();
+//		}
+//	}
+	
+
+	
+//	/**
+//	 * Méthode appelée quand la connexion avec un client est perdue
+//	 * accidentellement.
+//	 * 
+//	 * @param index
+//	 * 		Numéro du client concerné.
+//	 */
+//	protected synchronized void lostConnection(int index)
+//	{	if(sockets[index]!=null)
+//		{	connectionLost(index);
+//			closeConnection(index);
+//		}
+//	}
 }
