@@ -59,7 +59,6 @@ public class ServerCommunicationImpl implements ServerCommunication
 	/** Variable qui contient l'adresse ip de ce serveur */
 	private String ip = null;
 	
-	Server server;
 	int currentNumberOfClients = 0;
 	
 	
@@ -196,6 +195,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 	////////////////////////////////////////////////////////////////
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
+	Server server;
 	
 	@Override
 	public void launchServer()
@@ -215,7 +215,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 
 			@Override
 			public void received(Connection c, Object object){
-
+System.out.println("ServerCOmImpl: Received something");
 			       // We only use one type of connections
 			       ProfileConnection connection = (ProfileConnection)c;
 
@@ -223,8 +223,10 @@ public class ServerCommunicationImpl implements ServerCommunication
 			    	   
 			    	   // Ignore the object if a client has already registered a profile. This is
 			    	   // impossible with our client, but a hacker could send messages at any time.
-			    	   if(connection.profile != null)
+			    	   if(connection.profile != null){
+			    		   System.err.println("ServerCommunicationImpl: The profile of the new client is already defined");
 			    		   return;
+			    	   }
 			    	   
 			    	   // S'il reste de la place pour que le client se connecte
 			    	   if(currentNumberOfClients < lastProfiles.length)
@@ -233,19 +235,24 @@ public class ServerCommunicationImpl implements ServerCommunication
 			    	   		lastProfiles[currentNumberOfClients] = connection;
 			    	   		currentNumberOfClients++;
 			    	   }
-			    	   else
+			    	   else{
 			    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+			    		   connection.close();
+			    	   }
 			    	
-			       }
-			       
-			       else if(object instanceof String){
-			    	   //TODO
 			       }
 			       
 			       else if(object instanceof Direction){
 			    	   int id = getProfileId(connection.profile);
-			    	   lastProfiles[id].direction = (Direction)object;
-			    	   //TODO
+			    	   if(id != -1)
+			    		   lastProfiles[id].setDirection((Direction)object);
+			       }
+			       
+			       else if(object instanceof String){
+			    	   String string = (String)object;
+			    	   
+			    	   if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
+			    		   fetchAcknowledgment(getProfileId(connection.profile));
 			       }
 			       
 
@@ -255,10 +262,8 @@ public class ServerCommunicationImpl implements ServerCommunication
 			public void disconnected(Connection c){
 
 			       ProfileConnection connection = (ProfileConnection)c;
-			       if(connection.profile != null){
-			    	   removeProfile(connection);
-			    	   //TODO
-			       }
+			       if(connection.profile != null)
+			    	   kickClient(connection);
 			       	
 
 			}
@@ -266,6 +271,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 		});		
 		
 		try {
+System.out.println("ServerImpl: open with port " + getPort());			
 			server.bind(getPort(), getPort());
 		} catch (IOException e) {
 			//TODO
@@ -294,20 +300,23 @@ public class ServerCommunicationImpl implements ServerCommunication
 		
 	}
 	
-	public void removeProfile(ProfileConnection pc){
+	private void kickClient(ProfileConnection pc){
  	   
-		int id = getProfileId(pc.profile);
-		lastProfiles[id] = lastProfiles[currentNumberOfClients];
- 		lastProfiles[currentNumberOfClients] = null;
- 		currentNumberOfClients--;
- 		pc.close();
- 		
+ 		kickClient(getProfileId(pc.profile));
 		
 	}
 	
 	static class ProfileConnection extends Connection
 	{	public Profile profile; 
-		public Direction direction = Direction.NONE;
+		private Direction direction = Direction.NONE;
+		
+		public synchronized Direction getDirection(){
+			return direction;
+		}
+		
+		public synchronized void setDirection(Direction d){
+			direction = d;
+		}
 	}
 
 	
@@ -325,8 +334,8 @@ public class ServerCommunicationImpl implements ServerCommunication
 				// on prévient les clients rejetés				
 				for(int i=lastProfiles.length-1 ; i>=clientNumber ; i--)
 				{	ProfileConnection connection = lastProfiles[i];
-					server.sendToUDP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-					removeProfile(connection);
+					server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+					kickClient(connection);
 				}
 			
 			// dans tous les cas, on redimensionne les tableaux
@@ -340,18 +349,10 @@ public class ServerCommunicationImpl implements ServerCommunication
 	
 	@Override
 	public synchronized Direction[] retrieveCommands()
-	{	Direction[] result = new Direction[sockets.length];
+	{	Direction[] result = new Direction[lastProfiles.length];
 		
-		for(int i=0;i<sockets.length;i++)
-		{	ServerReadRunnable srr = srrs[i];
-			if(srr==null)
-				result[i] = Direction.NONE;
-			else
-			{	result[i] = srrs[i].directions.poll();
-				if(result[i]==null)
-					result[i] = Direction.NONE;
-			}
-		}
+		for(int i=0;i<lastProfiles.length;i++)
+			result[i] = lastProfiles[i].getDirection();
 		
 		return result;
 	}
@@ -364,17 +365,15 @@ public class ServerCommunicationImpl implements ServerCommunication
 	
 	@Override
 	public void sendProfiles(Profile[] profiles)
-	{	lastProfiles = Arrays.copyOf(profiles,profiles.length);
+	{	lastProfiles = Arrays.copyOf(lastProfiles,profiles.length);
+		
+		for(int i = 0 ; i < lastProfiles.length ; ++i)
+			if(lastProfiles[i] != null)
+				lastProfiles[i].profile = profiles[i];
+	
 		sendObject(profiles);
 	}
-	
-//	/**
-//	 * Renvoie la dernière liste de profils reçue.
-//	 */
-//	public void reSendProfiles()
-//	{	sendObject(lastProfiles);
-//	}
-	
+		
 	@Override
 	public void sendPointThreshold(int pointThreshold)
 	{	Integer value = new Integer(pointThreshold);
@@ -393,20 +392,14 @@ public class ServerCommunicationImpl implements ServerCommunication
 	
 	@Override
 	public void kickClient(int index)
-	{	// on prévient le client
-		if(swrs[index]!=null)
-			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-		
-		// on attend un peu quel le message lui parvienne
-		try
-		{	Thread.sleep(250);
+	{	if(index >= 0 && index < currentNumberOfClients){
+			ProfileConnection connection = lastProfiles[index];
+			server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+			lastProfiles[index] = lastProfiles[currentNumberOfClients];
+	 		lastProfiles[currentNumberOfClients] = null;
+	 		currentNumberOfClients--;
+	 		connection.close();
 		}
-		catch(InterruptedException e)
-		{	e.printStackTrace();
-		}
-		
-		// on ferme la connexion
-		closeConnection(index);
 	}
 	
 	/**
@@ -416,10 +409,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 	 * 		L'objet à envoyer.
 	 */
 	public void sendObject(Object object)
-	{	for(ServerWriteRunnable swr: swrs)
-		{	if(swr!=null)
-				swr.objects.offer(object);
-		}
+	{	server.sendToAllTCP(object);
 	}
 	
 

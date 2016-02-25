@@ -1,5 +1,26 @@
 package fr.univavignon.courbes.network.simpleimpl.client;
 
+import java.awt.EventQueue;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
+import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
+import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientGameHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
+
 /*
  * Courbes
  * Copyright 2015-16 L3 Info UAPV 2015-16
@@ -19,22 +40,8 @@ package fr.univavignon.courbes.network.simpleimpl.client;
  */
 
 import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.network.simpleimpl.Network;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
-import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.common.UpdateInterface;
-import fr.univavignon.courbes.inter.ClientConnectionHandler;
-import fr.univavignon.courbes.inter.ClientGameHandler;
-import fr.univavignon.courbes.inter.ClientProfileHandler;
-import fr.univavignon.courbes.inter.ErrorHandler;
 
 /**
  * Implémentation de la classe {@link ClientCommunication}. Elle se repose
@@ -50,6 +57,7 @@ public class ClientCommunicationImpl implements ClientCommunication
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient l'adresse ip du serveur */
 	private String ip;
+
 
 	@Override
 	public String getIp()
@@ -218,80 +226,107 @@ public class ClientCommunicationImpl implements ClientCommunication
 	////////////////////////////////////////////////////////////////
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
-	/** Socket du client connecté au serveur */
-	public Socket socket = null;
+	private Client client;
+
+	/** Indentifie la premier manche reçue */
+	private boolean firstRound;
 	
 	@Override
-	public synchronized boolean launchClient()
+	public synchronized boolean launchClient(final Profile profile)
 	{	boolean result = true;
 	
-		try
-		{	// on ouvre le socket
-			socket = new Socket(ip, port);
+		client = new Client();
+		client.start();
 			
-			// on crée un thread pour s'occuper des sorties
-			cwr = new ClientWriteRunnable(this);
-			Thread outThread = new Thread(cwr,"Courbes-Client-Out");
-			outThread.start();
+		firstRound = true;
 			
-			// on crée un thread pour s'occuper des entrées
-			crr = new ClientReadRunnable(this);
-			Thread inThread = new Thread(crr,"Courbes-Client-In");
-			inThread.start();
-		}
-		catch(ConnectException e)
-		{	result = false;
-		}
-		catch(UnknownHostException e)
-		{	result = false;
-			errorHandler.displayError("Impossible de se connecter au serveur.");
-			e.printStackTrace();
-		}
-		catch(IOException e)
-		{	result = false;
-			errorHandler.displayError("Impossible de se connecter au serveur.");
-			e.printStackTrace();
-		}
+		Network.register(client);
+			
+		client.addListener(new Listener(){
+
+			public void connected(Connection connection){
+				client.sendTCP(profile);
+			}
+
+		    public void received(Connection connection, Object object){
+
+		    	if(object instanceof String)
+				{	String string = (String)object;
+					if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
+						gotRefused();
+					
+					else if(string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
+						gotAccepted();
+					
+					else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
+						gotKicked();
+				}
+		    	
+		    	else if(object instanceof UpdateInterface)
+				{	UpdateInterface ud = (UpdateInterface)object;
+					updateData.offer(ud);
+					//System.out.println(boards.size());					
+				}
+				else if(object instanceof Integer)
+				{	Integer integer = (Integer)object;
+					pointsLimits.offer(integer);
+				}
+				
+				else if(object instanceof Round)
+				{	Round round = (Round)object;
+					if(firstRound)
+					{	startGame(round);
+						firstRound = false;
+					}
+					else
+						fetchRound(round);
+				}
+				else if(object instanceof Profile[])
+				{	Profile[] profiles = (Profile[])object;
+					updateProfiles(profiles);
+				}
+		    }
+
+		    public void disconnected(Connection connection){
+
+		    	   EventQueue.invokeLater(new Runnable(){
+			   	public void run(){
+				       lostConnection();
+				}
+			   });
+
+		    }
+
+	    });
 		
+	     int timeout = 5000;
+	     try {
+System.out.println("ClientImpl: connection to port " + port);	    	 
+			client.connect(timeout, ip, port);
+		} catch (IOException e) {
+			result = false;
+			e.printStackTrace();
+		}
+
 		return result;
 	}
+		
 
 	@Override
 	public synchronized void closeClient()
-	{	if(socket!=null)
-		{	
-//			// on indique qu'on se déconnecte
-//			cwr.objects.offer(NetworkConstants.ANNOUNCE_DISCONNECTION);
-			
-			// on indique aux deux threads de se terminer (proprement)
-			crr.setActive(false);
-			crr = null;
-			cwr.setActive(false);
-			cwr = null;
-			
-			// on ferme la socket
-			try
-			{	socket.close();
-				socket = null;
-			}
-			catch (IOException e)
-			{	e.printStackTrace();
-				errorHandler.displayError("Erreur lors de la fermeture du socket.");
-			}
-		}
+	{	client.stop();
 	}
 
 	@Override
 	public synchronized boolean isConnected()
-	{	boolean result = socket!=null && socket.isConnected() && !socket.isClosed();
-		return result;
+	{	return client != null && client.isConnected();
 	}
 	
 	/**
 	 * Méthode appelée quand la connexion avec le serveur est perdue accidentellement.
 	 */
 	protected synchronized void lostConnection()
-	{	if(socket!=null)
+	{	if(client!=null)
 		{	connectionLost();
 			closeClient();
 		}
@@ -300,42 +335,42 @@ public class ClientCommunicationImpl implements ClientCommunication
 	////////////////////////////////////////////////////////////////
 	////	ENTREES
 	////////////////////////////////////////////////////////////////
-	/** Objet chargé de la communication en entrée avec le serveur */
-	private ClientReadRunnable crr;
-
 	@Override
 	public Integer retrievePointThreshold()
-	{	Integer result = crr.pointsLimits.poll();
+	{	Integer result = pointsLimits.poll();
 		return result;
 	}
 
 	@Override
 	public UpdateInterface retrieveUpdate()
-	{	UpdateInterface result = crr.updateData.poll();
+	{	UpdateInterface result = updateData.poll();
 		return result;
 	}
 	
 	////////////////////////////////////////////////////////////////
 	////	SORTIES
 	////////////////////////////////////////////////////////////////
-	/** Objet chargé de la communication en sortie avec le serveur */
-	private ClientWriteRunnable cwr;
-	
 	@Override
 	public void sendCommand(Direction direction)
-	{	if(cwr!=null)
-			cwr.objects.offer(direction);
+	{	client.sendTCP(direction);
 	}
 
 	@Override
 	public void sendProfile(Profile profile)
-	{	if(cwr!=null)
-			cwr.objects.offer(profile);
+	{	client.sendTCP(profile);
 	}
 	
 	@Override
 	public void sendAcknowledgment()
-	{	if(cwr!=null)
-			cwr.objects.offer(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
+	{	client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
 	}
+	
+	////////////////////////////////////////////////////////////////
+	////	FILES DE DONNEES
+	////////////////////////////////////////////////////////////////
+	/** File des aires de jeu reçues du serveur et en attente de récupération par l'Interface Utilisateur */
+	protected Queue<UpdateInterface> updateData = new ConcurrentLinkedQueue<UpdateInterface>();
+	
+	/** File des limites de points reçues du serveur et en attente de récupération par l'Interface Utilisateur */
+	protected Queue<Integer> pointsLimits = new ConcurrentLinkedQueue<Integer>();
 }

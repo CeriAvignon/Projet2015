@@ -117,11 +117,12 @@ public interface ClientCommunication
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de se connecter à une partie réseau existante.
+	 * @param profile 
      * 
      * @return
      * 		{@code true} ssi la connexion a pu être effectuée.
      */
-	public boolean launchClient();
+	public boolean launchClient(Profile profile);
 
  	/**
      * Permet à un client de clore sa connexion avec le serveur.

@@ -77,7 +77,7 @@ public class ClientGameServerConnectionPanel extends AbstractConnectionPanel imp
 		clientCom.setPort(port);
 		
 		// puis on se connecte
-		boolean result = clientCom.launchClient();
+		boolean result = clientCom.launchClient(mainWindow.clientPlayer.profile);
 		return result;
 	}
 	
