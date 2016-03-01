@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.simpleimpl;
+package fr.univavignon.courbes.network.kryonet;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
