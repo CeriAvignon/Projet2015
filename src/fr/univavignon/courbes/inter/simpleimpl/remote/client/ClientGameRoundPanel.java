@@ -1,4 +1,4 @@
-	package fr.univavignon.courbes.inter.simpleimpl.remote.client;
+package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 
 /*
  * Courbes
