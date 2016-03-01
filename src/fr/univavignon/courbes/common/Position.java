@@ -30,6 +30,15 @@ public class Position implements Serializable, Comparable<Position>
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 
+
+	
+	/**
+	 * Constructor used to enable serialization to send through the network
+	 */
+	public Position(){
+		x = -1;
+		y = -1;
+	}
 	/**
 	 * Instancie une nouvelle position avec les
 	 * valeurs passées en paramètres.

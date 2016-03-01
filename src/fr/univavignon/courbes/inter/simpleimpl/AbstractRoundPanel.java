@@ -136,6 +136,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 
 		do
 		{	// on joue le round
+			System.out.println("ARP: play round");
 			playRound();
 			
 			// on met à jour les score totaux

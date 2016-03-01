@@ -2,19 +2,20 @@ package fr.univavignon.courbes.network.simpleimpl.client;
 
 import java.awt.EventQueue;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.SmallUpdate;
 import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ClientConnectionHandler;
 import fr.univavignon.courbes.inter.ClientGameHandler;
@@ -121,7 +122,7 @@ public class ClientCommunicationImpl implements ClientCommunication
 	////	HANDLER DE PROFILS
 	////////////////////////////////////////////////////////////////
 	/** Handler de profils */
-	public ClientProfileHandler profileHandler;
+	private ClientProfileHandler profileHandler;
 
 	@Override
 	public void setProfileHandler(ClientProfileHandler configHandler)
@@ -146,10 +147,28 @@ public class ClientCommunicationImpl implements ClientCommunication
 	 * 		Tableau de profils à transmettre au handler.
 	 */
 	protected void updateProfiles(Profile[] profiles)
-	{	if(profileHandler!=null)
+	{	
+		/* If the handler is not defined */
+		int iteration = 0;
+
+		/* Wait to give enough time for method <init> from ClientGameWaitPanel to be called to set the handler */
+		while(profileHandler == null && iteration < 100){
+
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			iteration++;
+		}
+		
+				
+		if(profileHandler!=null)
 			profileHandler.updateProfiles(profiles);
+	
 		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+			System.err.println("Le handler de profils n'a pas été renseigné !1");
 	}
 	
 	/**
@@ -162,7 +181,7 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	if(profileHandler!=null)
 			profileHandler.startGame(round);
 		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+			System.err.println("Le handler de profils n'a pas été renseigné !2");
 	}
 	
 	/**
@@ -172,7 +191,7 @@ public class ClientCommunicationImpl implements ClientCommunication
 	{	if(profileHandler!=null)
 			profileHandler.connectionLost();
 		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+			System.err.println("Le handler de profils n'a pas été renseigné !3");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -245,13 +264,17 @@ public class ClientCommunicationImpl implements ClientCommunication
 		client.addListener(new Listener(){
 
 			public void connected(Connection connection){
+				System.out.println("CCI: connected, send profile to server");
 				client.sendTCP(profile);
 			}
 
 		    public void received(Connection connection, Object object){
 
 		    	if(object instanceof String)
-				{	String string = (String)object;
+				{
+					String string = (String)object;
+					System.out.println("CCI: received String: "+ string);
+					
 					if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
 						gotRefused();
 					
@@ -263,17 +286,32 @@ public class ClientCommunicationImpl implements ClientCommunication
 				}
 		    	
 		    	else if(object instanceof UpdateInterface)
-				{	UpdateInterface ud = (UpdateInterface)object;
+				{	
+					UpdateInterface ud = (UpdateInterface)object;
+//					System.out.print("!");
+					//System.out.println(boards.size());
+					if(ud instanceof SmallUpdate){
+						SmallUpdate su = (SmallUpdate)ud;
+						
+						if(su.newItem != null){
+							System.out.println("\nCCI: received SmallUpdate with new item: " + su.newItem.type);
+//							su.newItem.type = new ItemType(su.newItem.type);
+						}
+					}
+					
 					updateData.offer(ud);
-					//System.out.println(boards.size());					
-				}
+				}	
 				else if(object instanceof Integer)
-				{	Integer integer = (Integer)object;
+				{	
+		    		System.out.println("CCI: received Integer");
+		    		Integer integer = (Integer)object;
 					pointsLimits.offer(integer);
 				}
 				
 				else if(object instanceof Round)
-				{	Round round = (Round)object;
+				{	
+		    		System.out.println("CCI: received round");
+		    		Round round = (Round)object;
 					if(firstRound)
 					{	startGame(round);
 						firstRound = false;
@@ -282,9 +320,16 @@ public class ClientCommunicationImpl implements ClientCommunication
 						fetchRound(round);
 				}
 				else if(object instanceof Profile[])
-				{	Profile[] profiles = (Profile[])object;
+				{	
+		    		System.out.println("CCI: received profile[]");
+		    		Profile[] profiles = (Profile[])object;
 					updateProfiles(profiles);
 				}
+				else if(!(object instanceof FrameworkMessage.KeepAlive))
+					System.out.println("SCI: unknown class: "+ object.getClass());
+				else
+					System.out.print(".");
+				
 		    }
 
 		    public void disconnected(Connection connection){
@@ -301,8 +346,9 @@ public class ClientCommunicationImpl implements ClientCommunication
 		
 	     int timeout = 5000;
 	     try {
-System.out.println("ClientImpl: connection to port " + port);	    	 
-			client.connect(timeout, ip, port);
+System.out.println("CCI: connection to port " + port + "...");	    	 
+			client.connect(timeout, ip, port, port+1);
+			System.out.println("CCI: connected");
 		} catch (IOException e) {
 			result = false;
 			e.printStackTrace();
@@ -344,6 +390,15 @@ System.out.println("ClientImpl: connection to port " + port);
 	@Override
 	public UpdateInterface retrieveUpdate()
 	{	UpdateInterface result = updateData.poll();
+	
+		if(result != null && result instanceof SmallUpdate){
+			
+			SmallUpdate su = (SmallUpdate)result;
+			
+			if(su.newItem != null)
+				System.out.println("CCI: retrieveUpdate new item: " + su.newItem.type);
+			
+		}
 		return result;
 	}
 	
@@ -352,17 +407,26 @@ System.out.println("ClientImpl: connection to port " + port);
 	////////////////////////////////////////////////////////////////
 	@Override
 	public void sendCommand(Direction direction)
-	{	client.sendTCP(direction);
+	{	
+		Integer intToSend = new Integer(0);
+		switch(direction){
+		case LEFT:intToSend = new Integer(-1);break;
+		case RIGHT:intToSend = new Integer(1);break;
+		}
+		client.sendTCP(intToSend);
+		
 	}
 
 	@Override
 	public void sendProfile(Profile profile)
 	{	client.sendTCP(profile);
+System.out.println("CCI: send profile");
 	}
 	
 	@Override
 	public void sendAcknowledgment()
 	{	client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
+		System.out.println("CCI: send acknowledgement");
 	}
 	
 	////////////////////////////////////////////////////////////////

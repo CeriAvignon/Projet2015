@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
+
+import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
@@ -17,6 +18,7 @@ import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.SmallUpdate;
 import fr.univavignon.courbes.common.UpdateInterface;
 import fr.univavignon.courbes.inter.ErrorHandler;
 import fr.univavignon.courbes.inter.ServerGameHandler;
@@ -203,6 +205,7 @@ public class ServerCommunicationImpl implements ServerCommunication
 			protected Connection newConnection () 
 			{	// By providing our own connection implementation, we can store per
 				// connection state without a connection ID to state look up.
+				System.out.println("SCI: new connection");
 				return new ProfileConnection();
 			}
 		};
@@ -215,12 +218,11 @@ public class ServerCommunicationImpl implements ServerCommunication
 
 			@Override
 			public void received(Connection c, Object object){
-System.out.println("ServerCOmImpl: Received something");
 			       // We only use one type of connections
 			       ProfileConnection connection = (ProfileConnection)c;
 
 			       if(object instanceof Profile){
-			    	   
+			    	   System.out.println("SCI: Received Profile");
 			    	   // Ignore the object if a client has already registered a profile. This is
 			    	   // impossible with our client, but a hacker could send messages at any time.
 			    	   if(connection.profile != null){
@@ -228,39 +230,63 @@ System.out.println("ServerCOmImpl: Received something");
 			    		   return;
 			    	   }
 			    	   
+
+			    	   
 			    	   // S'il reste de la place pour que le client se connecte
-			    	   if(currentNumberOfClients < lastProfiles.length)
+			    	   if(currentNumberOfClients < clients.length)
 			    	   {	server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
-			    	   		connection.profile = (Profile)object;
-			    	   		lastProfiles[currentNumberOfClients] = connection;
+			    	   System.out.println("SCI: send accepted connection");
+//			    	   	connection.profile = ((MessageProfile)object).getProfile();
+			    	   	connection.profile = (Profile)object;
+			    	   		clients[currentNumberOfClients] = connection;
+							fetchProfile(connection.profile, currentNumberOfClients);
 			    	   		currentNumberOfClients++;
 			    	   }
 			    	   else{
 			    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+			    		   System.out.println("SCI: send rejected connection");
 			    		   connection.close();
 			    	   }
 			    	
 			       }
 			       
-			       else if(object instanceof Direction){
+			       else if(object instanceof Integer){
 			    	   int id = getProfileId(connection.profile);
-			    	   if(id != -1)
-			    		   lastProfiles[id].setDirection((Direction)object);
+			    	   if(id != -1){
+			    		   Direction dir = Direction.NONE;
+			    		   switch((Integer)object){
+			    		   case -1: dir = Direction.LEFT;break;
+			    		   case  1: dir = Direction.RIGHT;break;
+			    		   }
+			    		   
+			    		   clients[id].setDirection(dir);
+			    	   }
+			    	   else{
+			    		   if(connection.profile == null)
+			    			   System.out.println("Erreur profile null");
+			    		   else
+			    			   System.out.println("Erreur profile non trouvé");
+			    	   }
 			       }
 			       
 			       else if(object instanceof String){
 			    	   String string = (String)object;
+			    	   System.out.println("SCI: Received String: "+ string);
 			    	   
 			    	   if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
 			    		   fetchAcknowledgment(getProfileId(connection.profile));
 			       }
+					else if(!(object instanceof FrameworkMessage.KeepAlive))
+						System.out.println("SCI: unknown class: "+ object.getClass());
+					else
+						System.out.print(".");
 			       
 
 			}
 
 			@Override
 			public void disconnected(Connection c){
-
+System.out.println("SCI: disconnected");
 			       ProfileConnection connection = (ProfileConnection)c;
 			       if(connection.profile != null)
 			    	   kickClient(connection);
@@ -271,8 +297,9 @@ System.out.println("ServerCOmImpl: Received something");
 		});		
 		
 		try {
-System.out.println("ServerImpl: open with port " + getPort());			
-			server.bind(getPort(), getPort());
+System.out.println("SCI: opening with port " + getPort());			
+			server.bind(getPort(), getPort()+1);
+			System.out.println("SCI: opened");
 		} catch (IOException e) {
 			//TODO
 			e.printStackTrace();
@@ -287,11 +314,13 @@ System.out.println("ServerImpl: open with port " + getPort());
 
  	    boolean found = false;
  	    int i = 0;
- 	   
- 	    while(i < currentNumberOfClients || !found){
- 		   
- 		    if(lastProfiles[i].profile.equals(p))
+ 	     	   
+ 	    while(i < currentNumberOfClients && !found){
+// 	    	if(clients[i].profile.userName.equals(p.userName) && clients[i].profile.password.equals(p.password))
+ 		    if(clients[i].profile.equals(p)){
  			   found = true;
+ 			   result = i;
+ 		    }
  		    else
  			    ++i;
  	   }
@@ -327,20 +356,33 @@ System.out.println("ServerImpl: open with port " + getPort());
 	
 	@Override
 	public synchronized void setClientNumber(int clientNumber)
-	{	// si le nombre diminue, il faut en fermer certains	
-		if(clientNumber < lastProfiles.length)	
+	{	
+		System.out.println("SCI: setClientNumber(" + clientNumber + ")");
+		
+		if(clients == null){
+			clients = new ProfileConnection[clientNumber];
+			lastProfiles = new Profile[clientNumber];
+		}
+		
+		// si le nombre diminue, il faut en fermer certains	
+		if(clientNumber < clients.length)	
 		{	
-			if(clientNumber < lastProfiles.length)
+			if(clientNumber < clients.length)
 				// on prévient les clients rejetés				
-				for(int i=lastProfiles.length-1 ; i>=clientNumber ; i--)
-				{	ProfileConnection connection = lastProfiles[i];
+				for(int i=clients.length-1 ; i>=clientNumber ; i--)
+				{	ProfileConnection connection = clients[i];
 					server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+					System.out.println("SCI: send rejected profile");
 					kickClient(connection);
 				}
 			
-			// dans tous les cas, on redimensionne les tableaux
-			lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
 		}
+		
+		// dans tous les cas, on redimensionne les tableaux
+		System.out.println("SCI: previous clients size: " + clients.length);
+		lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
+		clients = Arrays.copyOf(clients, clientNumber);
+		System.out.println("SCI: new clients size: " + clients.length);
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -349,10 +391,11 @@ System.out.println("ServerImpl: open with port " + getPort());
 	
 	@Override
 	public synchronized Direction[] retrieveCommands()
-	{	Direction[] result = new Direction[lastProfiles.length];
-		
-		for(int i=0;i<lastProfiles.length;i++)
-			result[i] = lastProfiles[i].getDirection();
+	{	Direction[] result = new Direction[clients.length];
+			
+		for(int i=0;i < clients.length;i++){
+			result[i] = clients[i].getDirection();
+		}
 		
 		return result;
 	}
@@ -361,16 +404,17 @@ System.out.println("ServerImpl: open with port " + getPort());
 	////	SORTIES
 	////////////////////////////////////////////////////////////////
 	/** Dernière version de la liste de profils */
-	private ProfileConnection[] lastProfiles = new ProfileConnection[1];
+	private Profile[] lastProfiles = new Profile[1];
+	private ProfileConnection[] clients = null;
 	
 	@Override
 	public void sendProfiles(Profile[] profiles)
 	{	lastProfiles = Arrays.copyOf(lastProfiles,profiles.length);
 		
-		for(int i = 0 ; i < lastProfiles.length ; ++i)
-			if(lastProfiles[i] != null)
-				lastProfiles[i].profile = profiles[i];
-	
+//		for(int i = 0 ; i < lastProfiles.length ; ++i)
+//			if(lastProfiles[i] != null)
+//				lastProfiles[i].profile = profiles[i];
+	System.out.println("SCI: send " + profiles.length + " profiles");
 		sendObject(profiles);
 	}
 		
@@ -383,6 +427,13 @@ System.out.println("ServerImpl: open with port " + getPort());
 	@Override
 	public void sendUpdate(UpdateInterface updateData)
 	{	sendObject(updateData);
+		if(updateData instanceof SmallUpdate){
+			SmallUpdate su = (SmallUpdate)updateData;
+			
+			if(su.newItem != null){
+				System.out.println("\nSCI: send SmallUpdate with new item: " + su.newItem.type);
+			}
+		}
 	}
 	
 	@Override
@@ -393,10 +444,14 @@ System.out.println("ServerImpl: open with port " + getPort());
 	@Override
 	public void kickClient(int index)
 	{	if(index >= 0 && index < currentNumberOfClients){
-			ProfileConnection connection = lastProfiles[index];
+			ProfileConnection connection = clients[index];
 			server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-			lastProfiles[index] = lastProfiles[currentNumberOfClients];
-	 		lastProfiles[currentNumberOfClients] = null;
+			System.out.println("SCI: send rejected profile");
+			
+			if(index != currentNumberOfClients - 1)
+				clients[index] = clients[currentNumberOfClients-1];
+			
+			clients[currentNumberOfClients-1] = null;
 	 		currentNumberOfClients--;
 	 		connection.close();
 		}

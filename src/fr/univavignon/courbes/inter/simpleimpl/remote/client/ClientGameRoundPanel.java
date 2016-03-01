@@ -91,12 +91,14 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	@Override
 	public void run()
 	{	// on joue la rencontre (i.e. plusieurs manches)
+		System.out.println("CGR: Play Match");
 		playMatch();
 		
 		// TODO la mise à jour des stats devrait aller ici
 		// (soit calcul local, soit synchronisation avec le serveur)
 		
 		// on repart au menu principal
+		System.out.println("CGR: Close client");
 		clientCom.closeClient();
 		clientCom.setGameHandler(null);
 		mainWindow.clientCom = null;
@@ -118,6 +120,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		newRoundReceived = false;
 		
+		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
 			long elapsedTime = currentTime - previousTime;
@@ -130,6 +133,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
 			{	// on envoie les commandes au serveur
 				Direction[] directions = keyManager.retrieveDirections();
+//				System.out.println("CGR: send Direction");
 				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE (auquel cas on n'enverrait rien)
 				// on met à jour le moteur physique
 				UpdateInterface updateData = clientCom.retrieveUpdate();
@@ -191,7 +195,9 @@ if(!lastEliminated.isEmpty())
 	 * 		Directions renvoyées par le {@link KeyManager}.
 	 */
 	private void sendDirection(Direction[] directions)
-	{	Direction direction = directions[localPlayerId];
+	{	
+		Direction direction = directions[localPlayerId];
+		
 		clientCom.sendCommand(direction);
 	}
 	

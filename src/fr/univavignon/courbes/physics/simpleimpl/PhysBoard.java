@@ -478,8 +478,10 @@ public class PhysBoard extends Board
 		// items
 		for(int i: smallUpdate.removedItems)
 			currentItems.remove(i);
-		if(smallUpdate.newItem!=null)
-			currentItems.add((PhysItemInstance)smallUpdate.newItem);
+		if(smallUpdate.newItem!=null){
+			 currentItems.add((PhysItemInstance)smallUpdate.newItem);
+			System.out.println("PB: small update with new item: " + smallUpdate.newItem.type + " position: "  + smallUpdate.newItem.x + ","+ smallUpdate.newItem.y);
+		}
 		
 		// serpents
 		for(int i=0;i<snakes.length;i++)

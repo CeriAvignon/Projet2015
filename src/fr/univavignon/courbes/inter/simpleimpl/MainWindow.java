@@ -202,6 +202,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new ClientGamePlayerSelectionPanel(this);
 				break;
 			case CLIENT_GAME_WAIT:
+				System.out.println("MW: display CGWP panel");
 				currentPanel = new ClientGameWaitPanel(this);
 				break;
 			case CLIENT_GAME_PLAY:

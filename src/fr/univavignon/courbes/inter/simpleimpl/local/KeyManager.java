@@ -208,7 +208,7 @@ public class KeyManager implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{	int keyCode = e.getKeyCode();
-	
+
 		// touches des joueurs
 		Integer playerId = keyPlayerMapping.get(keyCode);
 		if(playerId!=null)

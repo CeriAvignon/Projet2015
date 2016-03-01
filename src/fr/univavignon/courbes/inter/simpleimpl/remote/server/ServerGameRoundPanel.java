@@ -91,6 +91,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	@Override
 	public void run()
 	{	// on joue la rencontre (i.e. plusieurs manches)
+		System.out.println("SGR: play match");
 		playMatch();
 		
 		// TODO la mise à jour des stats irait ici
@@ -125,6 +126,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 			elapsedPhysTime = elapsedPhysTime + elapsedTime;
 			elapsedGraphTime = elapsedGraphTime + elapsedTime;
 			elapsedStatTime = elapsedStatTime + elapsedTime;
+
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
 			{	// on récupère les commandes des joueurs
@@ -194,7 +196,8 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		// on attend que les clients soient prêts (attente passive)
 		while(readyClientNbr<clientIndices.size())
 		{	try
-			{	wait();
+			{
+				wait();
 			}
 			catch (InterruptedException e)
 			{	e.printStackTrace();
@@ -204,7 +207,8 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	
 	@Override
 	public synchronized void fetchAcknowledgment(int index)
-	{	readyClientNbr++;
+	{	System.out.println("SGR: fetchAcknowledgment which notifies in theory...");
+		readyClientNbr++;
 		notify();
 	}
 	

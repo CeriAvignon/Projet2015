@@ -46,6 +46,13 @@ public class PhysSnake extends Snake
 	private final static int PREV_DISK_SIZE = 20;
 	
 	/**
+	 * Constructor used to enable serialization to send through the network
+	 */
+	public PhysSnake(){
+		playerId = -1;
+	}
+	
+	/**
 	 * Crée le serpent associé au numéro indiqué, pour le profil
 	 * indiqué, sur l'aire de jeu indiquée.
 	 * 

@@ -55,6 +55,9 @@ public class SmallUpdate implements UpdateInterface
 		currentItems = new ArrayList<ItemInstance[]>();
 	}
 	
+	/** Constructor created to enable deserialization in kryonet network */
+	public SmallUpdate(){}
+	
 	////////////////////////////////////////////////////////////////
 	////	AIRE DE JEU
 	////////////////////////////////////////////////////////////////

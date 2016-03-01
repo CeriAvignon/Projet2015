@@ -99,6 +99,7 @@ public class ClientGameServerConnectionPanel extends AbstractConnectionPanel imp
 		{	@Override
 			public void run()
 			{	mainWindow.clientCom.setConnectionHandler(null);
+				System.out.println("CGSCP : got accepted");
 				mainWindow.displayPanel(PanelName.CLIENT_GAME_WAIT);
 			}
 	    });

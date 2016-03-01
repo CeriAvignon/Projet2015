@@ -52,6 +52,12 @@ public class PhysItemInstance extends ItemInstance
 	}
 	
 	/**
+	 * Constructor created to enable kryonet network
+	 */
+	public PhysItemInstance()
+	{}
+	
+	/**
 	 * Crée un item de type aléatoire.
 	 * 
 	 * @param x

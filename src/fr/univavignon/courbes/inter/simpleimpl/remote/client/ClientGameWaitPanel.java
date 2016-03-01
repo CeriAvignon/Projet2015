@@ -69,10 +69,11 @@ public class ClientGameWaitPanel extends AbstractConfigurationPanel implements R
 
 	@Override
 	public void init(String title)
-	{	ClientCommunication clientCom = mainWindow.clientCom;
+	{	System.out.println("CGWP : init");
+		ClientCommunication clientCom = mainWindow.clientCom;
 		clientCom.setProfileHandler(this);
 		Player player = mainWindow.clientPlayer;
-		mainWindow.clientCom.sendProfile(player.profile);
+//		mainWindow.clientCom.sendProfile(player.profile);
 //		clientCom.requestProfiles();
 		
 		super.init(title);
