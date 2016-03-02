@@ -161,4 +161,6 @@ public class Constants
 	public static final String DEFAULT_IP = "localhost";//60010;//453;
 	/** Port TCP par défaut */
 	public static final int DEFAULT_PORT = 9999;//60010;//453;
+	/** Liste des préfixes d'adresses IP acceptées par le Moteur Réseau */
+	public static final String[] IP_PREFIXES = {"192.168.","10.104.","194.57."};
 }
