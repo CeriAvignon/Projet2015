@@ -206,7 +206,10 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			{	// By providing our own connection implementation, we can store per
 				// connection state without a connection ID to state look up.
 				System.out.println("SCI: new connection");
-				return new ProfileConnection();
+				
+				ProfileConnection connection = new ProfileConnection();
+		    	   
+				return connection;
 			}
 		};
 
@@ -223,6 +226,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 
 			       if(object instanceof Profile){
 			    	   System.out.println("SCI: Received Profile");
+
 			    	   // Ignore the object if a client has already registered a profile. This is
 			    	   // impossible with our client, but a hacker could send messages at any time.
 			    	   if(connection.profile != null){
@@ -230,36 +234,22 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			    		   return;
 			    	   }
 			    	   
-
-			    	   
-			    	   // S'il reste de la place pour que le client se connecte
-			    	   if(currentNumberOfClients < clients.length)
-			    	   {	server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
-			    	   System.out.println("SCI: send accepted connection");
-//			    	   	connection.profile = ((MessageProfile)object).getProfile();
-			    	   	connection.profile = (Profile)object;
-			    	   		clients[currentNumberOfClients] = connection;
-							fetchProfile(connection.profile, currentNumberOfClients);
-			    	   		currentNumberOfClients++;
+			    	   if(connection.id != -1){
+			    		   connection.profile = (Profile)object;
+			    		   fetchProfile(connection.profile, connection.id);
 			    	   }
-			    	   else{
-			    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
-			    		   System.out.println("SCI: send rejected connection");
-			    		   connection.close();
-			    	   }
-			    	
+			    	 			    	
 			       }
 			       
 			       else if(object instanceof Integer){
-			    	   int id = getProfileId(connection.profile);
-			    	   if(id != -1){
+			    	   if(connection.id != -1){
 			    		   Direction dir = Direction.NONE;
 			    		   switch((Integer)object){
 			    		   case -1: dir = Direction.LEFT;break;
 			    		   case  1: dir = Direction.RIGHT;break;
 			    		   }
 			    		   
-			    		   clients[id].setDirection(dir);
+			    		   clients[connection.id].setDirection(dir);
 			    	   }
 			    	   else{
 			    		   if(connection.profile == null)
@@ -274,10 +264,31 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			    	   System.out.println("SCI: Received String: "+ string);
 			    	   
 			    	   if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
-			    		   fetchAcknowledgment(getProfileId(connection.profile));
+			    		   fetchAcknowledgment(connection.id);
 			       }
+			       
+					else if(object instanceof Boolean){
+
+						System.out.println("SCI: received Boolean");
+				    	   // S'il reste de la place pour que le client se connecte
+				    	   if(currentNumberOfClients < clients.length)
+				    	   {	
+				    	   		System.out.println("SCI: send accepted connection");
+				    	   		clients[currentNumberOfClients] = connection;
+				    	   		connection.id = currentNumberOfClients;
+				    	   		currentNumberOfClients++;
+				    	   		server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
+				    	   }
+				    	   else{
+				    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+				    		   System.out.println("SCI: send rejected connection");
+				    		   connection.close();
+				    	   }
+					}
+
 					else if(!(object instanceof FrameworkMessage.KeepAlive))
 						System.out.println("SCI: unknown class: "+ object.getClass());
+			       
 					else
 						System.out.print(".");
 			       
@@ -308,36 +319,41 @@ System.out.println("SCI: opening with port " + getPort());
 		server.start();
 	}
 	
-	public int getProfileId(Profile p){
-		
-		int result = -1;
-
- 	    boolean found = false;
- 	    int i = 0;
- 	     	   
- 	    while(i < currentNumberOfClients && !found){
-// 	    	if(clients[i].profile.userName.equals(p.userName) && clients[i].profile.password.equals(p.password))
- 		    if(clients[i].profile.equals(p)){
- 			   found = true;
- 			   result = i;
- 		    }
- 		    else
- 			    ++i;
- 	   }
-		
-		return result;
-		
-	}
+//	public int getProfileId(Profile p){
+//		
+//		int result = -1;
+//
+// 	    boolean found = false;
+// 	    int i = 0;
+// 	     	   
+// 	    while(i < currentNumberOfClients && !found){
+//// 	    	if(clients[i].profile.userName.equals(p.userName) && clients[i].profile.password.equals(p.password))
+// 		    if(clients[i].profile.equals(p)){
+// 			   found = true;
+// 			   result = i;
+// 		    }
+// 		    else
+// 			    ++i;
+// 	   }
+//		
+//		return result;
+//		
+//	}
 	
 	private void kickClient(ProfileConnection pc){
  	   
- 		kickClient(getProfileId(pc.profile));
+ 		kickClient(pc.id);
 		
 	}
 	
 	static class ProfileConnection extends Connection
 	{	public Profile profile; 
 		private Direction direction = Direction.NONE;
+		
+		/**
+		 * Id of the connection in the array <clients>
+		 */
+		public int id = -1;
 		
 		public synchronized Direction getDirection(){
 			return direction;
@@ -351,7 +367,8 @@ System.out.println("SCI: opening with port " + getPort());
 	
 	@Override
 	public synchronized void closeServer()
-	{	server.close();
+	{	System.out.println("SCI: close server");
+		server.close();
 	}
 	
 	@Override
@@ -367,22 +384,20 @@ System.out.println("SCI: opening with port " + getPort());
 		// si le nombre diminue, il faut en fermer certains	
 		if(clientNumber < clients.length)	
 		{	
-			if(clientNumber < clients.length)
-				// on prévient les clients rejetés				
-				for(int i=clients.length-1 ; i>=clientNumber ; i--)
-				{	ProfileConnection connection = clients[i];
-					server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-					System.out.println("SCI: send rejected profile");
-					kickClient(connection);
-				}
+			// on prévient les clients rejetés				
+			for(int i=clients.length-1 ; i>=clientNumber ; i--)
+			{	ProfileConnection connection = clients[i];
+				server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
+				connection.id = -1;
+				System.out.println("SCI: send rejected profile");
+				kickClient(connection);
+			}
 			
 		}
 		
 		// dans tous les cas, on redimensionne les tableaux
-		System.out.println("SCI: previous clients size: " + clients.length);
 		lastProfiles = Arrays.copyOf(lastProfiles, clientNumber);
 		clients = Arrays.copyOf(clients, clientNumber);
-		System.out.println("SCI: new clients size: " + clients.length);
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -394,7 +409,10 @@ System.out.println("SCI: opening with port " + getPort());
 	{	Direction[] result = new Direction[clients.length];
 			
 		for(int i=0;i < clients.length;i++){
-			result[i] = clients[i].getDirection();
+			
+			/* May happened when a client is disconnected */
+			if(clients[i] != null)
+				result[i] = clients[i].getDirection();
 		}
 		
 		return result;
@@ -445,11 +463,15 @@ System.out.println("SCI: opening with port " + getPort());
 	public void kickClient(int index)
 	{	if(index >= 0 && index < currentNumberOfClients){
 			ProfileConnection connection = clients[index];
+			connection.id = -1;
+			
 			server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
 			System.out.println("SCI: send rejected profile");
 			
-			if(index != currentNumberOfClients - 1)
+			if(index != currentNumberOfClients - 1){
 				clients[index] = clients[currentNumberOfClients-1];
+				clients[index].id = index;
+			}
 			
 			clients[currentNumberOfClients-1] = null;
 	 		currentNumberOfClients--;
@@ -468,124 +490,4 @@ System.out.println("SCI: opening with port " + getPort());
 	}
 	
 
-	
-//	@Override
-//	public void run()
-//	{	try
-//		{	try
-//			{	serverSocket = new ServerSocket(port);
-//			}
-//			catch (IOException e1)
-//			{	e1.printStackTrace();
-//			}
-//		
-//			Socket socket;
-//			do
-//			{	try
-//				{	socket = serverSocket.accept();
-//					processClient(socket);
-//				}
-//				catch(UnknownHostException e)
-//				{	
-////					errorHandler.displayError("Impossible de se connecter au client.");
-////					e.printStackTrace();
-//				}
-//				catch(IOException e)
-//				{	// si c'est une SocketException, on la re-lève
-//					if(e instanceof SocketException)
-//					{	SocketException se = (SocketException)e;
-//						throw se;
-//					}
-//					// sinon, on la traite ici
-//					else
-//					{	errorHandler.displayError("Impossible de se connecter au client.");
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//			while(true);
-//		}
-//		catch(SocketException e)
-//		{	// rien à faire : c'est juste qu'un autre thread a fermé ce socket
-//		}
-//
-//	}
-	
-//	/**
-//	 * Initialise les objets et les theads nécessaires
-//	 * au traitement d'un client.
-//	 * 
-//	 * @param socket
-//	 * 		Socket utilisé pour communiquer avec le client.
-//	 * 
-//	 * @throws UnknownHostException
-//	 * 		Problème lors de la connexion au client.
-//	 * @throws IOException
-//	 * 		Problème lors de la connexion au client.
-//	 */
-//	private synchronized void processClient(Socket socket) throws UnknownHostException, IOException
-//	{	// on détermine le premier slot dispo
-//		int index = 0;
-//		if(sockets==null)
-//		{	sockets = new Socket[1];
-//			srrs = new ServerReadRunnable[1];
-//			swrs = new ServerWriteRunnable[1];
-//		}
-//		else
-//		{	while(index<sockets.length && sockets[index]!=null)
-//				index++;
-//		}
-//		
-//		// cas où il reste de la place sur le serveur
-//		if(index<sockets.length)
-//		{	// on ouvre le socket
-//			sockets[index] = socket;
-//			
-//			// on crée un thread pour s'occuper des sorties
-//			swrs[index] = new ServerWriteRunnable(this,index);
-//			Thread outThread = new Thread(swrs[index],"Courbes-Server-"+index+"-Out");
-//			outThread.start();
-//			
-//			// on crée un thread pour s'occuper des entrées
-//			srrs[index] = new ServerReadRunnable(this,index);
-//			Thread inThread = new Thread(srrs[index],"Courbes-Server-"+index+"-In");
-//			inThread.start();
-//			
-//			// on répond favorablement au client
-//			swrs[index].objects.offer(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
-//		}
-//		
-//		// cas où le serveur n'a plus de place
-//		else
-//		{	// on récupère le flux de sortie
-//			OutputStream os = socket.getOutputStream();
-//			ObjectOutputStream oos = new ObjectOutputStream(os);
-//			oos.flush();
-//			
-////			// celui d'entrée (pour rien)
-////			socket.getInputStream();
-//			
-//			// on répond défavorablement au client
-//			oos.writeObject(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
-//			
-//			// on ferme la connexion
-//			socket.close();
-//		}
-//	}
-	
-
-	
-//	/**
-//	 * Méthode appelée quand la connexion avec un client est perdue
-//	 * accidentellement.
-//	 * 
-//	 * @param index
-//	 * 		Numéro du client concerné.
-//	 */
-//	protected synchronized void lostConnection(int index)
-//	{	if(sockets[index]!=null)
-//		{	connectionLost(index);
-//			closeConnection(index);
-//		}
-//	}
 }

@@ -40,9 +40,17 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.common.Snake;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Contient les méthodes permettant de dessiner les serpents.
+ * <br/>
+ * Pour aller plus vite, on ne redessine pas tous les pixels des serpents
+ * un par un à chaque itération. À la place, on maintient une image contenant
+ * tous les pixels précédents, et on y rajoute les nouveaux pixels à chaque
+ * itération. Puis, on dessine cette image sur l'aire de jeu pour obtenir le 
+ * serpent. La recopie d'une telle image est beaucoup plus rapide que le tracé
+ * de chaque pixel pris séparément.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -103,7 +111,9 @@ public class SnakeDrawer
 			
 			// on efface éventuellement l'image
 			if(snakes[playerId].clearedTrail)
-			{	images[playerId] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			{	int boardWidth = SettingsManager.getBoardWidth();
+				int boardHeight = SettingsManager.getBoardHeight();
+				images[playerId] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 				snakes[playerId].clearedTrail = false;
 			}
 			// on complète le corps dans l'image
@@ -117,7 +127,7 @@ public class SnakeDrawer
 			// on dessine l'image dans le panel
 			g.drawImage(images[playerId],0,0,null);
 			
-			// pour debug : affiche en jaune la partie du serpent utilisée pour détecter les collisions
+			// pour debug : affiche en jaune la section de la traine du serpent utilisée pour détecter les collisions
 //			g.setColor(Color.YELLOW);
 //			MySnake s = (MySnake)snake;
 //			for(Set<Position> disk: s.prevDisks)
@@ -279,7 +289,9 @@ public class SnakeDrawer
 	 * Nettoie les images des serpents en prévision de la prochaine manche.
 	 */
 	public void resetImages()
-	{	for(int i=0;i<images.length;i++)
-			images[i] = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+	{	int boardWidth = SettingsManager.getBoardWidth();
+		int boardHeight = SettingsManager.getBoardHeight();
+		for(int i=0;i<images.length;i++)
+			images[i] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 	}
 }

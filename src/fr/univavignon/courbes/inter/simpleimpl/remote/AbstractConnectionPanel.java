@@ -26,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractConfigurationPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 
@@ -86,7 +85,7 @@ public abstract class AbstractConnectionPanel extends AbstractConfigurationPanel
 		JLabel portLabel = new JLabel("Port : ");
 		panel.add(portLabel);
 		
-		portTextField = new JTextField(Integer.toString(Constants.DEFAULT_PORT));
+		portTextField = new JTextField(Integer.toString(getDefaultPort()));
 		dim = new Dimension((int)(winDim.width*0.2),height);
 		portTextField.setPreferredSize(dim);
 		portTextField.setMaximumSize(dim);
@@ -103,4 +102,12 @@ public abstract class AbstractConnectionPanel extends AbstractConfigurationPanel
 	 * 		Adresse IP par défaut.
 	 */
 	public abstract String getDefaultIp();
+	
+	/**
+	 * Renvoie le port TCP par défaut.
+	 * 
+	 * @return
+	 * 		Port TCP par défaut.
+	 */
+	public abstract int getDefaultPort();
 }

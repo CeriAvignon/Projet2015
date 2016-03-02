@@ -31,7 +31,7 @@ import java.util.Set;
  * de toute partie.
  * <br/>
  * Afin de résoudre les problèmes de ralentissement rencontrés sur les PC du CERI,
- * la traine d'un serpent est maintenant représentée en deux parties : celle apparue 
+ * la traine d'un serpent est maintenant représentée en deux sections : celle apparue 
  * lors de la dernière itération, et celle qui est plus ancienne. Seule la dernière
  * est dessinée pixel-par-pixel à chaque itération (le reste prenant la forme d'une image). 
  * 
@@ -58,7 +58,7 @@ public class Snake implements Serializable
 	////////////////////////////////////////////////////////////////
 	////	TRAINE
 	////////////////////////////////////////////////////////////////
-	/** Nouvelle partie de la trainée du serpent sur l'aire de jeu */
+	/** Nouvelle section de la trainée du serpent sur l'aire de jeu */
 	public Set<Position> newTrail;
 	/** Indique si la trainée du serpent a été réinitialisée lors de la dernière itération */
 	public boolean clearedTrail;
@@ -78,7 +78,7 @@ public class Snake implements Serializable
 	////////////////////////////////////////////////////////////////
 	////	ETAT
 	////////////////////////////////////////////////////////////////
-	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, {@code i} si collision avec le joueur numéro {@code i} */
+	/** Etat de vie du serpent : {@code null} si encore en jeu, négatif si collision avec bordure, valeur entière {@code playerId} si collision avec le joueur numéro {@code playerId} (qui peut être lui-même) */
 	public Integer eliminatedBy;
 	/** Etat de connexion du serpent : {@code false} il est distant et déconnecté, {@code true} il est distant connecté ou local */
 	public boolean connected;

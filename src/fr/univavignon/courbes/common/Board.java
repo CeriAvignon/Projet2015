@@ -25,7 +25,7 @@ import java.util.List;
  * l'aire de jeu utilisée pendant une manche.
  * <br/>
  * Il faut bien distinguer la notion de partie et de manche. Les joueurs
- * sont confrontés lors d'une parties se déroulant sur plusieurs manches
+ * sont confrontés lors d'une partie se déroulant sur plusieurs manches
  * distinctes. À chacune, chaque joueur marque un certain nombre de points.
  * Un joueur gagne la partie quand son score dépasse une certaine valeur
  * limite. 
@@ -43,7 +43,7 @@ public abstract class Board implements UpdateInterface
 	public State state;
 	
 	/**
-	 * Représente l'état de la partie : présentation des joueurs,
+	 * Représente l'état de la manche : présentation des joueurs,
 	 * entrée des joueurs, ou jeu normal.
 	 * 
 	 * @author	L3 Info UAPV 2015-16

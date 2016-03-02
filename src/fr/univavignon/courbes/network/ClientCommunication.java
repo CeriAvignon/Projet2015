@@ -117,12 +117,11 @@ public interface ClientCommunication
      * <br/>
      * Cette méthode doit être appelée par l'Interface Utilisateur lorsque
      * l'utilisateur décide de se connecter à une partie réseau existante.
-	 * @param profile 
      * 
      * @return
      * 		{@code true} ssi la connexion a pu être effectuée.
      */
-	public boolean launchClient(Profile profile);
+	public boolean launchClient();
 
  	/**
      * Permet à un client de clore sa connexion avec le serveur.
@@ -168,7 +167,7 @@ public interface ClientCommunication
      * 		n'a été envoyée.
      */
 	public UpdateInterface retrieveUpdate();
-
+	
 	/**
      * Permet au client d'envoyer les commandes générées par les joueurs qu'il gère.
      * Ces commandes sont passées sous forme de map: l'entier correspond à l'ID du joueur

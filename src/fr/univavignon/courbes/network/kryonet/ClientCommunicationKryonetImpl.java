@@ -50,7 +50,7 @@ import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class ClientCommunicationKryonetImpl implements ClientCommunication
+public class ClientCommunicationKryonetImpl extends Listener implements ClientCommunication
 {	
 	////////////////////////////////////////////////////////////////
 	////	ADRESSE IP
@@ -245,12 +245,13 @@ public class ClientCommunicationKryonetImpl implements ClientCommunication
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
 	private Client client;
+	private Profile profile;
 
 	/** Indentifie la premier manche reçue */
 	private boolean firstRound;
 	
 	@Override
-	public synchronized boolean launchClient(final Profile profile)
+	public synchronized boolean launchClient()
 	{	boolean result = true;
 	
 		client = new Client();
@@ -260,88 +261,10 @@ public class ClientCommunicationKryonetImpl implements ClientCommunication
 			
 		Network.register(client);
 			
-		client.addListener(new Listener(){
+		client.addListener(this);
 
-			public void connected(Connection connection){
-				System.out.println("CCI: connected, send profile to server");
-				client.sendTCP(profile);
-			}
 
-		    public void received(Connection connection, Object object){
 
-		    	if(object instanceof String)
-				{
-					String string = (String)object;
-					System.out.println("CCI: received String: "+ string);
-					
-					if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
-						gotRefused();
-					
-					else if(string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
-						gotAccepted();
-					
-					else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
-						gotKicked();
-				}
-		    	
-		    	else if(object instanceof UpdateInterface)
-				{	
-					UpdateInterface ud = (UpdateInterface)object;
-//					System.out.print("!");
-					//System.out.println(boards.size());
-					if(ud instanceof SmallUpdate){
-						SmallUpdate su = (SmallUpdate)ud;
-						
-						if(su.newItem != null){
-							System.out.println("\nCCI: received SmallUpdate with new item: " + su.newItem.type);
-//							su.newItem.type = new ItemType(su.newItem.type);
-						}
-					}
-					
-					updateData.offer(ud);
-				}	
-				else if(object instanceof Integer)
-				{	
-		    		System.out.println("CCI: received Integer");
-		    		Integer integer = (Integer)object;
-					pointsLimits.offer(integer);
-				}
-				
-				else if(object instanceof Round)
-				{	
-		    		System.out.println("CCI: received round");
-		    		Round round = (Round)object;
-					if(firstRound)
-					{	startGame(round);
-						firstRound = false;
-					}
-					else
-						fetchRound(round);
-				}
-				else if(object instanceof Profile[])
-				{	
-		    		System.out.println("CCI: received profile[]");
-		    		Profile[] profiles = (Profile[])object;
-					updateProfiles(profiles);
-				}
-				else if(!(object instanceof FrameworkMessage.KeepAlive))
-					System.out.println("SCI: unknown class: "+ object.getClass());
-				else
-					System.out.print(".");
-				
-		    }
-
-		    public void disconnected(Connection connection){
-
-		    	   EventQueue.invokeLater(new Runnable(){
-			   	public void run(){
-				       lostConnection();
-				}
-			   });
-
-		    }
-
-	    });
 		
 	     int timeout = 5000;
 	     try {
@@ -419,6 +342,7 @@ System.out.println("CCI: connection to port " + port + "...");
 	@Override
 	public void sendProfile(Profile profile)
 	{	client.sendTCP(profile);
+		this.profile = profile;	
 System.out.println("CCI: send profile");
 	}
 	
@@ -436,4 +360,86 @@ System.out.println("CCI: send profile");
 	
 	/** File des limites de points reçues du serveur et en attente de récupération par l'Interface Utilisateur */
 	protected Queue<Integer> pointsLimits = new ConcurrentLinkedQueue<Integer>();
+
+	
+	public void connected(Connection connection){
+		System.out.println("CCI: connected, does not send profile to server");
+		
+		client.sendTCP(new Boolean(true));
+//		client.sendTCP(profile);
+	}
+
+    public void received(Connection connection, Object object){
+
+    	if(object instanceof String)
+		{
+			String string = (String)object;
+			System.out.println("CCI: received String: "+ string);
+			
+			if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
+				gotRefused();
+			
+			else if(string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
+				gotAccepted();
+			
+			else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
+				gotKicked();
+		}
+    	
+    	else if(object instanceof UpdateInterface)
+		{	
+			UpdateInterface ud = (UpdateInterface)object;
+//			System.out.print("!");
+			//System.out.println(boards.size());
+			if(ud instanceof SmallUpdate){
+				SmallUpdate su = (SmallUpdate)ud;
+				
+				if(su.newItem != null){
+					System.out.println("\nCCI: received SmallUpdate with new item: " + su.newItem.type);
+//					su.newItem.type = new ItemType(su.newItem.type);
+				}
+			}
+			
+			updateData.offer(ud);
+		}	
+		else if(object instanceof Integer)
+		{	
+    		System.out.println("CCI: received Integer");
+    		Integer integer = (Integer)object;
+			pointsLimits.offer(integer);
+		}
+		
+		else if(object instanceof Round)
+		{	
+    		System.out.println("CCI: received round");
+    		Round round = (Round)object;
+			if(firstRound)
+			{	startGame(round);
+				firstRound = false;
+			}
+			else
+				fetchRound(round);
+		}
+		else if(object instanceof Profile[])
+		{	
+    		System.out.println("CCI: received profile[]");
+    		Profile[] profiles = (Profile[])object;
+			updateProfiles(profiles);
+		}
+		else if(!(object instanceof FrameworkMessage.KeepAlive))
+			System.out.println("SCI: unknown class: "+ object.getClass());
+		else
+			System.out.print(".");
+		
+    }
+
+    public void disconnected(Connection connection){
+
+    	   EventQueue.invokeLater(new Runnable(){
+	   	public void run(){
+		       lostConnection();
+		}
+	   });
+
+    }
 }

@@ -62,6 +62,7 @@ public class Network{
 		kryo.register(State.class);
 		kryo.register(SmallUpdate.class);
 		kryo.register(boolean[].class);
+		kryo.register(boolean.class); 
 	}
 	
 

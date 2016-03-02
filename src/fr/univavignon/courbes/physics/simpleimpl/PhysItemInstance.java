@@ -34,6 +34,8 @@ import fr.univavignon.courbes.common.Snake;
 public class PhysItemInstance extends ItemInstance
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
+	/** Compteur pour attribuer des numéros uniques aux items */
+	private static int ID_COUNT = 0;
 	/** Générateur aléatoire utilisé lors de l'apparition d'items */
 	private static final Random RANDOM = new Random();
 	
@@ -50,12 +52,6 @@ public class PhysItemInstance extends ItemInstance
 	public PhysItemInstance(ItemType type, int x, int y)
 	{	init(type,x,y);
 	}
-	
-	/**
-	 * Constructor created to enable kryonet network
-	 */
-	public PhysItemInstance()
-	{}
 	
 	/**
 	 * Crée un item de type aléatoire.
@@ -87,8 +83,14 @@ public class PhysItemInstance extends ItemInstance
 		this.y = item.y;
 		this.type = item.type;
 		this.remainingTime = item.remainingTime;
+		
+		// classe PhysItemInstance
+		this.itemId = item.itemId;
 	}
-
+	
+	/** Numéro de l'item (utilisé pour le mode réseau) */
+	public int itemId;
+	
 	/**
 	 * Initialise un item.
 	 * 
@@ -100,7 +102,9 @@ public class PhysItemInstance extends ItemInstance
 	 * 		Position en ordonnée.
 	 */
 	private void init(ItemType type, int x, int y)
-	{	this.type = type;
+	{	this.itemId = ID_COUNT++;
+		
+		this.type = type;
 		this.x = x;
 		this.y = y;
 		
@@ -116,8 +120,11 @@ public class PhysItemInstance extends ItemInstance
 	 * 		{@code true} ssi l'item est arrivé en fin de vie et doit disparaitre.
 	 */
 	public boolean updateLife(long elapsedTime)
-	{	remainingTime = remainingTime - elapsedTime;
-		boolean remove = remainingTime<0;
+	{	boolean remove = false;
+		if(remainingTime>0)
+		{	remainingTime = remainingTime - elapsedTime;
+			remove = remainingTime<0;
+		}
 		return remove;
 	}
 	
@@ -215,7 +222,18 @@ public class PhysItemInstance extends ItemInstance
 			board.mustClean = true;
 	
 		// item collectif avec effet dans la durée
-		else if(type==ItemType.COLLECTIVE_TRAVERSE || type==ItemType.COLLECTIVE_WEALTH)
+		else if(type==ItemType.COLLECTIVE_TRAVERSE)
+		{	remainingTime = type.duration;
+			board.currentItems.add(this);
+			// doit quand même être rajouté à chaque serpent, pour des raisons graphiques
+			for(Snake s: board.snakes)
+			{	if(s.eliminatedBy==null)
+				{	PhysItemInstance item = new PhysItemInstance(this);
+					s.currentItems.offer(item);
+				}
+			}
+		}
+		else if(type==ItemType.COLLECTIVE_WEALTH)
 		{	remainingTime = type.duration;
 			board.currentItems.add(this);
 		}

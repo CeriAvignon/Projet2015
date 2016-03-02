@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * Objet utilisé pour faire la mise à jour du jeu à travers
- * le réseau, pendant une partie. Peut être carrément toute l'aire
+ * le réseau, pendant une manche. Peut être carrément toute l'aire
  * de jeu {@link Board} (grosse mise à jour) ou bien un objet plus petit de 
  * classe {@link SmallUpdate} (petite mise à jour).
  * 

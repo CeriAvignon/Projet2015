@@ -71,7 +71,7 @@ public class ServerGameLocalPlayerSelectionPanel extends AbstractLocalPlayerSele
 	
 	@Override
 	protected void previousStep()
-	{	mainWindow.displayPanel(PanelName.SERVER_GAME_LOCAL_PLAYER_SELECTION);
+	{	mainWindow.displayPanel(PanelName.SERVER_GAME_PORT_SELECTION);
 	}
 	
 	@Override

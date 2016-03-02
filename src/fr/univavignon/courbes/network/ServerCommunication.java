@@ -172,9 +172,7 @@ public interface ServerCommunication
 	
 	/**
      * Permet au serveur de recevoir les commandes envoyés par les clients. La méthode
-     * renvoie une map, associant à l'ID d'un joueur la dernière commande qu'il a
-     * envoyée. Bien sûr, les joueurs locaux au serveur ne sont pas gérés par des clients,
-     * et leur ID n'apparaît donc pas dans cette map.
+     * renvoie un tableau de directions (une par client), ou null si rien n'a été reçu. 
      *
      * @return 
      * 		Un tableau contenant les directions choisies par chaque joueur traité par

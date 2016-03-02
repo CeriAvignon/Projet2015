@@ -135,7 +135,7 @@ public interface PhysicsEngine
 	 * dans le traitement effectué par les autres composantes.
 	 * 
 	 * @param updateData
-	 * 		Données utilisées pour mettre à jour la partie courante.
+	 * 		Données utilisées pour mettre à jour la manche courante.
 	 */
 	public void forceUpdate(UpdateInterface updateData);
 	

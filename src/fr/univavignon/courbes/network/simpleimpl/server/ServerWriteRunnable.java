@@ -1,4 +1,3 @@
-
 package fr.univavignon.courbes.network.simpleimpl.server;
 
 /*

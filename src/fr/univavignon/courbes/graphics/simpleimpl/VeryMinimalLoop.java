@@ -27,12 +27,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import fr.univavignon.courbes.common.Board;
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.graphics.GraphicDisplay;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.physics.PhysicsEngine;
 import fr.univavignon.courbes.physics.simpleimpl.PhysicsEngineImpl;
 
@@ -120,7 +120,9 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		boardPanel = gd.getBoardPanel();
 		scorePanel = gd.getScorePanel();
 		
-		Dimension dim = new Dimension(Constants.BOARD_WIDTH,Constants.BOARD_HEIGHT);
+		int boardWidth = SettingsManager.getBoardWidth();
+		int boardHeight = SettingsManager.getBoardHeight();
+		Dimension dim = new Dimension(boardWidth,boardHeight);
 		boardPanel.setPreferredSize(dim);
 		boardPanel.setMinimumSize(dim);
 		boardPanel.setMaximumSize(dim);

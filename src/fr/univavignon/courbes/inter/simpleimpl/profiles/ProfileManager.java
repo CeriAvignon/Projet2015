@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
@@ -68,7 +69,9 @@ public class ProfileManager
 	 * 		Utilisateur à rajouter.
 	 */
 	public static void addProfile(Profile profile)
-	{	PROFILES.add(profile);
+	{	Profile mx = Collections.max(PROFILES);
+		profile.profileId = mx.profileId + 1;
+		PROFILES.add(profile);
 		recordProfiles();
 	}
 	
@@ -96,11 +99,11 @@ public class ProfileManager
 			
 			for(Profile profile: PROFILES)
 			{	writer.write
-				(	profile.profileId + SEPARATOR + 
+				(	profile.userName + SEPARATOR + 
 					profile.country + SEPARATOR +
 					profile.eloRank + SEPARATOR +
 					profile.email + SEPARATOR +
-					profile.password + SEPARATOR
+					profile.password + "\n"
 				);
 			}
 			writer.flush();

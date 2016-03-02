@@ -90,8 +90,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	
 	@Override
 	public void run()
-	{	// on joue la rencontre (i.e. plusieurs manches)
-		System.out.println("SGR: play match");
+	{	// on joue la partie (i.e. plusieurs manches)
 		playMatch();
 		
 		// TODO la mise à jour des stats irait ici
@@ -112,8 +111,9 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
-		long finalCount = 0;							// décompte pour la toute fin de partie
+		long finalCount = 0;							// décompte pour la toute fin de manche
 		int physUpdates = 0;							// nombre de petites màj physiques depuis la dernière grosse 
+		boolean finished = false;						// indique si la manche est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
 		readyClientNbr = 0;
@@ -126,7 +126,6 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 			elapsedPhysTime = elapsedPhysTime + elapsedTime;
 			elapsedGraphTime = elapsedGraphTime + elapsedTime;
 			elapsedStatTime = elapsedStatTime + elapsedTime;
-
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
 			{	// on récupère les commandes des joueurs
@@ -142,9 +141,13 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 				serverCom.sendUpdate(updateData);
 				// on met à jour les scores
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
-				boolean finished = updatePoints(prevEliminated,lastEliminated);
-				if(finished)
-					finalCount = 1;
+				if(!finished)
+				{	finished = updatePoints(prevEliminated,lastEliminated);
+					if(finished)
+					{	finalCount = 1;
+						updatedEliminatedBy();
+					}
+				}
 				phyUpdateNbr++;
 				elapsedPhysTime = 0;
 			}
@@ -180,9 +183,11 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	 */
 	private void completeDirections(Direction[] localDirections)
 	{	Direction[] clientDirections = serverCom.retrieveCommands();
-		int j = 0;
-		for(int i: clientIndices)
-			localDirections[i] = clientDirections[j];
+		if(clientDirections!=null)
+		{	int j = 0;
+			for(int i: clientIndices)
+				localDirections[i] = clientDirections[j];
+		}
 	}
 	
 	@Override
@@ -193,11 +198,13 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		// on transmet aux clients
 		serverCom.sendRound(round);
 		
+		// on vide le buffer des màj qui y sont encore stockées
+		while(serverCom.retrieveCommands()!=null);
+		
 		// on attend que les clients soient prêts (attente passive)
 		while(readyClientNbr<clientIndices.size())
 		{	try
-			{
-				wait();
+			{	System.out.println("SGRP: wait1: " + readyClientNbr + " / "+ clientIndices.size());wait();System.out.println("SGRP: wait2: " + readyClientNbr + " / "+ clientIndices.size());
 			}
 			catch (InterruptedException e)
 			{	e.printStackTrace();
@@ -207,8 +214,9 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	
 	@Override
 	public synchronized void fetchAcknowledgment(int index)
-	{	System.out.println("SGR: fetchAcknowledgment which notifies in theory...");
+	{	
 		readyClientNbr++;
+		System.out.println("SGRP: fetchAcknowledgment " + readyClientNbr + "/" + clientIndices.size());
 		notify();
 	}
 	

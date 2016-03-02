@@ -137,7 +137,7 @@ public abstract class AbstractPlayerSelectionPanel<T> extends AbstractConfigurat
 		if(minNumber==0)
 			selectedVal = 1;
 		playerNbrCombo.setSelectedIndex(selectedVal);
-		dim = new Dimension(40,30);
+		dim = new Dimension(50,30);
 		playerNbrCombo.setPreferredSize(dim);
 		playerNbrCombo.setMinimumSize(dim);
 		playerNbrCombo.setMaximumSize(dim);

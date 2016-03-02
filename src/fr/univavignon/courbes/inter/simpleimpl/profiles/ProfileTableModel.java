@@ -46,7 +46,7 @@ public class ProfileTableModel extends AbstractTableModel
 		columnNames = new String[4];
 		columnNames[0] = "Pseudo";
 		columnNames[1] = "Pays";
-		columnNames[2] = "Score ELO";
+		columnNames[2] = "Rang ELO";
 		
 		// on définit le contenu de la table
 		TreeSet<Profile> profiles = ProfileManager.getProfiles();
@@ -78,6 +78,17 @@ public class ProfileTableModel extends AbstractTableModel
 		
 		rowdata.add(newRow);
 		fireTableRowsInserted(rowdata.size()-1, rowdata.size()-1);
+	}
+	
+	/**
+	 * Supprime un profil de la table.
+	 * 
+	 * @param rowNbr
+	 * 		Le numéro de ligne du profil à supprimer.
+	 */
+	public void removeProfile(int rowNbr)
+	{	rowdata.remove(rowNbr);
+		fireTableRowsDeleted(rowNbr,rowNbr);
 	}
 	
 	@Override

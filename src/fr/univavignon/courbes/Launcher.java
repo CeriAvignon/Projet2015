@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Classe principale chargée du lancement du jeu.
@@ -43,8 +44,13 @@ public class Launcher extends JFrame
 	 * 		Une Exception queconque... 
 	 */
 	public static void main(String[] args) throws Exception
-	{	setLookAndFeel();
+	{	// on charge les options du jeu qui avaient été stockées dans un fichier texte
+		SettingsManager.loadSettings();
 		
+		// on change le look'n'feel Java
+		setLookAndFeel();
+		
+		// on crée la fenêtre principale, qui lance le jeu
 		new MainWindow();
 	}
 	
@@ -84,10 +90,4 @@ public class Launcher extends JFrame
 /*
  * TODO tâches à traiter :
  * - on pourrait reproduire l'animation d'apparition des items
- * 
- * - pr réseau :
- * 		- réinitialiser la direction du joueur local client en début de nouvelle manche
- * 		- les items n'apparaissent pas chez client
- * 		- traces restent chez client d'un round à l'autre
- * 		- client déconnecté pas marqué comme tel (pas couleur grise pdt jeu)
  */

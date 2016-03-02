@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.inter.simpleimpl.remote.client;
+	package fr.univavignon.courbes.inter.simpleimpl.remote.client;
 
 /*
  * Courbes
@@ -63,7 +63,7 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	/** Numéro du joueur local */
 	private int localPlayerId;
 	/** Indique si l'objet représentant la prochaine manche a été reçu */
-	private boolean newRoundReceived = false;
+	private Round newRound = null;
 	
 	@Override
 	protected synchronized void init()
@@ -90,15 +90,13 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 	
 	@Override
 	public void run()
-	{	// on joue la rencontre (i.e. plusieurs manches)
-		System.out.println("CGR: Play Match");
+	{	// on joue la partie (i.e. plusieurs manches)
 		playMatch();
 		
 		// TODO la mise à jour des stats devrait aller ici
 		// (soit calcul local, soit synchronisation avec le serveur)
 		
 		// on repart au menu principal
-		System.out.println("CGR: Close client");
 		clientCom.closeClient();
 		clientCom.setGameHandler(null);
 		mainWindow.clientCom = null;
@@ -115,11 +113,11 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 		long elapsedPhysTime = 0;						// temps écoulé depuis la dernière màj physique
 		long elapsedGraphTime = 0;						// temps écoulé depuis la dernière màj graphique
 		long previousTime = System.currentTimeMillis();	// date de l'itération précédente
-		long finalCount = 0;							// décompte pour la toute fin de partie
+		long finalCount = 0;							// décompte pour la toute fin de manche
+		boolean finished = false;						// indique si la manche est finie, au sens des règles du jeu
 		
 		List<Integer> prevEliminated = new ArrayList<Integer>();
-		newRoundReceived = false;
-		
+		newRound = null;
 		
 		while(running)
 		{	long currentTime = System.currentTimeMillis();
@@ -133,7 +131,6 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
 			{	// on envoie les commandes au serveur
 				Direction[] directions = keyManager.retrieveDirections();
-//				System.out.println("CGR: send Direction");
 				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE (auquel cas on n'enverrait rien)
 				// on met à jour le moteur physique
 				UpdateInterface updateData = clientCom.retrieveUpdate();
@@ -150,17 +147,21 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 //	PhysBoard b = (PhysBoard)physicsEngine.getBoard();
 ////	System.out.println(su.state+" vs. "+b.state);
 //	if(su.state==State.ENTRANCE)
-//		System.out.println();
+//		System.out.print("");
 //}
 //System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);					
 //				}
 				// on met à jour les scores
 				List<Integer> lastEliminated = physicsEngine.getEliminatedPlayers();
 if(!lastEliminated.isEmpty())
-	System.out.println();
-				boolean finished = updatePoints(prevEliminated,lastEliminated);
-				if(finished)
-					finalCount = 1;
+	System.out.print("");
+				if(!finished)
+				{	finished = updatePoints(prevEliminated,lastEliminated);
+					if(finished)
+					{	finalCount = 1;
+						updatedEliminatedBy();
+					}
+				}
 }
 				phyUpdateNbr++;
 				elapsedPhysTime = 0;
@@ -195,9 +196,7 @@ if(!lastEliminated.isEmpty())
 	 * 		Directions renvoyées par le {@link KeyManager}.
 	 */
 	private void sendDirection(Direction[] directions)
-	{	
-		Direction direction = directions[localPlayerId];
-		
+	{	Direction direction = directions[localPlayerId];
 		clientCom.sendCommand(direction);
 	}
 	
@@ -207,7 +206,7 @@ if(!lastEliminated.isEmpty())
 		super.resetRound();
 		
 		// on attend d'avoir récupèré l'aire de jeu (attente passive)
-		if(!newRoundReceived)
+		if(newRound==null)
 		{	try
 			{	wait();
 			}
@@ -216,7 +215,12 @@ if(!lastEliminated.isEmpty())
 			}
 		}
 		// on force le moteur physique à utiliser l'aire de jeu reçue du serveur
+		round = newRound;
+		mainWindow.currentRound = round;
 		physicsEngine.setBoard(round.board);
+		
+		// on vide le buffer des màj qui y sont encore stockées
+		while(clientCom.retrieveUpdate()!=null);
 		
 		// on indique au serveur qu'on est prêt
 		clientCom.sendAcknowledgment();
@@ -224,7 +228,7 @@ if(!lastEliminated.isEmpty())
 
 	@Override
 	public synchronized void fetchRound(Round round)
-	{	newRoundReceived = true;
+	{	newRound = round;
 		
 		// on adapte la manche au joueur local
 		for(int i=0;i<this.round.players.length;i++)
@@ -239,9 +243,6 @@ if(!lastEliminated.isEmpty())
 				round.players[i].rightKey = -1;
 			}
 		}
-		
-		this.round = round;
-		mainWindow.currentRound = round;
 		
 		// on prévient le thread qui attend cette donnée pour pouvoir continuer l'initialisation
 		notify();

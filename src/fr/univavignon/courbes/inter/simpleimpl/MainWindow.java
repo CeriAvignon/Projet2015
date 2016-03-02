@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ErrorHandler;
@@ -57,6 +56,10 @@ import fr.univavignon.courbes.network.ServerCommunication;
 public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 {	/** Numéro de série de la classe */
 	private static final long serialVersionUID = 1L;
+	/** Nom du jeu */
+	private static final String GAME_NAME = "Courbes";
+	/** Version du jeu */
+	private static final String GAME_VERSION = "1";
 	
 	/**
 	 * Crée le menu principal et tous ses composants graphiques.
@@ -86,7 +89,7 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	private void initWindow()
 	{	setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	
-		setTitle("Courbes");
+		updateTitle();
 		try
 		{	String iconPath = "res/images/icon.png";
 			File iconFile = new File(iconPath);
@@ -97,7 +100,9 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		{	e.printStackTrace();
 		}
 		
-		Dimension dim = new Dimension(Constants.WINDOW_WIDTH,Constants.WINDOW_HEIGHT);
+		int windowHeight = SettingsManager.getWindowHeight();
+		int windowWidth = SettingsManager.getWindowWidth();
+		Dimension dim = new Dimension(windowWidth,windowHeight);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);
@@ -162,7 +167,9 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 		CLIENT_GAME_PLAY,
 		
 		/** Liste des profils */
-		PROFILE_LIST;
+		PROFILE_LIST,
+		/** Affichage des statistiques */
+		STATISTICS;
 	}
 	
 	/**
@@ -202,7 +209,6 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				currentPanel = new ClientGamePlayerSelectionPanel(this);
 				break;
 			case CLIENT_GAME_WAIT:
-				System.out.println("MW: display CGWP panel");
 				currentPanel = new ClientGameWaitPanel(this);
 				break;
 			case CLIENT_GAME_PLAY:
@@ -211,11 +217,29 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);
 				break;
+			case STATISTICS:
+				System.out.println("Option pas encore implémentée...");
+				// TODO à compléter
+				// currentPanel = new XxxxxxPanel(this);
+				break;
 		}
-			
+		
+		updateTitle();
 		getContentPane().add(currentPanel);
 		validate();
 		repaint();		
+	}
+	
+	/**
+	 * Met à jour le titre de la fenêtre.
+	 */
+	public void updateTitle()
+	{	String title = GAME_NAME + " v" + GAME_VERSION;
+		if(serverCom!=null)
+		{	String ipStr = serverCom.getIp();
+			title = title + " - " + ipStr;
+		}
+		setTitle(title);
 	}
 	
 	@Override
