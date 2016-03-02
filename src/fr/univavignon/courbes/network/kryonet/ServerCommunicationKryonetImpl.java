@@ -7,8 +7,6 @@ import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
@@ -43,8 +41,9 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
  */
 
 import fr.univavignon.courbes.network.ServerCommunication;
-import fr.univavignon.courbes.network.kryonet.Network;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
+import fr.univavignon.courbes.network.simpleimpl.server.ServerReadRunnable;
+import fr.univavignon.courbes.network.simpleimpl.server.ServerWriteRunnable;
 
 /**
  * Implémentation de la classe {@link ServerCommunication}. Elle se repose
@@ -61,6 +60,9 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	/** Variable qui contient l'adresse ip de ce serveur */
 	private String ip = null;
 	
+	/**
+	 * Number of client currently connected
+	 */
 	int currentNumberOfClients = 0;
 	
 	
@@ -197,15 +199,23 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	////////////////////////////////////////////////////////////////
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Object from kryonet library which represents the server
+	 */
 	Server server;
 	
 	@Override
 	public void launchServer()
 	{	server = new Server(){
+		
+			/**
+			 * Called when a client connects to the server
+			 */
+			@Override
 			protected Connection newConnection () 
 			{	// By providing our own connection implementation, we can store per
 				// connection state without a connection ID to state look up.
-				System.out.println("SCI: new connection");
 				
 				ProfileConnection connection = new ProfileConnection();
 		    	   
@@ -225,7 +235,6 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			       ProfileConnection connection = (ProfileConnection)c;
 
 			       if(object instanceof Profile){
-			    	   System.out.println("SCI: Received Profile");
 
 			    	   // Ignore the object if a client has already registered a profile. This is
 			    	   // impossible with our client, but a hacker could send messages at any time.
@@ -251,17 +260,10 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			    		   
 			    		   clients[connection.id].setDirection(dir);
 			    	   }
-			    	   else{
-			    		   if(connection.profile == null)
-			    			   System.out.println("Erreur profile null");
-			    		   else
-			    			   System.out.println("Erreur profile non trouvé");
-			    	   }
 			       }
 			       
 			       else if(object instanceof String){
 			    	   String string = (String)object;
-			    	   System.out.println("SCI: Received String: "+ string);
 			    	   
 			    	   if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
 			    		   fetchAcknowledgment(connection.id);
@@ -269,11 +271,9 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			       
 					else if(object instanceof Boolean){
 
-						System.out.println("SCI: received Boolean");
 				    	   // S'il reste de la place pour que le client se connecte
 				    	   if(currentNumberOfClients < clients.length)
 				    	   {	
-				    	   		System.out.println("SCI: send accepted connection");
 				    	   		clients[currentNumberOfClients] = connection;
 				    	   		connection.id = currentNumberOfClients;
 				    	   		currentNumberOfClients++;
@@ -281,23 +281,15 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 				    	   }
 				    	   else{
 				    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
-				    		   System.out.println("SCI: send rejected connection");
 				    		   connection.close();
 				    	   }
 					}
-
-					else if(!(object instanceof FrameworkMessage.KeepAlive))
-						System.out.println("SCI: unknown class: "+ object.getClass());
-			       
-					else
-						System.out.print(".");
 			       
 
 			}
 
 			@Override
 			public void disconnected(Connection c){
-System.out.println("SCI: disconnected");
 			       ProfileConnection connection = (ProfileConnection)c;
 			       if(connection.profile != null)
 			    	   kickClient(connection);
@@ -308,11 +300,8 @@ System.out.println("SCI: disconnected");
 		});		
 		
 		try {
-System.out.println("SCI: opening with port " + getPort());			
 			server.bind(getPort(), getPort()+1);
-			System.out.println("SCI: opened");
 		} catch (IOException e) {
-			//TODO
 			e.printStackTrace();
 		}
 		
@@ -340,14 +329,31 @@ System.out.println("SCI: opening with port " + getPort());
 //		
 //	}
 	
+	/**
+	 * Kick a client thanks to its profile connection
+	 * @param pc The profile connection of the client
+	 */
 	private void kickClient(ProfileConnection pc){
  	   
  		kickClient(pc.id);
 		
 	}
 	
+	/**
+	 * Connection with a client identified by its profile and its id in the list of clients
+	 * @author zach
+	 *
+	 */
 	static class ProfileConnection extends Connection
-	{	public Profile profile; 
+	{	
+		/**
+		 * Profile of the client
+		 */
+		public Profile profile;
+		
+		/**
+		 * Last direction given by the client
+		 */
 		private Direction direction = Direction.NONE;
 		
 		/**
@@ -355,10 +361,18 @@ System.out.println("SCI: opening with port " + getPort());
 		 */
 		public int id = -1;
 		
+		/**
+		 * Getter for the direction
+		 * @return The direction of the client
+		 */
 		public synchronized Direction getDirection(){
 			return direction;
 		}
 		
+		/**
+		 * Set the direction
+		 * @param d The new direction
+		 */
 		public synchronized void setDirection(Direction d){
 			direction = d;
 		}
@@ -367,14 +381,12 @@ System.out.println("SCI: opening with port " + getPort());
 	
 	@Override
 	public synchronized void closeServer()
-	{	System.out.println("SCI: close server");
-		server.close();
+	{	server.close();
 	}
 	
 	@Override
 	public synchronized void setClientNumber(int clientNumber)
 	{	
-		System.out.println("SCI: setClientNumber(" + clientNumber + ")");
 		
 		if(clients == null){
 			clients = new ProfileConnection[clientNumber];
@@ -389,7 +401,6 @@ System.out.println("SCI: opening with port " + getPort());
 			{	ProfileConnection connection = clients[i];
 				server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
 				connection.id = -1;
-				System.out.println("SCI: send rejected profile");
 				kickClient(connection);
 			}
 			
@@ -423,16 +434,15 @@ System.out.println("SCI: opening with port " + getPort());
 	////////////////////////////////////////////////////////////////
 	/** Dernière version de la liste de profils */
 	private Profile[] lastProfiles = new Profile[1];
+	
+	/**
+	 * Array of clients (a cell is null if no client is currently connected)
+	 */
 	private ProfileConnection[] clients = null;
 	
 	@Override
 	public void sendProfiles(Profile[] profiles)
 	{	lastProfiles = Arrays.copyOf(lastProfiles,profiles.length);
-		
-//		for(int i = 0 ; i < lastProfiles.length ; ++i)
-//			if(lastProfiles[i] != null)
-//				lastProfiles[i].profile = profiles[i];
-	System.out.println("SCI: send " + profiles.length + " profiles");
 		sendObject(profiles);
 	}
 		
@@ -447,10 +457,6 @@ System.out.println("SCI: opening with port " + getPort());
 	{	sendObject(updateData);
 		if(updateData instanceof SmallUpdate){
 			SmallUpdate su = (SmallUpdate)updateData;
-			
-			if(su.newItem != null){
-				System.out.println("\nSCI: send SmallUpdate with new item: " + su.newItem.type);
-			}
 		}
 	}
 	
@@ -466,7 +472,6 @@ System.out.println("SCI: opening with port " + getPort());
 			connection.id = -1;
 			
 			server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
-			System.out.println("SCI: send rejected profile");
 			
 			if(index != currentNumberOfClients - 1){
 				clients[index] = clients[currentNumberOfClients-1];
@@ -487,6 +492,11 @@ System.out.println("SCI: opening with port " + getPort());
 	 */
 	public void sendObject(Object object)
 	{	server.sendToAllTCP(object);
+	}
+
+	@Override
+	public void finalizeRound() {
+		// Nothing to do
 	}
 	
 

@@ -204,7 +204,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		// on attend que les clients soient prêts (attente passive)
 		while(readyClientNbr<clientIndices.size())
 		{	try
-			{	System.out.println("SGRP: wait1: " + readyClientNbr + " / "+ clientIndices.size());wait();System.out.println("SGRP: wait2: " + readyClientNbr + " / "+ clientIndices.size());
+			{	wait();
 			}
 			catch (InterruptedException e)
 			{	e.printStackTrace();
@@ -216,7 +216,6 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	public synchronized void fetchAcknowledgment(int index)
 	{	
 		readyClientNbr++;
-		System.out.println("SGRP: fetchAcknowledgment " + readyClientNbr + "/" + clientIndices.size());
 		notify();
 	}
 	

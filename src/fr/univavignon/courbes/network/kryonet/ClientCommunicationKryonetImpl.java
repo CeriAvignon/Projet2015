@@ -7,12 +7,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.common.SmallUpdate;
@@ -44,233 +42,229 @@ import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
 /**
- * Implémentation de la classe {@link ClientCommunication}. Elle se repose
- * sur deux autres classes pour les entrées ({@link ClientReadRunnable}) et 
- * les sorties ({@link ClientWriteRunnable}).
+ * Implémentation de la classe {@link ClientCommunication} utilisant la librairie kryonet
  * 
- * @author	L3 Info UAPV 2015-16
+ * @author L3 Info UAPV 2015-16
  */
-public class ClientCommunicationKryonetImpl extends Listener implements ClientCommunication
-{	
+public class ClientCommunicationKryonetImpl extends Listener implements ClientCommunication {
 	////////////////////////////////////////////////////////////////
-	////	ADRESSE IP
+	//// ADRESSE IP
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient l'adresse ip du serveur */
 	private String ip;
 
-
 	@Override
-	public String getIp()
-	{	return ip;
+	public String getIp() {
+		return ip;
 	}
 
 	@Override
-	public void setIp(String ip)
-	{	this.ip = ip;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	////////////////////////////////////////////////////////////////
-	////	PORT
+	//// PORT
 	////////////////////////////////////////////////////////////////
 	/** Variable qui contient le port du serveur */
-	private int port = Constants.DEFAULT_PORT;//2345;
+	private int port = Constants.DEFAULT_PORT;// 2345;
 
 	@Override
-	public int getPort()
-	{	return port;
+	public int getPort() {
+		return port;
 	}
 
 	@Override
-	public void setPort(int port)
-	{	this.port = port;
+	public void setPort(int port) {
+		this.port = port;
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	HANDLER DE CONNEXION
+	//// HANDLER DE CONNEXION
 	////////////////////////////////////////////////////////////////
 	/** Handler de connexion */
 	public ClientConnectionHandler connectionHandler;
 
 	@Override
-	public void setConnectionHandler(ClientConnectionHandler connectionHandler)
-	{	this.connectionHandler = connectionHandler;
+	public void setConnectionHandler(ClientConnectionHandler connectionHandler) {
+		this.connectionHandler = connectionHandler;
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotAccepted()
-	{	if(connectionHandler!=null)
+	protected void gotAccepted() {
+		if (connectionHandler != null)
 			connectionHandler.gotAccepted();
 		else
 			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotRefused()
-	{	closeClient();
-		if(connectionHandler!=null)
+	protected void gotRefused() {
+		closeClient();
+		if (connectionHandler != null)
 			connectionHandler.gotRefused();
 		else
 			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	HANDLER DE PROFILS
+	//// HANDLER DE PROFILS
 	////////////////////////////////////////////////////////////////
 	/** Handler de profils */
 	private ClientProfileHandler profileHandler;
 
 	@Override
-	public void setProfileHandler(ClientProfileHandler configHandler)
-	{	this.profileHandler = configHandler;
+	public void setProfileHandler(ClientProfileHandler configHandler) {
+		this.profileHandler = configHandler;
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotKicked()
-	{	closeClient();
-		if(profileHandler!=null)
+	protected void gotKicked() {
+		closeClient();
+		if (profileHandler != null)
 			profileHandler.gotKicked();
 		else
 			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 * 
 	 * @param profiles
-	 * 		Tableau de profils à transmettre au handler.
+	 *            Tableau de profils à transmettre au handler.
 	 */
-	protected void updateProfiles(Profile[] profiles)
-	{	
+	protected void updateProfiles(Profile[] profiles) {
 		/* If the handler is not defined */
 		int iteration = 0;
 
-		/* Wait to give enough time for method <init> from ClientGameWaitPanel to be called to set the handler */
-		while(profileHandler == null && iteration < 100){
+		/*
+		 * Wait to give enough time for method <init> from ClientGameWaitPanel
+		 * to be called to set the handler
+		 */
+		while (profileHandler == null && iteration < 100) {
 
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			iteration++;
 		}
-		
-				
-		if(profileHandler!=null)
+
+		if (profileHandler != null)
 			profileHandler.updateProfiles(profiles);
-	
+
 		else
 			System.err.println("Le handler de profils n'a pas été renseigné !1");
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 * 
 	 * @param round
-	 * 		Manche à transmettre au handler.
+	 *            Manche à transmettre au handler.
 	 */
-	protected void startGame(Round round)
-	{	if(profileHandler!=null)
+	protected void startGame(Round round) {
+		if (profileHandler != null)
 			profileHandler.startGame(round);
 		else
 			System.err.println("Le handler de profils n'a pas été renseigné !2");
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	public void connectionLost()
-	{	if(profileHandler!=null)
+	public void connectionLost() {
+		if (profileHandler != null)
 			profileHandler.connectionLost();
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !3");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !3");
+		if(gameHandler!=null)
+			gameHandler.connectionLost();
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	HANDLER DE LA PARTIE
+	//// HANDLER DE LA PARTIE
 	////////////////////////////////////////////////////////////////
 	/** Handler de la partie */
 	public ClientGameHandler gameHandler;
 
 	@Override
-	public void setGameHandler(ClientGameHandler gameHandler)
-	{	this.gameHandler = gameHandler;
+	public void setGameHandler(ClientGameHandler gameHandler) {
+		this.gameHandler = gameHandler;
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 * 
 	 * @param round
-	 * 		Manche à transmettre au handler.
+	 *            Manche à transmettre au handler.
 	 */
-	public void fetchRound(Round round)
-	{	if(gameHandler!=null)
-		gameHandler.fetchRound(round);
+	public void fetchRound(Round round) {
+		if (gameHandler != null)
+			gameHandler.fetchRound(round);
 		else
 			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	HANDLER D'ERREUR
+	//// HANDLER D'ERREUR
 	////////////////////////////////////////////////////////////////
 	/** Handler d'erreurs */
 	public ErrorHandler errorHandler;
 
 	@Override
-	public void setErrorHandler(ErrorHandler errorHandler)
-	{	this.errorHandler = errorHandler;
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
 	}
-	
+
 	/**
 	 * Transmet cet appel au handler concerné.
 	 * 
 	 * @param message
-	 * 		Message à transmettre au handler.
+	 *            Message à transmettre au handler.
 	 */
-	public void displayError(String message)
-	{	if(errorHandler!=null)
-		errorHandler.displayError(message);
+	public void displayError(String message) {
+		if (errorHandler != null)
+			errorHandler.displayError(message);
 		else
 			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
+
+	////////////////////////////////////////////////////////////////
+	//// CONNEXION
+	////////////////////////////////////////////////////////////////
 	
-	////////////////////////////////////////////////////////////////
-	////	CONNEXION
-	////////////////////////////////////////////////////////////////
+	/**
+	 * Objet de la librairie kryonet représentant le client
+	 */
 	private Client client;
-	private Profile profile;
 
 	/** Indentifie la premier manche reçue */
 	private boolean firstRound;
-	
+
 	@Override
-	public synchronized boolean launchClient()
-	{	boolean result = true;
-	
+	public synchronized boolean launchClient() {
+		boolean result = true;
+
 		client = new Client();
 		client.start();
-			
+
 		firstRound = true;
-			
+
 		Network.register(client);
-			
+
 		client.addListener(this);
 
-
-
-		
-	     int timeout = 5000;
-	     try {
-System.out.println("CCI: connection to port " + port + "...");	    	 
-			client.connect(timeout, ip, port, port+1);
-			System.out.println("CCI: connected");
+		int timeout = 5000;
+		try {
+			client.connect(timeout, ip, port, port + 1);
 		} catch (IOException e) {
 			result = false;
 			e.printStackTrace();
@@ -278,168 +272,155 @@ System.out.println("CCI: connection to port " + port + "...");
 
 		return result;
 	}
-		
 
 	@Override
-	public synchronized void closeClient()
-	{	client.stop();
+	public synchronized void closeClient() {
+		client.stop();
 	}
 
 	@Override
-	public synchronized boolean isConnected()
-	{	return client != null && client.isConnected();
+	public synchronized boolean isConnected() {
+		return client != null && client.isConnected();
 	}
-	
+
 	/**
-	 * Méthode appelée quand la connexion avec le serveur est perdue accidentellement.
+	 * Méthode appelée quand la connexion avec le serveur est perdue
+	 * accidentellement.
 	 */
-	protected synchronized void lostConnection()
-	{	if(client!=null)
-		{	connectionLost();
+	protected synchronized void lostConnection() {
+		if (client != null) {
+			connectionLost();
 			closeClient();
 		}
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	ENTREES
+	//// ENTREES
 	////////////////////////////////////////////////////////////////
 	@Override
-	public Integer retrievePointThreshold()
-	{	Integer result = pointsLimits.poll();
+	public Integer retrievePointThreshold() {
+		Integer result = pointsLimits.poll();
 		return result;
 	}
 
 	@Override
-	public UpdateInterface retrieveUpdate()
-	{	UpdateInterface result = updateData.poll();
-	
-		if(result != null && result instanceof SmallUpdate){
-			
-			SmallUpdate su = (SmallUpdate)result;
-			
-			if(su.newItem != null)
-				System.out.println("CCI: retrieveUpdate new item: " + su.newItem.type);
-			
-		}
+	public UpdateInterface retrieveUpdate() {
+		UpdateInterface result = updateData.poll();
 		return result;
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	SORTIES
+	//// SORTIES
 	////////////////////////////////////////////////////////////////
 	@Override
-	public void sendCommand(Direction direction)
-	{	
+	public void sendCommand(Direction direction) {
 		Integer intToSend = new Integer(0);
-		switch(direction){
-		case LEFT:intToSend = new Integer(-1);break;
-		case RIGHT:intToSend = new Integer(1);break;
+		switch (direction) {
+		case LEFT:
+			intToSend = new Integer(-1);
+			break;
+		case RIGHT:
+			intToSend = new Integer(1);
+			break;
 		}
 		client.sendTCP(intToSend);
-		
+
 	}
 
 	@Override
-	public void sendProfile(Profile profile)
-	{	client.sendTCP(profile);
-		this.profile = profile;	
-System.out.println("CCI: send profile");
+	public void sendProfile(Profile profile) {
+		client.sendTCP(profile);
 	}
-	
+
 	@Override
-	public void sendAcknowledgment()
-	{	client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
-		System.out.println("CCI: send acknowledgement");
+	public void sendAcknowledgment() {
+		client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	////	FILES DE DONNEES
+	//// FILES DE DONNEES
 	////////////////////////////////////////////////////////////////
-	/** File des aires de jeu reçues du serveur et en attente de récupération par l'Interface Utilisateur */
+	/**
+	 * File des aires de jeu reçues du serveur et en attente de récupération par
+	 * l'Interface Utilisateur
+	 */
 	protected Queue<UpdateInterface> updateData = new ConcurrentLinkedQueue<UpdateInterface>();
-	
-	/** File des limites de points reçues du serveur et en attente de récupération par l'Interface Utilisateur */
+
+	/**
+	 * File des limites de points reçues du serveur et en attente de
+	 * récupération par l'Interface Utilisateur
+	 */
 	protected Queue<Integer> pointsLimits = new ConcurrentLinkedQueue<Integer>();
 
-	
-	public void connected(Connection connection){
-		System.out.println("CCI: connected, does not send profile to server");
-		
+	/**
+	 * Method called when the connection with the server is created
+	 */
+	@Override
+	public void connected(Connection connection) {
+
+		/* Send a Boolean so that the server can send back the ANNOUNCE_ACCEPTED or ANNOUNCE_REJECTED String */
 		client.sendTCP(new Boolean(true));
-//		client.sendTCP(profile);
 	}
 
-    public void received(Connection connection, Object object){
+	/**
+	 * Method called when an object is received from the connection
+	 */
+	@Override
+	public void received(Connection connection, Object object) {
 
-    	if(object instanceof String)
-		{
-			String string = (String)object;
-			System.out.println("CCI: received String: "+ string);
-			
-			if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
+		if (object instanceof String) {
+			String string = (String) object;
+
+			if (string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
 				gotRefused();
-			
-			else if(string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
+
+			else if (string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
 				gotAccepted();
-			
-			else if(string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
+
+			else if (string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
 				gotKicked();
 		}
-    	
-    	else if(object instanceof UpdateInterface)
-		{	
-			UpdateInterface ud = (UpdateInterface)object;
-//			System.out.print("!");
-			//System.out.println(boards.size());
-			if(ud instanceof SmallUpdate){
-				SmallUpdate su = (SmallUpdate)ud;
-				
-				if(su.newItem != null){
-					System.out.println("\nCCI: received SmallUpdate with new item: " + su.newItem.type);
-//					su.newItem.type = new ItemType(su.newItem.type);
-				}
-			}
-			
+
+		else if (object instanceof UpdateInterface) {
+			UpdateInterface ud = (UpdateInterface) object;
 			updateData.offer(ud);
-		}	
-		else if(object instanceof Integer)
-		{	
-    		System.out.println("CCI: received Integer");
-    		Integer integer = (Integer)object;
+		} else if (object instanceof Integer) {
+			Integer integer = (Integer) object;
 			pointsLimits.offer(integer);
 		}
-		
-		else if(object instanceof Round)
-		{	
-    		System.out.println("CCI: received round");
-    		Round round = (Round)object;
-			if(firstRound)
-			{	startGame(round);
+
+		else if (object instanceof Round) {
+			Round round = (Round) object;
+			if (firstRound) {
+				startGame(round);
 				firstRound = false;
-			}
-			else
+			} else
 				fetchRound(round);
-		}
-		else if(object instanceof Profile[])
-		{	
-    		System.out.println("CCI: received profile[]");
-    		Profile[] profiles = (Profile[])object;
+		} else if (object instanceof Profile[]) {
+			Profile[] profiles = (Profile[]) object;
 			updateProfiles(profiles);
 		}
-		else if(!(object instanceof FrameworkMessage.KeepAlive))
-			System.out.println("SCI: unknown class: "+ object.getClass());
-		else
-			System.out.print(".");
-		
-    }
 
-    public void disconnected(Connection connection){
+	}
 
-    	   EventQueue.invokeLater(new Runnable(){
-	   	public void run(){
-		       lostConnection();
-		}
-	   });
+	/**
+	 * Method called when the connection with the server is lost
+	 * @param connection the connection
+	 */
+	@Override
+	public void disconnected(Connection connection) {
 
-    }
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				lostConnection();
+			}
+		});
+
+	}
+
+	@Override
+	public void finalizeRound() {
+		// Nothing to do
+	}
 }
