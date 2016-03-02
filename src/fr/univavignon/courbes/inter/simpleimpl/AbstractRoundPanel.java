@@ -292,8 +292,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		eliminatedBy = new Integer[snakes.length];
 		for(int i=0;i<snakes.length;i++)
 		{	eliminatedBy[i] = snakes[i].eliminatedBy;
-			System.out.print(" "+eliminatedBy[i]);
+//			System.out.print(" "+eliminatedBy[i]);
 		}
-		System.out.println();
+//		System.out.println();
 	}
 }
