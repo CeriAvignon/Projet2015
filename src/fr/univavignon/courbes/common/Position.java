@@ -58,6 +58,11 @@ public class Position implements Serializable, Comparable<Position>
 		this.y = position.y;
 	}
 	
+	/**
+	 * Empty constructor used by Kryonet network
+	 */
+	public Position(){}
+	
 	////////////////////////////////////////////////////////////////
 	////	COORDONNEES
 	////////////////////////////////////////////////////////////////
