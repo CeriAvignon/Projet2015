@@ -317,6 +317,13 @@ public class ClientCommunicationImpl implements ClientCommunication
 		return result;
 	}
 	
+	@Override
+	public synchronized void finalizeRound()
+	{	
+//		while(clientCom.retrieveUpdate()!=null);
+		crr.updateData.clear();
+	}
+	
 	////////////////////////////////////////////////////////////////
 	////	SORTIES
 	////////////////////////////////////////////////////////////////

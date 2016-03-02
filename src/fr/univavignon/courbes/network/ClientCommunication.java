@@ -184,4 +184,10 @@ public interface ClientCommunication
      * Permet au client d'indiquer au serveur qu'il est prêt à commencer la manche.. 
      */
 	public void sendAcknowledgment();
+	
+	/**
+	 * Effectue les opérations nécessaires à la préparatin du Moteur Réseau
+	 * pour la manche suivante (par ex. vider des buffers, etc.).
+	 */
+	public void finalizeRound();
 }

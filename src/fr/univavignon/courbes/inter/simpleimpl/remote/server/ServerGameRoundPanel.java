@@ -199,7 +199,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 		serverCom.sendRound(round);
 		
 		// on vide le buffer des màj qui y sont encore stockées
-		while(serverCom.retrieveCommands()!=null);
+		serverCom.finalizeRound();
 		
 		// on attend que les clients soient prêts (attente passive)
 		while(readyClientNbr<clientIndices.size())

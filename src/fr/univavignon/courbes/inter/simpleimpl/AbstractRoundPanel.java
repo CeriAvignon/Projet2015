@@ -198,16 +198,18 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected boolean updatePoints(List<Integer> prevEliminated, List<Integer> lastEliminated)
 	{	boolean result = false;
 		
+		Player[] players = round.players;
+		int refScores[] = Constants.POINTS_FOR_RANK.get(players.length);
+		
 		if(!lastEliminated.isEmpty())
 		{	prevEliminated.addAll(lastEliminated);
-			Player[] players = round.players;
 			
 			// points de ceux qui ont déjà été éliminés
 			int rank = players.length;
 			for(int i=0;i<prevEliminated.size();i++)
 			{	int playerId = prevEliminated.get(i);
 				Player player = players[playerId];
-				player.roundScore = Constants.POINTS_FOR_RANK.get(rank);
+				player.roundScore = refScores[rank-1];
 				player.totalScore = totalPoints[playerId] + player.roundScore;
 				rank--;
 			}
@@ -216,7 +218,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			for(Player player: players)
 			{	int playerId = player.playerId;
 				if(!prevEliminated.contains(playerId))
-				{	player.roundScore = Constants.POINTS_FOR_RANK.get(rank);
+				{	player.roundScore = refScores[rank-1];
 					player.totalScore = totalPoints[playerId] + player.roundScore;
 				}
 			}
@@ -290,8 +292,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		eliminatedBy = new Integer[snakes.length];
 		for(int i=0;i<snakes.length;i++)
 		{	eliminatedBy[i] = snakes[i].eliminatedBy;
-			System.out.print(" "+eliminatedBy[i]);
+//			System.out.print(" "+eliminatedBy[i]);
 		}
-		System.out.println();
+//		System.out.println();
 	}
 }

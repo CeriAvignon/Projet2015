@@ -463,6 +463,14 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 		return result;
 	}
 	
+	@Override
+	public synchronized void finalizeRound()
+	{	
+//		while(serverCom.retrieveCommands()!=null);
+		for(ServerReadRunnable srr: srrs)
+			srr.directions.clear();
+	}
+
 	////////////////////////////////////////////////////////////////
 	////	SORTIES
 	////////////////////////////////////////////////////////////////
