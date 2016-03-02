@@ -55,6 +55,11 @@ public class SmallUpdate implements UpdateInterface
 		currentItems = new ArrayList<ItemInstance[]>();
 	}
 	
+	/**
+	 * Empty constructor user by Kryonet network
+	 */
+	public SmallUpdate(){}
+	
 	////////////////////////////////////////////////////////////////
 	////	AIRE DE JEU
 	////////////////////////////////////////////////////////////////

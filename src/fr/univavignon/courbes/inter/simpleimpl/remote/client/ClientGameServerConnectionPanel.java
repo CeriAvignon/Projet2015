@@ -27,6 +27,7 @@ import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
 import fr.univavignon.courbes.inter.simpleimpl.remote.AbstractConnectionPanel;
 import fr.univavignon.courbes.network.ClientCommunication;
+import fr.univavignon.courbes.network.kryonet.ClientCommunicationKryonetImpl;
 import fr.univavignon.courbes.network.simpleimpl.client.ClientCommunicationImpl;
 
 /**
@@ -71,7 +72,8 @@ public class ClientGameServerConnectionPanel extends AbstractConnectionPanel imp
 	 */
 	private boolean connect()
 	{	// on initialise le Moteur Réseau
-		ClientCommunication clientCom = new ClientCommunicationImpl();
+//		ClientCommunication clientCom = new ClientCommunicationImpl();
+		ClientCommunication clientCom = new ClientCommunicationKryonetImpl();
 		mainWindow.clientCom = clientCom;
 		clientCom.setErrorHandler(mainWindow);
 		clientCom.setConnectionHandler(this);

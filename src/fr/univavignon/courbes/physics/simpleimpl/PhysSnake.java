@@ -86,6 +86,11 @@ public class PhysSnake extends Snake
 		
 		currentItems = new LinkedList<ItemInstance>();
 	}
+	
+	/**
+	 * Empty constructor used for Kryonet network
+	 */
+	public PhysSnake(){}
 
 	/**
 	 * Crée le serpent associé au numéro indiqué, pour le profil

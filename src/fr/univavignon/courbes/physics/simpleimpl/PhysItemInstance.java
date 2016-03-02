@@ -69,6 +69,11 @@ public class PhysItemInstance extends ItemInstance
 		// on finit l'init
 		init(type,x,y);
 	}
+	
+	/**
+	 * Empty constructor used by kryonet network
+	 */
+	public PhysItemInstance(){}
 
 	/**
 	 * Instancie un nouvel item qui est une copie de celui

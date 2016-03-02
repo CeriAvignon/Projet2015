@@ -214,7 +214,8 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	
 	@Override
 	public synchronized void fetchAcknowledgment(int index)
-	{	readyClientNbr++;
+	{	
+		readyClientNbr++;
 		notify();
 	}
 	
