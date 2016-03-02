@@ -38,7 +38,7 @@ import fr.univavignon.courbes.inter.ClientProfileHandler;
 import fr.univavignon.courbes.inter.ErrorHandler;
 
 import fr.univavignon.courbes.network.ClientCommunication;
-import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
+import fr.univavignon.courbes.network.kryonet.NetworkConstants;
 
 /**
  * Implémentation de la classe {@link ClientCommunication}. Elle repose
@@ -254,7 +254,7 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	public synchronized boolean launchClient()
 	{	boolean result = true;
 
-		client = new Client();
+		client = new Client(60000, 60000);
 		client.start();
 
 		firstRound = true;

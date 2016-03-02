@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.network.simpleimpl;
+package fr.univavignon.courbes.network.kryonet;
 
 /*
  * Courbes
@@ -20,7 +20,7 @@ package fr.univavignon.courbes.network.simpleimpl;
 
 /**
  * Cette classe contient uniquement des constantes utilisées par l'implémentation
- * à base de socket standard du Moteur Réseau.
+ * à base de Kryonet du Moteur Réseau.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -44,4 +44,9 @@ public class NetworkConstants
 	
 //	/** Le client requiert que le serveur lui envoie les profils actuellement sélectionnés pour la partie en cours de configuration */
 //	public static final String REQUEST_PROFILES = "REQUEST_PROFILES";
+	
+	/** Taille du buffer de sortie de Kryonet */
+	public static final int WRITE_BUFFER_SIZE = 60000;
+	/** Taille du buffer d'entrée de Kryonet */
+	public static final int READ_BUFFER_SIZE = 60000;
 }

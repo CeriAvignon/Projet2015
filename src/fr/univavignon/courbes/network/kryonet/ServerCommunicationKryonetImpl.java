@@ -39,7 +39,7 @@ import fr.univavignon.courbes.inter.ServerGameHandler;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 
 import fr.univavignon.courbes.network.ServerCommunication;
-import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
+import fr.univavignon.courbes.network.kryonet.NetworkConstants;
 
 /**
  * Implémentation de la classe {@link ServerCommunication}. Elle repose
@@ -196,15 +196,14 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	////////////////////////////////////////////////////////////////
 	////	CONNEXION
 	////////////////////////////////////////////////////////////////
-	
 	/**
-	 * Object from kryonet library which represents the server
+	 * Objet de la bibliothèque Kryonet représentant le serveur.
 	 */
 	Server server;
 	
 	@Override
 	public void launchServer()
-	{	server = new Server()
+	{	server = new Server(60000, 60000)
 		{	/**
 			 * Called when a client connects to the server
 			 */
@@ -317,17 +316,19 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 //	}
 	
 	/**
-	 * Kick a client thanks to its profile connection
-	 * @param pc The profile connection of the client
+	 * Kick a client thanks to its profile connection.
+	 * 
+	 * @param pc 
+	 * 		The profile connection of the client.
 	 */
 	private void kickClient(ProfileConnection pc)
 	{	kickClient(pc.id);
 	}
 	
 	/**
-	 * Connection with a client identified by its profile and its id in the list of clients
-	 * @author zach
+	 * Connection with a client identified by its profile and its id in the list of clients.
 	 *
+	 * @author	L3 Info UAPV 2015-16
 	 */
 	static class ProfileConnection extends Connection
 	{	/**
@@ -361,7 +362,6 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 		{	direction = d;
 		}
 	}
-
 	
 	@Override
 	public synchronized void closeServer()

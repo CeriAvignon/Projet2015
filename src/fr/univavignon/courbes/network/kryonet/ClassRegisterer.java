@@ -56,8 +56,9 @@ public class ClassRegisterer
 	 * @param endPoint
 	 * 		Objet utilisé pour l'enregistrement des classes.
 	 */
-	static public void register (EndPoint endPoint){
-		Kryo kryo = endPoint.getKryo();
+	static public void register (EndPoint endPoint)
+	{	Kryo kryo = endPoint.getKryo();
+		
 		kryo.register(Integer.class);
 		kryo.register(Integer[].class);
 		kryo.register(int[].class);
@@ -84,6 +85,6 @@ public class ClassRegisterer
 		kryo.register(State.class);
 		kryo.register(SmallUpdate.class);
 		kryo.register(boolean[].class);
-		kryo.register(boolean.class); 
+		kryo.register(boolean.class);
 	}
 }
