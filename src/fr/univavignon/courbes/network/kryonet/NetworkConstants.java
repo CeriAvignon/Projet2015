@@ -45,8 +45,8 @@ public class NetworkConstants
 //	/** Le client requiert que le serveur lui envoie les profils actuellement sélectionnés pour la partie en cours de configuration */
 //	public static final String REQUEST_PROFILES = "REQUEST_PROFILES";
 	
-	/** Taille du buffer de sortie de Kryonet */
-	public static final int WRITE_BUFFER_SIZE = 60000;
-	/** Taille du buffer d'entrée de Kryonet */
-	public static final int READ_BUFFER_SIZE = 60000;
+	/** Taille du buffer de sortie de Kryonet pour les types simples (défaut : 16384) */
+	public static final int WRITE_BUFFER_SIZE = 16384;
+	/** Taille du buffer de sortie de Kryonet pour les objets (défaut : 2048) */
+	public static final int READ_BUFFER_SIZE = 16384;
 }

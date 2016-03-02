@@ -203,7 +203,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	
 	@Override
 	public void launchServer()
-	{	server = new Server(60000, 60000)
+	{	server = new Server(NetworkConstants.WRITE_BUFFER_SIZE, NetworkConstants.READ_BUFFER_SIZE)
 		{	/**
 			 * Called when a client connects to the server
 			 */
