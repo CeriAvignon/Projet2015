@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager.NetEngineImpl;
 import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.inter.simpleimpl.remote.AbstractConnectionPanel;
 import fr.univavignon.courbes.network.ServerCommunication;
@@ -67,8 +68,15 @@ public class ServerGamePortSelectionPanel extends AbstractConnectionPanel implem
 	{	// initialisation de la connexion
 		ServerCommunication serverCom = mainWindow.serverCom;
 		if(serverCom==null)
-		{	//serverCom = new ServerCommunicationImpl();
-			serverCom = new ServerCommunicationKryonetImpl();
+		{	NetEngineImpl netEngineImpl = SettingsManager.getNetEngineImpl();
+			switch(netEngineImpl)
+			{	case KRYONET:
+					serverCom = new ServerCommunicationKryonetImpl();
+					break;
+				case SOCKET:
+					serverCom = new ServerCommunicationImpl();
+					break;
+			}
 			mainWindow.serverCom = serverCom;
 			serverCom.setErrorHandler(mainWindow);
 		}

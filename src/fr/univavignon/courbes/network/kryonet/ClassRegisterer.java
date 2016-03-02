@@ -1,5 +1,23 @@
 package fr.univavignon.courbes.network.kryonet;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeSet;
@@ -23,16 +41,20 @@ import fr.univavignon.courbes.physics.simpleimpl.PhysItemInstance;
 import fr.univavignon.courbes.physics.simpleimpl.PhysSnake;
 
 /**
- * Classe permettant d'enregistrer les objets susceptibles d'être envoyés sur le réseau.
- * L'utilisation d'une unique classe Network pour le client et le serveur permet d'assurer que les objets sont envoyés de la même façon coté client et serveur.
- * @author zach
- *
+ * Classe permettant d'enregistrer les objets susceptibles d'être envoyés 
+ * sur le réseau. L'utilisation d'une unique classe Network pour le client 
+ * et le serveur permet d'assurer que les objets sont envoyés de la même 
+ * façon coté client et serveur.
+ * 
+ * @author	L3 Info UAPV 2015-16
  */
-public class Network{
-
+public class ClassRegisterer
+{	
 	/**
-	 * Enregistre les objets enregistrés sur le réseau
+	 * Enregistre les classes qui seront transmises via le réseau.
+	 * 
 	 * @param endPoint
+	 * 		Objet utilisé pour l'enregistrement des classes.
 	 */
 	static public void register (EndPoint endPoint){
 		Kryo kryo = endPoint.getKryo();
@@ -64,7 +86,4 @@ public class Network{
 		kryo.register(boolean[].class);
 		kryo.register(boolean.class); 
 	}
-	
-
 }
-

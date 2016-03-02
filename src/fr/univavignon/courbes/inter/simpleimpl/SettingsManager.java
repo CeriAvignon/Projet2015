@@ -43,6 +43,8 @@ public class SettingsManager
 	////////////////////////////////////////////////////////////////
 	////	DONNEES DE CONNEXION
 	////////////////////////////////////////////////////////////////
+	/** Insique quelle implémentation du moteur réseau on veut utiliser */
+	private static NetEngineImpl netEngineImpl = NetEngineImpl.SOCKET;
 	/** Dernière adresse IP utilisée pour se connecter à un serveur */
 	private static String lastServerIp = Constants.DEFAULT_IP;
 	/** Dernier port TCP utilisé pour se connecter à un serveur */
@@ -50,6 +52,40 @@ public class SettingsManager
 	/** Dernier port TCP utilisé en tant que serveur */
 	private static int lastPort = Constants.DEFAULT_PORT;
 	
+	/**
+	 * Indique quelle implémentation du Moteur Réseau
+	 * on veut utiliser.
+	 *
+	 * @author	L3 Info UAPV 2015-16
+	 */
+	public enum NetEngineImpl
+	{	/** Utiliser l'implémentation de base avec sockets */
+		SOCKET,
+		/** Utiliser l'implementation avec Kryonet */
+		KRYONET;
+	}
+	
+	/**
+	 * Renvoie l'implémentation du Moteur Réseau utilisée.
+	 * 
+	 * @return
+	 * 		Dernière IP utilisée.
+	 */
+	public static NetEngineImpl getNetEngineImpl()
+	{	return netEngineImpl;
+	}
+
+	/**
+	 * Modifie l'implémentation du Moteur Réseau utilisée.
+	 * 
+	 * @param netEngineImpl
+	 * 		Nouvelle implémentation du Moteur RéseaU.
+	 */
+	public static void setNetEngineImpl(NetEngineImpl netEngineImpl)
+	{	SettingsManager.netEngineImpl = netEngineImpl;
+		recordSettings();
+	}
+
 	/**
 	 * Renvoie la dernière adresse IP utilisée pour se connecter
 	 * à un serveur.
@@ -202,6 +238,7 @@ public class SettingsManager
 			PrintWriter writer = new PrintWriter(osw);
 			
 			// données de connexion
+			writer.write(netEngineImpl.toString()+"\n");
 			writer.write(lastServerIp+"\n");
 			writer.write(lastServerPort+"\n");
 			writer.write(lastPort+"\n");
@@ -228,7 +265,7 @@ public class SettingsManager
 	public static void loadSettings()
 	{	File file = new File(SETTINGS_FILE);
 		if(!file.exists())
-		{	System.err.println("Le fichier de configuration \""+file+"\"n'a pas pu être trouvé : on en crée un par défaut.");
+		{	System.err.println("Le fichier de configuration \""+file+"\" n'a pas pu être trouvé : on en crée un par défaut.");
 			recordSettings();
 		}
 		else
@@ -239,6 +276,8 @@ public class SettingsManager
 				Scanner scanner = new Scanner(isr);
 				
 				// données de connexion
+				String netEngineImplStr = scanner.nextLine();
+				netEngineImpl = NetEngineImpl.valueOf(netEngineImplStr);
 				lastServerIp = scanner.nextLine();
 				String lastServerPortStr = scanner.nextLine();
 				lastServerPort = Integer.parseInt(lastServerPortStr);
@@ -257,8 +296,10 @@ public class SettingsManager
 				// on ferme le fichier
 				scanner.close();  
 			}
-			catch (IOException e)
-			{	e.printStackTrace();
+			catch(Exception e)
+			{	System.err.println("Problème lors de la lecture du fichier de configuration \""+file+"\" : on en crée un nouveau.");
+				recordSettings();
+				//e.printStackTrace();
 			}
 		}
 	}

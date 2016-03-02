@@ -1,27 +1,5 @@
 package fr.univavignon.courbes.network.kryonet;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Arrays;
-import java.util.Enumeration;
-
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.FrameworkMessage;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
-
-import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.common.SmallUpdate;
-import fr.univavignon.courbes.common.UpdateInterface;
-import fr.univavignon.courbes.inter.ErrorHandler;
-import fr.univavignon.courbes.inter.ServerGameHandler;
-import fr.univavignon.courbes.inter.ServerProfileHandler;
-
 /*
  * Courbes
  * Copyright 2015-16 L3 Info UAPV 2015-16
@@ -40,15 +18,32 @@ import fr.univavignon.courbes.inter.ServerProfileHandler;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Arrays;
+import java.util.Enumeration;
+
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
+
+import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
+import fr.univavignon.courbes.inter.ErrorHandler;
+import fr.univavignon.courbes.inter.ServerGameHandler;
+import fr.univavignon.courbes.inter.ServerProfileHandler;
+
 import fr.univavignon.courbes.network.ServerCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
-import fr.univavignon.courbes.network.simpleimpl.server.ServerReadRunnable;
-import fr.univavignon.courbes.network.simpleimpl.server.ServerWriteRunnable;
 
 /**
- * Implémentation de la classe {@link ServerCommunication}. Elle se repose
- * sur deux autres classes pour les entrées ({@link ServerReadRunnable}) et 
- * les sorties ({@link ServerWriteRunnable}) associées à chaque client.
+ * Implémentation de la classe {@link ServerCommunication}. Elle repose
+ * sur la bibliothèque <a href="https://github.com/EsotericSoftware/kryonet">Kryonet</>.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -65,7 +60,6 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	 */
 	int currentNumberOfClients = 0;
 	
-	
 	@Override
 	public String getIp()
 	{	if(ip==null)
@@ -77,8 +71,10 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 					while(ias.hasMoreElements() && ip==null)
 					{	InetAddress ia = ias.nextElement();
 						String iaStr = ia.getHostAddress();
-						if(iaStr.startsWith("192.168."))
-								ip = iaStr;
+						if(iaStr.startsWith("192.168.") 
+								|| iaStr.startsWith("10.104.") 
+								|| iaStr.startsWith("194.57."))
+							ip = iaStr;
 					}
 				}
 			}
@@ -127,8 +123,8 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	protected void fetchProfile(Profile profile, int index)
 	{	if(profileHandler!=null)
 			profileHandler.fetchProfile(profile,index);
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 
 	/**
@@ -142,6 +138,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			profileHandler.connectionLost(index);
 //		else
 //			System.err.println("Le handler de profils n'a pas été renseigné !");
+		
 		if(gameHandler!=null)
 			gameHandler.connectionLost(index);
 //		else
@@ -168,8 +165,8 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	public void fetchAcknowledgment(int index)
 	{	if(gameHandler!=null)
 			gameHandler.fetchAcknowledgment(index);
-		else
-			System.err.println("Le handler de partie n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -192,8 +189,8 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	public void displayError(String message)
 	{	if(errorHandler!=null)
 		errorHandler.displayError(message);
-		else
-			System.err.println("Le handler d'erreur n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
 	
 	////////////////////////////////////////////////////////////////
@@ -207,136 +204,124 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	
 	@Override
 	public void launchServer()
-	{	server = new Server(){
-		
-			/**
+	{	server = new Server()
+		{	/**
 			 * Called when a client connects to the server
 			 */
 			@Override
 			protected Connection newConnection () 
 			{	// By providing our own connection implementation, we can store per
 				// connection state without a connection ID to state look up.
-				
 				ProfileConnection connection = new ProfileConnection();
-		    	   
 				return connection;
 			}
 		};
 
 		// For consistency, the classes to be sent over the network are
 		// registered by the same method for both the client and server.		
-		Network.register(server);
+		ClassRegisterer.register(server);
+		server.addListener(new Listener()
+		{	@Override
+			public void received(Connection c, Object object)
+			{	// We only use one type of connections
+				ProfileConnection connection = (ProfileConnection)c;
 
-		server.addListener(new Listener(){
-
-			@Override
-			public void received(Connection c, Object object){
-			       // We only use one type of connections
-			       ProfileConnection connection = (ProfileConnection)c;
-
-			       if(object instanceof Profile){
-
-			    	   // Ignore the object if a client has already registered a profile. This is
-			    	   // impossible with our client, but a hacker could send messages at any time.
-			    	   if(connection.profile != null){
-			    		   System.err.println("ServerCommunicationImpl: The profile of the new client is already defined");
-			    		   return;
-			    	   }
-			    	   
-			    	   if(connection.id != -1){
-			    		   connection.profile = (Profile)object;
-			    		   fetchProfile(connection.profile, connection.id);
-			    	   }
-			    	 			    	
-			       }
-			       
-			       else if(object instanceof Integer){
-			    	   if(connection.id != -1){
-			    		   Direction dir = Direction.NONE;
-			    		   switch((Integer)object){
-			    		   case -1: dir = Direction.LEFT;break;
-			    		   case  1: dir = Direction.RIGHT;break;
-			    		   }
-			    		   
-			    		   clients[connection.id].setDirection(dir);
-			    	   }
-			       }
-			       
-			       else if(object instanceof String){
-			    	   String string = (String)object;
-			    	   
-			    	   if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
-			    		   fetchAcknowledgment(connection.id);
-			       }
-			       
-					else if(object instanceof Boolean){
-
-				    	   // S'il reste de la place pour que le client se connecte
-				    	   if(currentNumberOfClients < clients.length)
-				    	   {	
-				    	   		clients[currentNumberOfClients] = connection;
-				    	   		connection.id = currentNumberOfClients;
-				    	   		currentNumberOfClients++;
-				    	   		server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
-				    	   }
-				    	   else{
-				    		   server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
-				    		   connection.close();
-				    	   }
+				if(object instanceof Profile)
+				{	// Ignore the object if a client has already registered a profile. This is
+		    	   	// impossible with our client, but a hacker could send messages at any time.
+					if(connection.profile != null)
+					{	System.err.println("ServerCommunicationImpl: The profile of the new client is already defined");
+		    		   	return;
 					}
-			       
 
+					if(connection.id != -1)
+					{	connection.profile = (Profile)object;
+						fetchProfile(connection.profile, connection.id);
+					}
+				}
+
+				else if(object instanceof Integer)
+				{	if(connection.id != -1)
+					{	Direction dir = Direction.NONE;
+						switch((Integer)object)
+						{	case -1: 
+								dir = Direction.LEFT;
+								break;
+							case  1: 
+								dir = Direction.RIGHT;
+								break;
+						}
+
+						clients[connection.id].setDirection(dir);
+					}
+				}
+
+				else if(object instanceof String)
+				{	String string = (String)object;
+
+					if(string.equals(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT))
+						fetchAcknowledgment(connection.id);
+				}
+
+				else if(object instanceof Boolean)
+				{	// S'il reste de la place pour que le client se connecte
+					if(currentNumberOfClients < clients.length)
+					{	clients[currentNumberOfClients] = connection;
+						connection.id = currentNumberOfClients;
+						currentNumberOfClients++;
+						server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION);
+					}
+					else
+					{	server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_CONNECTION);
+						connection.close();
+					}
+				}
 			}
 
 			@Override
-			public void disconnected(Connection c){
-			       ProfileConnection connection = (ProfileConnection)c;
-			       if(connection.profile != null)
-			    	   kickClient(connection);
-			       	
-
+			public void disconnected(Connection c)
+			{	ProfileConnection connection = (ProfileConnection)c;
+				if(connection.profile != null)
+					kickClient(connection);
 			}
-
 		});		
 		
-		try {
-			server.bind(getPort(), getPort()+1);
-		} catch (IOException e) {
-			e.printStackTrace();
+		try
+		{	server.bind(getPort(), getPort()+1);
+		} 
+		catch (IOException e) 
+		{	e.printStackTrace();
 		}
-		
+
 		server.start();
 	}
 	
-//	public int getProfileId(Profile p){
-//		
-//		int result = -1;
+//	public int getProfileId(Profile p)
+//	{	int result = -1;
 //
-// 	    boolean found = false;
-// 	    int i = 0;
-// 	     	   
-// 	    while(i < currentNumberOfClients && !found){
+//		boolean found = false;
+//		int i = 0;
+//
+//		while(i < currentNumberOfClients && !found)
+//		{	
 //// 	    	if(clients[i].profile.userName.equals(p.userName) && clients[i].profile.password.equals(p.password))
-// 		    if(clients[i].profile.equals(p)){
-// 			   found = true;
-// 			   result = i;
-// 		    }
-// 		    else
-// 			    ++i;
-// 	   }
-//		
+//			if(clients[i].profile.equals(p))
+//			{	found = true;
+//				result = i;
+//			}
+//			else
+//				++i;
+//		}
+//
 //		return result;
-//		
 //	}
 	
 	/**
 	 * Kick a client thanks to its profile connection
 	 * @param pc The profile connection of the client
 	 */
-	private void kickClient(ProfileConnection pc){
- 	   
- 		kickClient(pc.id);
-		
+	private void kickClient(ProfileConnection pc)
+	{	kickClient(pc.id);
 	}
 	
 	/**
@@ -345,8 +330,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	 *
 	 */
 	static class ProfileConnection extends Connection
-	{	
-		/**
+	{	/**
 		 * Profile of the client
 		 */
 		public Profile profile;
@@ -365,16 +349,16 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 		 * Getter for the direction
 		 * @return The direction of the client
 		 */
-		public synchronized Direction getDirection(){
-			return direction;
+		public synchronized Direction getDirection()
+		{	return direction;
 		}
 		
 		/**
 		 * Set the direction
 		 * @param d The new direction
 		 */
-		public synchronized void setDirection(Direction d){
-			direction = d;
+		public synchronized void setDirection(Direction d)
+		{	direction = d;
 		}
 	}
 
@@ -386,17 +370,14 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	
 	@Override
 	public synchronized void setClientNumber(int clientNumber)
-	{	
-		
-		if(clients == null){
-			clients = new ProfileConnection[clientNumber];
+	{	if(clients == null)
+		{	clients = new ProfileConnection[clientNumber];
 			lastProfiles = new Profile[clientNumber];
 		}
 		
 		// si le nombre diminue, il faut en fermer certains	
 		if(clientNumber < clients.length)	
-		{	
-			// on prévient les clients rejetés				
+		{	// on prévient les clients rejetés				
 			for(int i=clients.length-1 ; i>=clientNumber ; i--)
 			{	ProfileConnection connection = clients[i];
 				server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
@@ -414,14 +395,12 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	////////////////////////////////////////////////////////////////
 	////	ENTREES
 	////////////////////////////////////////////////////////////////
-	
 	@Override
 	public synchronized Direction[] retrieveCommands()
 	{	Direction[] result = new Direction[clients.length];
 			
-		for(int i=0;i < clients.length;i++){
-			
-			/* May happened when a client is disconnected */
+		for(int i=0;i < clients.length;i++)
+		{	// May happened when a client is disconnected 
 			if(clients[i] != null)
 				result[i] = clients[i].getDirection();
 		}
@@ -455,9 +434,9 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	@Override
 	public void sendUpdate(UpdateInterface updateData)
 	{	sendObject(updateData);
-		if(updateData instanceof SmallUpdate){
-			SmallUpdate su = (SmallUpdate)updateData;
-		}
+//		if(updateData instanceof SmallUpdate){
+//			SmallUpdate su = (SmallUpdate)updateData;
+//		}
 	}
 	
 	@Override
@@ -473,8 +452,8 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			
 			server.sendToTCP(connection.getID(), NetworkConstants.ANNOUNCE_REJECTED_PROFILE);
 			
-			if(index != currentNumberOfClients - 1){
-				clients[index] = clients[currentNumberOfClients-1];
+			if(index != currentNumberOfClients - 1)
+			{	clients[index] = clients[currentNumberOfClients-1];
 				clients[index].id = index;
 			}
 			
@@ -495,9 +474,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	}
 
 	@Override
-	public void finalizeRound() {
-		// Nothing to do
+	public void finalizeRound()
+	{	// Nothing to do
 	}
-	
-
 }

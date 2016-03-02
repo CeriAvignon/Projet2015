@@ -38,7 +38,9 @@ import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.ServerProfileHandler;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager.NetEngineImpl;
 import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerConfigPanel;
 import fr.univavignon.courbes.inter.simpleimpl.remote.RemotePlayerSelectionPanel;
 import fr.univavignon.courbes.network.ServerCommunication;
@@ -176,8 +178,16 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	 * Initialise la partie serveur du moteur réseau
 	 */
 	private void initServer()
-	{	serverCom = new ServerCommunicationKryonetImpl();
-//		serverCom = new ServerCommunicationImpl();
+	{	NetEngineImpl netEngineImpl = SettingsManager.getNetEngineImpl();
+		switch(netEngineImpl)
+		{	case KRYONET:
+				serverCom = new ServerCommunicationKryonetImpl();
+				break;
+			case SOCKET:
+				serverCom = new ServerCommunicationImpl();
+				break;
+		}
+		
 		serverCom.setErrorHandler(mainWindow);
 		serverCom.setProfileHandler(this);
 		serverCom.launchServer();

@@ -1,25 +1,5 @@
 package fr.univavignon.courbes.network.kryonet;
 
-import java.awt.EventQueue;
-import java.io.IOException;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-
-import fr.univavignon.courbes.common.Constants;
-import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.Profile;
-import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.common.SmallUpdate;
-import fr.univavignon.courbes.common.UpdateInterface;
-import fr.univavignon.courbes.inter.ClientConnectionHandler;
-import fr.univavignon.courbes.inter.ClientGameHandler;
-import fr.univavignon.courbes.inter.ClientProfileHandler;
-import fr.univavignon.courbes.inter.ErrorHandler;
-
 /*
  * Courbes
  * Copyright 2015-16 L3 Info UAPV 2015-16
@@ -38,11 +18,31 @@ import fr.univavignon.courbes.inter.ErrorHandler;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.EventQueue;
+import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
+import fr.univavignon.courbes.common.Constants;
+import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.common.Round;
+import fr.univavignon.courbes.common.UpdateInterface;
+import fr.univavignon.courbes.inter.ClientConnectionHandler;
+import fr.univavignon.courbes.inter.ClientGameHandler;
+import fr.univavignon.courbes.inter.ClientProfileHandler;
+import fr.univavignon.courbes.inter.ErrorHandler;
+
 import fr.univavignon.courbes.network.ClientCommunication;
 import fr.univavignon.courbes.network.simpleimpl.NetworkConstants;
 
 /**
- * Implémentation de la classe {@link ClientCommunication} utilisant la librairie kryonet
+ * Implémentation de la classe {@link ClientCommunication}. Elle repose
+ * sur la bibliothèque <a href="https://github.com/EsotericSoftware/kryonet">Kryonet</>.
  * 
  * @author L3 Info UAPV 2015-16
  */
@@ -54,13 +54,13 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	private String ip;
 
 	@Override
-	public String getIp() {
-		return ip;
+	public String getIp()
+	{	return ip;
 	}
 
 	@Override
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setIp(String ip)
+	{	this.ip = ip;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -70,13 +70,13 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	private int port = Constants.DEFAULT_PORT;// 2345;
 
 	@Override
-	public int getPort() {
-		return port;
+	public int getPort()
+	{	return port;
 	}
 
 	@Override
-	public void setPort(int port) {
-		this.port = port;
+	public void setPort(int port)
+	{	this.port = port;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -86,29 +86,29 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	public ClientConnectionHandler connectionHandler;
 
 	@Override
-	public void setConnectionHandler(ClientConnectionHandler connectionHandler) {
-		this.connectionHandler = connectionHandler;
+	public void setConnectionHandler(ClientConnectionHandler connectionHandler)
+	{	this.connectionHandler = connectionHandler;
 	}
 
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotAccepted() {
-		if (connectionHandler != null)
+	protected void gotAccepted()
+	{	if (connectionHandler != null)
 			connectionHandler.gotAccepted();
-		else
-			System.err.println("Le handler de connexion n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
 
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotRefused() {
-		closeClient();
+	protected void gotRefused()
+	{	closeClient();
 		if (connectionHandler != null)
 			connectionHandler.gotRefused();
-		else
-			System.err.println("Le handler de connexion n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de connexion n'a pas été renseigné !");
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -118,19 +118,19 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	private ClientProfileHandler profileHandler;
 
 	@Override
-	public void setProfileHandler(ClientProfileHandler configHandler) {
-		this.profileHandler = configHandler;
+	public void setProfileHandler(ClientProfileHandler configHandler)
+	{	this.profileHandler = configHandler;
 	}
 
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	protected void gotKicked() {
-		closeClient();
+	protected void gotKicked()
+	{	closeClient();
 		if (profileHandler != null)
 			profileHandler.gotKicked();
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 
 	/**
@@ -139,29 +139,28 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * @param profiles
 	 *            Tableau de profils à transmettre au handler.
 	 */
-	protected void updateProfiles(Profile[] profiles) {
-		/* If the handler is not defined */
+	protected void updateProfiles(Profile[] profiles)
+	{	/* If the handler is not defined */
 		int iteration = 0;
 
 		/*
 		 * Wait to give enough time for method <init> from ClientGameWaitPanel
 		 * to be called to set the handler
 		 */
-		while (profileHandler == null && iteration < 100) {
-
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		while (profileHandler == null && iteration < 100)
+		{	try
+			{	Thread.sleep(10);
+			}
+			catch (InterruptedException e)
+			{	e.printStackTrace();
 			}
 			iteration++;
 		}
-
+		
 		if (profileHandler != null)
 			profileHandler.updateProfiles(profiles);
-
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !1");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 
 	/**
@@ -170,23 +169,26 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * @param round
 	 *            Manche à transmettre au handler.
 	 */
-	protected void startGame(Round round) {
-		if (profileHandler != null)
+	protected void startGame(Round round)
+	{	if (profileHandler != null)
 			profileHandler.startGame(round);
-		else
-			System.err.println("Le handler de profils n'a pas été renseigné !2");
+//		else
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
 	}
 
 	/**
 	 * Transmet cet appel au handler concerné.
 	 */
-	public void connectionLost() {
-		if (profileHandler != null)
+	public void connectionLost()
+	{	if (profileHandler != null)
 			profileHandler.connectionLost();
 //		else
-//			System.err.println("Le handler de profils n'a pas été renseigné !3");
+//			System.err.println("Le handler de profils n'a pas été renseigné !");
+		
 		if(gameHandler!=null)
 			gameHandler.connectionLost();
+//		else
+//			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -196,8 +198,8 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	public ClientGameHandler gameHandler;
 
 	@Override
-	public void setGameHandler(ClientGameHandler gameHandler) {
-		this.gameHandler = gameHandler;
+	public void setGameHandler(ClientGameHandler gameHandler)
+	{	this.gameHandler = gameHandler;
 	}
 
 	/**
@@ -206,11 +208,11 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * @param round
 	 *            Manche à transmettre au handler.
 	 */
-	public void fetchRound(Round round) {
-		if (gameHandler != null)
+	public void fetchRound(Round round)
+	{	if (gameHandler != null)
 			gameHandler.fetchRound(round);
-		else
-			System.err.println("Le handler de partie n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler de partie n'a pas été renseigné !");
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -220,8 +222,8 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	public ErrorHandler errorHandler;
 
 	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
+	public void setErrorHandler(ErrorHandler errorHandler)
+	{	this.errorHandler = errorHandler;
 	}
 
 	/**
@@ -230,17 +232,16 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * @param message
 	 *            Message à transmettre au handler.
 	 */
-	public void displayError(String message) {
-		if (errorHandler != null)
+	public void displayError(String message)
+	{	if (errorHandler != null)
 			errorHandler.displayError(message);
-		else
-			System.err.println("Le handler d'erreur n'a pas été renseigné !");
+//		else
+//			System.err.println("Le handler d'erreur n'a pas été renseigné !");
 	}
 
 	////////////////////////////////////////////////////////////////
 	//// CONNEXION
 	////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Objet de la librairie kryonet représentant le client
 	 */
@@ -250,23 +251,24 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	private boolean firstRound;
 
 	@Override
-	public synchronized boolean launchClient() {
-		boolean result = true;
+	public synchronized boolean launchClient()
+	{	boolean result = true;
 
 		client = new Client();
 		client.start();
 
 		firstRound = true;
 
-		Network.register(client);
+		ClassRegisterer.register(client);
 
 		client.addListener(this);
 
 		int timeout = 5000;
-		try {
-			client.connect(timeout, ip, port, port + 1);
-		} catch (IOException e) {
-			result = false;
+		try
+		{	client.connect(timeout, ip, port, port + 1);
+		}
+		catch (IOException e)
+		{	result = false;
 			e.printStackTrace();
 		}
 
@@ -274,22 +276,22 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	}
 
 	@Override
-	public synchronized void closeClient() {
-		client.stop();
+	public synchronized void closeClient()
+	{	client.stop();
 	}
 
 	@Override
-	public synchronized boolean isConnected() {
-		return client != null && client.isConnected();
+	public synchronized boolean isConnected()
+	{	return client != null && client.isConnected();
 	}
 
 	/**
 	 * Méthode appelée quand la connexion avec le serveur est perdue
 	 * accidentellement.
 	 */
-	protected synchronized void lostConnection() {
-		if (client != null) {
-			connectionLost();
+	protected synchronized void lostConnection()
+	{	if(client != null)
+		{	connectionLost();
 			closeClient();
 		}
 	}
@@ -298,14 +300,14 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	//// ENTREES
 	////////////////////////////////////////////////////////////////
 	@Override
-	public Integer retrievePointThreshold() {
-		Integer result = pointsLimits.poll();
+	public Integer retrievePointThreshold()
+	{	Integer result = pointsLimits.poll();
 		return result;
 	}
 
 	@Override
-	public UpdateInterface retrieveUpdate() {
-		UpdateInterface result = updateData.poll();
+	public UpdateInterface retrieveUpdate()
+	{	UpdateInterface result = updateData.poll();
 		return result;
 	}
 
@@ -313,28 +315,28 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	//// SORTIES
 	////////////////////////////////////////////////////////////////
 	@Override
-	public void sendCommand(Direction direction) {
-		Integer intToSend = new Integer(0);
-		switch (direction) {
-		case LEFT:
-			intToSend = new Integer(-1);
-			break;
-		case RIGHT:
-			intToSend = new Integer(1);
-			break;
+	public void sendCommand(Direction direction)
+	{	Integer intToSend = new Integer(0);
+		
+		switch (direction)
+		{	case LEFT:
+				intToSend = new Integer(-1);
+				break;
+			case RIGHT:
+				intToSend = new Integer(1);
+				break;
 		}
 		client.sendTCP(intToSend);
-
 	}
 
 	@Override
-	public void sendProfile(Profile profile) {
-		client.sendTCP(profile);
+	public void sendProfile(Profile profile)
+	{	client.sendTCP(profile);
 	}
 
 	@Override
-	public void sendAcknowledgment() {
-		client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
+	public void sendAcknowledgment()
+	{	client.sendTCP(NetworkConstants.ANNOUNCE_ACKNOWLEDGMENT);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -356,9 +358,8 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * Method called when the connection with the server is created
 	 */
 	@Override
-	public void connected(Connection connection) {
-
-		/* Send a Boolean so that the server can send back the ANNOUNCE_ACCEPTED or ANNOUNCE_REJECTED String */
+	public void connected(Connection connection)
+	{	/* Send a Boolean so that the server can send back the ANNOUNCE_ACCEPTED or ANNOUNCE_REJECTED String */
 		client.sendTCP(new Boolean(true));
 	}
 
@@ -366,41 +367,40 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * Method called when an object is received from the connection
 	 */
 	@Override
-	public void received(Connection connection, Object object) {
-
-		if (object instanceof String) {
-			String string = (String) object;
+	public void received(Connection connection, Object object)
+	{	if (object instanceof String)
+		{	String string = (String) object;
 
 			if (string.equals(NetworkConstants.ANNOUNCE_REJECTED_CONNECTION))
 				gotRefused();
-
 			else if (string.equals(NetworkConstants.ANNOUNCE_ACCEPTED_CONNECTION))
 				gotAccepted();
-
 			else if (string.equals(NetworkConstants.ANNOUNCE_REJECTED_PROFILE))
 				gotKicked();
 		}
 
-		else if (object instanceof UpdateInterface) {
-			UpdateInterface ud = (UpdateInterface) object;
+		else if (object instanceof UpdateInterface)
+		{	UpdateInterface ud = (UpdateInterface) object;
 			updateData.offer(ud);
-		} else if (object instanceof Integer) {
-			Integer integer = (Integer) object;
+		}
+		else if (object instanceof Integer)
+		{	Integer integer = (Integer) object;
 			pointsLimits.offer(integer);
 		}
 
-		else if (object instanceof Round) {
-			Round round = (Round) object;
-			if (firstRound) {
-				startGame(round);
+		else if (object instanceof Round)
+		{	Round round = (Round) object;
+			if(firstRound)
+			{	startGame(round);
 				firstRound = false;
-			} else
+			}
+			else
 				fetchRound(round);
-		} else if (object instanceof Profile[]) {
-			Profile[] profiles = (Profile[]) object;
+		}
+		else if (object instanceof Profile[])
+		{	Profile[] profiles = (Profile[]) object;
 			updateProfiles(profiles);
 		}
-
 	}
 
 	/**
@@ -408,19 +408,17 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	 * @param connection the connection
 	 */
 	@Override
-	public void disconnected(Connection connection) {
-
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				lostConnection();
+	public void disconnected(Connection connection)
+	{	EventQueue.invokeLater(new Runnable()
+		{	@Override
+			public void run()
+			{	lostConnection();
 			}
 		});
-
 	}
 
 	@Override
-	public void finalizeRound() {
-		// Nothing to do
+	public void finalizeRound()
+	{	// Nothing to do
 	}
 }
