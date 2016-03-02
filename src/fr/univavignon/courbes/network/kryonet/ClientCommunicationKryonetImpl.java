@@ -253,7 +253,7 @@ public class ClientCommunicationKryonetImpl extends Listener implements ClientCo
 	public synchronized boolean launchClient() {
 		boolean result = true;
 
-		client = new Client();
+		client = new Client(60000, 60000);
 		client.start();
 
 		firstRound = true;

@@ -207,7 +207,7 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 	
 	@Override
 	public void launchServer()
-	{	server = new Server(){
+	{	server = new Server(60000, 60000){
 		
 			/**
 			 * Called when a client connects to the server
