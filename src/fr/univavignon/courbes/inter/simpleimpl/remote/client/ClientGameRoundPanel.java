@@ -220,7 +220,7 @@ if(!lastEliminated.isEmpty())
 		physicsEngine.setBoard(round.board);
 		
 		// on vide le buffer des màj qui y sont encore stockées
-		while(clientCom.retrieveUpdate()!=null);
+		clientCom.finalizeRound();
 		
 		// on indique au serveur qu'on est prêt
 		clientCom.sendAcknowledgment();

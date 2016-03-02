@@ -180,4 +180,10 @@ public interface ServerCommunication
      * 		être remplacées par des valeurs {@link Direction#NONE}.
      */
 	public Direction[] retrieveCommands();
+	
+	/**
+	 * Effectue les opérations nécessaires à la préparatin du Moteur Réseau
+	 * pour la manche suivante (par ex. vider des buffers, etc.).
+	 */
+	public void finalizeRound();
 }
