@@ -69,8 +69,13 @@ public class ProfileManager
 	 * 		Utilisateur à rajouter.
 	 */
 	public static void addProfile(Profile profile)
-	{	Profile mx = Collections.max(PROFILES);
-		profile.profileId = mx.profileId + 1;
+	{	if(PROFILES.isEmpty())
+			profile.profileId = 0;
+		else
+		{	Profile mx = Collections.max(PROFILES);
+			profile.profileId = mx.profileId + 1;
+		}
+		
 		PROFILES.add(profile);
 		recordProfiles();
 	}
