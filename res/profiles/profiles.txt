@@ -4,3 +4,4 @@ Fitz,Angleterre,1,fitz@fake.com,password3,true
 Test,France,3,test@fake.com,password4,true
 Toto,France,2,toto@fake.com,password5,true
 Zaza,France,4,zaza@fake.com,password6,true
+Roboto,Japon,7,roboto@fake.com,password7,false
