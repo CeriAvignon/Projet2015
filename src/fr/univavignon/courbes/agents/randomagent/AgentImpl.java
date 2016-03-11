@@ -43,7 +43,7 @@ public class AgentImpl extends Agent
 	/** Durée minimale de conservation de direction (en ms) */
 	private static final long STRAIGHT_MIN_DURATION = 150;
 	/** Durée maximale de changement de direction (en ms) */
-	private static final long TURN_MAX_DURATION = 1500;
+	private static final long TURN_MAX_DURATION = 500;
 	/** Durée minimale de changement de direction (en ms) */
 	private static final long TURN_MIN_DURATION = 150;
 	
@@ -51,23 +51,33 @@ public class AgentImpl extends Agent
 	private long timeBeforeDirChange = 0;
 	/** Temps avant que l'agent finisse de tourner */ 
 	private long timeBeforeStopTurning = 0;
+	/** Dernière direction prise */
+	private Direction lastDirection = Direction.NONE;
 	
 	@Override
 	public Direction processDirection()
 	{	Direction result;
 		
-		// s'il est temps de changer de direction, ou qu'on est en train de le faire
+		// s'il est temps de changer de direction, ou qu'on est déjà en train de le faire
 		if(timeBeforeDirChange<=0)
 		{	// si on a fini de changer de direction
 			if(timeBeforeStopTurning<=0)
 			{	timeBeforeDirChange = RANDOM.nextInt((int)(STRAIGHT_MAX_DURATION-STRAIGHT_MIN_DURATION)) + STRAIGHT_MIN_DURATION;
+				timeBeforeStopTurning = RANDOM.nextInt((int)(TURN_MAX_DURATION-TURN_MIN_DURATION)) + TURN_MIN_DURATION;
 				result = Direction.NONE;
 			}
 			
 			// sinon, c'est qu'on doit continuer à tourner
 			else
-			{
-				
+			{	timeBeforeStopTurning = timeBeforeStopTurning - getElapsedTime();
+				if(lastDirection==Direction.NONE)
+				{	float p = RANDOM.nextFloat();
+					if(p>0.5)
+						lastDirection = Direction.RIGHT;
+					else
+						lastDirection = Direction.LEFT;
+				}
+				result = lastDirection;
 			}
 		}
 		
@@ -77,6 +87,7 @@ public class AgentImpl extends Agent
 			result = Direction.NONE;
 		}
 		
+		lastDirection = result;
 		return result;
 	}
 
