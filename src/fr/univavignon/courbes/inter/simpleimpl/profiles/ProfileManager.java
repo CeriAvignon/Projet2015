@@ -109,7 +109,7 @@ public class ProfileManager
 					profile.eloRank + SEPARATOR +
 					profile.email + SEPARATOR +
 					profile.password + SEPARATOR +
-					profile.human + "\n"
+					profile.agent + "\n"
 				);
 			}
 			writer.flush();
@@ -145,7 +145,9 @@ public class ProfileManager
 					profile.eloRank = Integer.parseInt(elem[2].trim());
 					profile.email = elem[3].trim();
 					profile.password = elem[4].trim();
-					profile.human = Boolean.parseBoolean(elem[5].trim());
+					profile.agent = elem[5].trim();
+					if(profile.agent.equals("null"))
+						profile.agent = null;
 					PROFILES.add(profile);
 				}
 				else
