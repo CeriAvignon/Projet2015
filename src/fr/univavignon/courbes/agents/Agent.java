@@ -53,6 +53,8 @@ public abstract class Agent implements Callable<Direction>
 		if(result==null)
 			result = Direction.NONE;
 		
+		// ATTENTION : cette méthode ne doit pas être utilisée par l'agent
+		
 		return result;
 	}	
 
@@ -67,7 +69,6 @@ public abstract class Agent implements Callable<Direction>
 	 */
 	public abstract Direction processDirection();
 	
-	
 	/////////////////////////////////////////////////////////////////
 	// TERMINAISON DE L'AGENT
 	/////////////////////////////////////////////////////////////////
@@ -80,7 +81,7 @@ public abstract class Agent implements Callable<Direction>
 	 * de lever une {@link StopRequestException} au prochain appel 
 	 * de la méthode {@link #checkInterruption}.
 	 * <br/>
-	 * Cette méthode est réservée au moteur du jeu : à ne pas utiliser dans votre agent.
+	 * <b>Attention :</b> cette méthode ne doit pas être utilisée par l'agent lui-même.
 	 */
 	public synchronized final void stopRequest()
 	{	stopRequest = true;		
@@ -113,14 +114,14 @@ public abstract class Agent implements Callable<Direction>
 	/**
 	 * Méthode utilisée par le moteur pour mettre à jour les données de l'agent.
 	 * <br>
-	 * <b>Attention :</b> à ne surtout pas utiliser par l'agent lui-même.
+	 * <b>Attention :</b> cette méthode ne doit pas être utilisée par l'agent lui-même.
 	 * 
 	 * @param board
 	 * 		Copie de l'aire de jeu courante.
 	 * @param elapsedTime
 	 * 		Temps écoulé depuis la dernière mise à jour.
 	 */
-	public void updateData(Board board, long elapsedTime)
+	public final void updateData(Board board, long elapsedTime)
 	{	this.elapsedTime = elapsedTime;
 		this.board = board;
 	}
@@ -132,7 +133,7 @@ public abstract class Agent implements Callable<Direction>
 	 * @return
 	 * 		Numéro du joueur contrôlé par cet agent.
 	 */
-	public int getPlayerId()
+	public final int getPlayerId()
 	{	return playerId;
 	}
 
@@ -143,7 +144,7 @@ public abstract class Agent implements Callable<Direction>
 	 * @return
 	 * 		Copie de l'aire de jeu courante.
 	 */
-	public Board getBoard()
+	public final Board getBoard()
 	{	return board;
 	}
 	
@@ -153,7 +154,7 @@ public abstract class Agent implements Callable<Direction>
 	 * @return
 	 * 		Temps écoulé depuis la dernière mise à jour, en ms.
 	 */
-	public long getElapsedTime()
+	public final long getElapsedTime()
 	{	return elapsedTime;
 	}
 }
