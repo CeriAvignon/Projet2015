@@ -20,6 +20,7 @@ package fr.univavignon.courbes.agents;
 
 import java.util.concurrent.Callable;
 
+import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 
 /**
@@ -32,6 +33,17 @@ import fr.univavignon.courbes.common.Direction;
  */
 public abstract class Agent implements Callable<Direction>
 {	
+	/**
+	 * Crée un agent contrôlant le joueur spécifié
+	 * dans la partie courante.
+	 * 
+	 * @param playerId
+	 * 		Numéro du joueur contrôlé par cet agent.
+	 */
+	public Agent(Integer playerId)
+	{	this.playerId = playerId;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// INTERFACE CALLABLE
 	/////////////////////////////////////////////////////////////////
@@ -41,7 +53,7 @@ public abstract class Agent implements Callable<Direction>
 		if(result==null)
 			result = Direction.NONE;
 		
-		return null;
+		return result;
 	}	
 
 	/////////////////////////////////////////////////////////////////
@@ -91,17 +103,48 @@ public abstract class Agent implements Callable<Direction>
 	/////////////////////////////////////////////////////////////////
 	// DONNEES
 	/////////////////////////////////////////////////////////////////
+	/** Numéro du joueur contrôlé par cet agent dans la partie courante */
+	private int playerId;
 	/** Temps écoulé depuis la dernière mise à jour, exprimé en ms */
 	private long elapsedTime;
+	/** Copie de l'aire de jeu courante */
+	private Board board;
 	
 	/**
 	 * Méthode utilisée par le moteur pour mettre à jour les données de l'agent.
 	 * <br>
 	 * <b>Attention :</b> à ne surtout pas utiliser par l'agent lui-même.
+	 * 
+	 * @param board
+	 * 		Copie de l'aire de jeu courante.
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
 	 */
-	public void updateData()
-	{
-		// TODO
+	public void updateData(Board board, long elapsedTime)
+	{	this.elapsedTime = elapsedTime;
+		this.board = board;
+	}
+
+	/**
+	 * Renvoie le numéro du joueur contrôlé par cet agent 
+	 * dans la partie courante.
+	 * 
+	 * @return
+	 * 		Numéro du joueur contrôlé par cet agent.
+	 */
+	public int getPlayerId()
+	{	return playerId;
+	}
+
+	/**
+	 * Renvoie une copie de l'aire de jeu courante.
+	 * À ne pas modifier dans l'agent.
+	 * 
+	 * @return
+	 * 		Copie de l'aire de jeu courante.
+	 */
+	public Board getBoard()
+	{	return board;
 	}
 	
 	/**

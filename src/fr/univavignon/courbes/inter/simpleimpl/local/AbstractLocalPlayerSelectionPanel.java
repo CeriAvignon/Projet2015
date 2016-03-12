@@ -144,7 +144,8 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 			int right1 = player1.rightKey;
 			Profile profile1 = player1.profile;
 			
-			if(left1==right1 || profile1==null || left1==-1 || right1==-1)
+			if(profile1==null 
+				|| (profile1.agent==null && (left1==right1 || left1==-1 || right1==-1)))
 				isReady = false;
 			
 			else
@@ -157,7 +158,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 					Profile profile2 = player2.profile;
 					
 					if(profile2==null || profile1.equals(profile2)
-						|| left1==left2 || left1==right2 || right1==left2 || right1==right2)
+						|| (profile1.agent==null && profile2.agent==null && (left1==left2 || left1==right2 || right1==left2 || right1==right2)))
 						isReady = false;
 					else
 						i2++;

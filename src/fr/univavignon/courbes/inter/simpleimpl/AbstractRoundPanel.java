@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import fr.univavignon.courbes.agents.AgentManager;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
@@ -86,6 +87,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected JPanel scorePanel;
 	/** Objet gérant les touches */
 	protected KeyManager keyManager;
+	/** Objet gérant les agents */
+	protected AgentManager agentManager;
 	/** Processus utilisé pour exécuter le jeu */
 	protected Thread loopThread;
 	/** Indique si le jeu est en cours (permet de savoir si la manche est finie) */
@@ -128,6 +131,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		mainWindow.setFocusable(true);
 		mainWindow.requestFocusInWindow();
 		mainWindow.addKeyListener(keyManager);
+		
+		agentManager = new AgentManager(round.players);
 	}
 	
 	/**
@@ -176,6 +181,10 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			}
 		}
 		while(!matchOver);
+		
+		// on détruit ce qui doit l'être
+		mainWindow.removeKeyListener(keyManager);
+		agentManager.finish();
 	}
 	
 	/**
@@ -248,6 +257,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	public synchronized void stop()
 	{	running = false;
 		mainWindow.removeKeyListener(keyManager);
+		agentManager.finish();
 //		System.exit(0);
 	}
 
@@ -257,6 +267,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 */
 	protected void resetRound()
 	{	keyManager.reset();
+		agentManager.reset();
 		graphicDisplay.reset();
 	
 		Snake[] snakes = round.board.snakes;

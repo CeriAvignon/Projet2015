@@ -31,7 +31,10 @@ import fr.univavignon.courbes.common.Direction;
  * Il est recommandé d'invoquer la méthode {@link #checkInterruption()}
  * au début de chaque boucle, et au début de chaque méthode. Ceci permet
  * d'éviter que votre agent ne bloque son thread en cas de boucle infinie ou
- * de récursion infinie. 
+ * de récursion infinie.
+ * <br/>
+ * Notez que cette classe bénéficie des méthodes définies dans sa classe mère
+ * {@link Agent}.
  * 
  * @author	L3 Info UAPV 2015-16
  */
@@ -39,13 +42,24 @@ public class AgentImpl extends Agent
 {	/** Générateur aléatoire utilisé lors de divers tirages */
 	private static final Random RANDOM = new Random();
 	/** Durée maximale de conservation de direction (en ms) */
-	private static final long STRAIGHT_MAX_DURATION = 1500;
+	private static final long STRAIGHT_MAX_DURATION = 50;
 	/** Durée minimale de conservation de direction (en ms) */
-	private static final long STRAIGHT_MIN_DURATION = 150;
+	private static final long STRAIGHT_MIN_DURATION = 10;
 	/** Durée maximale de changement de direction (en ms) */
-	private static final long TURN_MAX_DURATION = 500;
+	private static final long TURN_MAX_DURATION = 100;
 	/** Durée minimale de changement de direction (en ms) */
-	private static final long TURN_MIN_DURATION = 150;
+	private static final long TURN_MIN_DURATION = 25;
+
+	/**
+	 * Crée un agent contrôlant le joueur spécifié
+	 * dans la partie courante.
+	 * 
+	 * @param playerId
+	 * 		Numéro du joueur contrôlé par cet agent.
+	 */
+	public AgentImpl(Integer playerId)
+	{	super(playerId);
+	}
 	
 	/** Temps avant que l'agent ne change de direction */ 
 	private long timeBeforeDirChange = 0;
@@ -60,7 +74,7 @@ public class AgentImpl extends Agent
 		
 		// s'il est temps de changer de direction, ou qu'on est déjà en train de le faire
 		if(timeBeforeDirChange<=0)
-		{	// si on a fini de changer de direction
+		{	// si on a fini de changer de direction, réinitialise les durées et on va tout droit
 			if(timeBeforeStopTurning<=0)
 			{	timeBeforeDirChange = RANDOM.nextInt((int)(STRAIGHT_MAX_DURATION-STRAIGHT_MIN_DURATION)) + STRAIGHT_MIN_DURATION;
 				timeBeforeStopTurning = RANDOM.nextInt((int)(TURN_MAX_DURATION-TURN_MIN_DURATION)) + TURN_MIN_DURATION;
@@ -90,6 +104,4 @@ public class AgentImpl extends Agent
 		lastDirection = result;
 		return result;
 	}
-
-	
 }

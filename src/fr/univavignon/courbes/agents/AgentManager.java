@@ -18,18 +18,17 @@ package fr.univavignon.courbes.agents;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
+import fr.univavignon.courbes.physics.PhysicsEngine;
 
 /**
  * Classe chargée de gérer les joueurs artificiels, i.e. les agents.
@@ -39,12 +38,8 @@ import fr.univavignon.courbes.common.Profile;
 public class AgentManager
 {	/** Nom du package contenant le code source des agents */
 	private final static String AGENTS_PACKAGE = "fr.univavignon.courbes.agents";
-	/** Nom du dossier correspondant au package contenant tous les agents */
-	private final static String AGENTS_FOLDER = "fr" + File.separator + "univavignon" + File.separator + "courbes" + File.separator + "agents";
-	/** Nom de la classe principale d'un agent (nom imposé) */
+	/** Nom de la classe principale d'un agent (ce <b>nom est imposé</b>) */
 	private final static String AGENT_MAIN_CLASS = "AgentImpl";
-	/** Nom du fichier correspondant à la classe principale (compilée) d'un agent (nom imposé) */ 
-	private final static String AGENT_MAIN_FILE = AGENT_MAIN_CLASS + ".class";
 
 	/**
 	 * Crée un gestionnaire d'agents pour la partie courante.
@@ -58,13 +53,15 @@ public class AgentManager
 	}
 	
     /** Objets implémentant le comportement des agents */
-	private Callable<Direction> agents[];
+	private Agent agents[];
     /** Gestionnaires de threads pour exécuter les agents */
     private ExecutorService[] executors;
     /** Objets utilisé pour récupérer les résultats des agents */
-    private Future<Agent> futures[];
+    private Future<Direction> futures[];
 	/** Dernières directions des joueurs */
 	private Direction[] lastDirections;
+	/** Temps écoulés depuis les dernières mises à jour */
+	private long[] elapsedTimes;
 	
 	/**
 	 * Instancie les classes correspondants aux agents participant
@@ -80,9 +77,10 @@ public class AgentManager
 	 */
 	@SuppressWarnings("unchecked")
 	private void initAgents(Player players[])
-    {	agents = (Callable<Direction>[]) new Callable[players.length];
-    	futures = (Future<Agent>[])new Future[players.length];
+    {	agents = new Agent[players.length];
+    	futures = (Future<Direction>[])new Future[players.length];
     	executors = new ExecutorService[players.length];
+    	elapsedTimes = new long[players.length];
     	
     	for(int i=0;i<players.length;i++)
     	{	Player player = players[i];
@@ -93,27 +91,20 @@ public class AgentManager
     		
     		if(agentName!=null)
     		{	try
-    			{	// on vérifie que le fichier de la classe principale existe
-					String packageFolder = AGENTS_FOLDER + File.separator + agentName;
-					String classFile = packageFolder + File.separator + AGENT_MAIN_FILE;
-					File file = new File(classFile);
-					if(!file.exists())
-						throw new FileNotFoundException(classFile);
-					
-					// on charge la classe
+    			{	// on charge la classe
 					String packageName = AGENTS_PACKAGE + "." + agentName;
 					String classQualifiedName = packageName + "." + AGENT_MAIN_CLASS;
 					Class<?> tempClass = Class.forName(classQualifiedName);
 					if(!Agent.class.isAssignableFrom(tempClass))
 						throw new ClassCastException(classQualifiedName);
 					
-					// build an instance
-					agent = (Agent)tempClass.getConstructor().newInstance();
+					// on l'instancie
+					agent = (Agent)tempClass.getConstructor(Integer.class).newInstance(new Integer(i));
 					
-					// create the associated executor
+					// on crée l'exécuteur associé
 					executor = Executors.newSingleThreadExecutor();
 				}
-    			catch (FileNotFoundException | ClassNotFoundException | 
+    			catch (ClassNotFoundException | 
     					InstantiationException | IllegalAccessException | 
     					IllegalArgumentException | InvocationTargetException | 
     					NoSuchMethodException | SecurityException e)
@@ -123,6 +114,8 @@ public class AgentManager
     		
 			agents[i] = agent;
 			executors[i] = executor;
+			futures[i] = null;
+			elapsedTimes[i] = 0;
     	}
     }
 	
@@ -144,23 +137,67 @@ public class AgentManager
     
 	/**
 	 * Renvoie les directions courantes de tous les joueurs.
-	 * À noter qu'il s'agit d'une copie du tableau stocké dans ce
-	 * gestionnaire de touches, afin d'éviter tout problème d'accès
-	 * concurrent. 
 	 * 
+	 * @param physicsEngine
+	 * 		Moteur physique de la partie en cours.
+	 * @param elapsedTime
+	 * 		Temps écoulé depuis la dernière mise à jour.
 	 * @return
 	 * 		Directions courantes des joueurs.
 	 */
-	public synchronized Direction[] retrieveDirections()
-	{	Direction[] result = Arrays.copyOf(lastDirections, lastDirections.length);
-		return result;
+	public Direction[] retrieveDirections(PhysicsEngine physicsEngine, long elapsedTime)
+	{	Board boardCopy = null;
+		
+		// on vérifie si chaque agent a terminé son calcul
+		for(int i=0;i<futures.length;i++)
+		{	// le joueur doit être un agent
+			if(agents[i]!=null)
+			{	elapsedTimes[i] = elapsedTimes[i] + elapsedTime;
+				
+				// il doit être actif
+				if(physicsEngine.getBoard().snakes[i].eliminatedBy==null)
+				{	// il doit avoir été précédemment invoqué
+					if(futures[i]!=null)
+					{	// s'il a fini, on récupère son résultat et on le relance
+						if(futures[i].isDone())
+						{	try
+							{	lastDirections[i] = futures[i].get();
+								if(boardCopy==null)
+									boardCopy = physicsEngine.getBoardCopy();
+								agents[i].updateData(boardCopy,elapsedTimes[i]);
+								futures[i] = executors[i].submit(agents[i]);
+								elapsedTimes[i] = 0;
+							}
+							catch (InterruptedException | ExecutionException e)
+							{	e.printStackTrace();
+							}
+//							System.out.println(lastDirections[i]);
+						}
+						// sinon, rien à faire
+					}
+					// sinon on l'invoque maintenant
+					else
+						futures[i] = executors[i].submit(agents[i]);
+				}
+				
+				// sinon on termine le traitement
+				else
+				{	if(futures[i]!=null)
+					{	agents[i].stopRequest();
+						futures[i].cancel(true);
+					}
+				}
+			}
+		}
+		
+		return lastDirections;
 	}
 	
 	/**
 	 * Réinitialise les dernières directions stockées, en prévision
 	 * du début d'une nouvelle manche.
 	 */
-	public synchronized void reset()
+	public void reset()
 	{	// directions
 		for(int i=0;i<lastDirections.length;i++)
 		{	if(agents[i]!=null)
@@ -171,10 +208,24 @@ public class AgentManager
 		
 		// threads
 		for(int i=0;i<futures.length;i++)
-		{	if(futures[i]!=null)
-			{	futures[i].cancel(true);
+		{	if(agents[i]!=null)
+			{	agents[i].stopRequest();
+				futures[i].cancel(true);
 				// ici, si l'agent ne veut pas se terminer, il sera bloqué lors de la prochaine manche
+				// pour éviter tout blocage, son code source doit régulièrement invoquer sa méthode checkInterruption.
+				// il est recommandé de l'invoquer au début de chaque boucle et de chaque méthode.
 			}
+		}
+	}
+
+	/**
+	 * Détruit les objets afin de libérer les ressources à la fin de la partie.
+	 */
+	public void finish()
+	{	reset();
+		for(ExecutorService executor: executors)
+		{	if(executor!=null)
+				executor.shutdown();
 		}
 	}
 }

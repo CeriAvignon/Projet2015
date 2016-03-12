@@ -23,6 +23,7 @@ import java.util.List;
 
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Direction;
+import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractRoundPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow.PanelName;
@@ -94,8 +95,15 @@ public class LocalGameRoundPanel extends AbstractRoundPanel
 				elapsedStatTime = elapsedStatTime + elapsedTime;
 				
 				if(elapsedPhysTime/PHYS_DELAY >= 1)
-				{	// on récupère les commandes des joueurs
+				{	// on récupère les commandes des joueurs humains
 					Direction[] directions = keyManager.retrieveDirections();
+					// on récupère celles des agents et on combine
+					Direction[] agentDirections = agentManager.retrieveDirections(physicsEngine, elapsedTime);
+					for(int i=0;i<round.players.length;i++)
+					{	Player player = round.players[i];
+						if(player.profile.agent!=null)
+							directions[i] = agentDirections[i];
+					}
 					// on met à jour le moteur physique
 					physicsEngine.update(elapsedPhysTime, directions);
 					// on met à jour les scores
