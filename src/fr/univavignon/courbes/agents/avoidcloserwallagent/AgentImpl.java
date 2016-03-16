@@ -221,7 +221,6 @@ public class AgentImpl extends Agent
 			
 		return result;
 	}
-	
 
 	/**
 	 * Renvoie la direction permettant au serpent de s'écarter d'un angle donné.
