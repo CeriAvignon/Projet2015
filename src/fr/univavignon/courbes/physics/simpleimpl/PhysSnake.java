@@ -61,8 +61,8 @@ public class PhysSnake extends Snake
 		movingSpeed = Constants.BASE_MOVING_SPEED;
 		resetCharacs();
 		
-		int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
+		int boardWidth = board.width;
+		int boardHeight = board.height;
 		Random random = new Random();
 		int marginX = boardWidth / 10;	// marge de sécurité: un dixième de l'aire de jeu
 		currentX = random.nextInt(boardWidth-2*marginX) + marginX; // on tire une valeur entre margin et width-1-margin
@@ -351,8 +351,8 @@ public class PhysSnake extends Snake
 	 */
 	private boolean detectCollisions(PhysBoard board, Set<Position> physicalTrail)
 	{	boolean result = false;
-		int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
+		int boardWidth = board.width;
+		int boardHeight = board.height;
 		
 		// on traite d'abord les items
 		// TODO en supposant qu'on ne peut en toucher qu'un seul en une itération

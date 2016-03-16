@@ -22,8 +22,6 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
-
 /**
  * Panel utilisé pour afficher l'aire de jeu. Il se contente d'afficher une image,
  * qui est elle-même mise à jour à chaque itération par le Moteur Graphique.
@@ -37,12 +35,14 @@ public class BoardPanel extends JPanel
 	/**
 	 * Crée un panel permettant d'afficher l'aire de jeu
 	 * en cours de manche.
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire de jeu (en pixels).
+	 * @param height
+	 * 		Hauteur de l'aire de jeu (en pixels).
 	 */
-	public BoardPanel()
-	{	// on fixe les dimensions du panel
-		int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
-		Dimension dim = new Dimension(boardWidth, boardHeight);
+	public BoardPanel(int width, int height)
+	{	Dimension dim = new Dimension(width, height);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);

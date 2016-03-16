@@ -114,7 +114,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		
 		graphicDisplay = new GraphicDisplayImpl();
-		graphicDisplay.init(round.players.length);
+		graphicDisplay.init(round.players.length,SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
 		boardPanel = graphicDisplay.getBoardPanel();
 		scorePanel = graphicDisplay.getScorePanel();
 		
@@ -274,7 +274,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		boolean[] connected = new boolean[snakes.length];
 		for(int i=0;i<snakes.length;i++)
 			connected[i] = snakes[i].connected;
-		physicsEngine.init(round.players.length,SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
+		physicsEngine.init(round.players.length,round.board.width,round.board.height);
 		round.board = physicsEngine.getBoard();
 		snakes = round.board.snakes;
 		for(int i=0;i<snakes.length;i++)

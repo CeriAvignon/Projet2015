@@ -43,15 +43,15 @@ import fr.univavignon.courbes.graphics.GraphicDisplay;
 public class GraphicDisplayImpl implements GraphicDisplay
 {	
 	@Override
-	public void init(int playerNbr)
+	public void init(int playerNbr, int width, int height)
 	{	image = null;
 		try
-		{	boardDrawer = new BoardDrawer(playerNbr);
+		{	boardDrawer = new BoardDrawer(playerNbr, width, height);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
-		boardPanel = new BoardPanel();
+		boardPanel = new BoardPanel(width,height);
 		
 		scorePanel = new ScorePanel(playerNbr);
 	}

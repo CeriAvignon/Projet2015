@@ -40,7 +40,6 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Contient les méthodes permettant de dessiner les serpents.
@@ -61,9 +60,15 @@ public class SnakeDrawer
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs à afficher.
+	 * @param width
+	 * 		Largeur de l'aire de jeu en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire de jeu en pixels.
 	 */
-	public SnakeDrawer(int playerNbr)
-	{	images = new Image[playerNbr];
+	public SnakeDrawer(int playerNbr, int width, int height)
+	{	boardWidth = width;
+		boardHeight = height;
+		images = new Image[playerNbr];
 		resetImages();
 		
 		// TODO on pourrait aussi, par exemple, rajouter un tirage au sort des couleurs des joueurs.
@@ -71,6 +76,10 @@ public class SnakeDrawer
 	
 	/** images utilisées pour accélerer le tracer des serpents */
 	private transient Image images[];
+	/** Largeur de l'aire de jeu en pixels */
+	private int boardWidth;
+	/** Hauteur de l'aire de jeu en pixels */
+	private int boardHeight;
 	
 	/**
 	 * Trace tous les serpents présents dans l'aire de jeu.
@@ -111,8 +120,8 @@ public class SnakeDrawer
 			
 			// on efface éventuellement l'image
 			if(snakes[playerId].clearedTrail)
-			{	int boardWidth = SettingsManager.getBoardWidth();
-				int boardHeight = SettingsManager.getBoardHeight();
+			{	int boardWidth = board.width;
+				int boardHeight = board.height;
 				images[playerId] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 				snakes[playerId].clearedTrail = false;
 			}
@@ -289,9 +298,7 @@ public class SnakeDrawer
 	 * Nettoie les images des serpents en prévision de la prochaine manche.
 	 */
 	public void resetImages()
-	{	int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
-		for(int i=0;i<images.length;i++)
+	{	for(int i=0;i<images.length;i++)
 			images[i] = new BufferedImage(boardWidth, boardHeight, BufferedImage.TYPE_INT_ARGB);
 	}
 }

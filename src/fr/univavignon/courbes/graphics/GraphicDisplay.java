@@ -36,8 +36,12 @@ public interface GraphicDisplay
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs à afficher.
+	 * @param width
+	 * 		Largeur de l'aire de jeu (en pixels).
+	 * @param height
+	 * 		Hauteur de l'aire de jeu (en pixels).
 	 */
-	public void init(int playerNbr);
+	public void init(int playerNbr, int width, int height);
 	
 	/**
 	 * Renvoie le panel de l'aire de jeu, initialisé par le Moteur Graphique.
