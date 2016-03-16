@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
@@ -100,9 +101,18 @@ public class AgentManager
 					
 					// on l'instancie
 					agent = (Agent)tempClass.getConstructor(Integer.class).newInstance(new Integer(i));
+					final String aName = i+". "+player.profile.userName+" "+"(src="+agentName+")";
 					
 					// on crée l'exécuteur associé
-					executor = Executors.newSingleThreadExecutor();
+					executor = Executors.newSingleThreadExecutor(new ThreadFactory()
+					{	@Override
+						public Thread newThread(Runnable r)
+						{	Thread result = new Thread(r);
+							result.setName(aName);
+							result.setPriority(Thread.MIN_PRIORITY);
+							return result;
+						}
+					});
 				}
     			catch (ClassNotFoundException | 
     					InstantiationException | IllegalAccessException | 
