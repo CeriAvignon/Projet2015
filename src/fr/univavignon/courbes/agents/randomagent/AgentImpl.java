@@ -70,7 +70,8 @@ public class AgentImpl extends Agent
 	
 	@Override
 	public Direction processDirection()
-	{	Direction result;
+	{	checkInterruption();
+		Direction result;
 		
 		// s'il est temps de changer de direction, ou qu'on est déjà en train de le faire
 		if(timeBeforeDirChange<=0)

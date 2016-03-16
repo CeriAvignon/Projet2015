@@ -5,4 +5,5 @@ Test,France,3,test@fake.com,password4,null
 Toto,France,2,toto@fake.com,password5,null
 Zaza,France,4,zaza@fake.com,password6,null
 Roboto,Japon,7,roboto@fake.com,password7,randomagent
-Robopeureux,Chine,8,roboto2@fake.com,password8,avoidcloserwallagent
+R2D2-1,Chine,8,r2d21@fake.com,password8,avoidcloserwallagent
+R2D2-2,Chine,9,r2d22@fake.com,password9,avoidcloserwallagent

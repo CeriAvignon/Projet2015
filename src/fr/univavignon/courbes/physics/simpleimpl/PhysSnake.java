@@ -32,7 +32,6 @@ import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Classe fille de {@link Snake}, permettant d'intégrer
