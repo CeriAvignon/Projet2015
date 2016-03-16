@@ -49,7 +49,16 @@ public abstract class Agent implements Callable<Direction>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public final Direction call() throws Exception
-	{	Direction result = processDirection();
+	{	Direction result = null;
+		stopRequest = false;
+		
+		try
+		{	result = processDirection();
+		}
+		catch(StopRequestException e)
+		{	// rien à faire
+		}
+		
 		if(result==null)
 			result = Direction.NONE;
 		
