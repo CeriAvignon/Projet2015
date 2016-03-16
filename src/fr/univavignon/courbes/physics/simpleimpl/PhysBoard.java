@@ -51,9 +51,16 @@ public class PhysBoard extends Board
 	
 	/**
 	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire, en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire, en pixels.
 	 */
-	public PhysBoard()
-	{	items = new ArrayList<ItemInstance>();
+	public PhysBoard(int width, int height)
+	{	super(width,height);
+		
+		items = new ArrayList<ItemInstance>();
 		currentItems = new LinkedList<PhysItemInstance>();
 		removedItems = new ArrayList<Integer>();
 		totalTime = 0;
@@ -69,7 +76,9 @@ public class PhysBoard extends Board
 	 * 		L'aire de jeu à recopier.
 	 */
 	public PhysBoard(PhysBoard board)
-	{	// classe Board
+	{	super(board.width,board.height);
+		
+		// classe Board
 		this.state = board.state;
 		this.hasBorder = board.hasBorder;
 		
