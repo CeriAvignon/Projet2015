@@ -34,6 +34,7 @@ import fr.univavignon.courbes.common.Profile;
 import fr.univavignon.courbes.common.Round;
 import fr.univavignon.courbes.inter.simpleimpl.AbstractPlayerSelectionPanel;
 import fr.univavignon.courbes.inter.simpleimpl.MainWindow;
+import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Panel permettant de sélectionner les joueurs locaux participant à une partie.
@@ -172,7 +173,7 @@ public abstract class AbstractLocalPlayerSelectionPanel extends AbstractPlayerSe
 	
 	@Override
 	protected Round initRound()
-	{	Round result = new Round();
+	{	Round result = new Round(SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
 		
 		// initialisation des joueurs
 		result.players = new Player[selectedProfiles.size()];

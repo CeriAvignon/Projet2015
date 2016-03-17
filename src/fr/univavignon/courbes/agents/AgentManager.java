@@ -19,6 +19,7 @@ package fr.univavignon.courbes.agents;
  */
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,7 +91,7 @@ public class AgentManager
 			Profile profile = player.profile;
     		String agentName = profile.agent;
     		
-    		if(agentName!=null)
+    		if(player.local && agentName!=null)
     		{	try
     			{	// on charge la classe
 					String packageName = AGENTS_PACKAGE + "." + agentName;
@@ -138,7 +139,7 @@ public class AgentManager
 	private void initDirections(Player players[])
 	{	lastDirections = new Direction[players.length];
 		for(int i=0;i<lastDirections.length;i++)
-		{	if(players[i].profile.agent!=null)
+		{	if(players[i].local && players[i].profile.agent!=null)
 				lastDirections[i] = Direction.NONE;
 			else
 				lastDirections[i] = null;
@@ -177,6 +178,10 @@ public class AgentManager
 								agents[i].updateData(boardCopy,elapsedTimes[i]);
 								futures[i] = executors[i].submit(agents[i]);
 								elapsedTimes[i] = 0;
+							}
+							catch(CancellationException e)
+							{	// tâche annulée avant la fin du calcul
+								lastDirections[i] = Direction.NONE;
 							}
 							catch (InterruptedException | ExecutionException e)
 							{	e.printStackTrace();
@@ -219,12 +224,13 @@ public class AgentManager
 		// threads
 		for(int i=0;i<futures.length;i++)
 		{	if(agents[i]!=null)
-			{	agents[i].stopRequest();
+				agents[i].stopRequest();
+			if(futures[i]!=null)
 				futures[i].cancel(true);
-				// ici, si l'agent ne veut pas se terminer, il sera bloqué lors de la prochaine manche
-				// pour éviter tout blocage, son code source doit régulièrement invoquer sa méthode checkInterruption.
-				// il est recommandé de l'invoquer au début de chaque boucle et de chaque méthode.
-			}
+			
+			// ici, si l'agent ne veut pas se terminer, il sera bloqué lors de la prochaine manche
+			// pour éviter tout blocage, son code source doit régulièrement invoquer sa méthode checkInterruption.
+			// il est recommandé de l'invoquer au début de chaque boucle et de chaque méthode.
 		}
 	}
 

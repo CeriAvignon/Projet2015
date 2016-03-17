@@ -128,13 +128,22 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 			elapsedStatTime = elapsedStatTime + elapsedTime;
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
-			{	// on récupère les commandes des joueurs
+			{	// on récupère les commandes des joueurs humains locaux
 				Direction[] directions = keyManager.retrieveDirections();
+				// on récupère celles des agents locaux et on combine
+				Direction[] agentDirections = agentManager.retrieveDirections(physicsEngine, elapsedTime);
+				for(int i=0;i<round.players.length;i++)
+				{	Player player = round.players[i];
+					if(player.local && player.profile.agent!=null)
+						directions[i] = agentDirections[i];
+				}
+				// on rajoute les directions des joueurs distants
 				completeDirections(directions);
-				// on met à jour le moteur physique et on envoie aux clients
+				// on met à jour le moteur physique
 				physicsEngine.update(elapsedPhysTime, directions);
 //System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);
 				physUpdates++;
+				//  on envoie la mise à jour aux clients
 				UpdateInterface updateData = physicsEngine.getSmallUpdate();
 				if(physUpdates==20)
 					updateData = physicsEngine.getBoardCopy();

@@ -280,7 +280,7 @@ public class ServerGameRemotePlayerSelectionPanel extends AbstractPlayerSelectio
 	
 	@Override
 	protected Round initRound()
-	{	Round result = new Round();
+	{	Round result = new Round(SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
 		
 		// initialisation des joueurs
 		result.players = new Player[selectedProfiles.size()];
