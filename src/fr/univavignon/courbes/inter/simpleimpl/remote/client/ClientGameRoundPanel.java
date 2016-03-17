@@ -176,7 +176,7 @@ if(!lastEliminated.isEmpty())
 			}
 
 			if(elapsedGraphTime/GRAPH_DELAY >= 1)
-			{	graphicDisplay.update(round);
+			{	graphicDisplay.update(round); 
 				graphUpdateNbr++;
 				elapsedGraphTime = 0;
 			}

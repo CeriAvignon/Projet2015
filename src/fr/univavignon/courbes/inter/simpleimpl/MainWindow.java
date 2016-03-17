@@ -181,15 +181,21 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 	public void displayPanel(PanelName panelName)
 	{	getContentPane().remove(currentPanel);
 		switch(panelName)
-		{	case MAIN_MENU:
+		{	// menus
+			case MAIN_MENU:
 				currentPanel = mainMenuPanel;
 				break;
+			
+			// partie local
 			case LOCAL_GAME_PLAYER_SELECTION:
 				currentPanel = new LocalGamePlayerSelectionPanel(this);
 				break;
 			case LOCAL_GAME_PLAY:
 				currentPanel = new LocalGameRoundPanel(this);
+				((LocalGameRoundPanel)currentPanel).start();
 				break;
+			
+			// partie réseau côté serveur
 			case SERVER_GAME_PORT_SELECTION:
 				currentPanel = new ServerGamePortSelectionPanel(this);
 				break;
@@ -201,7 +207,10 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				break;
 			case SERVER_GAME_PLAY:
 				currentPanel = new ServerGameRoundPanel(this);
+				((ServerGameRoundPanel)currentPanel).start();
 				break;
+
+			// partie réseau côté client
 			case CLIENT_GAME_CONNECTION:
 				currentPanel = new ClientGameServerConnectionPanel(this);
 				break;
@@ -213,10 +222,15 @@ public class MainWindow extends JFrame implements ErrorHandler, WindowListener
 				break;
 			case CLIENT_GAME_PLAY:
 				currentPanel = new ClientGameRoundPanel(this);
+				((ClientGameRoundPanel)currentPanel).start();
 				break;
+				
+			// profils
 			case PROFILE_LIST:
 				currentPanel = new ProfileListPanel(this);
 				break;
+				
+			// stats
 			case STATISTICS:
 				System.out.println("Option pas encore implémentée...");
 				// TODO à compléter

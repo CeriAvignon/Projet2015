@@ -70,7 +70,6 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		
 		this.mainWindow = mainWindow;
 		init();
-		start();
 	}
 	
 	/** Fenêtre principale du jeu */

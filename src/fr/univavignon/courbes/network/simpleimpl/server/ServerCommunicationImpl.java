@@ -472,7 +472,9 @@ public class ServerCommunicationImpl implements ServerCommunication, Runnable
 	{	
 //		while(serverCom.retrieveCommands()!=null);
 		for(ServerReadRunnable srr: srrs)
-			srr.directions.clear();
+		{	if(srr!=null)
+				srr.directions.clear();
+		}
 	}
 
 	////////////////////////////////////////////////////////////////
