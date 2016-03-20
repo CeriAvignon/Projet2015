@@ -37,18 +37,26 @@ public class BoardDrawer
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs à afficher.
-	 * @param width
-	 * 		Largeur de l'aire de jeu en pixels.
-	 * @param height
-	 * 		Hauteur de l'aire de jeu en pixels.
+	 * @param boardWidth
+	 * 		Largeur de l'aire de jeu, exprimée en pixels.
+	 * @param boardHeight
+	 * 		Hauteur de l'aire de jeu, exprimée en pixels.
 	 * 
 	 * @throws IOException
 	 * 		Problème lors de l'initialisation des objets chargés du tracé.
 	 */
-	public BoardDrawer(int playerNbr, int width, int height) throws IOException
-	{	snakesDrawer = new SnakeDrawer(playerNbr,width,height);
+	public BoardDrawer(int playerNbr, int boardWidth, int boardHeight) throws IOException
+	{	this.boardWidth = boardWidth;
+		this.boardHeight = boardHeight;
+		
+		snakesDrawer = new SnakeDrawer(playerNbr,boardWidth,boardHeight);
 		itemDrawer = new ItemDrawer();
 	}
+	
+	/** Largeur de l'aire de jeu (en pixels) */
+	public int boardWidth;
+	/** Hauteur de l'aire de jeu (en pixels) */
+	public int boardHeight;
 	
 	////////////////////////////////////////////////////////////////
 	////	OBJETS AUXILIAIRES

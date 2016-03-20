@@ -49,6 +49,15 @@ public class PhysBoard extends Board
 	private static final Random RANDOM = new Random();
 	
 	/**
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
+	 */
+	public PhysBoard()
+	{	super();
+		// rien à faire
+	}
+	
+	/**
 	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
 	 * 
 	 * @param width

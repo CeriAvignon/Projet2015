@@ -32,6 +32,15 @@ public class Round implements Serializable
 	private static final long serialVersionUID = 1L;
 	
 	/**
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
+	 */
+	public Round()
+	{
+		// rien à faire
+	}
+	
+	/**
 	 * Initialise une manche avec les dimensions indiquées
 	 * pour l'aire de jeu (qui sera crée ultérieurement).
 	 * 

@@ -37,9 +37,9 @@ public class BoardPanel extends JPanel
 	 * en cours de manche.
 	 * 
 	 * @param width
-	 * 		Largeur de l'aire de jeu (en pixels).
+	 * 		Largeur du panel affichant l'aire de jeu (en pixels).
 	 * @param height
-	 * 		Hauteur de l'aire de jeu (en pixels).
+	 * 		Hauteur du panel affichant l'aire de jeu (en pixels).
 	 */
 	public BoardPanel(int width, int height)
 	{	Dimension dim = new Dimension(width, height);

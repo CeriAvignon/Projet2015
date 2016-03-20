@@ -118,7 +118,7 @@ public class VeryMinimalLoop extends JPanel implements KeyListener, Runnable
 		round.pointLimit = 30;
 		
 		gd = new GraphicDisplayImpl();
-		gd.init(players.length,width,height);
+		gd.init(players.length,width,height,width,height);
 		boardPanel = gd.getBoardPanel();
 		scorePanel = gd.getScorePanel();
 		

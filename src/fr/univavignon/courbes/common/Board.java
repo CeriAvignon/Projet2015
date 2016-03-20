@@ -37,6 +37,15 @@ public abstract class Board implements UpdateInterface
 	private static final long serialVersionUID = 1L;
 	
 	/**
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
+	 */
+	public Board()
+	{	
+		// rien à faire
+	}
+	
+	/**
 	 * Crée une aire de jeu vierge, possédant
 	 * les dimensions spécifiées.
 	 * 

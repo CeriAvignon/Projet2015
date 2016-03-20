@@ -113,7 +113,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		
 		graphicDisplay = new GraphicDisplayImpl();
-		graphicDisplay.init(round.players.length,round.boardWidth,round.boardHeight);
+		graphicDisplay.init(round.players.length,round.boardWidth,round.boardHeight,SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
 		boardPanel = graphicDisplay.getBoardPanel();
 		scorePanel = graphicDisplay.getScorePanel();
 		

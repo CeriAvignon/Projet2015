@@ -44,7 +44,7 @@ public class SettingsManager
 	////	DONNEES DE CONNEXION
 	////////////////////////////////////////////////////////////////
 	/** Insique quelle implémentation du moteur réseau on veut utiliser */
-	private static NetEngineImpl netEngineImpl = NetEngineImpl.SOCKET;
+	private static NetEngineImpl netEngineImpl = NetEngineImpl.KRYONET;
 	/** Dernière adresse IP utilisée pour se connecter à un serveur */
 	private static String lastServerIp = Constants.DEFAULT_IP;
 	/** Dernier port TCP utilisé pour se connecter à un serveur */
