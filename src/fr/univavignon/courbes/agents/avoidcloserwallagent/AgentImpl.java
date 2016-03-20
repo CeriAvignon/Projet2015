@@ -26,7 +26,6 @@ import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.physics.simpleimpl.PhysSnake;
 
 /**
  * Ceci est un agent bidon servant à illustrer comment l'API IA doit être utilisée. 
@@ -257,8 +256,8 @@ public class AgentImpl extends Agent
 	private void processObstacleSnake(Snake snake, double result[])
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		
-		// on récupère les positions de la trainée du serpent
-		Set<Position> trail = new TreeSet<Position>(((PhysSnake)snake).oldTrail);
+		// on récupère les positions de la trainée (complète) du serpent
+		Set<Position> trail = new TreeSet<Position>(snake.oldTrail);
 		trail.addAll(snake.newTrail);
 		
 		// pour chaque position de cette trainée
@@ -274,9 +273,9 @@ public class AgentImpl extends Agent
 			// si la position est visible par le serpent de l'agent
 			if(isInSight(angle))
 			{	// on calcule la distance entre cette position et la tête du serpent de l'agent
-				double dist = Math.sqrt(Math.pow(
-					agentSnake.currentX-position.x, 2) + Math.pow(agentSnake.currentY-position.y, 
-					2));
+				double dist = Math.sqrt(
+					Math.pow(agentSnake.currentX-position.x, 2) 
+					+ Math.pow(agentSnake.currentY-position.y,2));
 					
 				// si la position est plus proche que le plus proche obstacle connu : on met à jour
 				if(dist<result[0])
@@ -308,19 +307,19 @@ public class AgentImpl extends Agent
 		}
 		
 		// y = 0
-		if(isInSight(3*Math.PI/2.0) && agentSnake.currentY<result[0])
+		if(isInSight(3*Math.PI/2) && agentSnake.currentY<result[0])
 		{	result[0] = agentSnake.currentY;
-			result[1] = 3*Math.PI/2.0;
+			result[1] = 3*Math.PI/2;
 		}
 		
 		// x = max_x
-		if(isInSight(0.0) && getBoard().width-agentSnake.currentX<result[0])
+		if(isInSight(0) && getBoard().width-agentSnake.currentX<result[0])
 		{	result[0] = getBoard().width - agentSnake.currentX;
-			result[1] = 0.0;
+			result[1] = 0;
 		}
 		
 		// y == max_y
-		if(isInSight(Math.PI/2.0) && getBoard().height-agentSnake.currentY<result[0])
+		if(isInSight(Math.PI/2) && getBoard().height-agentSnake.currentY<result[0])
 		{	result[0] = getBoard().height - agentSnake.currentY;
 			result[1] = Math.PI/2.0;
 		}

@@ -128,6 +128,7 @@ public class PhysSnake extends Snake
 		this.currentX = snake.currentX;
 		this.currentY = snake.currentY;
 		
+		this.oldTrail = new TreeSet<Position>(snake.oldTrail);
 		this.newTrail = new TreeSet<Position>(snake.newTrail);
 		this.clearedTrail = snake.clearedTrail;
 		
@@ -151,7 +152,6 @@ public class PhysSnake extends Snake
 		}
 		
 		// classe PhysSnake
-		this.oldTrail = new TreeSet<Position>(snake.oldTrail);
 		this.remainingHole = snake.remainingHole;
 		this.timeSinceLastHole = snake.timeSinceLastHole;
 		this.currentHoleWidth = snake.currentHoleWidth;
@@ -167,8 +167,6 @@ public class PhysSnake extends Snake
 		this.prevPos = new Position(snake.prevPos);
 	}
 
-	/** Ancienne section de la trainée du serpent sur l'aire de jeu */
-	public Set<Position> oldTrail;
 	/** Nombre de pixels restants pour terminer le trou courant */
 	private float remainingHole;
 	/** Temps écoulé depuis la fin du dernier trou (en ms) */

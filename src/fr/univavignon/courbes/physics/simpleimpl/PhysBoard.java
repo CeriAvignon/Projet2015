@@ -337,8 +337,8 @@ public class PhysBoard extends Board
 	{	mustClean = false;
 		for(Snake s: snakes)
 		{	PhysSnake snake = (PhysSnake)s;
-			snake.newTrail.clear();
 			snake.oldTrail.clear();
+			snake.newTrail.clear();
 			snake.clearedTrail = true;
 		}
 	}
