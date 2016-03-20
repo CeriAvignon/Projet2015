@@ -1,0 +1,2 @@
+Les scripts implémentant le serveur central doivent être placés ici. 
+Cela concerne aussi bien les scripts correspondant au service lui-même que ceux permettant de configurer/créer la base de données hébergée sur le serveur central. 
