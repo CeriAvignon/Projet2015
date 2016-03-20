@@ -58,7 +58,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	private int localPlayerNbr;
 	/** Indique le nombre de clients prêts */
 	private int readyClientNbr;
-	/** Indique les numéros des clients */
+	/** Indique les numéros de joueur des clients (donc, la longueur de la liste est le nombre de clients dans la partie) */
 	private List<Integer> clientIndices;
 	/** Moteur Réseau */
 	private ServerCommunication serverCom;
@@ -193,9 +193,10 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	private void completeDirections(Direction[] localDirections)
 	{	Direction[] clientDirections = serverCom.retrieveCommands();
 		if(clientDirections!=null)
-		{	int j = 0;
-			for(int i: clientIndices)
-				localDirections[i] = clientDirections[j];
+		{	for(int i=0;i<clientIndices.size();i++)
+			{	int playerId = clientIndices.get(i);
+				localDirections[playerId] = clientDirections[i];
+			}
 		}
 	}
 	
