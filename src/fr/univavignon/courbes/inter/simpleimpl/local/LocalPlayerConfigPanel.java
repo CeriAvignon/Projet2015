@@ -175,6 +175,23 @@ public class LocalPlayerConfigPanel extends JPanel implements ActionListener, Ke
 		boolean enable = profile.agent==null;
 		leftButton.setEnabled(enable);
 		rightButton.setEnabled(enable);
+		if(enable)
+		{	String keyText;
+			if(player.leftKey==-1)
+				player.leftKey = PREDEFINED_KEYS[player.playerId][0];
+			keyText = KeyEvent.getKeyText(player.leftKey);
+			leftButton.setText(keyText);
+			if(player.rightKey==-1)
+				player.rightKey = PREDEFINED_KEYS[player.playerId][1];
+			keyText = KeyEvent.getKeyText(player.rightKey);
+			rightButton.setText(keyText);
+		}
+		else
+		{	player.leftKey = -1;
+			leftButton.setText("-");
+			player.rightKey = -1;
+			rightButton.setText("-");
+		}
 	}
 	
 	@Override
