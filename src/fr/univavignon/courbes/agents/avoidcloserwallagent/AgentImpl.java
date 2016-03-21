@@ -194,10 +194,6 @@ public class AgentImpl extends Agent
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		Direction result = Direction.NONE;
 		
-		// calcul des bornes dans lesquelles peuvent se trouver l'angle
-		double lowerBound = currentAngle - ANGLE_WIDTH;
-		double upperBound = currentAngle + ANGLE_WIDTH;
-
 		// on teste si l'angle est entre lowerBound et currentAngle 
 		// attention : l'axe des y est orienté vers le bas
 		// (en conséquence, par exemple, PI/2 est orienté vers le bas)
