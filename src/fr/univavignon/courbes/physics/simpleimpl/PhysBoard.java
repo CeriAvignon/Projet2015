@@ -35,7 +35,6 @@ import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.SmallUpdate;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
 
 /**
  * Classe fille de {@link Board}, permettant d'intégrer
@@ -50,10 +49,26 @@ public class PhysBoard extends Board
 	private static final Random RANDOM = new Random();
 	
 	/**
-	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
 	 */
 	public PhysBoard()
-	{	items = new ArrayList<ItemInstance>();
+	{	super();
+		// rien à faire
+	}
+	
+	/**
+	 * Crée une nouvelle aire de jeu, à initialiser ensuite.
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire, en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire, en pixels.
+	 */
+	public PhysBoard(int width, int height)
+	{	super(width,height);
+		
+		items = new ArrayList<ItemInstance>();
 		currentItems = new LinkedList<PhysItemInstance>();
 		removedItems = new ArrayList<Integer>();
 		totalTime = 0;
@@ -69,7 +84,9 @@ public class PhysBoard extends Board
 	 * 		L'aire de jeu à recopier.
 	 */
 	public PhysBoard(PhysBoard board)
-	{	// classe Board
+	{	super(board.width,board.height);
+		
+		// classe Board
 		this.state = board.state;
 		this.hasBorder = board.hasBorder;
 		
@@ -137,17 +154,14 @@ public class PhysBoard extends Board
 	 * jeu (relativement) facilement.
 	 */
 	public void initDemo()
-	{	int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
-		
-		// on initialise les serpents (on suppose qu'il y en a seulement 2)
+	{	// on initialise les serpents (on suppose qu'il y en a seulement 2)
 		snakes = new Snake[2];
 		// premier joueur
-		PhysSnake snake0 = new PhysSnake(0,this,boardWidth*3/4,boardHeight*3/4);
+		PhysSnake snake0 = new PhysSnake(0,this,width*3/4,height*3/4);
 		snakes[0] = snake0;
 		snake0.currentAngle = 0;
 		// second joueur
-		PhysSnake snake1 = new PhysSnake(1,this,boardWidth/2,boardHeight/2);
+		PhysSnake snake1 = new PhysSnake(1,this,width/2,height/2);
 		snakes[1] = snake1;
 		snake1.movingSpeed = 0;	// ce joueur ne doit pas bouger
 		
@@ -165,7 +179,7 @@ public class PhysBoard extends Board
 		snakes[1].newTrail.addAll(disk);
 		
 		// on rajoute les items
-		int sep = (int)((boardWidth-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
+		int sep = (int)((width-2*Constants.BORDER_THICKNESS-2*Constants.ITEM_RADIUS*ItemType.values().length)/(ItemType.values().length+1f));
 		int x = Constants.BORDER_THICKNESS;
 		int y = Constants.BORDER_THICKNESS + sep + Constants.ITEM_RADIUS;
 		for(ItemType itemType: ItemType.values())
@@ -323,8 +337,8 @@ public class PhysBoard extends Board
 	{	mustClean = false;
 		for(Snake s: snakes)
 		{	PhysSnake snake = (PhysSnake)s;
-			snake.newTrail.clear();
 			snake.oldTrail.clear();
+			snake.newTrail.clear();
 			snake.clearedTrail = true;
 		}
 	}
@@ -337,9 +351,7 @@ public class PhysBoard extends Board
 	 * 		sur l'aire de jeu.
 	 */
 	private PhysItemInstance generateItem()
-	{	int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
-		PhysItemInstance result = null;
+	{	PhysItemInstance result = null;
 		int margin = 10;
 		
 		// tirage a sort de la position de l'item
@@ -350,8 +362,8 @@ public class PhysBoard extends Board
 		boolean available = false;
 		do
 		{	// on tire la position au sort, hors-bordure
-			x = RANDOM.nextInt(boardWidth-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
-			y = RANDOM.nextInt(boardHeight-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
+			x = RANDOM.nextInt(width-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
+			y = RANDOM.nextInt(height-(Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin)*2)+Constants.BORDER_THICKNESS+Constants.ITEM_RADIUS+margin;
 			
 			// on récupère un disque représentant l'espace occupé par l'item (plus une marge)
 			Position center = new Position(x,y);
@@ -401,10 +413,8 @@ public class PhysBoard extends Board
 	 * 		Une nouvelle position correspondant à la normalisation de l'ancienne. 
 	 */
 	public Position normalizePosition(Position position)
-	{	int boardWidth = SettingsManager.getBoardWidth();
-		int boardHeight = SettingsManager.getBoardHeight();
-		int x = (position.x + boardWidth) % boardWidth;
-		int y = (position.y + boardHeight) % boardHeight;
+	{	int x = (position.x + width) % width;
+		int y = (position.y + height) % height;
 		Position result = new Position(x,y);
 		return result;
 	}

@@ -112,6 +112,8 @@ public class LocalPlayerConfigPanel extends JPanel implements ActionListener, Ke
 		leftButton.setMaximumSize(dim);
 		leftButton.setMinimumSize(dim);
 		leftButton.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+		if(player.profile.agent!=null)
+			leftButton.setEnabled(false);
 		add(leftButton);
 		
 		add(Box.createHorizontalGlue());
@@ -125,6 +127,8 @@ public class LocalPlayerConfigPanel extends JPanel implements ActionListener, Ke
 		rightButton.setMaximumSize(dim);
 		rightButton.setMinimumSize(dim);
 		rightButton.setBackground(Constants.PLAYER_COLORS[player.playerId]);
+		if(player.profile.agent!=null)
+			rightButton.setEnabled(false);
 		add(this.rightButton);
 	}
 
@@ -158,11 +162,43 @@ public class LocalPlayerConfigPanel extends JPanel implements ActionListener, Ke
 
 	}
 	
+	/**
+	 * Met à jour le profile sélectionné, activant ou désactivant
+	 * les boutons de configuration de touches en fonction de la nature
+	 * du profil (agent ou humain).
+	 * 
+	 * @param profile
+	 * 		La nouveau profil sélectionné.
+	 */
+	private void setProfile(Profile profile)
+	{	player.profile = profile;
+		boolean enable = profile.agent==null;
+		leftButton.setEnabled(enable);
+		rightButton.setEnabled(enable);
+		if(enable)
+		{	String keyText;
+			if(player.leftKey==-1)
+				player.leftKey = PREDEFINED_KEYS[player.playerId][0];
+			keyText = KeyEvent.getKeyText(player.leftKey);
+			leftButton.setText(keyText);
+			if(player.rightKey==-1)
+				player.rightKey = PREDEFINED_KEYS[player.playerId][1];
+			keyText = KeyEvent.getKeyText(player.rightKey);
+			rightButton.setText(keyText);
+		}
+		else
+		{	player.leftKey = -1;
+			leftButton.setText("-");
+			player.rightKey = -1;
+			rightButton.setText("-");
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==playerSelectorCombo)
 		{	Profile profile = (Profile)playerSelectorCombo.getSelectedItem();
-			player.profile = profile;
+			setProfile(profile);
 		}
 	
 		else if(e.getSource()==leftButton)

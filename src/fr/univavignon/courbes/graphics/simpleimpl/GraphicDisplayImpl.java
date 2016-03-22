@@ -43,15 +43,17 @@ import fr.univavignon.courbes.graphics.GraphicDisplay;
 public class GraphicDisplayImpl implements GraphicDisplay
 {	
 	@Override
-	public void init(int playerNbr)
+	public void init(int playerNbr, int boardWidth, int boardHeight, int panelWidth, int panelHeight)
 	{	image = null;
+		scaling = boardWidth!=panelWidth || boardHeight!=panelHeight;
+		
 		try
-		{	boardDrawer = new BoardDrawer(playerNbr);
+		{	boardDrawer = new BoardDrawer(playerNbr, boardWidth, boardHeight);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
-		boardPanel = new BoardPanel();
+		boardPanel = new BoardPanel(panelWidth,panelHeight);
 		
 		scorePanel = new ScorePanel(playerNbr);
 	}
@@ -81,6 +83,8 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	private BoardDrawer boardDrawer;
 	/** Image dans laquelle on dessine */
 	private Image image;
+	/** Indique si le panel et l'aire de jeu font la même taille */
+	private boolean scaling;
 	
 	@Override
 	public void update(Round round)
@@ -103,14 +107,20 @@ public class GraphicDisplayImpl implements GraphicDisplay
 			// on dessine le fond
 			g.setColor(Color.BLACK);
 			Dimension dim = boardPanel.getPreferredSize();
-			g.fillRect(0,0,dim.width,dim.height);
+			g.fillRect(0,0,boardDrawer.boardWidth,boardDrawer.boardHeight);
 			// on dessine l'aire de jeu
 			boardDrawer.drawBoard(round, g);
 			g.dispose();
 			// on recopie sur le panel
 			Graphics gp = boardPanel.getGraphics();
 			if(gp!=null)
-			{	gp.drawImage(image, 0, 0, null);
+			{	if(scaling)
+					gp.drawImage(image,
+							0, 0, dim.width-1, dim.height-1,								// dimensions pr destination
+							0, 0, boardDrawer.boardWidth-1, boardDrawer.boardHeight-1,		// dimensions pr source
+							null);
+				else
+					gp.drawImage(image, 0, 0, null);
 				gp.dispose();
 			}
 			again = ((VolatileImage)image).contentsLost();
@@ -127,8 +137,8 @@ public class GraphicDisplayImpl implements GraphicDisplay
 	 * Crée l'image cache dans laquelle on va dessiner.
 	 */
 	private void initImage()
-	{	int width = boardPanel.getPreferredSize().width;
-		int height = boardPanel.getPreferredSize().height;
+	{	int width = boardDrawer.boardWidth;
+		int height = boardDrawer.boardHeight;
 		GraphicsConfiguration gc = boardPanel.getGraphicsConfiguration();
 		VolatileImage temp = gc.createCompatibleVolatileImage(width,height,Transparency.OPAQUE);
 		int valid = temp.validate(gc);

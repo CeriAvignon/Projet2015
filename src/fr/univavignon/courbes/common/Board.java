@@ -36,6 +36,29 @@ public abstract class Board implements UpdateInterface
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
+	 */
+	public Board()
+	{	
+		// rien à faire
+	}
+	
+	/**
+	 * Crée une aire de jeu vierge, possédant
+	 * les dimensions spécifiées.
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire, en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire, en pixels.
+	 */
+	public Board(int width, int height)
+	{	this.width = width;
+		this.height = height;
+	}
+	
 	////////////////////////////////////////////////////////////////
 	////	ETAT DE LA MANCHE
 	////////////////////////////////////////////////////////////////
@@ -56,6 +79,14 @@ public abstract class Board implements UpdateInterface
 		/** Le jeu se déroule normalement */
 		REGULAR;
 	}
+	
+	////////////////////////////////////////////////////////////////
+	////	DIMENSIONS
+	////////////////////////////////////////////////////////////////
+	/** Largeur de l'aire de jeu, en pixels */
+	public int width;
+	/** Hauteur de l'aire de jeu, en pixels */
+	public int height;
 	
 	////////////////////////////////////////////////////////////////
 	////	BORDURES

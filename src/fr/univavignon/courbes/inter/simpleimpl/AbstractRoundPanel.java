@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import fr.univavignon.courbes.agents.AgentManager;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Player;
 import fr.univavignon.courbes.common.Profile;
@@ -69,7 +70,6 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		
 		this.mainWindow = mainWindow;
 		init();
-		start();
 	}
 	
 	/** Fenêtre principale du jeu */
@@ -86,6 +86,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	protected JPanel scorePanel;
 	/** Objet gérant les touches */
 	protected KeyManager keyManager;
+	/** Objet gérant les agents */
+	protected AgentManager agentManager;
 	/** Processus utilisé pour exécuter le jeu */
 	protected Thread loopThread;
 	/** Indique si le jeu est en cours (permet de savoir si la manche est finie) */
@@ -106,12 +108,12 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	{	round = mainWindow.currentRound;
 		
 		physicsEngine = new PhysicsEngineImpl();
-		physicsEngine.init(round.players.length);
+		physicsEngine.init(round.players.length,round.boardWidth,round.boardHeight);
 		round.board = physicsEngine.getBoard();
 		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		
 		graphicDisplay = new GraphicDisplayImpl();
-		graphicDisplay.init(round.players.length);
+		graphicDisplay.init(round.players.length,round.boardWidth,round.boardHeight,SettingsManager.getBoardWidth(),SettingsManager.getBoardHeight());
 		boardPanel = graphicDisplay.getBoardPanel();
 		scorePanel = graphicDisplay.getScorePanel();
 		
@@ -128,6 +130,8 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 		mainWindow.setFocusable(true);
 		mainWindow.requestFocusInWindow();
 		mainWindow.addKeyListener(keyManager);
+		
+		agentManager = new AgentManager(round.players);
 	}
 	
 	/**
@@ -176,6 +180,10 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			}
 		}
 		while(!matchOver);
+		
+		// on détruit ce qui doit l'être
+		mainWindow.removeKeyListener(keyManager);
+		agentManager.finish();
 	}
 	
 	/**
@@ -248,6 +256,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	public synchronized void stop()
 	{	running = false;
 		mainWindow.removeKeyListener(keyManager);
+		agentManager.finish();
 //		System.exit(0);
 	}
 
@@ -257,13 +266,14 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 */
 	protected void resetRound()
 	{	keyManager.reset();
+		agentManager.reset();
 		graphicDisplay.reset();
 	
 		Snake[] snakes = round.board.snakes;
 		boolean[] connected = new boolean[snakes.length];
 		for(int i=0;i<snakes.length;i++)
 			connected[i] = snakes[i].connected;
-		physicsEngine.init(round.players.length);
+		physicsEngine.init(round.players.length,round.boardWidth,round.boardHeight);
 		round.board = physicsEngine.getBoard();
 		snakes = round.board.snakes;
 		for(int i=0;i<snakes.length;i++)

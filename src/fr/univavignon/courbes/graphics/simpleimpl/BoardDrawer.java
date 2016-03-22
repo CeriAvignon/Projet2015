@@ -24,7 +24,6 @@ import java.io.IOException;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Constants;
 import fr.univavignon.courbes.common.Round;
-import fr.univavignon.courbes.inter.simpleimpl.SettingsManager;
  
 /**
  * Contient les méthodes permettant de dessiner l'aire de jeu.
@@ -38,14 +37,26 @@ public class BoardDrawer
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs à afficher.
+	 * @param boardWidth
+	 * 		Largeur de l'aire de jeu, exprimée en pixels.
+	 * @param boardHeight
+	 * 		Hauteur de l'aire de jeu, exprimée en pixels.
 	 * 
 	 * @throws IOException
 	 * 		Problème lors de l'initialisation des objets chargés du tracé.
 	 */
-	public BoardDrawer(int playerNbr) throws IOException
-	{	snakesDrawer = new SnakeDrawer(playerNbr);
+	public BoardDrawer(int playerNbr, int boardWidth, int boardHeight) throws IOException
+	{	this.boardWidth = boardWidth;
+		this.boardHeight = boardHeight;
+		
+		snakesDrawer = new SnakeDrawer(playerNbr,boardWidth,boardHeight);
 		itemDrawer = new ItemDrawer();
 	}
+	
+	/** Largeur de l'aire de jeu (en pixels) */
+	public int boardWidth;
+	/** Hauteur de l'aire de jeu (en pixels) */
+	public int boardHeight;
 	
 	////////////////////////////////////////////////////////////////
 	////	OBJETS AUXILIAIRES
@@ -70,8 +81,8 @@ public class BoardDrawer
 	 */
 	private void drawBorder(Board board, Graphics2D g)
 	{	if(board.hasBorder)
-		{	int boardWidth = SettingsManager.getBoardWidth();
-			int boardHeight = SettingsManager.getBoardHeight();
+		{	int boardWidth = board.width;
+			int boardHeight = board.height;
 			g.setColor(Constants.BORDER_COLOR);
 			// haut
 			g.fillRect(

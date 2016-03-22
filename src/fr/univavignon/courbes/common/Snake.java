@@ -58,6 +58,8 @@ public class Snake implements Serializable
 	////////////////////////////////////////////////////////////////
 	////	TRAINE
 	////////////////////////////////////////////////////////////////
+	/** Ancienne section de la trainée du serpent sur l'aire de jeu */
+	public Set<Position> oldTrail;
 	/** Nouvelle section de la trainée du serpent sur l'aire de jeu */
 	public Set<Position> newTrail;
 	/** Indique si la trainée du serpent a été réinitialisée lors de la dernière itération */

@@ -307,13 +307,17 @@ public class ClientCommunicationImpl implements ClientCommunication
 
 	@Override
 	public Integer retrievePointThreshold()
-	{	Integer result = crr.pointsLimits.poll();
+	{	Integer result = null;
+		if(crr!=null)
+			result = crr.pointsLimits.poll();
 		return result;
 	}
 
 	@Override
 	public UpdateInterface retrieveUpdate()
-	{	UpdateInterface result = crr.updateData.poll();
+	{	UpdateInterface result = null;
+		if(crr!=null)
+			result = crr.updateData.poll();
 		return result;
 	}
 	
@@ -321,7 +325,8 @@ public class ClientCommunicationImpl implements ClientCommunication
 	public synchronized void finalizeRound()
 	{	
 //		while(clientCom.retrieveUpdate()!=null);
-		crr.updateData.clear();
+		if(crr!=null)
+			crr.updateData.clear();
 	}
 	
 	////////////////////////////////////////////////////////////////

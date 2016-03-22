@@ -58,7 +58,7 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	private int localPlayerNbr;
 	/** Indique le nombre de clients prêts */
 	private int readyClientNbr;
-	/** Indique les numéros des clients */
+	/** Indique les numéros de joueur des clients (donc, la longueur de la liste est le nombre de clients dans la partie) */
 	private List<Integer> clientIndices;
 	/** Moteur Réseau */
 	private ServerCommunication serverCom;
@@ -128,13 +128,22 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 			elapsedStatTime = elapsedStatTime + elapsedTime;
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
-			{	// on récupère les commandes des joueurs
+			{	// on récupère les commandes des joueurs humains locaux
 				Direction[] directions = keyManager.retrieveDirections();
+				// on récupère celles des agents locaux et on combine
+				Direction[] agentDirections = agentManager.retrieveDirections(physicsEngine, elapsedTime);
+				for(int i=0;i<round.players.length;i++)
+				{	Player player = round.players[i];
+					if(player.local && player.profile.agent!=null)
+						directions[i] = agentDirections[i];
+				}
+				// on rajoute les directions des joueurs distants
 				completeDirections(directions);
-				// on met à jour le moteur physique et on envoie aux clients
+				// on met à jour le moteur physique
 				physicsEngine.update(elapsedPhysTime, directions);
 //System.out.println("["+elapsedTime+"]"+round.board.snakes[0].currentX+" ; "+round.board.snakes[0].currentY);
 				physUpdates++;
+				//  on envoie la mise à jour aux clients
 				UpdateInterface updateData = physicsEngine.getSmallUpdate();
 				if(physUpdates==20)
 					updateData = physicsEngine.getBoardCopy();
@@ -184,9 +193,10 @@ public class ServerGameRoundPanel extends AbstractRoundPanel implements ServerGa
 	private void completeDirections(Direction[] localDirections)
 	{	Direction[] clientDirections = serverCom.retrieveCommands();
 		if(clientDirections!=null)
-		{	int j = 0;
-			for(int i: clientIndices)
-				localDirections[i] = clientDirections[j];
+		{	for(int i=0;i<clientIndices.size();i++)
+			{	int playerId = clientIndices.get(i);
+				localDirections[playerId] = clientDirections[i];
+			}
 		}
 	}
 	

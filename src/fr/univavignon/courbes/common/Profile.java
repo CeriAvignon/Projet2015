@@ -38,6 +38,8 @@ public class Profile implements Serializable, Comparable<Profile>
 	public int profileId;
 	/** Mot de passe associé au profil */
 	public String password;
+	/** Indique le nom de l'agent, ou {@code null} si le joueur est humain  */
+	public String agent;
 	
 	////////////////////////////////////////////////////////////////
 	////	STATS

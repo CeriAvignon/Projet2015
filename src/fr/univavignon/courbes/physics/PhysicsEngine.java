@@ -46,8 +46,12 @@ public interface PhysicsEngine
 	 * 
 	 * @param playerNbr
 	 * 		Nombre de joueurs participants à la manche.
+	 * @param width
+	 * 		Largeur de l'aire de jeu, en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire de jeu, en pixels.
 	 */
-	public void init(int playerNbr);
+	public void init(int playerNbr, int width, int height);
 	
 	/**
 	 * Méthode permettant d'initialiser un plateau de jeu destiné à tester
@@ -57,8 +61,13 @@ public interface PhysicsEngine
 	 * 	<li>Afficher tous les items existants</li>
 	 * 	<li>Seulement deux joueurs : le premier est contrôlé normalement, le second est immobile</li>
 	 * </ul>
+	 * 
+	 * @param width
+	 * 		Largeur de l'aire de jeu, en pixels.
+	 * @param height
+	 * 		Hauteur de l'aire de jeu, en pixels.
 	 */
-	public void initDemo();
+	public void initDemo(int width, int height);
 	
 	/**
 	 * Renvoie l'aire de jeu créée lors de l'initialisation de

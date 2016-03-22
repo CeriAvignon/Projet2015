@@ -30,9 +30,36 @@ import java.io.Serializable;
 public class Round implements Serializable
 {	/** Numéro de série (pour {@code Serializable}) */
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * Constructeur nécessaire pour le mode réseau utilisant
+	 * Kryonet. Ne pas utiliser ce constructeur.
+	 */
+	public Round()
+	{
+		// rien à faire
+	}
+	
+	/**
+	 * Initialise une manche avec les dimensions indiquées
+	 * pour l'aire de jeu (qui sera crée ultérieurement).
+	 * 
+	 * @param boardWidth
+	 * 		Largeur de l'aire de jeu (en pixels).
+	 * @param boardHeight
+	 * 		Hauteur de l'aire de jeu (en pixels).
+	 */
+	public Round(int boardWidth, int boardHeight)
+	{	this.boardWidth = boardWidth;
+		this.boardHeight = boardHeight;
+	}
+	
 	/** Aire de jeu de la manche courante */
 	public Board board;
+	/** Largeur de l'aire de jeu à créer */
+	public int boardWidth;
+	/** Hauteur de l'aire de jeu à créer */
+	public int boardHeight;
 	
 	/** Tableau des joueurs, dans l'ordre de leur {@code playerId} */
 	public Player[] players;

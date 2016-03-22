@@ -39,14 +39,14 @@ public class PhysicsEngineImpl implements PhysicsEngine
 	private PhysBoard board;
 	
 	@Override
-	public void init(int playerNbr)
-	{	board = new PhysBoard();
+	public void init(int playerNbr, int width, int height)
+	{	board = new PhysBoard(width,height);
 		board.init(playerNbr);
 	}
 	
 	@Override
-	public void initDemo()
-	{	board = new PhysBoard();
+	public void initDemo(int width, int height)
+	{	board = new PhysBoard(width,height);
 		board.initDemo();
 	}
 

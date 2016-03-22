@@ -1,4 +1,4 @@
-package fr.univavignon.courbes.graphics.simpleimpl;
+package fr.univavignon.courbes.agents;
 
 /*
  * Courbes
@@ -18,33 +18,12 @@ package fr.univavignon.courbes.graphics.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
-
 /**
- * Panel utilisé pour afficher l'aire de jeu. Il se contente d'afficher une image,
- * qui est elle-même mise à jour à chaque itération par le Moteur Graphique.
+ * Exception levée par l'agent quand le moteur du jeu lui demande de se terminer. 
  * 
  * @author	L3 Info UAPV 2015-16
  */
-public class BoardPanel extends JPanel
-{	/** Numéro de série de la classe */
+public class StopRequestException extends RuntimeException
+{	/** numéro de serie */
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * Crée un panel permettant d'afficher l'aire de jeu
-	 * en cours de manche.
-	 * 
-	 * @param width
-	 * 		Largeur du panel affichant l'aire de jeu (en pixels).
-	 * @param height
-	 * 		Hauteur du panel affichant l'aire de jeu (en pixels).
-	 */
-	public BoardPanel(int width, int height)
-	{	Dimension dim = new Dimension(width, height);
-		setPreferredSize(dim);
-		setMinimumSize(dim);
-		setMaximumSize(dim);
-	}
 }

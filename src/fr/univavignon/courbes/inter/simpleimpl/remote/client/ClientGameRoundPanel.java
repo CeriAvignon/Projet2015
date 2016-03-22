@@ -129,8 +129,16 @@ public class ClientGameRoundPanel extends AbstractRoundPanel implements ClientGa
 			elapsedStatTime = elapsedStatTime + elapsedTime;
 			
 			if(elapsedPhysTime/PHYS_DELAY >= 1)
-			{	// on envoie les commandes au serveur
+			{	// on récupère les commandes des joueurs humains
 				Direction[] directions = keyManager.retrieveDirections();
+				// on récupère celles des agents et on combine
+				Direction[] agentDirections = agentManager.retrieveDirections(physicsEngine, elapsedTime);
+				for(int i=0;i<round.players.length;i++)
+				{	Player player = round.players[i];
+					if(player.local && player.profile.agent!=null)
+						directions[i] = agentDirections[i];
+				}
+				// on envoie les commandes au serveur
 				sendDirection(directions); //TODO on pourrait tester si tout n'est pas NONE (auquel cas on n'enverrait rien)
 				// on met à jour le moteur physique
 				UpdateInterface updateData = clientCom.retrieveUpdate();
@@ -168,7 +176,7 @@ if(!lastEliminated.isEmpty())
 			}
 
 			if(elapsedGraphTime/GRAPH_DELAY >= 1)
-			{	graphicDisplay.update(round);
+			{	graphicDisplay.update(round); 
 				graphUpdateNbr++;
 				elapsedGraphTime = 0;
 			}
