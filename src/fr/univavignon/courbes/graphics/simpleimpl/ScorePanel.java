@@ -23,7 +23,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -203,7 +202,7 @@ public class ScorePanel extends JPanel
 	{	// labels des joueurs
 		Color firstColor = null;
 		List<Player> sortedPlayers = new ArrayList<Player>(Arrays.asList(round.players));
-		Collections.sort(sortedPlayers,PLR_COMP);
+		Collections.sort(sortedPlayers,Player.POINTS_COMPARATOR);
 		int rank = 1;
 		for(Player player: sortedPlayers)
 		{	int playerId = player.playerId;
@@ -232,15 +231,4 @@ public class ScorePanel extends JPanel
 		limitLabel.setText(Integer.toString(round.pointLimit));
 		limitLabel.setBackground(firstColor);
 	}
-	
-	/** Compare deux joueurs en fonction de leur rang */
-	private final static Comparator<Player> PLR_COMP = new Comparator<Player>()
-	{	@Override
-		public int compare(Player player1, Player player2)
-		{	int result = player2.totalScore - player1.totalScore;
-			if(result==0)
-				result = player2.playerId - player1.playerId;
-			return result;
-		}
-	};
 }

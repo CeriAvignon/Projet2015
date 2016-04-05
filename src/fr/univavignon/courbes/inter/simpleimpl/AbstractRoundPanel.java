@@ -18,7 +18,9 @@ package fr.univavignon.courbes.inter.simpleimpl;
  * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Box;
@@ -55,9 +57,9 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	/** Délai associé à une itération forcée */
 	protected final static long FORCED_ITERATION_STEP = 50;
 	/** délai entre deux màj physiques en ms */
-	protected double PHYS_DELAY = 1000f / UPS; 
+	protected final static double PHYS_DELAY = 1000f / UPS; 
 	/** délai entre deux màj graphiques en ms */
-	protected double GRAPH_DELAY = 1000f / FPS;
+	protected final static double GRAPH_DELAY = 1000f / FPS;
 	
 	/**
 	 * Crée une fenêtre contenant le plateau du jeu et les données du jeu.
@@ -149,14 +151,14 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			Player[] players = round.players;
 			for(int i=0;i<players.length;i++)
 				totalPoints[i] = players[i].totalScore;
-
+			
 			// on compare le score le plus élevé et la limite
 			int maxIdx = 0;
 			for(int i=0;i<totalPoints.length;i++)
 			{	if(totalPoints[i]>totalPoints[maxIdx])
 					maxIdx = i;
 			}
-			matchOver = totalPoints[maxIdx]>=Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(totalPoints.length);
+			matchOver = totalPoints[maxIdx]>=round.pointLimit;
 			
 			// on affiche éventuellement le vainqueur de la partie
 			if(matchOver)
@@ -231,11 +233,11 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 				}
 			}
 			
+			// on met à jour la limite
+			updatePointLimit();
+			
 			// on teste la fin de la manche
 			result = prevEliminated.size()>=players.length-1;
-			
-			// on met à jour la limite de points
-			updatePointLimit();
 		}
 		
 		return result;
@@ -280,7 +282,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			snakes[i].connected = connected[i];
 		for(Player player: round.players)
 			player.roundScore = 0;
-		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
+//		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 		running = true;
 	}
 	
@@ -289,8 +291,24 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 	 * joueurs en jeu et de leur score.
 	 */
 	protected void updatePointLimit()
-	{	// on ne fait pas varier la limite en cours de partie, mais c'est possible de le faire ici
-		round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
+	{	// on fait varier la limite en cours de partie, 
+		// en fonction de l'écart entre les deux premiers joueurs
+		if(round.players.length>1)
+		{	// on classe les points
+			List<Player> sortedPlayers = new ArrayList<Player>(Arrays.asList(round.players));
+			Collections.sort(sortedPlayers,Player.POINTS_COMPARATOR);
+			// on vérifie si les deux premiers sont à 1 point de la limite
+			int score0 = sortedPlayers.get(0).totalScore;
+			int score1 = sortedPlayers.get(1).totalScore;
+			if(score0==score1 
+					&& score0>=Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length)-1)
+			{	// auquel cas on augmente la limite d'1 point
+				round.pointLimit = score0 + 2;
+			}
+		}
+		
+		// ancienne version : pas de modif de la limite
+		//round.pointLimit = Constants.POINT_LIMIT_FOR_PLAYER_NBR.get(round.players.length);
 	}
 	
 	/**

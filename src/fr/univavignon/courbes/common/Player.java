@@ -19,6 +19,7 @@ package fr.univavignon.courbes.common;
  */
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Représente un joueur, non pas dans le cadre général du jeu comme {@link Profile}, 
@@ -75,4 +76,18 @@ public class Player implements Serializable
 		result.append(" " + roundScore + "/" + totalScore);
 		return result.toString();
 	}
+	
+	////////////////////////////////////////////////////////////////
+	////	COMPARATOR
+	////////////////////////////////////////////////////////////////
+	/** Compare deux joueurs en fonction de leur rang */
+	public final static Comparator<Player> POINTS_COMPARATOR = new Comparator<Player>()
+	{	@Override
+		public int compare(Player player1, Player player2)
+		{	int result = player2.totalScore - player1.totalScore;
+			if(result==0)
+				result = player2.playerId - player1.playerId;
+			return result;
+		}
+	};
 }
