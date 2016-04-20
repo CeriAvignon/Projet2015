@@ -282,8 +282,10 @@ public class ServerCommunicationKryonetImpl implements ServerCommunication
 			@Override
 			public void disconnected(Connection c)
 			{	ProfileConnection connection = (ProfileConnection)c;
-				if(connection.profile != null)
+				if(connection.profile != null){
+					connectionLost(connection.id);
 					kickClient(connection);
+				}
 			}
 		});		
 		
