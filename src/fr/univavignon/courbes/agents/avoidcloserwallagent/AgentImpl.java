@@ -62,60 +62,52 @@ public class AgentImpl extends Agent
 	/** Serpent contrôlé par l'agent */
 	private Snake agentSnake;
 	/** Temps avant que l'agent ne change de direction */ 
-	private long timeBeforeDirChange = 0;
 
 	@Override
 	public Direction processDirection()
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		Direction result;
 		
-		// s'il n'est pas encore temps de changer de direction, ou qu'on est déjà en train de le faire
-		if(timeBeforeDirChange>0)
-		{	timeBeforeDirChange = timeBeforeDirChange - getElapsedTime();
-			result = previousDirection;
-		}
+		Board board = getBoard();
 		
+		// partie pas encore commencée : on ne fait rien
+		if(board == null)
+			result = previousDirection;
+		
+		// sinon, on applique la stratégie
 		else
-		{	Board board = getBoard();
-			// partie pas encore commencée : on ne fait rien
-			if(board == null)
+		{	// on récupère le serpent de l'agent
+			agentSnake = board.snakes[getPlayerId()];
+			
+			// si le serpent est dans un coin : il faut éviter qu'il alterne gauche et droite donc on force l'un des deux
+			if(previousDirection!=Direction.NONE && isInCorner())
 				result = previousDirection;
 			
-			// sinon, on applique la stratégie
+			// si on n'est pas dans un coin
 			else
-			{	// on récupère le serpent de l'agent
-				agentSnake = board.snakes[getPlayerId()];
+			{	updateAngles();
 				
-				// si le serpent est dans un coin : il faut éviter qu'il alterne gauche et droite donc on force l'un des deux
-				if(previousDirection!=Direction.NONE && isInCorner())
-					result = previousDirection;
+				// tableau de réels contenant deux valeurs : 0) distance à la position
+				// la plus proche constituant un obstacle, et 1) angle formé avec la tête
+				// du serpent contrôlé par cet agent (entre 0 et 2PI)
+				double closestObstacle[] = {Double.POSITIVE_INFINITY, 0};
 				
-				// si on n'est pas dans un coin
-				else
-				{	updateAngles();
+				// pour chaque serpent
+				for(int i=0;i<board.snakes.length;++i)
+				{	checkInterruption();	// on doit tester l'interruption au début de chaque boucle
+					Snake snake = board.snakes[i];
 					
-					// tableau de réels contenant deux valeurs : 0) distance à la position
-					// la plus proche constituant un obstacle, et 1) angle formé avec la tête
-					// du serpent contrôlé par cet agent (entre 0 et 2PI)
-					double closestObstacle[] = {Double.POSITIVE_INFINITY, 0};
-					
-					// pour chaque serpent
-					for(int i=0;i<board.snakes.length;++i)
-					{	checkInterruption();	// on doit tester l'interruption au début de chaque boucle
-						Snake snake = board.snakes[i];
-						
-						// on traite seulement les serpents des autres joueurs
-						if(i != getPlayerId())
-							// on met à jour la distance à l'obstacle le plus proche
-							processObstacleSnake(snake, closestObstacle);
-					}
-					
-					// on teste si les bordures de l'aire de jeu sont proches
-					processObstacleBorder(closestObstacle);
-					
-					// on prend une direction de manière à éviter cet obstacle 
-					result = getDodgeDirection(closestObstacle[1]);
+					// on traite seulement les serpents des autres joueurs
+					if(i != getPlayerId())
+						// on met à jour la distance à l'obstacle le plus proche
+						processObstacleSnake(snake, closestObstacle);
 				}
+				
+				// on teste si les bordures de l'aire de jeu sont proches
+				processObstacleBorder(closestObstacle);
+				
+				// on prend une direction de manière à éviter cet obstacle 
+				result = getDodgeDirection(closestObstacle[1]);
 			}
 		}
 
