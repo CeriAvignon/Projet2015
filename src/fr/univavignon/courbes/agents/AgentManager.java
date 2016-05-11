@@ -199,7 +199,7 @@ public class AgentManager
 				else
 				{	if(futures[i]!=null)
 					{	agents[i].stopRequest();
-						futures[i].cancel(true);
+//						futures[i].cancel(true);
 					}
 				}
 			}
@@ -225,8 +225,8 @@ public class AgentManager
 		for(int i=0;i<futures.length;i++)
 		{	if(agents[i]!=null)
 				agents[i].stopRequest();
-			if(futures[i]!=null)
-				futures[i].cancel(true);
+//			if(futures[i]!=null)
+//				futures[i].cancel(true);
 			
 			// ici, si l'agent ne veut pas se terminer, il sera bloqué lors de la prochaine manche
 			// pour éviter tout blocage, son code source doit régulièrement invoquer sa méthode checkInterruption.
