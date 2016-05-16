@@ -110,8 +110,12 @@ public class AgentImpl extends Agent
 				// on prend une direction de manière à éviter cet obstacle 
 				result = getDodgeDirection(closestObstacle[1]);
 			}
+			
+			// en cas de malus de type commandes inversées, on prend la direction opposée
+			if(agentSnake.inversion)
+				result = result.getInverse();
 		}
-
+		
 		previousDirection = result;
 		return result;
 	}
