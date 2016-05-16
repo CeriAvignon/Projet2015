@@ -395,7 +395,7 @@ public class PhysSnake extends Snake
 			}
 		}
 		
-		// on traite les autres joueurs
+		// on traite les serpents
 		if(eliminatedBy==null && board.state==State.REGULAR && !fly && remainingHole<=0)
 		{	int i = 0;
 			while(i<board.snakes.length && eliminatedBy==null)
@@ -416,7 +416,7 @@ public class PhysSnake extends Snake
 	}
 	
 	/**
-	 * Met à jour les nouvelles position, angle et trainée
+	 * Met à jour les nouvelles valeurs de position, angle et trainée
 	 * du serpent, en fonction des calculs effectués auparavant.
 	 * 
 	 * @param board
