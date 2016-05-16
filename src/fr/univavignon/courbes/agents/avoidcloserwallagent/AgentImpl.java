@@ -68,6 +68,7 @@ public class AgentImpl extends Agent
 	public Direction processDirection()
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		Direction result;
+		//System.out.println("Updating player #"+getPlayerId());
 		
 		// s'il n'est pas encore temps de changer de direction, ou qu'on est déjà en train de le faire
 		if(timeBeforeDirChange>0)
