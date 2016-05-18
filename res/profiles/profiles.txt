@@ -7,3 +7,10 @@ Zaza,France,4,zaza@fake.com,password6,null
 Roboto,Japon,7,roboto@fake.com,password7,randomagent
 R2D2-1,Chine,8,r2d21@fake.com,password8,avoidcloserwallagent
 R2D2-2,Chine,9,r2d22@fake.com,password9,avoidcloserwallagent
+groupe01,France,10,groupe01@fake.com,password10,groupe01
+groupe02,France,11,groupe02@fake.com,password11,groupe02
+groupe04,France,12,groupe04@fake.com,password12,groupe04
+groupe05,France,13,groupe05@fake.com,password13,groupe05
+groupe07,France,14,groupe07@fake.com,password14,groupe07
+groupe08,France,15,groupe08@fake.com,password15,groupe08
+groupe10,France,16,groupe10@fake.com,password16,groupe10
