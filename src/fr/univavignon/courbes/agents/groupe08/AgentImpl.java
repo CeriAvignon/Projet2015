@@ -69,7 +69,7 @@ public class AgentImpl extends Agent
 	 * affiche la direction finale prise par l'ia, a la fin de processDirection
 	 * 
 	 * **/
-	boolean afficherInfosInitiales = true;
+	boolean afficherInfosInitiales = false;
 	boolean longTermFlag = true;
 	
 	int agentId = -1;
