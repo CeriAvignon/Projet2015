@@ -26,7 +26,8 @@
 #
 # define path variables
 	bin="./bin"
-	cp="${bin}"
+	kryo="./lib/kryonet-2.21-all.jar"
+	cp="${bin}:${kryo}"
 	launcher="fr.univavignon.courbes.Launcher"
 #
 # launch the game

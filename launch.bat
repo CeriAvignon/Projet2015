@@ -22,7 +22,8 @@
 
 :: define path variables
 	Set bin=.\bin
-	Set cp=%bin%
+	Set kryo=.\lib\kryonet-2.21-all.jar
+	Set cp=%bin%;%kryo%
 	Set launcher=fr.univavignon.courbes.Launcher
 
 :: launch the game
