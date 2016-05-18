@@ -150,7 +150,7 @@ public class PhysItemInstance extends ItemInstance
 				snake.movingSpeed = snake.movingSpeed*Constants.MOVING_SPEED_COEFF;
 				break;
 			case OTHERS_REVERSE:
-				snake.inversion = true;
+				snake.inversion = !snake.inversion;
 				break;
 			case OTHERS_THICK:
 				snake.headRadius = (int)(snake.headRadius*Constants.HEAD_RADIUS_COEFF);

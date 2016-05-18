@@ -213,7 +213,8 @@ public class AgentManager
 	 * du début d'une nouvelle manche.
 	 */
 	public void reset()
-	{	// directions
+	{	//System.out.println("============================ Resetting agents for new round");
+		// directions
 		for(int i=0;i<lastDirections.length;i++)
 		{	if(agents[i]!=null)
 				lastDirections[i] = Direction.NONE;

@@ -55,7 +55,7 @@ public class Constants
 	////	VITESSE DE DEPLACEMENT
 	////////////////////////////////////////////////////////////////
 	/** Vitesse de déplacement initiale (i.e. sans l'effet d'un item) des serpents, exprimée en pixels par ms */
-	public static final float BASE_MOVING_SPEED = 0.08f;
+	public static final float BASE_MOVING_SPEED = 0.09f;//0.08f;
 	/** Coefficient multiplicatif/diviseur appliqué à la vitesse de déplacement pour l'augmenter/la diminuer */
 	public static final float MOVING_SPEED_COEFF = 2f;
 	
@@ -63,7 +63,7 @@ public class Constants
 	////	VITESSE DE ROTATION
 	////////////////////////////////////////////////////////////////
 	/** Vitesse initiale à laquelle le serpent change de direction, exprimée en radians par ms */
-	public static final float BASE_TURNING_SPEED = (float)(0.0003*2*Math.PI);
+	public static final float BASE_TURNING_SPEED = (float)(0.000325*2*Math.PI);//0.0003
 	/** Coefficient multiplicateur/diviseur appliqué à la vitesse de rotation pour l'augmenter/la diminuer */
 	public static final float TURNING_COEFF = 1.25f;
 	
@@ -95,11 +95,11 @@ public class Constants
 	/** Temps de vie d'un item (en ms), avant qu'il ne disparaisse de l'aire de jeu */
 	public static final long ITEM_DURATION = -1; // valeur négative = infini
 	/** Probabilité qu'un item apparaisse à chaque ms */
-	public static final float BASE_ITEM_POPUP_RATE = 0.0001f; 
+	public static final float BASE_ITEM_POPUP_RATE = 0.0003f;//0.0001f; 
 	/** Coefficient multiplicateur appliqué à la probabilité qu'un item apparaisse, pour l'augmenter */
-	public static final float ITEM_POPUP_COEFF = 1.5f; //TODO faut régler ça et/ou le popup rate
+	public static final float ITEM_POPUP_COEFF = 1.2f; //TODO faut régler ça et/ou le popup rate
 	/** Nombre maximal d'items affichés simultanément à l'écran */
-	public static final int MAX_ITEM_NBR = 10;
+	public static final int MAX_ITEM_NBR = 11;
 	
 	////////////////////////////////////////////////////////////////
 	////	JOUEURS & SERPENTS
