@@ -19,21 +19,14 @@ package fr.univavignon.courbes.agents.groupe08;
  */
 
 import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.print.attribute.standard.MediaSize.Other;
 
 import fr.univavignon.courbes.agents.Agent;
 import fr.univavignon.courbes.common.Board;
 import fr.univavignon.courbes.common.Direction;
 import fr.univavignon.courbes.common.ItemInstance;
-import fr.univavignon.courbes.common.ItemType;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
-import fr.univavignon.courbes.inter.simpleimpl.AbstractRoundPanel;
 import fr.univavignon.courbes.physics.simpleimpl.PhysBoard;
-import fr.univavignon.courbes.physics.simpleimpl.PhysicsEngineImpl;
 
 /**
  * 

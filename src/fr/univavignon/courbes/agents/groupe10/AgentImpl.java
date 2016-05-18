@@ -2,7 +2,6 @@ package fr.univavignon.courbes.agents.groupe10;
 
 import fr.univavignon.courbes.agents.Agent;
 import fr.univavignon.courbes.common.Direction;
-import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 
