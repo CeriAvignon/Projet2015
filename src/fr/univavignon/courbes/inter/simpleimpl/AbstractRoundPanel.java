@@ -164,7 +164,7 @@ public abstract class AbstractRoundPanel extends JPanel implements Runnable
 			if(matchOver)
 			{	Profile profile = players[maxIdx].profile;
 				String name = profile.userName;
-				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+"a gagné la partie !");
+				JOptionPane.showMessageDialog(mainWindow, "Le joueur "+name+" a gagné la partie !");
 			}
 			
 			// ou bien celui de la manche, et on recommence
