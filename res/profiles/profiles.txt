@@ -18,3 +18,4 @@ groupe05,France,17,groupe05@fake.com,password17,groupe05
 groupe07,France,18,groupe07@fake.com,password18,groupe07
 groupe08,France,19,groupe08@fake.com,password19,groupe08
 groupe10,France,20,groupe10@fake.com,password20,groupe10
+groupe03,France,21,groupe03@fake.com,password21,groupe03
