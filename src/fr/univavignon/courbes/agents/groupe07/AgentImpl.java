@@ -160,7 +160,7 @@ public class AgentImpl extends Agent
 {        checkInterruption();        // on doit tester l'interruption au début de chaque méthode
 
 if(isInSightNormal( angle)){
-        System.out.println("Trace isInSightNormal");
+//        System.out.println("Trace isInSightNormal");
 
         return true;
 }
@@ -168,17 +168,17 @@ if(isInSightNormal( angle)){
 // premier cas limite : si la borne supérieure dépasse 2PI
 // on teste si l'angle est inférieur à upperBound - 2pi.
 else if(isInSightUPPERDeuxPI(angle)){
-        System.out.println("Trace isInSightUPPERDeuxPI");
+//        System.out.println("Trace isInSightUPPERDeuxPI");
         return true;
 }
 
 // second cas limite : si la borne inférieure est négative 
 // on teste si l'angle est supérieur à lowerBound + 2PI
 else if(isInSightLOWERDeuxPI(angle)){
-        System.out.println("Trace isInSightLOWERDeuxPI");
+//        System.out.println("Trace isInSightLOWERDeuxPI");
         return true;
 }
-System.out.println("Trace FALSE");
+//System.out.println("Trace FALSE");
 
 return false;
 
@@ -268,23 +268,23 @@ private boolean isInSightLOWERDeuxPI(double angle){
 {                        
 checkInterruption();        // on doit tester l'interruption au début de chaque méthode
 if (isTooCloseToCorner()) {
-        System.out.println("test isTooCloseToCorner");
+//        System.out.println("test isTooCloseToCorner");
 
         return true;
 }else if (isTooCloseToBord()) {
-        System.out.println("Trace isTooCloseToBord");
+//        System.out.println("Trace isTooCloseToBord");
 
         return true;
 }else if (isTooCloseToYBord()) {
-        System.out.println("Trace isTooCloseToYBord");
+//        System.out.println("Trace isTooCloseToYBord");
 
         return true;
 }else if (isTooCloseToXYBord()) {
-        System.out.println("Trace isTooCloseToXYBord");
+//        System.out.println("Trace isTooCloseToXYBord");
 
         return true;
 }else {
-        System.out.println("Trace FALSE");
+//        System.out.println("Trace FALSE");
         return false;
 }
 

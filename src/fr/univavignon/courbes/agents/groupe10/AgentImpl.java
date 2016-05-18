@@ -662,7 +662,7 @@ public class AgentImpl extends Agent {
 			}
 			closed.put(u, u.heuristique); // on ajoute le noeud traité dans closed (qui regroupe les noeuds deja traités).
 		}
-		System.out.println("Erreur dans la fonction a*");
+//		System.out.println("Erreur dans la fonction a*");
 		return null;
 
 	}

@@ -211,7 +211,7 @@ public class AgentImpl extends Agent
 		
 		// 5° de vision
 		if(agent.currentAngle <= angleEsquive+Math.PI/60 && agent.currentAngle>=angleEsquive-Math.PI/60){
-			System.out.println("tout droit !");
+//			System.out.println("tout droit !");
 			return Direction.NONE;
 		}
 		// on teste si l'angle est entre lowerBound et currentAngle 
