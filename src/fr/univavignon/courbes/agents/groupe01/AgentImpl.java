@@ -32,14 +32,14 @@ import fr.univavignon.courbes.common.ItemInstance;
 import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 
-/*
+/**
  * Fonction prenant en paramètre une position et un int et qui regarde si la position touche un snake adverse, renvoie 2
  * si jamais on est à une distance x (le int) on renvoie 1, sinon renvoie 0;
- */
-
-/**
- * @author pierre quentin gatean maxime
- *
+ * 
+ * @author Maxime Dapp 
+ * @author Pierre Fageot
+ * @author Quentin Roux
+ * @author Gaetan Schmidt
  */
 public class AgentImpl extends Agent {
 	/** Direction courante du serpent de l'agent */

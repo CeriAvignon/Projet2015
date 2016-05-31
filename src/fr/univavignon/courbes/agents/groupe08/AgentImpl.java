@@ -30,10 +30,10 @@ import fr.univavignon.courbes.physics.simpleimpl.PhysBoard;
 
 /**
  * 
- * @author charlie
- * @author sabri
- * @author Alexandre
- *
+ * 
+ * @author Sabri Boussetha
+ * @author Charlie Brugvin
+ * @author Alexandre Latif
  */
 public class AgentImpl extends Agent
 {	

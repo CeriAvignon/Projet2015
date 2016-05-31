@@ -28,19 +28,13 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 
 /**
- * Ceci est un agent bidon servant à illustrer comment l'API IA doit être utilisée. 
- * Cet agent regarde devant lui, identifie l'obstacle (mur ou trainée d'un autre serpent) 
- * le plus proche, puis s'en écarte. Il ne prend pas en compte sa propre trainée, ni les items.
- * Sa vision est limitée à un angle de largeur {@link #ANGLE_WIDTH}.
- * <br/>
- * Il est recommandé d'invoquer la méthode {@link #checkInterruption()} au début de chaque boucle, 
- * et au début de chaque méthode. Ceci permet d'éviter que votre agent ne bloque son thread en cas 
- * de boucle infinie ou de récursion infinie.
- * <br/>
- * Notez que cette classe bénéficie des méthodes définies dans sa classe mère
- * {@link Agent}.
  * 
- * @author        L3 Info UAPV 2015-16
+ * 30 mai 2016
+ * 
+ * @author Rudy Bardout
+ * @author Félix Boucher
+ * @author Majda El Khorji
+ * @author Laurent Harkiolakis
  */
 public class AgentImpl extends Agent
 {        /** Moitié de l'angle de vision de l'agent, i.e. délimitant la zone traitée devant lui pour détecter des obstacles. Contrainte : doit être inférieure à PI */

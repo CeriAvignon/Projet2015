@@ -1,5 +1,23 @@
 package fr.univavignon.courbes.agents.groupe02;
 
+/*
+ * Courbes
+ * Copyright 2015-16 L3 Info UAPV 2015-16
+ * 
+ * This file is part of Courbes.
+ * 
+ * Courbes is free software: you can redistribute it and/or modify it under the terms 
+ * of the GNU General Public License as published by the Free Software Foundation, 
+ * either version 2 of the License, or (at your option) any later version.
+ * 
+ * Courbes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Courbes. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.util.LinkedList;
 
 /*
@@ -31,19 +49,11 @@ import fr.univavignon.courbes.common.Snake;
 import fr.univavignon.courbes.common.ItemInstance;
 
 /**
- * Ceci est un agent bidon servant à illustrer comment l'API IA doit être utilisée. 
- * Cet agent regarde devant lui, identifie l'obstacle (mur ou trainée d'un autre serpent) 
- * le plus proche, puis s'en écarte. Il ne prend pas en compte sa propre trainée, ni les items.
- * Sa vision est limitée à un angle de largeur {@link #ANGLE_WIDTH}.
- * <br/>
- * Il est recommandé d'invoquer la méthode {@link #checkInterruption()} au début de chaque boucle, 
- * et au début de chaque méthode. Ceci permet d'éviter que votre agent ne bloque son thread en cas 
- * de boucle infinie ou de récursion infinie.
- * <br/>
- * Notez que cette classe bénéficie des méthodes définies dans sa classe mère
- * {@link Agent}.
  * 
- * @author	L3 Info UAPV 2015-16
+ * 
+ * @author Florian Demol
+ * @author Thomas Hernandez
+ * @author Nasreddine Kabbouch
  */
 public class AgentImpl extends Agent
 {	/** Moitié de l'angle de vision de l'agent, i.e. délimitant la zone traitée devant lui pour détecter des obstacles. Contrainte : doit être inférieure à PI */

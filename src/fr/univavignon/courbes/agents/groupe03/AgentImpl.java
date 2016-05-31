@@ -1,6 +1,5 @@
 package fr.univavignon.courbes.agents.groupe03;
 
-
 /*
  * Courbes
  * Copyright 2015-16 L3 Info UAPV 2015-16
@@ -31,7 +30,12 @@ import fr.univavignon.courbes.common.Position;
 import fr.univavignon.courbes.common.Snake;
 
 /**
- * Ceci est un agent qui evites les obstacles en se basant d 'un algorithme de prediction
+ * Ceci est un agent qui evite les obstacles en se basant d'un algorithme de prediction.
+ * 
+ * @author Rachid Azzouzi
+ * @author Chaymae Kouadir
+ * @author Amine Matrouf
+ * @author Omar Sy
  */
 public class AgentImpl extends Agent
 {	/** Moitié de l'angle de vision de l'agent, i.e. délimitant la zone traitée devant lui pour détecter des obstacles. Contrainte : doit être inférieure à PI */
