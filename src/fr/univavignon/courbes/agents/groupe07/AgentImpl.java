@@ -178,7 +178,11 @@ return false;
 
 }
 
-
+/**
+ * 
+ * @param angle ...
+ * @return ...
+ */
 private boolean isInSightNormal(double angle){
         boolean AngleLowerBound = angle>=lowerBound ;
         boolean AngleUpperBound =  angle<=upperBound ;
@@ -189,7 +193,11 @@ private boolean isInSightNormal(double angle){
 
 
 
-
+/**
+ * 
+ * @param angle ...
+ * @return ...
+ */
 private boolean isInSightUPPERDeuxPI(double angle){
         boolean AngleDeuxPI = upperBound>2*Math.PI ;
         boolean AngleUpperBoundPI =  angle<=upperBound-2*Math.PI ;
@@ -200,7 +208,11 @@ private boolean isInSightUPPERDeuxPI(double angle){
 
 
 
-
+/**
+ * 
+ * @param angle ...
+ * @return ...
+ */
 private boolean isInSightLOWERDeuxPI(double angle){
         boolean AngleDeuxPI = lowerBound<0 ;
         boolean AngleUpperBoundPI =  angle>=lowerBound+2*Math.PI ;
@@ -286,13 +298,13 @@ if (isTooCloseToCorner()) {
 
 
 /**
- * @return
+ * @return ...
  */
 private int getXPosition(){
         return agentSnake.currentX;
 }
 /**
- * @return
+ * @return ...
  */
 private int getYPosition(){
         return agentSnake.currentY;
@@ -300,7 +312,7 @@ private int getYPosition(){
 
 
 /**
- * @return
+ * @return ...
  */
 private boolean isTooCloseToCorner(){
         boolean resultX=getXPosition()<CORNER_THRESHOLD ;
@@ -310,11 +322,18 @@ private boolean isTooCloseToCorner(){
         return result;
 }
 
+/**
+ * 
+ * @return ...
+ */
 private int getBordWidth(){
         return getBoard().width;
 }
 
-
+/**
+ * 
+ * @return ...
+ */
 private boolean isTooCloseToBord(){
         boolean resultX=(getBordWidth()-getXPosition())<CORNER_THRESHOLD ;
         boolean resultY=getYPosition()<CORNER_THRESHOLD ;
@@ -323,6 +342,10 @@ private boolean isTooCloseToBord(){
         return result;
 }
 
+/**
+ * 
+ * @return ...
+ */
 private boolean isTooCloseToYBord(){
         boolean resultX=getXPosition()<CORNER_THRESHOLD ;
         boolean resultY=getBoard().height-getYPosition()<CORNER_THRESHOLD ;
@@ -332,6 +355,10 @@ private boolean isTooCloseToYBord(){
 
 }
 
+/**
+ * 
+ * @return ...
+ */
 private boolean isTooCloseToXYBord(){
         boolean resultX=getBoard().width-getXPosition()<CORNER_THRESHOLD ;
         boolean resultY=getBoard().height-getYPosition()<CORNER_THRESHOLD ;

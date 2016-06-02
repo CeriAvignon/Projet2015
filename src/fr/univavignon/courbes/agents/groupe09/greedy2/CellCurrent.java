@@ -22,17 +22,29 @@ package fr.univavignon.courbes.agents.groupe09.greedy2;
   * Helper class that represents the cell of the grid.
   */
 public  class CellCurrent {
+	/** */
 	int row;   // the row number of the cell(row 0 is the top)
-    int col;   // the column number of the cell (Column 0 is the left)
-    int g;     // the value of the function g of Greedy algorithms
-    int h;     // the value of the function h of Greedy algorithms
-    int f;     // the value of the function h of Greedy algorithms
-    int dist;  // the distance of the cell from the initial position of the robot
+	/** */
+	int col;   // the column number of the cell (Column 0 is the left)
+	/** */
+	int g;     // the value of the function g of Greedy algorithms
+    /** */
+	int h;     // the value of the function h of Greedy algorithms
+	/** */
+	int f;     // the value of the function h of Greedy algorithms
+	/** */
+	int dist;  // the distance of the cell from the initial position of the robot
     // Ie the label that updates the Dijkstra's algorithm
-    CellCurrent prev; // Each state corresponds to a cell
+	/** */
+	CellCurrent prev; // Each state corresponds to a cell
                        // and each state has a predecessor which
                        // is stored in this variable
-    public CellCurrent(int row, int col){
+   /**
+    * 
+    * @param row ...
+    * @param col ...
+    */
+	public CellCurrent(int row, int col){
                this.row = row;
                this.col = col;
             }

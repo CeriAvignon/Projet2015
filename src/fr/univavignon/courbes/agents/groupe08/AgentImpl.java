@@ -36,8 +36,9 @@ import fr.univavignon.courbes.physics.simpleimpl.PhysBoard;
  * @author Alexandre Latif
  */
 public class AgentImpl extends Agent
-{	
+{	/** */
 	PhysBoard board = null;
+	/** */
 	PhysBoard bdTmp = null;
 	/** un tableau contenant les poids lors de la dernière itération **/
 	double derniersPoids[] = null;
@@ -63,10 +64,13 @@ public class AgentImpl extends Agent
 	 * 
 	 * **/
 	boolean afficherInfosInitiales = false;
+	/** */
 	boolean longTermFlag = true;
 	
+	/** */
 	int agentId = -1;
 	
+	/** */
 	double []cooSafestArea = new double[2];
 		
 	//METHODES
@@ -466,7 +470,7 @@ public class AgentImpl extends Agent
 		 * Fonction qui évalue les items que les autres joueurs ont prisent pendant le BT
 		 * et modifie le poids selon le type d'item prise
 		 * ça ne prend en compte que les items qui affectent les autres joueurs ou tout le monde en même temps
-		 * @param itemsIA liste d'items que l'IA a pris
+		 * @param itemsAutres liste d'items que l'IA a pris
 		 * @return un poids à rajouter au poids principal (ça peut être négatif)
 		 * 
 		 * @author Alexandre
@@ -502,14 +506,14 @@ public class AgentImpl extends Agent
 	* 
 	* Cette fonction met a meilleure partie de l'aire de jeu
 	* 
-	* @param : Board 
+	* @param bd 
 	* 	l'aire de jeu actuelle utilisé pour estimer la partie la plus sure de la board
 	* 
 	* @author Sabri
 	*/
 	void getSafestArea(Board bd)
 	{
-		double []coo = new double[2];
+//		double []coo = new double[2];
 		PhysBoard tmpBoard = new PhysBoard((PhysBoard) bd);
 		
 		double headX = bd.snakes[agentId].currentX;
@@ -577,10 +581,13 @@ public class AgentImpl extends Agent
 	 * 			le taux des pixels disponibles sur cette partie
 	 * 
 	 * @author Sabri
+	 * @param tmpBoard ...
 	 */
 	double ratioSafestArea(int lowBoundX, int upBoundX, int lowBoundY, int upBoundY, PhysBoard tmpBoard)
 	{
-		double surface, ratio=0; 
+		/** */
+		double surface;
+//		double ratio=0; 
 		int co=0;
 		boolean positionExist=false;
 		for(int idS=0; idS<tmpBoard.snakes.length; idS++)

@@ -48,6 +48,7 @@ public class IAConstants {
 	public static final int MORT_IA = -1000;
 	/** le poids si l'ennemi meurt dans le BT **/
 	public static final int MORT_ENNEMI = 0;	
+	/** */
 	public static final int BRANCHE = 0;
 	//---------------------------------------------------
 	//--------- POIDS DES ITEMS -------------------------

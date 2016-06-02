@@ -42,36 +42,61 @@ import fr.univavignon.courbes.common.Snake;
  * @author Kousseila Messas
  */
 public class AgentImpl extends Agent{
-
+	
+	/** */
 	public enum DirNode{
+		/** */
 		NONE,
+		/** */
 		GAUCHE,
+		/** */
 		BAS,
+		/** */
 		DROITE,
+		/** */
 		HAUT,
+		/** */
 		GAUCHE_BAS,
+		/** */
 		GAUCHE_HAUT,
+		/** */
 		DROITE_HAUT,
+		/** */
 		DROITE_BAS
 	}
 
-
+	/** */
 	private Snake agentSnake;
+	/** */
 	private boolean path;
+	/** */
 	private Greedy pathFinder;
+	/** */
 	public final static int GRID_ROWS = 22;
+	/** */
 	public final static int GRID_COLS = 22;
+	/** */
 	private static final int TRESH_PATH = 100;
+	/** */
 	private static final int TRESH_BORDER = 60;
 	
+	/** */
 	List<Point> tmpObstacles;
+	/** */
 	List<Point> pathResult;
+	/** */
 	Point lastPosSnake;
+	/** */
 	Point tmpPosSnake;
 
+	/** */
 	final double angles[] = {0, 7*Math.PI/4, 3*Math.PI/2, 5*Math.PI/4, Math.PI, 3*Math.PI/4, Math.PI/2, Math.PI/4};
 
 
+	/**
+	 * 
+	 * @param playerId ...
+	 */
 	public AgentImpl(Integer playerId) {
 		super(playerId);
 
@@ -85,7 +110,7 @@ public class AgentImpl extends Agent{
 		checkInterruption();
 		Board board = getBoard();
 		if(board == null) {	// partie pas encore commencée : on ne fait rien
-			System.out.println("Board null");
+//			System.out.println("Board null");
 			return Direction.NONE;
 		}
 		else{
@@ -150,7 +175,7 @@ public class AgentImpl extends Agent{
 		unsetObstaclesAroundSnake();
 		tmpPosSnake = nodeSnake;
 		path = true;
-		System.out.println("CHEMIN CREE snake: " + agentSnake.currentX + " " + agentSnake.currentY  +pathResult);
+//		System.out.println("CHEMIN CREE snake: " + agentSnake.currentX + " " + agentSnake.currentY  +pathResult);
 	}
 
 
@@ -288,7 +313,7 @@ public class AgentImpl extends Agent{
 		}
 
 
-		System.out.println("CHEMIN CREE snake: " + agentSnake.currentX + " " + agentSnake.currentY  +pathResult);
+//		System.out.println("CHEMIN CREE snake: " + agentSnake.currentX + " " + agentSnake.currentY  +pathResult);
 		tmpPosSnake = nodeSnake;
 		path = true;
 	}
@@ -376,7 +401,7 @@ public class AgentImpl extends Agent{
 		for(;y<ly;y++) {
 			for(;x<lx;x++){
 				if(trails.contains(new Position(x,y))) {
-					System.out.println("Obstacle detecté");
+//					System.out.println("Obstacle detecté");
 					return true;
 				}
 			
@@ -402,13 +427,13 @@ public class AgentImpl extends Agent{
 		int cellRay = (int) ((getBoard().width/GRID_ROWS)*0.5); // Moitié du coté d'un noeud (un noeud est carré)
 
 		double distNextNode = (new Point(agentSnake.currentX, agentSnake.currentY).distance(getBoardPosition(nNode.x,nNode.y)));
-		System.out.println("Node snake" + nodeSnake + "  Distance next node : " + distNextNode);
+//		System.out.println("Node snake" + nodeSnake + "  Distance next node : " + distNextNode);
 
 		if(distNextNode > TRESH_PATH) { // Génerer un nouveau chemin si le serpent est trop éloigné du prochain noeud
 			createSimplePath();
 		}
 		if(nodeSnake.x == nNode.x && nodeSnake.y == nNode.y) { // Le serpent à atteint le node n+1
-			System.out.println("Node atteint ns:" + nNode + " TmpPosSnake " + tmpPosSnake);
+//			System.out.println("Node atteint ns:" + nNode + " TmpPosSnake " + tmpPosSnake);
 			lastPosSnake = tmpPosSnake;
 			tmpPosSnake = nNode;
 			if(pathResult.size()> 1) {
@@ -417,11 +442,11 @@ public class AgentImpl extends Agent{
 			} 
 		}
 
-		System.out.println("lastPosSnake: " + lastPosSnake);
+//		System.out.println("lastPosSnake: " + lastPosSnake);
 
 		/** HAUT-GAUCHE **/
 		if(nodeSnake.x-nNode.x == 1 && nodeSnake.y-nNode.y == 1) { 
-			System.out.println("HAUT GAUCHE");
+//			System.out.println("HAUT GAUCHE");
 			if(lastPosSnake.x-nodeSnake.x==1 && lastPosSnake.y-nodeSnake.y==0) // Venant de  droite
 				return Direction.RIGHT;
 			else if(lastPosSnake.x-nodeSnake.x==0 && lastPosSnake.y-nodeSnake.y==1) // Venant de  bas
@@ -442,13 +467,13 @@ public class AgentImpl extends Agent{
 
 		/** HAUT-DROITE **/
 		else if(nodeSnake.x-nNode.x == -1 && nodeSnake.y-nNode.y == 1) { 
-			System.out.println("HAUT DROITE");
+//			System.out.println("HAUT DROITE");
 			if(lastPosSnake.x-nodeSnake.x==-1 && lastPosSnake.y-nodeSnake.y==0){ // Venant de gauche
-				System.out.println("VIENT DE GAUCHE");
+//				System.out.println("VIENT DE GAUCHE");
 				return Direction.LEFT;
 			}
 			else if(lastPosSnake.x-nodeSnake.x==0 && lastPosSnake.y-nodeSnake.y==1) {// Venant de  bas
-				System.out.println("VIENT DE BAS");
+//				System.out.println("VIENT DE BAS");
 				return Direction.RIGHT;
 			}
 
@@ -469,13 +494,13 @@ public class AgentImpl extends Agent{
 
 		/** BAS-GAUCHE **/
 		else if(nodeSnake.x-nNode.x == 1 && nodeSnake.y-nNode.y == -1) { 
-			System.out.println("BAS GAUCHE");
+//			System.out.println("BAS GAUCHE");
 			if(lastPosSnake.x-nodeSnake.x==1 && lastPosSnake.y-nodeSnake.y==0) // Venant de droite
 				return Direction.LEFT;
 			if(lastPosSnake.x-nodeSnake.x==0 && lastPosSnake.y-nodeSnake.y==-1) // Venant du  haut
 				return Direction.RIGHT;
 			if(lastPosSnake.x-nodeSnake.x==1 && lastPosSnake.y-nodeSnake.y==-1) { // Venant de haut droite
-				System.out.println("viens de haut droite");
+//				System.out.println("viens de haut droite");
 				Point midCell = getBoardPosition(nodeSnake.x, nodeSnake.y);
 				Point ACell = new Point(midCell.x+cellRay, midCell.y-cellRay);
 				Point BCell = new Point(midCell.x-cellRay, midCell.y+cellRay);
@@ -490,13 +515,13 @@ public class AgentImpl extends Agent{
 		}
 		/** BAS-DROITE **/
 		else if(nodeSnake.x-nNode.x == -1 && nodeSnake.y-nNode.y == -1) { 
-			System.out.println("BAS DROITE");
+//			System.out.println("BAS DROITE");
 			if(lastPosSnake.x-nodeSnake.x==-1 && lastPosSnake.y-nodeSnake.y==0) // Venant de gauche
 				return Direction.RIGHT;
 			if(lastPosSnake.x-nodeSnake.x==0 && lastPosSnake.y-nodeSnake.y==-1) // Venant du  haut
 				return Direction.LEFT;
 			if(lastPosSnake.x-nodeSnake.x==-1 && lastPosSnake.y-nodeSnake.y==-1) { // Venant de haut droite
-				System.out.println("viens de haut droite");
+//				System.out.println("viens de haut droite");
 				Point midCell = getBoardPosition(nodeSnake.x, nodeSnake.y);
 				Point ACell = new Point(midCell.x-cellRay, midCell.y-cellRay);
 				Point BCell = new Point(midCell.x+cellRay, midCell.y+cellRay);
@@ -547,9 +572,9 @@ public class AgentImpl extends Agent{
 
 		/** BAS **/
 		else if(nodeSnake.x-nNode.x == 0 && nodeSnake.y-nNode.y == -1) { 
-			System.out.println("BAS");
+//			System.out.println("BAS");
 			if(lastPosSnake.x-nodeSnake.x == 1 && lastPosSnake.y-nodeSnake.y == -1) {// Stabilisation aprés un bas-gauche
-				System.out.println("STABILISATION APRES UN BAS GAUCHE");
+//				System.out.println("STABILISATION APRES UN BAS GAUCHE");
 				return Direction.LEFT;
 			}
 			if(lastPosSnake.x-nodeSnake.x == -1 && lastPosSnake.y-nodeSnake.y == -1) {// Stabilisation aprés un bas-droite
@@ -569,11 +594,11 @@ public class AgentImpl extends Agent{
 		/** DROITE **/
 		else if(nodeSnake.x-nNode.x == -1 && nodeSnake.y-nNode.y == 0) { 
 			if(lastPosSnake.x-nodeSnake.x == -1 && lastPosSnake.y-nodeSnake.y >= 1) {// Stabilisation aprés un haut-droite
-				System.out.println("STABILISATION APRES UN HAUT DROITE");
+//				System.out.println("STABILISATION APRES UN HAUT DROITE");
 				return Direction.RIGHT;
 			}
 			if(lastPosSnake.x-nodeSnake.x == -1 && lastPosSnake.y-nodeSnake.y == -1) {// Stabilisation aprés un bas-droite
-				System.out.println("STABILISATION APRES UN BAS DROITE");
+//				System.out.println("STABILISATION APRES UN BAS DROITE");
 				return Direction.LEFT;
 			}
 
@@ -581,7 +606,7 @@ public class AgentImpl extends Agent{
 			Point ACell = new Point(midCell.x-cellRay, midCell.y);
 			Point BCell = new Point(midCell.x+cellRay, midCell.y);
 			float pf = produitVectoriel(ACell.x,ACell.y,BCell.x,BCell.y,agentSnake.currentX,agentSnake.currentY);
-			System.out.println("DROITE   " + pf + "   " + agentSnake.currentAngle); // debug
+//			System.out.println("DROITE   " + pf + "   " + agentSnake.currentAngle); // debug
 			if(pf > 0 && agentSnake.currentAngle > 0 && agentSnake.currentAngle < Math.PI/2)
 				return Direction.LEFT;
 			if(pf < 0 && agentSnake.currentAngle < 2*Math.PI && agentSnake.currentAngle > 3*Math.PI/2)
@@ -589,7 +614,7 @@ public class AgentImpl extends Agent{
 		}
 
 
-		System.out.println("No direction");
+//		System.out.println("No direction");
 		return Direction.NONE;
 
 
@@ -633,6 +658,12 @@ public class AgentImpl extends Agent{
 	/**
 	 * Calcule le produit vectoriel, utile pour savoir si un point se trouve d'un coté
 	 * ou d'un autre d'une droite
+	 * @param xaDroite ...
+	 * @param yaDroite ...
+	 * @param xbDroite ...
+	 * @param ybDroite ...
+	 * @param xPt ...
+	 * @param yPt ...
 	 * @return Le produit vectoriel du point par rapport à la droite
 	 */
 	public static float produitVectoriel(int xaDroite, int yaDroite, int xbDroite, int ybDroite, int xPt, int yPt) {
@@ -732,7 +763,7 @@ public class AgentImpl extends Agent{
 			if(!isOpen) {
 				tmpObstacles.add(p);
 				pathFinder.setObstacle(p.x, p.y);
-				System.out.println("Point bloqué : " + p);
+//				System.out.println("Point bloqué : " + p);
 			}
 		}
 

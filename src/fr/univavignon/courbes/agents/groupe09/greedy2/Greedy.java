@@ -37,36 +37,58 @@ public class Greedy {
      **********************************************************
      */
     
-   private final static int
-        
-        EMPTY    = 0,  // empty cell
-        OBST     = 1,  // cell with obstacle
-        ROBOT    = 2,  // the position of the robot
-        TARGET   = 3,  // the position of the target
-        ROUTE    = 6;  // cells that form the robot-to-target path
-    boolean b;
-    int[][] grid;        // the grid
-    boolean found;       // flag that the goal was found
-    boolean searching;   // flag that the search is in progress
-    boolean endOfSearch; // flag that the search came to an end
-    int delay = 0;           // time delay of animation (in msec)
-    int expanded;        // the number of nodes that have been expanded
-    int boardWidth ;	//Witdh of the board
-    int rows ,           // the number of rows of the grid
-        columns ,           // the number of columns of the grid
-        squareSize ,  // the cell size in pixels
-        arrowSize = squareSize/2; // the size of the tip of the arrow
+	/** */
+	private final static int EMPTY    = 0;  // empty cell
+	/** */
+	private final static int OBST     = 1;  // cell with obstacle
+	/** */
+	private final static int ROBOT    = 2;  // the position of the robot
+	 /** */
+	private final static int TARGET   = 3;  // the position of the target
+	/** */
+	private final static int ROUTE    = 6;  // cells that form the robot-to-target path
+   /** */
+	boolean b;
+    /** */
+	int[][] grid;        // the grid
+    /** */
+	boolean found;       // flag that the goal was found
+    /** */
+	boolean searching;   // flag that the search is in progress
+    /** */
+	boolean endOfSearch; // flag that the search came to an end
+    /** */
+	int delay = 0;           // time delay of animation (in msec)
+    /** */
+	int expanded;        // the number of nodes that have been expanded
+    /** */
+	int boardWidth ;	//Witdh of the board
+    /** */
+	int rows ;           // the number of rows of the grid
+    /** */
+	int columns ;           // the number of columns of the grid
+    /** */
+    int squareSize;  // the cell size in pixels
+    /** */
+    int arrowSize = squareSize/2; // the size of the tip of the arrow
                                       // pointing the predecessor cell
-    ArrayList<CellCurrent> openSet   = new ArrayList();// the OPEN SET
-    ArrayList<CellCurrent> closedSet = new ArrayList();// the CLOSED SET
-    ArrayList<CellCurrent> graph     = new ArrayList();// the set of vertices of the graph
+    /** */
+	ArrayList<CellCurrent> openSet   = new ArrayList<CellCurrent>();// the OPEN SET
+    /** */
+	ArrayList<CellCurrent> closedSet = new ArrayList<CellCurrent>();// the CLOSED SET
+    /** */
+	ArrayList<CellCurrent> graph     = new ArrayList<CellCurrent>();// the set of vertices of the graph
                                                     // to be explored by Dijkstra's algorithm
-    CellCurrent robotStart; // the initial position of the robot
-    CellCurrent targetPos;  // the position of the target
+    /** */
+	CellCurrent robotStart; // the initial position of the robot
+	/** */
+	CellCurrent targetPos;  // the position of the target
     
     /**
      * b = true si tu veux tester avec les Grilles.
      * b = false si tu veux tester avec les pixels
+     * @param boardWidth ...
+     * @param b  ...
      * */
     public Greedy(int boardWidth, boolean b/*, int rows, int columns*/){
     	this.b = b;
@@ -97,7 +119,8 @@ public class Greedy {
      * Auxiliary class that specifies that the cells will be sorted
          * according their 'dist' field
      */
-    private class CellComparatorByDist implements Comparator<CellCurrent>{
+    @SuppressWarnings("unused")
+	private class CellComparatorByDist implements Comparator<CellCurrent>{
         @Override
         public int compare(CellCurrent cell1, CellCurrent cell2){
             return cell1.dist-cell2.dist;
@@ -250,8 +273,8 @@ public class Greedy {
                 // ... if we are running DFS ...
                
                     // ... calculate the value f(Sj) ...
-                    int dxg = current.col-cell.col;
-                    int dyg = current.row-cell.row;
+//                    int dxg = current.col-cell.col;
+//                    int dyg = current.row-cell.row;
                     int dxh = targetPos.col-cell.col;
                     int dyh = targetPos.row-cell.row;
                     
@@ -585,7 +608,8 @@ public class Greedy {
      * @param current   the cell we are looking for
      * @return          the predecessor of cell 'current'
      */
-    private CellCurrent findPrev(ArrayList<CellCurrent> list, CellCurrent current){
+    @SuppressWarnings("unused")
+	private CellCurrent findPrev(ArrayList<CellCurrent> list, CellCurrent current){
         int index = isInList(list, current);
         return list.get(index).prev;
     } // end findPrev()
@@ -617,7 +641,8 @@ public class Greedy {
      * @param v the other cell
      * @return  the distance between the cells u and v
      */
-    private int distBetween(CellCurrent u, CellCurrent v){
+    @SuppressWarnings("unused")
+	private int distBetween(CellCurrent u, CellCurrent v){
         int dist;
         int dx = u.col-v.col;
         int dy = u.row-v.row;
@@ -669,25 +694,26 @@ public class Greedy {
                 searching = false;
                 endOfSearch = true;
                 int steps = 0;
-                double distance = 0;
+//                double distance = 0;
                 int index = isInList(closedSet,targetPos);
                 CellCurrent cur = closedSet.get(index);
                 grid[cur.row][cur.col]= TARGET;
                 do {
                     steps++;
                      
-                        distance++;
+//                        distance++;
                     
                     cur = cur.prev;
                     grid[cur.row][cur.col] = ROUTE;
                 } while (!(cur.row == robotStart.row && cur.col == robotStart.col));
                 grid[robotStart.row][robotStart.col]=ROBOT;
-                String msg;
-                msg = String.format("Nodes expanded: %d, Steps: %d, Distance: %.3f",
-                         expanded,steps,distance); 
+//                String msg = String.format("Nodes expanded: %d, Steps: %d, Distance: %.3f",expanded,steps,distance); 
                 System.out.println("\nSteps :"+steps+", Node Expands :"+expanded);
               
             } // end plotRoute()
+            /**
+             * 
+             */
     private void fillGrid() {
        searching = false;
         
@@ -709,6 +735,9 @@ public class Greedy {
     }
     
     //Vider la Grille des obstacles
+    /**
+     * 
+     */
     public void emptyObstacle(){
     	for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
@@ -718,16 +747,35 @@ public class Greedy {
             }
         }
     }
+    
     //Ajouter des obstacles
+    /**
+     * 
+     * @param x ...
+     * @param y ...
+     */
     public void setObstacle(int x, int y){
     	grid[y][x] = OBST;
     }
     
+    /***
+     * 
+     * @param x ...
+     * @param y ...
+     */
     public void unsetObstacle(int x, int y){
     	grid[y][x] = EMPTY;
     }
     
     //Chercher un chemin
+    /***
+     * 
+     * @param xSource ...
+     * @param ySource ...
+     * @param xTarget ...
+     * @param yTarget ...
+     * @return ...
+     */
     public List<Point> path(int xSource, int ySource, int xTarget ,int yTarget){
     	if(b){
 	    	robotStart = new CellCurrent(rangGreed(ySource),rangGreed(xSource));
@@ -739,7 +787,7 @@ public class Greedy {
     		
         fillGrid();
     	searching = true;
-        boolean end = false;
+//        boolean end = false;
     	while(true){
 	        if (openSet.isEmpty()) {
 	            endOfSearch = true;
@@ -760,6 +808,10 @@ public class Greedy {
   
   
     //Affichage du chemin
+    /**
+     * 
+     * @return ...
+     */
    private List<Point> path(){
 	   List<Point> cellsPath = new ArrayList<Point>();
     	if(openSet.size() != 0){
@@ -777,6 +829,11 @@ public class Greedy {
     }
    
    //Change to Row Grille
+   /**
+    * 
+    * @param y ...
+    * @return ...
+    */
    public int rangGreed(int y){
 	   return((y) / squareSize);
    }

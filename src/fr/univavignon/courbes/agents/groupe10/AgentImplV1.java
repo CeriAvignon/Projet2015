@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.HashMap;
+
 import fr.univavignon.courbes.common.Board;
 
 /**
@@ -45,16 +46,21 @@ public class AgentImplV1 extends Agent {
 	/** Distance en pixels à partir de laquelle on considère qu'on est dans un coin */
 	private static int CORNER_THRESHOLD = 100;
 	/** Direction précédemment choisie par cet agent */
-	private Direction previousDirection = Direction.NONE;
+//	private Direction previousDirection = Direction.NONE;
 	
 	/**
 	 * La classe Node representant un noeud sert à l'algorithme A*
 	 *
 	 */
 	class Node {
+		/** */
 		public Position pos; 
+		/** */
 		public Node parent;
-		public double cout,heuristique;
+		/** */
+		public double cout;
+		/** */
+		public double heuristique;
 	}
 	
 	/**
@@ -84,7 +90,7 @@ public class AgentImplV1 extends Agent {
 		for(Snake snake : board.snakes)
 		{
 			checkInterruption();
-			Position othersnake = new Position(snake.currentX, snake.currentY);
+//			Position othersnake = new Position(snake.currentX, snake.currentY);
 			if(snake.playerId != getPlayerId())
 			{
 
@@ -148,7 +154,7 @@ public class AgentImplV1 extends Agent {
 			}
 
 		}
-		previousDirection = dir;
+//		previousDirection = dir;
 		return dir;
 	}
 	
@@ -185,6 +191,7 @@ public class AgentImplV1 extends Agent {
 	 * @return
 	 * 		{@code true} ssi l'agent est dans un coin.
 	 */
+	@SuppressWarnings("unused")
 	private boolean isInCorner()
 	{	
 		checkInterruption();	// on doit tester l'interruption au début de chaque méthode
@@ -209,6 +216,7 @@ public class AgentImplV1 extends Agent {
 	 * 		proche appartenant à un obstacle, et l'angle qu'il forme
 	 * 		avec la position courante de cet agent.
 	 */
+	@SuppressWarnings("unused")
 	private void processObstacleSnake(Snake snake, double result[])
 	{	
 		checkInterruption();	// on doit tester l'interruption au début de chaque méthode
@@ -269,6 +277,7 @@ public class AgentImplV1 extends Agent {
 	 * 		proche appartenant à un obstacle, et l'angle qu'il forme
 	 * 		avec la position courante de cet agent.
 	 */
+	@SuppressWarnings("unused")
 	private void processObstacleBorder(double result[])
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		
@@ -307,6 +316,7 @@ public class AgentImplV1 extends Agent {
 	 * 		Direction permettant de s'écarter de cet angle (ou {@code null} si 
 	 * 		l'angle n'est pas visible).
 	 */
+	@SuppressWarnings("unused")
 	private Direction getDodgeDirection(double angle) 
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		Direction result = Direction.NONE;
@@ -334,6 +344,7 @@ public class AgentImplV1 extends Agent {
 		return result;
 	}
 	
+	@SuppressWarnings("javadoc")
 	private double processObstacleSnake(Snake snake)
 	{	checkInterruption();	// on doit tester l'interruption au début de chaque méthode
 		
